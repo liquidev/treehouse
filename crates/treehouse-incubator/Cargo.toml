@@ -1,0 +1,11 @@
+[package]
+name = "treehouse-incubator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+handlebars = "4.3.7"
+pulldown-cmark = { version = "0.9.3", default-features = false }
+thiserror = "1.0.47"
+treehouse-format = { workspace = true }
+

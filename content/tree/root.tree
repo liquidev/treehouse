@@ -1,0 +1,37 @@
+- # treehouse
+
+    - welcome to treehouse!
+
+        - treehouse is a brand new static website generator, inspired by the likes of Jekyll and Hugo, but offering a writing experience more close to Logseq
+
+            - ie. a public braindump
+
+    - since you're here, you're probably just setting up
+
+        - i'd highly recommend familiarizing yourself with the syntax by visiting `content/tree/root.tree`
+
+            - this special file is almost like your index.html
+
+            + the syntax is pretty simple
+
+                - separate blocks are delimited with a blank line
+
+                - the indentation level (number of spaces) decides how nested the block is
+
+                    - the exact amount doesn't matter, just that more nested blocks must have more spaces before them than their parents
+
+                    - also blocks on the same level must be indented with the same number of spaces but that's hopefully pretty obvious
+
+                + the block content begins with a dash `-` or a plus `+`
+
+                    - a dash `-` means that the block is open by default
+
+                    - a plus `+` means that the block is hidden by default
+
+                - before the block content, there can be an arbitrary amount of TOML specifying the block config
+
+                    - many keys are available but they aren't really documented outside of code
+
+                - blocks can span multiple lines as long as they are not broken apart with a blank line
+
+                    - that means each block can contain at most one paragraph, unless you use dirty HTML hacks (cheater!)
