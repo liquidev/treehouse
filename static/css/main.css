@@ -105,10 +105,10 @@ body {
 /* Make code examples a little prettier by giving them visual separation from the rest of the page */
 
 pre {
-    min-width: 70%;
-    margin-left: 12px;
     padding: 8px 12px;
+    margin: 12px 0;
     background-color: rgba(0, 0, 0, 5%);
+    border-radius: 8px;
 }
 
 /* Also don't let images get out of hand */
@@ -127,70 +127,28 @@ a:visited {
     color: #6c2380;
 }
 
-/* The tree indents shouldn't be too spaced out */
+/* Make blockquotes a bit prettier */
 
-.tree ul {
-    padding-left: 24px;
+blockquote {
+    margin: 0;
+    padding: 2px 12px;
+    border-left: 4px solid rgba(0, 0, 0, 15%);
 }
 
-/* Make the tree have + and - instead of the default details/summary arrow */
+/* And tables. */
 
-.tree details>summary {
-    list-style: none;
-    cursor: pointer;
+
+table,
+th,
+td {
+    border: 1px solid rgba(0, 0, 0, 30%);
+    border-collapse: collapse;
+    padding: 4px 10px;
 }
 
-.tree li {
-    list-style: none;
-}
+th {
+    background-color: rgba(0, 0, 0, 5%);
 
-/* Also, lone paragraphs should have a bullet point beside to give you a bit of a visual anchor */
-.tree li.leaf>p:first-child::before,
-/* Lone paragraphs include <pre> elements */
-.tree li.leaf>pre:first-child::before {
-    content: '·';
-    opacity: 0.5;
-
-    display: inline-block;
-    height: 0;
-
-    margin-left: -1.5rem;
-    width: 1.5rem;
-
-    --recursive-mono: 1.0;
-    font-size: 14px;
-}
-
-/* Dirty hack to make pres render the way I want this to */
-.tree li.leaf>pre:first-child::before {
-    transform: translateX(-8px);
-}
-
-pre {
-    transform: translateX(8px);
-    border-radius: 6px;
-}
-
-.tree details::before {
-    content: '+';
-    opacity: 0.5;
-
-    display: inline-block;
-    margin-left: -1em;
-
-    margin-left: -1.5rem;
-    width: 1.5rem;
-
-    vertical-align: middle;
-
-    --recursive-mono: 1.0;
-}
-
-.tree details[open]::before {
-    content: '-';
-}
-
-.tree details>*:first-child,
-.tree li.leaf>*:first-child {
-    display: inline-block;
+    --recursive-wght: 700;
+    --recursive-casl: 0.5;
 }

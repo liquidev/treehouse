@@ -1,0 +1,36 @@
+/* The tree indents shouldn't be too spaced out */
+
+.tree ul {
+    padding-left: 24px;
+}
+
+/* Make the tree have + and - instead of the default details/summary arrow */
+
+.tree details>summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.tree li {
+    list-style: none;
+}
+
+.tree details>summary {
+    background-image: url('../svg/expand.svg');
+    background-repeat: no-repeat;
+    background-position: 0px 50%;
+    padding-left: 24px;
+    margin-left: -24px;
+}
+
+.tree li.leaf {
+    background-image: url('../svg/leaf.svg');
+    background-repeat: no-repeat;
+    background-position: 0px 50%;
+    padding-left: 24px;
+    margin-left: -24px;
+}
+
+.tree details[open]>summary {
+    background-image: url('../svg/collapse.svg');
+}

@@ -56,7 +56,9 @@
 
                     - <https://liquidev.net> also [a link that you have not visited because there is nothing there](https://liquidev.net/nothing-to-see-here-lmfao-did-you-really-expect-me-to-create-such-a-behemoth-of-a-URL)
 
-                    + here is my favorite fluffy boy ![ralsei with a hat](https://liquidev.net/syf/art/20230723_ralsei_hat.png)
+                    + here is my favorite fluffy boy
+
+                        - ![ralsei with a hat](https://liquidev.net/syf/art/20230723_ralsei_hat.png)
 
                         - without a hat is also nice uwu
 
@@ -83,21 +85,16 @@
                         | yep | that's | a table |
                         | looks | pretty cool | huh |
 
+                        - sorry for how ugly the table styles look i spent like literally 5 minutes on them please don't jugde them too hard
+
     - well anyways here's a braindump for SVGs
 
         - virgin node
-        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="7" cy="7" r="2" fill="currentColor"/>
-        </svg>
+        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="2" fill="currentColor"/></svg>
 
         - collapsed
-        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-            <line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/>
-            <line x1="8" y1="4" x2="8" y2="12" stroke="currentColor" stroke-width="2"/>
-        </svg>
+        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/><line x1="8" y1="4" x2="8" y2="12" stroke="currentColor" stroke-width="2"/></svg>
 
         - expanded
-        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-            <line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/>
-        </svg>
+        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/></svg>
 
