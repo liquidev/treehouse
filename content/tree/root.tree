@@ -82,3 +82,22 @@
                         | --- | --- | --- |
                         | yep | that's | a table |
                         | looks | pretty cool | huh |
+
+    - well anyways here's a braindump for SVGs
+
+        - virgin node
+        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7" cy="7" r="2" fill="currentColor"/>
+        </svg>
+
+        - collapsed
+        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+            <line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/>
+            <line x1="8" y1="4" x2="8" y2="12" stroke="currentColor" stroke-width="2"/>
+        </svg>
+
+        - expanded
+        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+            <line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/>
+        </svg>
+
