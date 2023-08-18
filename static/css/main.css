@@ -1,3 +1,11 @@
+/* Article-style layout. Center everything and give it a maximum width */
+
+body {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Choose more pretty colors than vanilla HTML */
 
 body {
@@ -5,13 +13,14 @@ body {
     color: #333;
 }
 
-/* Set up fonts */
+/* Set up typography */
 
 body,
 pre,
 code {
     font-family: 'RecVar', sans-serif;
     font-size: 14px;
+    line-height: 1.5;
 }
 
 :root {
@@ -36,13 +45,92 @@ code {
 h1 {
     --recursive-slnt: 0.0;
     --recursive-casl: 0.0;
-    --recursive-crsv: 0.0;
     --recursive-wght: 900;
+
+    font-size: 2.5rem;
+}
+
+h2 {
+    --recursive-slnt: 0.0;
+    --recursive-casl: 0.5;
+    --recursive-wght: 800;
+
+    font-size: 2rem;
+}
+
+h3 {
+    --recursive-slnt: 0.0;
+    --recursive-casl: 0.5;
+    --recursive-wght: 700;
+
+    font-size: 1.5rem;
 }
 
 pre,
 code {
     --recursive-mono: 1.0;
+    --recursive-casl: 0.0;
+    --recursive-slnt: 0.0;
+}
+
+b,
+strong {
+    --recursive-wght: 700;
+}
+
+i,
+em {
+    --recursive-slnt: -16.0;
+}
+
+/* Lay out elements a bit more compactly */
+
+p,
+pre {
+    margin: 6px 0;
+}
+
+h1,
+h2,
+h3 {
+    margin: 12px 0;
+}
+
+/* Lay out elements a little less compactly (actually just have some blank space past the end) */
+
+body {
+    padding-bottom: 10rem;
+}
+
+/* Make code examples a little prettier by giving them visual separation from the rest of the page */
+
+pre {
+    min-width: 70%;
+    margin-left: 12px;
+    padding: 8px 12px;
+    background-color: rgba(0, 0, 0, 5%);
+}
+
+/* Also don't let images get out of hand */
+
+img {
+    max-width: 100%;
+}
+
+/* Fix the default blue and ugly purple links normally have */
+
+a {
+    color: #004ec8;
+}
+
+a:visited {
+    color: #6c2380;
+}
+
+/* The tree indents shouldn't be too spaced out */
+
+.tree ul {
+    padding-left: 24px;
 }
 
 /* Make the tree have + and - instead of the default details/summary arrow */
@@ -56,12 +144,44 @@ code {
     list-style: none;
 }
 
+/* Also, lone paragraphs should have a bullet point beside to give you a bit of a visual anchor */
+.tree li.leaf>p:first-child::before,
+/* Lone paragraphs include <pre> elements */
+.tree li.leaf>pre:first-child::before {
+    content: '·';
+    opacity: 0.5;
+
+    display: inline-block;
+    height: 0;
+
+    margin-left: -1.5rem;
+    width: 1.5rem;
+
+    --recursive-mono: 1.0;
+    font-size: 14px;
+}
+
+/* Dirty hack to make pres render the way I want this to */
+.tree li.leaf>pre:first-child::before {
+    transform: translateX(-8px);
+}
+
+pre {
+    transform: translateX(8px);
+    border-radius: 6px;
+}
+
 .tree details::before {
     content: '+';
     opacity: 0.5;
 
-    padding-right: 8px;
-    vertical-align: text-bottom;
+    display: inline-block;
+    margin-left: -1em;
+
+    margin-left: -1.5rem;
+    width: 1.5rem;
+
+    vertical-align: middle;
 
     --recursive-mono: 1.0;
 }
@@ -70,6 +190,7 @@ code {
     content: '-';
 }
 
-.tree details *:first-child {
+.tree details>*:first-child,
+.tree li.leaf>*:first-child {
     display: inline-block;
 }

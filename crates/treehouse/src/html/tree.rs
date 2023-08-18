@@ -3,7 +3,11 @@ use treehouse_format::{ast::Branch, pull::BranchKind};
 use super::markdown;
 
 pub fn branch_to_html(s: &mut String, branch: &Branch, source: &str) {
-    s.push_str("<li>");
+    s.push_str(if !branch.children.is_empty() {
+        "<li class=\"branch\">"
+    } else {
+        "<li class=\"leaf\">"
+    });
     {
         if !branch.children.is_empty() {
             s.push_str(match branch.kind {
@@ -15,13 +19,26 @@ pub fn branch_to_html(s: &mut String, branch: &Branch, source: &str) {
 
         let raw_block_content = &source[branch.content.clone()];
         let mut unindented_block_content = String::with_capacity(raw_block_content.len());
-        let indent = " ".repeat(branch.indent_level);
         for line in raw_block_content.lines() {
-            unindented_block_content.push_str(line.strip_prefix(&indent).unwrap_or(line));
+            // Bit of a jank way to remove at most branch.indent_level spaces from the front.
+            let mut space_count = 0;
+            for i in 0..branch.indent_level {
+                if line.as_bytes().get(i).copied() == Some(b' ') {
+                    space_count += 1;
+                } else {
+                    break;
+                }
+            }
+
+            dbg!(&line[space_count..]);
+            unindented_block_content.push_str(&line[space_count..]);
             unindented_block_content.push('\n');
         }
 
-        let markdown_parser = pulldown_cmark::Parser::new(&unindented_block_content);
+        let markdown_parser = pulldown_cmark::Parser::new_ext(&unindented_block_content, {
+            use pulldown_cmark::Options;
+            Options::ENABLE_STRIKETHROUGH | Options::ENABLE_TABLES
+        });
         markdown::push_html(s, markdown_parser);
 
         if !branch.children.is_empty() {
