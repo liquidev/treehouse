@@ -25,6 +25,7 @@ impl Roots {
 
 #[derive(Debug, Clone)]
 pub struct Branch {
+    pub indent_level: usize,
     pub attributes: Range<usize>,
     pub kind: BranchKind,
     pub kind_span: Range<usize>,
@@ -35,6 +36,7 @@ pub struct Branch {
 impl From<BranchEvent> for Branch {
     fn from(branch: BranchEvent) -> Self {
         Self {
+            indent_level: branch.indent_level,
             attributes: branch.attributes,
             kind: branch.kind,
             kind_span: branch.kind_span,

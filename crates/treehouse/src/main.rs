@@ -1,45 +1,32 @@
-mod tree_html;
+mod html;
 
+use axum::Router;
 use codespan_reporting::{
     diagnostic::{Diagnostic, Label, LabelStyle, Severity},
     files::SimpleFile,
     term::termcolor::{ColorChoice, StandardStream},
 };
-use tree_html::branches_to_html;
-use treehouse_format::{
-    ast::{Branch, Roots},
-    pull::Parser,
-};
+use copy_dir::copy_dir;
+use handlebars::Handlebars;
+use html::tree::branches_to_html;
+use serde::Serialize;
+use tower_http::services::ServeDir;
+use tower_livereload::LiveReloadLayer;
+use treehouse_format::{ast::Roots, pull::Parser};
 
-#[derive(Debug, thiserror::Error)]
-enum Error {
-    #[error("I/O error: {0}")]
-    Io(#[from] std::io::Error),
-
-    #[error("treehouse parsing error: {0}")]
-    Parse(#[from] treehouse_format::ParseError),
+#[derive(Serialize)]
+pub struct TemplateData {
+    pub tree: String,
 }
 
-fn print_branch(branch: &Branch, source: &str) {
-    fn inner(branch: &Branch, source: &str, indent_level: usize) {
-        for _ in 0..indent_level {
-            print!("  ");
-        }
-        println!(
-            "{} {:?}",
-            branch.kind.char(),
-            &source[branch.content.clone()]
-        );
-        for child in &branch.children {
-            inner(child, source, indent_level + 1);
-        }
-    }
-    inner(branch, source, 0);
-}
-
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn regenerate() -> anyhow::Result<()> {
     let _ = std::fs::remove_dir_all("target/site");
     std::fs::create_dir_all("target/site")?;
+
+    copy_dir("static", "target/site/static")?;
+
+    let mut handlebars = Handlebars::new();
+    handlebars.register_template_file("template/index.hbs", "template/index.hbs")?;
 
     let root_file = std::fs::read_to_string("content/tree/root.tree")?;
     let parse_result = Roots::parse(&mut Parser {
@@ -49,13 +36,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match parse_result {
         Ok(roots) => {
-            let mut html = String::from("<!DOCTYPE html><html><head></head><body>");
-            for root in &roots.branches {
-                print_branch(root, &root_file);
-            }
-            branches_to_html(&mut html, &roots.branches, &root_file);
-            std::fs::write("target/site/index.html", &html)?;
-            html.push_str("</body></html>")
+            let mut tree = String::new();
+            branches_to_html(&mut tree, &roots.branches, &root_file);
+
+            let index_html = handlebars.render("template/index.hbs", &TemplateData { tree })?;
+
+            std::fs::write("target/site/index.html", index_html)?;
         }
         Err(error) => {
             let writer = StandardStream::stderr(ColorChoice::Auto);
@@ -77,29 +63,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // let mut parser = treehouse_format::Parser {
-    //     input: &root_file,
-    //     position: 0,
-    // };
-    // let mut generator = HtmlGenerator::default();
-    // while let Some(branch) = parser.next_branch()? {
-    //     for _ in 0..branch.indent_level {
-    //         print!(" ");
-    //     }
-    //     println!(
-    //         "{} {:?}",
-    //         branch.kind.char(),
-    //         &root_file[branch.content.clone()]
-    //     );
-    //     generator.add(&root_file, &branch);
-    // }
-    // std::fs::write(
-    //     "target/site/index.html",
-    //     format!(
-    //         "<!DOCTYPE html><html><head></head><body>{}</body></html>",
-    //         generator.finish()
-    //     ),
-    // )?;
+    Ok(())
+}
+
+fn regenerate_or_report_error() {
+    eprintln!("regenerating");
+
+    match regenerate() {
+        Ok(_) => (),
+        Err(error) => eprintln!("error: {error:?}"),
+    }
+}
+
+async fn web_server() -> anyhow::Result<()> {
+    let app = Router::new().nest_service("/", ServeDir::new("target/site"));
+
+    #[cfg(debug_assertions)]
+    let app = app.layer(LiveReloadLayer::new());
+
+    Ok(axum::Server::bind(&([0, 0, 0, 0], 8080).into())
+        .serve(app.into_make_service())
+        .await?)
+}
+
+async fn fallible_main() -> anyhow::Result<()> {
+    regenerate_or_report_error();
+
+    web_server().await?;
+
+    Ok(())
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    match fallible_main().await {
+        Ok(_) => (),
+        Err(error) => eprintln!("fatal: {error:?}"),
+    }
 
     Ok(())
 }

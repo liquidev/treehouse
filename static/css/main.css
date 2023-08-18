@@ -1,0 +1,75 @@
+/* Choose more pretty colors than vanilla HTML */
+
+body {
+    background-color: rgb(255, 253, 246);
+    color: #333;
+}
+
+/* Set up fonts */
+
+body,
+pre,
+code {
+    font-family: 'RecVar', sans-serif;
+    font-size: 14px;
+}
+
+:root {
+    --recursive-mono: 0.0;
+    --recursive-casl: 1.0;
+    --recursive-wght: 400;
+    --recursive-slnt: -2.0;
+    --recursive-crsv: 0.5;
+}
+
+*,
+*:before,
+*:after {
+    font-variation-settings:
+        "MONO" var(--recursive-mono),
+        "CASL" var(--recursive-casl),
+        "wght" var(--recursive-wght),
+        "slnt" var(--recursive-slnt),
+        "CRSV" var(--recursive-crsv);
+}
+
+h1 {
+    --recursive-slnt: 0.0;
+    --recursive-casl: 0.0;
+    --recursive-crsv: 0.0;
+    --recursive-wght: 900;
+}
+
+pre,
+code {
+    --recursive-mono: 1.0;
+}
+
+/* Make the tree have + and - instead of the default details/summary arrow */
+
+.tree details>summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.tree li {
+    list-style: none;
+}
+
+.tree details::before {
+    content: '+';
+    opacity: 0.5;
+
+    padding-right: 8px;
+    vertical-align: text-bottom;
+
+    --recursive-mono: 1.0;
+}
+
+.tree details[open]::before {
+    content: '-';
+}
+
+.tree details *:first-child {
+    display: inline-block;
+}

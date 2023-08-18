@@ -4,7 +4,7 @@
 
         - treehouse is a brand new static website generator, inspired by the likes of Jekyll and Hugo, but offering a writing experience more close to Logseq
 
-            - ie. a public braindump
+            - ie. a public braindump adsadasdsad
 
     - since you're here, you're probably just setting up
 
@@ -12,7 +12,7 @@
 
             - this special file is almost like your index.html
 
-            + the syntax is pretty simple
+            + the .tree syntax is pretty simple
 
                 - separate blocks are delimited with a blank line
 
@@ -28,10 +28,35 @@
 
                     - a plus `+` means that the block is hidden by default
 
-                - before the block content, there can be an arbitrary amount of TOML specifying the block config
+                - before the block content, there can be an arbitrary amount of TOML pecifying the block attributes
 
                     - many keys are available but they aren't really documented outside of code
 
                 - blocks can span multiple lines as long as they are not broken apart with a blank line
 
                     - that means each block can contain at most one paragraph, unless you use dirty HTML hacks (cheater!)
+
+            - .tree composes together with Markdown to let you format text however you want
+
+                - here's a bunch of stuff formatted
+
+                    - # heading 1
+
+                    - ## heading 2
+
+                    - ### heading 3
+                      headings lower than this aren't really supported because c'mon who would be this crazy
+
+                    - <https://liquidev.net>
+
+                    - here is my favorite fluffy boy ![ralsei with a hat](https://liquidev.net/syf/art/20230723_ralsei_hat.png)
+
+                    - also a block quote
+
+                        - > Enough You Foolish Children
+
+                    - yes i will totally abuse you with deltarune references and you cannot stop me
+
+                    - ```
+                    this is some block of code it looks pretty cool doesn't it
+                    ```
