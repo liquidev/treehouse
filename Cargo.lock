@@ -264,15 +264,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "treehouse-format"
-version = "0.1.0"
-dependencies = [
- "log",
- "thiserror",
-]
-
-[[package]]
-name = "treehouse-incubator"
+name = "treehouse"
 version = "0.1.0"
 dependencies = [
  "codespan-reporting",
@@ -280,6 +272,14 @@ dependencies = [
  "pulldown-cmark",
  "thiserror",
  "treehouse-format",
+]
+
+[[package]]
+name = "treehouse-format"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "thiserror",
 ]
 
 [[package]]

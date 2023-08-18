@@ -1,8 +1,11 @@
+mod tree_html;
+
 use codespan_reporting::{
     diagnostic::{Diagnostic, Label, LabelStyle, Severity},
     files::SimpleFile,
     term::termcolor::{ColorChoice, StandardStream},
 };
+use tree_html::branches_to_html;
 use treehouse_format::{
     ast::{Branch, Roots},
     pull::Parser,
@@ -46,9 +49,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match parse_result {
         Ok(roots) => {
+            let mut html = String::from("<!DOCTYPE html><html><head></head><body>");
             for root in &roots.branches {
                 print_branch(root, &root_file);
             }
+            branches_to_html(&mut html, &roots.branches, &root_file);
+            std::fs::write("target/site/index.html", &html)?;
+            html.push_str("</body></html>")
         }
         Err(error) => {
             let writer = StandardStream::stderr(ColorChoice::Auto);
