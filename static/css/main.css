@@ -137,6 +137,9 @@ blockquote {
 
 /* And tables. */
 
+table {
+    margin: 8px 0;
+}
 
 table,
 th,

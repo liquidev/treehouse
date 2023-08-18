@@ -6,6 +6,14 @@
 
 /* Make the tree have + and - instead of the default details/summary arrow */
 
+.tree {
+    --tree-icon-position: 8px 50%;
+    --tree-icon-space: 28px;
+
+    /* I have no clue why this works, deal with it */
+    --tree-hover-expansion: 0.01px;
+}
+
 .tree details>summary {
     list-style: none;
     cursor: pointer;
@@ -18,17 +26,27 @@
 .tree details>summary {
     background-image: url('../svg/expand.svg');
     background-repeat: no-repeat;
-    background-position: 0px 50%;
-    padding-left: 24px;
-    margin-left: -24px;
+    background-position: var(--tree-icon-position);
+    padding-left: var(--tree-icon-space);
+    margin-left: calc(- var(--tree-icon-space));
+
+    padding-top: var(--tree-hover-expansion);
+    padding-bottom: var(--tree-hover-expansion);
+    border-radius: 8px;
+
+    background-color: rgba(0, 0, 0, 0%);
+}
+
+.tree details>summary:hover {
+    background-color: rgba(0, 0, 0, 5%);
 }
 
 .tree li.leaf {
     background-image: url('../svg/leaf.svg');
     background-repeat: no-repeat;
-    background-position: 0px 50%;
-    padding-left: 24px;
-    margin-left: -24px;
+    background-position: var(--tree-icon-position);
+    padding-left: var(--tree-icon-space);
+    margin-left: calc(- var(--tree-icon-space));
 }
 
 .tree details[open]>summary {

@@ -1,7 +1,7 @@
 use std::ops::Range;
 
 use crate::{
-    pull::{BranchEvent, BranchKind, Parser},
+    pull::{Attributes, BranchEvent, BranchKind, Parser},
     ParseError, ParseErrorKind,
 };
 
@@ -26,7 +26,7 @@ impl Roots {
 #[derive(Debug, Clone)]
 pub struct Branch {
     pub indent_level: usize,
-    pub attributes: Range<usize>,
+    pub attributes: Option<Attributes>,
     pub kind: BranchKind,
     pub kind_span: Range<usize>,
     pub content: Range<usize>,

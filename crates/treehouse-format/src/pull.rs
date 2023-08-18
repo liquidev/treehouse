@@ -25,7 +25,13 @@ pub struct BranchEvent {
     pub kind: BranchKind,
     pub kind_span: Range<usize>,
     pub content: Range<usize>,
-    pub attributes: Range<usize>,
+    pub attributes: Option<Attributes>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Attributes {
+    pub percent: Range<usize>,
+    pub data: Range<usize>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -100,11 +106,15 @@ impl<'a> Parser<'a> {
         let attributes = if self.current() == Some('%') {
             let start = self.position;
             self.advance();
+            let after_percent = self.position;
             self.eat_indented_lines_until(indent_level, |c| c == '-' || c == '+')?;
             let end = self.position;
-            start..end
+            Some(Attributes {
+                percent: start..after_percent,
+                data: after_percent..end,
+            })
         } else {
-            self.position..self.position
+            None
         };
 
         let kind_start = self.position;
