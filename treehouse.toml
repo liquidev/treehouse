@@ -1,3 +1,5 @@
-[treehouse]
+# User settings go here. These are (string, string) key-value pairs.
+# They are available under `config.user`.
+[user]
 title = "treehouse"
 author = "liquidex"
