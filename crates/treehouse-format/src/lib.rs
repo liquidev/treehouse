@@ -10,6 +10,9 @@ pub enum ParseErrorKind {
 
     #[error("root branches must not be indented")]
     RootIndentLevel,
+
+    #[error("at least {expected} spaces of indentation were expected, but got {got}")]
+    InconsistentIndentation { got: usize, expected: usize },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]

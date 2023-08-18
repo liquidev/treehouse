@@ -1,4 +1,4 @@
-use std::ops::Range;
+use std::{convert::identity, ops::Range};
 
 use crate::{ParseError, ParseErrorKind};
 
@@ -22,10 +22,10 @@ impl BranchKind {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BranchEvent {
     pub indent_level: usize,
-    pub attributes: Range<usize>,
     pub kind: BranchKind,
     pub kind_span: Range<usize>,
     pub content: Range<usize>,
+    pub attributes: Range<usize>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -52,8 +52,8 @@ impl<'a> Parser<'a> {
         count
     }
 
-    fn eat_until(&mut self, c: char) {
-        while self.current() != Some(c) {
+    fn eat_until(&mut self, cond: impl Fn(char) -> bool) {
+        while self.current().map(&cond).is_some_and(|x| !x) {
             self.advance();
         }
         self.advance();
@@ -66,6 +66,30 @@ impl<'a> Parser<'a> {
         indent_level
     }
 
+    fn eat_indented_lines_until(
+        &mut self,
+        indent_level: usize,
+        cond: impl Fn(char) -> bool,
+    ) -> Result<(), ParseError> {
+        loop {
+            self.eat_until(|c| c == '\n');
+            let before_indentation = self.position;
+            let line_indent_level = self.eat_as_long_as(' ');
+            let after_indentation = self.position;
+            if self.current().map(&cond).is_some_and(identity) || self.current().is_none() {
+                self.position = before_indentation;
+                break;
+            } else if !matches!(self.current(), Some('\n')) && line_indent_level < indent_level {
+                return Err(ParseErrorKind::InconsistentIndentation {
+                    got: line_indent_level,
+                    expected: indent_level,
+                }
+                .at(before_indentation..after_indentation));
+            }
+        }
+        Ok(())
+    }
+
     pub fn next_branch(&mut self) -> Result<Option<BranchEvent>, ParseError> {
         if self.current().is_none() {
             return Ok(None);
@@ -73,9 +97,15 @@ impl<'a> Parser<'a> {
 
         let indent_level = self.eat_as_long_as(' ');
 
-        // TODO: Configs
-        let config_start = self.position;
-        let config_end = self.position;
+        let attributes = if self.current() == Some('%') {
+            let start = self.position;
+            self.advance();
+            self.eat_indented_lines_until(indent_level, |c| c == '-' || c == '+')?;
+            let end = self.position;
+            start..end
+        } else {
+            self.position..self.position
+        };
 
         let kind_start = self.position;
         let kind = match self.current() {
@@ -87,18 +117,12 @@ impl<'a> Parser<'a> {
         let kind_end = self.position;
 
         let content_start = self.position;
-        loop {
-            self.eat_until('\n');
-            if let Some('\n') | None = self.current() {
-                self.advance();
-                break;
-            }
-        }
+        self.eat_indented_lines_until(indent_level, |c| c == '-' || c == '+' || c == '%')?;
         let content_end = self.position;
 
         Ok(Some(BranchEvent {
             indent_level,
-            attributes: config_start..config_end,
+            attributes,
             kind,
             kind_span: kind_start..kind_end,
             content: content_start..content_end,

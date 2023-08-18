@@ -1,3 +1,5 @@
+% always_expanded = true
+  id = "treehouse"
 - # treehouse
 
     - welcome to the treehouse!
@@ -98,3 +100,16 @@
         - expanded
         <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/></svg>
 
+    + some tests for multiple ps in one block
+
+        - here's a test for multiple paragraphs in one block
+
+        this should be working fine
+
+        - and this shouldn't be breaking yeah
+
+        - nor should
+
+        this be
+
+            - breaking

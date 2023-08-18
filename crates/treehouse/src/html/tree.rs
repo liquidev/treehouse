@@ -30,7 +30,6 @@ pub fn branch_to_html(s: &mut String, branch: &Branch, source: &str) {
                 }
             }
 
-            dbg!(&line[space_count..]);
             unindented_block_content.push_str(&line[space_count..]);
             unindented_block_content.push('\n');
         }
