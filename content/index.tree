@@ -2,6 +2,7 @@
   id = "treehouse"
 - # treehouse
 
+    % # example
     - welcome to the treehouse!
 
         - treehouse is a brand new static website generator, inspired by the likes of Jekyll and Hugo, but offering a writing experience more close to Logseq

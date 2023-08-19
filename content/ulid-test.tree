@@ -1,0 +1,35 @@
+% always_expanded = true
+  id = "treehouse"  # this one has a custom id
+- root
+
+    % id = "01H87R133DNH9JRGS4ZWN586M4"
+      # this one is missing an ULID
+    - child
+
+        % id = "01H87R133D75W92HRESGAXBTC5"
+
+            # this one is formatted a bit weirdly
+        - another child
+
+            % id = "custom-id"
+            - intertwined with one that has a custom ID
+
+            % id = "01H87R133D4MXM01VGTEXHPVAR"
+
+              # this is on a separate line and lacks indentation
+            - and another child
+
+    % always_expanded = true
+      id = "01H87R133D9GDXRD7WA14ECDES"
+    - this one has a custom attribute but not an ID
+
+        % id = "01H87R7PVRJ7FTWKC1SXHGQXDC"
+        - hellow
+
+    % id = "01H87R133DHQPZWJVTMWPKVGP0"
+    - <!-- and that one is plain empty, including the content. or conten't, for that matter. -->
+
+% id = "01H87R133DRJ7VKEMBSJKHYRJN"
+
+    # comment
+-

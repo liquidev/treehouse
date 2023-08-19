@@ -108,6 +108,7 @@ impl<'a> Parser<'a> {
             self.advance();
             let after_percent = self.position;
             self.eat_indented_lines_until(indent_level, |c| c == '-' || c == '+')?;
+            self.eat_as_long_as(' ');
             let end = self.position;
             Some(Attributes {
                 percent: start..after_percent,

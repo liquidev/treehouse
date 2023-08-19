@@ -2,6 +2,7 @@ use std::path::Path;
 
 use clap::Parser;
 use cli::{
+    fix::fix_file_cli,
     regenerate::{self, regenerate_or_report_error, Dirs},
     Command, ProgramArgs,
 };
@@ -32,6 +33,8 @@ async fn fallible_main() -> anyhow::Result<()> {
                 regenerate::web_server().await?;
             }
         }
+
+        Command::Fix(fix_args) => fix_file_cli(fix_args)?,
     }
 
     Ok(())

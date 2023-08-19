@@ -7,8 +7,7 @@ use anyhow::{bail, Context};
 use axum::Router;
 use codespan_reporting::{
     diagnostic::{Diagnostic, Label, LabelStyle, Severity},
-    files::{Files as _, SimpleFiles},
-    term::termcolor::{ColorChoice, StandardStream},
+    files::Files as _,
 };
 use copy_dir::copy_dir;
 use handlebars::Handlebars;
@@ -16,22 +15,15 @@ use log::{debug, info};
 use serde::Serialize;
 use tower_http::services::ServeDir;
 use tower_livereload::LiveReloadLayer;
-use treehouse_format::ast::Roots;
 use walkdir::WalkDir;
 
-use crate::html::tree::branches_to_html;
+use crate::{cli::parse::parse_tree_with_diagnostics, html::tree::branches_to_html};
+
+use super::diagnostics::{Diagnosis, FileId};
 
 #[derive(Default)]
 struct Generator {
     tree_files: Vec<PathBuf>,
-}
-
-type Files = SimpleFiles<String, String>;
-type FileId = <Files as codespan_reporting::files::Files<'static>>::FileId;
-
-pub struct Diagnosis {
-    pub files: Files,
-    pub diagnostics: Vec<Diagnostic<FileId>>,
 }
 
 impl Generator {
@@ -108,10 +100,7 @@ impl Generator {
     }
 
     fn generate_all_files(&self, dirs: &Dirs<'_>) -> anyhow::Result<Diagnosis> {
-        let mut diagnosis = Diagnosis {
-            files: Files::new(),
-            diagnostics: vec![],
-        };
+        let mut diagnosis = Diagnosis::new();
 
         let mut handlebars = Handlebars::new();
         let tree_template = Self::register_template(
@@ -145,51 +134,28 @@ impl Generator {
                 }
             };
             let file_id = diagnosis.files.add(utf8_filename.into_owned(), source);
-            let source = diagnosis
-                .files
-                .get(file_id)
-                .expect("file was just added to the list")
-                .source();
 
-            let parse_result = Roots::parse(&mut treehouse_format::pull::Parser {
-                input: source,
-                position: 0,
-            });
+            if let Ok(roots) = parse_tree_with_diagnostics(&mut diagnosis, file_id) {
+                let mut tree = String::new();
+                let source = diagnosis.get_source(file_id);
+                branches_to_html(&mut tree, &roots.branches, source);
 
-            match parse_result {
-                Ok(roots) => {
-                    let mut tree = String::new();
-                    branches_to_html(&mut tree, &roots.branches, source);
+                let template_data = TemplateData { tree };
+                let templated_html = match handlebars.render("tree", &template_data) {
+                    Ok(html) => html,
+                    Err(error) => {
+                        Self::wrangle_handlebars_error_into_diagnostic(
+                            &mut diagnosis,
+                            tree_template,
+                            error.line_no,
+                            error.column_no,
+                            error.desc,
+                        )?;
+                        continue;
+                    }
+                };
 
-                    let template_data = TemplateData { tree };
-                    let templated_html = match handlebars.render("tree", &template_data) {
-                        Ok(html) => html,
-                        Err(error) => {
-                            Self::wrangle_handlebars_error_into_diagnostic(
-                                &mut diagnosis,
-                                tree_template,
-                                error.line_no,
-                                error.column_no,
-                                error.desc,
-                            )?;
-                            continue;
-                        }
-                    };
-
-                    std::fs::write(target_path, templated_html)?;
-                }
-                Err(error) => diagnosis.diagnostics.push(Diagnostic {
-                    severity: Severity::Error,
-                    code: Some("tree".into()),
-                    message: error.kind.to_string(),
-                    labels: vec![Label {
-                        style: LabelStyle::Primary,
-                        file_id,
-                        range: error.range,
-                        message: String::new(),
-                    }],
-                    notes: vec![],
-                }),
+                std::fs::write(target_path, templated_html)?;
             }
         }
 
@@ -223,12 +189,7 @@ pub fn regenerate(dirs: &Dirs<'_>) -> anyhow::Result<()> {
     generator.add_directory_rec(dirs.content_dir)?;
     let diagnosis = generator.generate_all_files(dirs)?;
 
-    let writer = StandardStream::stderr(ColorChoice::Auto);
-    let config = codespan_reporting::term::Config::default();
-    for diagnostic in &diagnosis.diagnostics {
-        codespan_reporting::term::emit(&mut writer.lock(), &config, &diagnosis.files, diagnostic)
-            .context("could not emit diagnostic")?;
-    }
+    diagnosis.report()?;
 
     Ok(())
 }
