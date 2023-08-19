@@ -2,117 +2,165 @@
   id = "treehouse"
 - # treehouse
 
-    % # example
+    % id = "01H87RD70VKPZMHFFM10YHN3E8"
+      # example
     - welcome to the treehouse!
 
+        % id = "01H87RD70V39Y628G58AYM2J3V"
         - treehouse is a brand new static website generator, inspired by the likes of Jekyll and Hugo, but offering a writing experience more close to Logseq
 
+            % id = "01H87RD70VKK2JY7ES8G19G13B"
             - ie. a public braindump adsadasdsad
 
+    % id = "01H87RD70VT45CC130D7DFQEAM"
     - since you're here, you're probably just setting up
 
+        % id = "01H87RD70VC8Z5RZX7BX7FW1H5"
         - i'd highly recommend familiarizing yourself with the syntax by visiting `content/tree/root.tree`
 
+            % id = "01H87RD70VZBJ3VJ0HF13MYNM7"
             - this special file is almost like your index.html
 
+            % id = "01H87RD70VXPV3AW3GY91GSVED"
             + the .tree syntax is pretty simple
 
+                % id = "01H87RD70VASWHBMW8A95XJN54"
                 - separate blocks are delimited with a blank line
 
+                % id = "01H87RD70VGN7FR5Q7MRWZYRV8"
                 - the indentation level (number of spaces) decides how nested the block is
 
+                    % id = "01H87RD70VFZSXAT3X8X5RM1QR"
                     - the exact amount doesn't matter, just that more nested blocks must have more spaces before them than their parents
 
+                    % id = "01H87RD70VA48JYHA7K3V5SVTE"
                     - also blocks on the same level must be indented with the same number of spaces but that's hopefully pretty obvious
 
+                % id = "01H87RD70VFEYPTBS6PFM0HBSV"
                 + the block content begins with a dash `-` or a plus `+`
 
+                    % id = "01H87RD70VV1BF1FNQ9TAYMSMP"
                     - a dash `-` means that the block is open by default
 
+                    % id = "01H87RD70V5Y7P06QN2BD3BN10"
                     - a plus `+` means that the block is hidden by default
 
+                % id = "01H87RD70VG436W4BCTMHPGBR4"
                 - before the block content, there can be an arbitrary amount of TOML pecifying the block attributes
 
+                    % id = "01H87RD70V4DWDTBHRM3V7ASDZ"
                     - many keys are available but they aren't really documented outside of code
 
+                % id = "01H87RD70VZ0G2EH387M4B933Z"
                 - blocks can span multiple lines as long as they are not broken apart with a blank line
 
+                    % id = "01H87RD70VJWX76JKSXARTTAWB"
                     - that means each block can contain at most one paragraph, unless you use dirty HTML hacks (cheater!)
 
+            % id = "01H87RD70V10A30WK19C9T9F8M"
             - .tree composes together with Markdown to let you format text however you want
 
+                % id = "01H87RD70V36JFQXR9ZD69CBHY"
                 - here's a bunch of stuff formatted
 
+                    % id = "01H87RD70VN395W0RE2WZRTJHX"
                     - # heading 1
 
+                    % id = "01H87RD70V4K2PAQ4KJ3HZK15C"
                     - ## heading 2
 
+                    % id = "01H87RD70V4MGZ6FB4BBTZG3XP"
                     - ### heading 3
                       headings lower than this aren't really supported because c'mon who would be this crazy
 
+                    % id = "01H87RD70VVGS5TKRPFM7877QX"
                     - this is supposed to be **bold** and this is supposed to be _italic_
 
+                    % id = "01H87RD70VCE6DQ7NFGJVAPBT7"
                     - there's a line break<br>
                     here
 
+                        % id = "01H87RD70VVE57EAQQHC173CTW"
                         - and it's supposed to render correctly
 
+                    % id = "01H87RD70V7N2VV9RN0BAV868Y"
                     - <https://liquidev.net> also [a link that you have not visited because there is nothing there](https://liquidev.net/nothing-to-see-here-lmfao-did-you-really-expect-me-to-create-such-a-behemoth-of-a-URL)
 
+                    % id = "01H87RD70VJYPEBNB0SS8W59Y5"
                     + here is my favorite fluffy boy
 
+                        % id = "01H87RD70VW5EY37KENKHW44MT"
                         - ![ralsei with a hat](https://liquidev.net/syf/art/20230723_ralsei_hat.png)
 
+                        % id = "01H87RD70VDHN74M2V40ERPXR8"
                         - wow he very beeg
 
+                        % id = "01H87RD70V74QGFR5W1YPD7Y6R"
                         - without a hat is also nice uwu
 
+                    % id = "01H87RD70VM0T037022X4BD9BF"
                     - also a block quote
 
+                        % id = "01H87RD70V0N1RHRY1TRTWPPEH"
                         - > Enough You Foolish Children
 
+                        % id = "01H87RD70V8H7SFG7KFJCN70NJ"
                         - yes i will totally abuse you with Deltarune references and you cannot stop me
 
+                    % id = "01H87RD70VSV3XG2PPDF0VAFSA"
                     - ```
                     this is some block of code it looks pretty cool doesn't it
                     ```
 
+                    % id = "01H87RD70V915BH987XG3J84TQ"
                     - ```
                     and here's a multiline code block which also looks cool
                     many many many lines
                     ```
 
+                    % id = "01H87RD70V8AF94YR6X8MNQAWZ"
                     - and a table because benchmarks use those
 
+                        % id = "01H87RD70VJVPK637SGVQW9R0N"
                         -
                         | weeee | woosh | wa-ho |
                         | --- | --- | --- |
                         | yep | that's | a table |
                         | looks | pretty cool | huh |
 
+                        % id = "01H87RD70VSPHHVVRMCJMFCQMW"
                         - sorry for how ugly the table styles look i spent like literally 5 minutes on them please don't jugde them too hard
 
+    % id = "01H87RD70VVXHYTRZXRVHAGS5H"
     - well anyways here's a braindump for SVGs
 
-        - virgin node
+        % id = "01H87RD70V8DR91Y24KY4BNR5F"
+        - leaf node
         <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="2" fill="currentColor"/></svg>
 
+        % id = "01H87RD70V7HK38BZZYT1GTSZ8"
         - collapsed
         <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/><line x1="8" y1="4" x2="8" y2="12" stroke="currentColor" stroke-width="2"/></svg>
 
+        % id = "01H87RD70V6ZTQN5E9NG28JPPJ"
         - expanded
         <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/></svg>
 
+    % id = "01H87RD70V2RKTDV3E2KZAYPCH"
     + some tests for multiple ps in one block
 
+        % id = "01H87RD70VYHGWDSXE84HE0YH2"
         - here's a test for multiple paragraphs in one block
 
         this should be working fine
 
+        % id = "01H87RD70V6GZSE3ZASMJSP843"
         - and this shouldn't be breaking yeah
 
+        % id = "01H87RD70VBA933H07APZZ1GDT"
         - nor should
 
         this be
 
+            % id = "01H87RD70VNVQ75DCWW5FQG9AR"
             - breaking
