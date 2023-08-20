@@ -36,7 +36,12 @@ class LinkedBranch extends HTMLLIElement {
             this.state = "loading";
 
             fetch(`/${this.linkedTree}.html`)
-                .then(request => request.text())
+                .then(response => {
+                    if (response.status == 404) {
+                        throw `Hmm, seems like the tree "${this.linkedTree}" does not exist.`;
+                    }
+                    return response.text();
+                })
                 .then(text => {
                     let parser = new DOMParser();
                     let linkedDocument = parser.parseFromString(text, "text/html");
@@ -49,9 +54,12 @@ class LinkedBranch extends HTMLLIElement {
                     for (let i = 0; i < ul.childNodes.length; ++i) {
                         this.innerUL.appendChild(ul.childNodes[i]);
                     }
+
+                    this.state = "loaded";
                 })
                 .catch(error => {
                     this.loadingText.innerText = error.toString();
+                    this.state = "error";
                 });
         }
     }
