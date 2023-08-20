@@ -166,4 +166,5 @@
             - breaking
 
     % content.link = "secret"
+      id = "01H89KGMPBCNKH4D39ZNQJDPQ9"
     + this block includes another block's content

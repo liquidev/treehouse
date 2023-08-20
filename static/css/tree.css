@@ -1,7 +1,13 @@
 /* The tree indents shouldn't be too spaced out */
 
 .tree ul {
-    padding-left: 24px;
+    padding-left: clamp(12px, 2vw, 24px);
+}
+
+/* But the first block should not be indented. */
+
+.tree>ul {
+    padding-left: 0;
 }
 
 /* Make the tree have + and - instead of the default details/summary arrow */
@@ -43,6 +49,10 @@
     padding-right: 32px;
 }
 
+.tree li[is="th-linked-branch"]>details>summary:first-child {
+    padding-right: 56px;
+}
+
 .tree li>div:first-child:hover {
     border-bottom: 1px solid rgba(0, 0, 0, 15%);
     margin-bottom: -1px;
@@ -78,6 +88,19 @@
     background-image: url('../svg/collapse.svg');
 }
 
+@media (hover: none) {
+
+    .tree li>div:first-child,
+    .tree li>details>summary:first-child {
+        border-bottom: 1px solid rgba(0, 0, 0, 15%);
+    }
+
+    .tree details>summary {
+        border-radius: 0px;
+    }
+}
+
+
 .tree th-bb {
     height: 24px;
     margin: 4px;
@@ -92,9 +115,16 @@
     opacity: 0%;
 }
 
+
 .tree li>details>summary:hover>th-bb,
 .tree li>div:hover>th-bb {
     opacity: 100%;
+}
+
+@media (hover: none) {
+    .tree th-bb {
+        opacity: 100%;
+    }
 }
 
 .tree .icon {
@@ -105,6 +135,7 @@
     width: 24px;
     height: 24px;
 }
+
 
 .tree .icon-permalink {
     background-image: url("../svg/permalink.svg");

@@ -6,6 +6,16 @@ body {
     margin-right: auto;
 }
 
+main {
+    padding: 0 16px;
+}
+
+@media screen and (max-width: 480px) {
+    main {
+        padding: 0 8px;
+    }
+}
+
 /* Choose more pretty colors than vanilla HTML */
 
 body {
@@ -109,6 +119,12 @@ pre {
     margin: 12px 0;
     background-color: rgba(0, 0, 0, 5%);
     border-radius: 8px;
+}
+
+/* And don't let code examples fly off and overflow the window */
+
+pre {
+    overflow-x: scroll;
 }
 
 /* Also don't let images get out of hand */
