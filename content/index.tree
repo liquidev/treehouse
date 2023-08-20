@@ -166,4 +166,4 @@
             - breaking
 
     % content.link = "secret"
-    - this block includes another block's content
+    + this block includes another block's content

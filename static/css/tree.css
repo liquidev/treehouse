@@ -97,12 +97,32 @@
     opacity: 100%;
 }
 
-.tree .branch-link {
-    background-image: url("../svg/link.svg");
+.tree .icon {
     background-repeat: no-repeat;
     background-position: 50% 50%;
     opacity: 35%;
 
     width: 24px;
     height: 24px;
+}
+
+.tree .icon-permalink {
+    background-image: url("../svg/permalink.svg");
+}
+
+.tree .icon-go {
+    background-image: url("../svg/go.svg");
+}
+
+.tree a.navigate {
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+    opacity: 50%;
+    color: #000;
+    padding-left: 20px;
+}
+
+.tree .link-loading {
+    padding-left: 24px;
+    opacity: 50%;
 }
