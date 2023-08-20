@@ -19,7 +19,7 @@ use walkdir::WalkDir;
 
 use crate::{cli::parse::parse_tree_with_diagnostics, html::tree::branches_to_html};
 
-use super::diagnostics::{Diagnosis, FileId};
+use crate::state::{FileId, Treehouse};
 
 #[derive(Default)]
 struct Generator {
@@ -39,23 +39,23 @@ impl Generator {
 
     fn register_template(
         handlebars: &mut Handlebars<'_>,
-        diagnosis: &mut Diagnosis,
+        treehouse: &mut Treehouse,
         name: &str,
         path: &Path,
     ) -> anyhow::Result<FileId> {
         let source = std::fs::read_to_string(path)
             .with_context(|| format!("cannot read template file {path:?}"))?;
-        let file_id = diagnosis
+        let file_id = treehouse
             .files
             .add(path.to_string_lossy().into_owned(), source);
-        let file = diagnosis
+        let file = treehouse
             .files
             .get(file_id)
             .expect("file was just added to the list");
         let source = file.source();
         if let Err(error) = handlebars.register_template_string(name, source) {
             Self::wrangle_handlebars_error_into_diagnostic(
-                diagnosis,
+                treehouse,
                 file_id,
                 error.line_no,
                 error.column_no,
@@ -66,18 +66,18 @@ impl Generator {
     }
 
     fn wrangle_handlebars_error_into_diagnostic(
-        diagnosis: &mut Diagnosis,
+        treehouse: &mut Treehouse,
         file_id: FileId,
         line: Option<usize>,
         column: Option<usize>,
         message: String,
     ) -> anyhow::Result<()> {
         if let (Some(line), Some(column)) = (line, column) {
-            let line_range = diagnosis
+            let line_range = treehouse
                 .files
                 .line_range(file_id, line)
                 .expect("file was added to the list");
-            diagnosis.diagnostics.push(Diagnostic {
+            treehouse.diagnostics.push(Diagnostic {
                 severity: Severity::Error,
                 code: Some("template".into()),
                 message,
@@ -90,7 +90,7 @@ impl Generator {
                 notes: vec![],
             })
         } else {
-            let file = diagnosis
+            let file = treehouse
                 .files
                 .get(file_id)
                 .expect("file should already be in the list");
@@ -99,13 +99,13 @@ impl Generator {
         Ok(())
     }
 
-    fn generate_all_files(&self, dirs: &Dirs<'_>) -> anyhow::Result<Diagnosis> {
-        let mut diagnosis = Diagnosis::new();
+    fn generate_all_files(&self, dirs: &Dirs<'_>) -> anyhow::Result<Treehouse> {
+        let mut treehouse = Treehouse::new();
 
         let mut handlebars = Handlebars::new();
         let tree_template = Self::register_template(
             &mut handlebars,
-            &mut diagnosis,
+            &mut treehouse,
             "tree",
             &dirs.template_dir.join("tree.hbs"),
         )?;
@@ -123,7 +123,7 @@ impl Generator {
             let source = match std::fs::read_to_string(path) {
                 Ok(source) => source,
                 Err(error) => {
-                    diagnosis.diagnostics.push(Diagnostic {
+                    treehouse.diagnostics.push(Diagnostic {
                         severity: Severity::Error,
                         code: None,
                         message: format!("{utf8_filename}: cannot read file: {error}"),
@@ -133,19 +133,18 @@ impl Generator {
                     continue;
                 }
             };
-            let file_id = diagnosis.files.add(utf8_filename.into_owned(), source);
+            let file_id = treehouse.files.add(utf8_filename.into_owned(), source);
 
-            if let Ok(roots) = parse_tree_with_diagnostics(&mut diagnosis, file_id) {
+            if let Ok(roots) = parse_tree_with_diagnostics(&mut treehouse, file_id) {
                 let mut tree = String::new();
-                let source = diagnosis.get_source(file_id);
-                branches_to_html(&mut tree, &roots.branches, source);
+                branches_to_html(&mut tree, &mut treehouse, file_id, &roots.branches);
 
                 let template_data = TemplateData { tree };
                 let templated_html = match handlebars.render("tree", &template_data) {
                     Ok(html) => html,
                     Err(error) => {
                         Self::wrangle_handlebars_error_into_diagnostic(
-                            &mut diagnosis,
+                            &mut treehouse,
                             tree_template,
                             error.line_no,
                             error.column_no,
@@ -159,7 +158,7 @@ impl Generator {
             }
         }
 
-        Ok(diagnosis)
+        Ok(treehouse)
     }
 }
 
@@ -187,9 +186,9 @@ pub fn regenerate(dirs: &Dirs<'_>) -> anyhow::Result<()> {
     info!("generating standalone pages");
     let mut generator = Generator::default();
     generator.add_directory_rec(dirs.content_dir)?;
-    let diagnosis = generator.generate_all_files(dirs)?;
+    let treehouse = generator.generate_all_files(dirs)?;
 
-    diagnosis.report()?;
+    treehouse.report_diagnostics()?;
 
     Ok(())
 }

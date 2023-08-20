@@ -10,6 +10,7 @@ use log::{error, info};
 
 mod cli;
 mod html;
+mod state;
 
 async fn fallible_main() -> anyhow::Result<()> {
     let args = ProgramArgs::parse();

@@ -3,8 +3,9 @@ use std::ops::Range;
 use anyhow::Context;
 use treehouse_format::ast::Branch;
 
+use crate::state::{FileId, Treehouse};
+
 use super::{
-    diagnostics::{Diagnosis, FileId},
     parse::{self, parse_toml_with_diagnostics, parse_tree_with_diagnostics},
     FixArgs,
 };
@@ -19,7 +20,7 @@ struct State {
     fixes: Vec<Fix>,
 }
 
-fn dfs_fix_branch(diagnosis: &mut Diagnosis, file_id: FileId, state: &mut State, branch: &Branch) {
+fn dfs_fix_branch(treehouse: &mut Treehouse, file_id: FileId, state: &mut State, branch: &Branch) {
     let mut rng = rand::thread_rng();
     let ulid = ulid::Generator::new()
         .generate_with_source(&mut rng)
@@ -31,7 +32,7 @@ fn dfs_fix_branch(diagnosis: &mut Diagnosis, file_id: FileId, state: &mut State,
         // the top-level table. Then we also need to pretty-print everything to match the right
         // indentation level.
         if let Ok(mut toml) =
-            parse_toml_with_diagnostics(diagnosis, file_id, attributes.data.clone())
+            parse_toml_with_diagnostics(treehouse, file_id, attributes.data.clone())
         {
             if !toml.contains_key("id") {
                 toml["id"] = toml_edit::value(ulid.to_string());
@@ -68,7 +69,7 @@ fn dfs_fix_branch(diagnosis: &mut Diagnosis, file_id: FileId, state: &mut State,
 
     // Then we fix child branches.
     for child in &branch.children {
-        dfs_fix_branch(diagnosis, file_id, state, child);
+        dfs_fix_branch(treehouse, file_id, state, child);
     }
 }
 
@@ -100,15 +101,15 @@ fn fix_indent_in_generated_toml(toml: &str, min_indent_level: usize) -> String {
 }
 
 pub fn fix_file(
-    diagnosis: &mut Diagnosis,
+    treehouse: &mut Treehouse,
     file_id: FileId,
 ) -> Result<String, parse::ErrorsEmitted> {
-    parse_tree_with_diagnostics(diagnosis, file_id).map(|roots| {
-        let mut source = diagnosis.get_source(file_id).to_owned();
+    parse_tree_with_diagnostics(treehouse, file_id).map(|roots| {
+        let mut source = treehouse.get_source(file_id).to_owned();
         let mut state = State::default();
 
         for branch in &roots.branches {
-            dfs_fix_branch(diagnosis, file_id, &mut state, branch);
+            dfs_fix_branch(treehouse, file_id, &mut state, branch);
         }
 
         // Doing a depth-first search of the branches yields fixes from the beginning of the file
@@ -127,15 +128,15 @@ pub fn fix_file_cli(fix_args: FixArgs) -> anyhow::Result<()> {
     let utf8_filename = fix_args.file.to_string_lossy().into_owned();
     let file = std::fs::read_to_string(&fix_args.file).context("cannot read file to fix")?;
 
-    let mut diagnosis = Diagnosis::new();
-    let file_id = diagnosis.files.add(utf8_filename, file);
+    let mut treehouse = Treehouse::new();
+    let file_id = treehouse.files.add(utf8_filename, file);
 
-    if let Ok(fixed) = fix_file(&mut diagnosis, file_id) {
+    if let Ok(fixed) = fix_file(&mut treehouse, file_id) {
         if fix_args.apply {
             // Try to write the backup first. If writing that fails, bail out without overwriting
             // the source file.
             if let Some(backup_path) = fix_args.backup {
-                std::fs::write(backup_path, diagnosis.get_source(file_id))
+                std::fs::write(backup_path, treehouse.get_source(file_id))
                     .context("cannot write backup; original file will not be overwritten")?;
             }
             std::fs::write(&fix_args.file, fixed).context("cannot overwrite original file")?;
@@ -143,7 +144,7 @@ pub fn fix_file_cli(fix_args: FixArgs) -> anyhow::Result<()> {
             println!("{fixed}");
         }
     } else {
-        diagnosis.report()?;
+        treehouse.report_diagnostics()?;
     }
 
     Ok(())

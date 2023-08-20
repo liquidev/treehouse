@@ -1,13 +1,81 @@
+use std::fmt::Write;
+
+use codespan_reporting::diagnostic::{Diagnostic, Label, LabelStyle, Severity};
 use treehouse_format::{ast::Branch, pull::BranchKind};
 
-use super::markdown;
+use crate::{
+    html::EscapeAttribute,
+    state::{toml_error_to_diagnostic, FileId, TomlError, Treehouse},
+};
 
-pub fn branch_to_html(s: &mut String, branch: &Branch, source: &str) {
-    s.push_str(if !branch.children.is_empty() {
-        "<li class=\"branch\">"
+use super::{attributes::Attributes, markdown};
+
+pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId, branch: &Branch) {
+    let source = treehouse.get_source(file_id);
+
+    let mut successfully_parsed = true;
+    let mut attributes = if let Some(attributes) = &branch.attributes {
+        toml_edit::de::from_str(&source[attributes.data.clone()]).unwrap_or_else(|error| {
+            treehouse
+                .diagnostics
+                .push(toml_error_to_diagnostic(TomlError {
+                    message: error.message().to_owned(),
+                    span: error.span(),
+                    file_id,
+                    input_range: attributes.data.clone(),
+                }));
+            successfully_parsed = false;
+            Attributes::default()
+        })
     } else {
-        "<li class=\"leaf\">"
-    });
+        Attributes::default()
+    };
+    let successfully_parsed = successfully_parsed;
+
+    // Only check for attribute validity if the attributes were parsed successfully.
+    if successfully_parsed {
+        let attribute_warning_span = branch
+            .attributes
+            .as_ref()
+            .map(|attributes| attributes.percent.clone())
+            .unwrap_or(branch.kind_span.clone());
+        if attributes.id.is_empty() {
+            attributes.id = format!("treehouse-missingno-{}", treehouse.next_missingno());
+            treehouse.diagnostics.push(Diagnostic {
+                severity: Severity::Warning,
+                code: Some("attr".into()),
+                message: "branch does not have an `id` attribute".into(),
+                labels: vec![Label {
+                    style: LabelStyle::Primary,
+                    file_id,
+                    range: attribute_warning_span,
+                    message: String::new(),
+                }],
+                notes: vec![
+                    format!(
+                        "note: a generated id `{}` will be used, but this id is unstable and will not persist across generations",
+                        attributes.id
+                    ),
+                    format!("help: run `treehouse fix {}` to add missing ids to branches", treehouse.get_filename(file_id)),
+                ],
+            });
+        }
+    }
+
+    // Reborrow because the closure requires unique access (it adds a new diagnostic.)
+    let source = treehouse.get_source(file_id);
+
+    let class = if !branch.children.is_empty() {
+        "branch"
+    } else {
+        "leaf"
+    };
+    write!(
+        s,
+        "<li class=\"{class}\" id=\"{}\">",
+        EscapeAttribute(&attributes.id)
+    )
+    .unwrap();
     {
         if !branch.children.is_empty() {
             s.push_str(match branch.kind {
@@ -42,17 +110,22 @@ pub fn branch_to_html(s: &mut String, branch: &Branch, source: &str) {
 
         if !branch.children.is_empty() {
             s.push_str("</summary>");
-            branches_to_html(s, &branch.children, source);
+            branches_to_html(s, treehouse, file_id, &branch.children);
             s.push_str("</details>");
         }
     }
     s.push_str("</li>");
 }
 
-pub fn branches_to_html(s: &mut String, branches: &[Branch], source: &str) {
+pub fn branches_to_html(
+    s: &mut String,
+    treehouse: &mut Treehouse,
+    file_id: FileId,
+    branches: &[Branch],
+) {
     s.push_str("<ul>");
     for child in branches {
-        branch_to_html(s, child, source);
+        branch_to_html(s, treehouse, file_id, child);
     }
     s.push_str("</ul>");
 }

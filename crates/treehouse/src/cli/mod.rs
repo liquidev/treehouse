@@ -1,4 +1,3 @@
-pub mod diagnostics;
 pub mod fix;
 mod parse;
 pub mod regenerate;
