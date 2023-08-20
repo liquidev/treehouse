@@ -83,6 +83,8 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
                 BranchKind::Collapsed => "<details>",
             });
             s.push_str("<summary>");
+        } else {
+            s.push_str("<div>");
         }
 
         let raw_block_content = &source[branch.content.clone()];
@@ -108,10 +110,23 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
         });
         markdown::push_html(s, markdown_parser);
 
+        s.push_str("<th-bb>");
+        {
+            write!(
+                s,
+                "<a class=\"branch-link\" href=\"#{}\" title=\"permalink\"></a>",
+                EscapeAttribute(&attributes.id)
+            )
+            .unwrap();
+        }
+        s.push_str("</th-bb>");
+
         if !branch.children.is_empty() {
             s.push_str("</summary>");
             branches_to_html(s, treehouse, file_id, &branch.children);
             s.push_str("</details>");
+        } else {
+            s.push_str("</div>");
         }
     }
     s.push_str("</li>");

@@ -12,6 +12,8 @@
 
     /* I have no clue why this works, deal with it */
     --tree-hover-expansion: 0.01px;
+
+    position: relative;
 }
 
 .tree details>summary {
@@ -21,6 +23,29 @@
 
 .tree li {
     list-style: none;
+
+    display: flex;
+    flex-direction: row;
+
+    position: relative;
+}
+
+.tree li>*:first-child {
+    width: 100%;
+}
+
+.tree li>div:first-child {
+    box-sizing: border-box;
+}
+
+.tree li>div:first-child,
+.tree li>details>summary:first-child {
+    padding-right: 32px;
+}
+
+.tree li>div:first-child:hover {
+    border-bottom: 1px solid rgba(0, 0, 0, 15%);
+    margin-bottom: -1px;
 }
 
 .tree details>summary {
@@ -51,4 +76,33 @@
 
 .tree details[open]>summary {
     background-image: url('../svg/collapse.svg');
+}
+
+.tree th-bb {
+    height: 24px;
+    margin: 4px;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    display: flex;
+    flex-direction: row;
+
+    opacity: 0%;
+}
+
+.tree li>details>summary:hover>th-bb,
+.tree li>div:hover>th-bb {
+    opacity: 100%;
+}
+
+.tree .branch-link {
+    background-image: url("../svg/link.svg");
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    opacity: 35%;
+
+    width: 24px;
+    height: 24px;
 }
