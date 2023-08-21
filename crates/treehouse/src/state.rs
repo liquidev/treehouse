@@ -6,6 +6,7 @@ use codespan_reporting::{
     files::SimpleFiles,
     term::termcolor::{ColorChoice, StandardStream},
 };
+use log::debug;
 use ulid::Ulid;
 
 pub type Files = SimpleFiles<String, String>;
@@ -16,6 +17,9 @@ pub struct Treehouse {
     pub files: Files,
     pub diagnostics: Vec<Diagnostic<FileId>>,
 
+    // Bit of a hack because I don't wanna write my own `Files`.
+    tree_paths: Vec<Option<String>>,
+
     missingno_generator: ulid::Generator,
 }
 
@@ -25,12 +29,25 @@ impl Treehouse {
             files: Files::new(),
             diagnostics: vec![],
 
+            tree_paths: vec![],
+
             missingno_generator: ulid::Generator::new(),
         }
     }
 
+    pub fn add_file(
+        &mut self,
+        filename: String,
+        tree_path: Option<String>,
+        source: String,
+    ) -> FileId {
+        let id = self.files.add(filename, source);
+        self.tree_paths.push(tree_path);
+        id
+    }
+
     /// Get the source code of a file, assuming it was previously registered.
-    pub fn get_source(&self, file_id: FileId) -> &str {
+    pub fn source(&self, file_id: FileId) -> &str {
         self.files
             .get(file_id)
             .expect("file should have been registered previously")
@@ -38,11 +55,15 @@ impl Treehouse {
     }
 
     /// Get the name of a file, assuming it was previously registered.
-    pub fn get_filename(&self, file_id: FileId) -> &str {
+    pub fn filename(&self, file_id: FileId) -> &str {
         self.files
             .get(file_id)
             .expect("file should have been registered previously")
             .name()
+    }
+
+    pub fn tree_path(&self, file_id: FileId) -> Option<&str> {
+        self.tree_paths[file_id].as_deref()
     }
 
     pub fn report_diagnostics(&self) -> anyhow::Result<()> {

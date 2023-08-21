@@ -66,3 +66,23 @@ class LinkedBranch extends HTMLLIElement {
 }
 
 customElements.define("th-linked-branch", LinkedBranch, { extends: "li" });
+
+function expandDetailsRecursively(element) {
+    while (element && element.tagName != "MAIN") {
+        if (element.tagName == "DETAILS") {
+            element.open = true;
+        }
+        element = element.parentElement;
+    }
+}
+
+// When you click on a link, and the destination is within a <details> that is not expanded,
+// expand the <details> recursively.
+window.addEventListener("popstate", _ => {
+    let element = document.getElementById(window.location.hash.substring(1));
+    if (element !== undefined) {
+        // If the element is already loaded on the page, we're good.
+        expandDetailsRecursively(element);
+        window.location.hash = window.location.hash;
+    }
+})

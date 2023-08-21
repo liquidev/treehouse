@@ -1,16 +1,10 @@
-/* The tree indents shouldn't be too spaced out */
-
 .tree ul {
     padding-left: clamp(12px, 2vw, 24px);
 }
 
-/* But the first block should not be indented. */
-
 .tree>ul {
     padding-left: 0;
 }
-
-/* Make the tree have + and - instead of the default details/summary arrow */
 
 .tree {
     --tree-icon-position: 8px 50%;
@@ -76,7 +70,7 @@
     background-color: rgba(0, 0, 0, 5%);
 }
 
-.tree li.leaf {
+.tree li>div {
     background-image: url('../svg/leaf.svg');
     background-repeat: no-repeat;
     background-position: var(--tree-icon-position);
@@ -156,4 +150,12 @@
 .tree .link-loading {
     padding-left: 24px;
     opacity: 50%;
+}
+
+.tree :target>details>summary,
+.tree :target>div {
+    border-bottom: 1px dashed rgba(0, 0, 0, 30%);
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }

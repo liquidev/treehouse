@@ -17,10 +17,18 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
     let attributes = parse_attributes(treehouse, file_id, branch);
 
     // Reborrow because the closure requires unique access (it adds a new diagnostic.)
-    let source = treehouse.get_source(file_id);
+    let source = treehouse.source(file_id);
 
     let has_children =
         !branch.children.is_empty() || matches!(attributes.content, Content::Link(_));
+
+    let id = format!(
+        "{}:{}",
+        treehouse
+            .tree_path(file_id)
+            .expect("file should have a tree path"),
+        attributes.id
+    );
 
     let class = if has_children { "branch" } else { "leaf" };
     let linked_branch = if let Content::Link(link) = &attributes.content {
@@ -34,7 +42,7 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
     write!(
         s,
         "<li class=\"{class}\" id=\"{}\"{linked_branch}>",
-        EscapeAttribute(&attributes.id)
+        EscapeAttribute(&id)
     )
     .unwrap();
     {
@@ -95,7 +103,7 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
             write!(
                 s,
                 "<a class=\"icon icon-permalink\" href=\"#{}\" title=\"permalink\"></a>",
-                EscapeAttribute(&attributes.id)
+                EscapeAttribute(&id)
             )
             .unwrap();
         }
@@ -113,7 +121,7 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
 }
 
 fn parse_attributes(treehouse: &mut Treehouse, file_id: usize, branch: &Branch) -> Attributes {
-    let source = treehouse.get_source(file_id);
+    let source = treehouse.source(file_id);
 
     let mut successfully_parsed = true;
     let mut attributes = if let Some(attributes) = &branch.attributes {
@@ -160,7 +168,7 @@ fn parse_attributes(treehouse: &mut Treehouse, file_id: usize, branch: &Branch) 
                         "note: a generated id `{}` will be used, but this id is unstable and will not persist across generations",
                         attributes.id
                     ),
-                    format!("help: run `treehouse fix {}` to add missing ids to branches", treehouse.get_filename(file_id)),
+                    format!("help: run `treehouse fix {}` to add missing ids to branches", treehouse.filename(file_id)),
                 ],
             });
         }

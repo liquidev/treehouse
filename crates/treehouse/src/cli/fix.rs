@@ -105,7 +105,7 @@ pub fn fix_file(
     file_id: FileId,
 ) -> Result<String, parse::ErrorsEmitted> {
     parse_tree_with_diagnostics(treehouse, file_id).map(|roots| {
-        let mut source = treehouse.get_source(file_id).to_owned();
+        let mut source = treehouse.source(file_id).to_owned();
         let mut state = State::default();
 
         for branch in &roots.branches {
@@ -129,14 +129,14 @@ pub fn fix_file_cli(fix_args: FixArgs) -> anyhow::Result<()> {
     let file = std::fs::read_to_string(&fix_args.file).context("cannot read file to fix")?;
 
     let mut treehouse = Treehouse::new();
-    let file_id = treehouse.files.add(utf8_filename, file);
+    let file_id = treehouse.add_file(utf8_filename, None, file);
 
     if let Ok(fixed) = fix_file(&mut treehouse, file_id) {
         if fix_args.apply {
             // Try to write the backup first. If writing that fails, bail out without overwriting
             // the source file.
             if let Some(backup_path) = fix_args.backup {
-                std::fs::write(backup_path, treehouse.get_source(file_id))
+                std::fs::write(backup_path, treehouse.source(file_id))
                     .context("cannot write backup; original file will not be overwritten")?;
             }
             std::fs::write(&fix_args.file, fixed).context("cannot overwrite original file")?;

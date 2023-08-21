@@ -11,7 +11,7 @@ pub fn parse_tree_with_diagnostics(
     treehouse: &mut Treehouse,
     file_id: FileId,
 ) -> Result<Roots, ErrorsEmitted> {
-    let input = treehouse.get_source(file_id);
+    let input = treehouse.source(file_id);
     Roots::parse(&mut treehouse_format::pull::Parser { input, position: 0 }).map_err(|error| {
         treehouse.diagnostics.push(Diagnostic {
             severity: Severity::Error,
@@ -34,7 +34,7 @@ pub fn parse_toml_with_diagnostics(
     file_id: FileId,
     range: Range<usize>,
 ) -> Result<toml_edit::Document, ErrorsEmitted> {
-    let input = &treehouse.get_source(file_id)[range.clone()];
+    let input = &treehouse.source(file_id)[range.clone()];
     toml_edit::Document::from_str(input).map_err(|error| {
         treehouse
             .diagnostics

@@ -45,14 +45,8 @@ impl Generator {
     ) -> anyhow::Result<FileId> {
         let source = std::fs::read_to_string(path)
             .with_context(|| format!("cannot read template file {path:?}"))?;
-        let file_id = treehouse
-            .files
-            .add(path.to_string_lossy().into_owned(), source);
-        let file = treehouse
-            .files
-            .get(file_id)
-            .expect("file was just added to the list");
-        let source = file.source();
+        let file_id = treehouse.add_file(path.to_string_lossy().into_owned(), None, source);
+        let source = treehouse.source(file_id);
         if let Err(error) = handlebars.register_template_string(name, source) {
             Self::wrangle_handlebars_error_into_diagnostic(
                 treehouse,
@@ -90,11 +84,8 @@ impl Generator {
                 notes: vec![],
             })
         } else {
-            let file = treehouse
-                .files
-                .get(file_id)
-                .expect("file should already be in the list");
-            bail!("template error in {}: {message}", file.name());
+            let file = treehouse.filename(file_id);
+            bail!("template error in {file}: {message}");
         }
         Ok(())
     }
@@ -112,11 +103,12 @@ impl Generator {
 
         for path in &self.tree_files {
             let utf8_filename = path.to_string_lossy();
-            let target_file = path.strip_prefix(dirs.content_dir).unwrap_or(path);
-            let target_path = if target_file == OsStr::new("index.tree") {
+
+            let tree_path = path.strip_prefix(dirs.content_dir).unwrap_or(path);
+            let target_path = if tree_path == OsStr::new("index.tree") {
                 dirs.target_dir.join("index.html")
             } else {
-                dirs.target_dir.join(target_file).with_extension("html")
+                dirs.target_dir.join(tree_path).with_extension("html")
             };
             debug!("generating: {path:?} -> {target_path:?}");
 
@@ -133,7 +125,11 @@ impl Generator {
                     continue;
                 }
             };
-            let file_id = treehouse.files.add(utf8_filename.into_owned(), source);
+            let file_id = treehouse.add_file(
+                utf8_filename.into_owned(),
+                Some(tree_path.with_extension("").to_string_lossy().into_owned()),
+                source,
+            );
 
             if let Ok(roots) = parse_tree_with_diagnostics(&mut treehouse, file_id) {
                 let mut tree = String::new();
