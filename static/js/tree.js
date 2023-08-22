@@ -17,8 +17,9 @@ class Branch extends HTMLLIElement {
         this.details = this.childNodes[0];
         this.innerUL = this.details.childNodes[1];
 
+        let doPersist = !this.hasAttribute("data-th-do-not-persist");
         let isOpen = branchIsOpen(this.id);
-        if (isOpen !== undefined) {
+        if (doPersist && isOpen !== undefined) {
             this.details.open = isOpen;
         }
         this.details.addEventListener("toggle", _ => {

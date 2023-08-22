@@ -13,6 +13,10 @@ pub struct Attributes {
     /// Controls how the block should be presented.
     #[serde(default)]
     pub content: Content,
+
+    /// Do not persist the branch in localStorage.
+    #[serde(default)]
+    pub do_not_persist: bool,
 }
 
 /// Controls for block content presentation.

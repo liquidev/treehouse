@@ -154,6 +154,11 @@ impl Generator {
                     }
                 };
 
+                std::fs::create_dir_all(
+                    target_path
+                        .parent()
+                        .expect("there should be a parent directory to generate files into"),
+                )?;
                 std::fs::write(target_path, templated_html)?;
             }
         }

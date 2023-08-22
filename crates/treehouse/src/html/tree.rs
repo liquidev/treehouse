@@ -37,9 +37,15 @@ pub fn branch_to_html(
         String::new()
     };
 
+    let do_not_persist = if branch.attributes.do_not_persist {
+        " data-th-do-not-persist=\"\""
+    } else {
+        ""
+    };
+
     write!(
         s,
-        "<li is=\"{component}\" class=\"{class}\" id=\"{}\"{linked_branch}>",
+        "<li is=\"{component}\" class=\"{class}\" id=\"{}\"{linked_branch}{do_not_persist}>",
         EscapeAttribute(&branch.html_id)
     )
     .unwrap();
