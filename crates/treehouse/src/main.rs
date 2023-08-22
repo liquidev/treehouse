@@ -12,6 +12,7 @@ mod cli;
 mod html;
 mod paths;
 mod state;
+mod tree;
 
 async fn fallible_main() -> anyhow::Result<()> {
     let args = ProgramArgs::parse();

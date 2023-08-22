@@ -1,4 +1,4 @@
-use std::ops::Range;
+use std::{collections::HashMap, ops::Range};
 
 use anyhow::Context;
 use codespan_reporting::{
@@ -8,6 +8,8 @@ use codespan_reporting::{
 };
 use ulid::Ulid;
 
+use crate::tree::{SemaBranchId, SemaTree};
+
 pub type Files = SimpleFiles<String, String>;
 pub type FileId = <Files as codespan_reporting::files::Files<'static>>::FileId;
 
@@ -16,10 +18,20 @@ pub struct Treehouse {
     pub files: Files,
     pub diagnostics: Vec<Diagnostic<FileId>>,
 
+    pub tree: SemaTree,
+    pub branches_by_named_id: HashMap<String, SemaBranchId>,
+
     // Bit of a hack because I don't wanna write my own `Files`.
     tree_paths: Vec<Option<String>>,
 
     missingno_generator: ulid::Generator,
+}
+
+#[derive(Debug, Clone)]
+pub struct BranchRef {
+    pub html_id: String,
+    pub file_id: FileId,
+    pub kind_span: Range<usize>,
 }
 
 impl Treehouse {
@@ -27,6 +39,9 @@ impl Treehouse {
         Self {
             files: Files::new(),
             diagnostics: vec![],
+
+            tree: SemaTree::default(),
+            branches_by_named_id: HashMap::new(),
 
             tree_paths: vec![],
 

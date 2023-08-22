@@ -1,6 +1,5 @@
 use std::fmt::{self, Display, Write};
 
-pub mod attributes;
 mod markdown;
 pub mod tree;
 

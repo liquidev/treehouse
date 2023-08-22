@@ -17,7 +17,9 @@ use tower_http::services::ServeDir;
 use tower_livereload::LiveReloadLayer;
 use walkdir::WalkDir;
 
-use crate::{cli::parse::parse_tree_with_diagnostics, html::tree::branches_to_html};
+use crate::{
+    cli::parse::parse_tree_with_diagnostics, html::tree::branches_to_html, tree::SemaRoots,
+};
 
 use crate::state::{FileId, Treehouse};
 
@@ -132,6 +134,8 @@ impl Generator {
             );
 
             if let Ok(roots) = parse_tree_with_diagnostics(&mut treehouse, file_id) {
+                let roots = SemaRoots::from_roots(&mut treehouse, file_id, roots);
+
                 let mut tree = String::new();
                 branches_to_html(&mut tree, &mut treehouse, file_id, &roots.branches);
 

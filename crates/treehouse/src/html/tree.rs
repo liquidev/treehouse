@@ -1,43 +1,37 @@
 use std::fmt::Write;
 
-use codespan_reporting::diagnostic::{Diagnostic, Label, LabelStyle, Severity};
-use treehouse_format::{ast::Branch, pull::BranchKind};
+use pulldown_cmark::{BrokenLink, LinkType};
+use treehouse_format::pull::BranchKind;
 
 use crate::{
     html::EscapeAttribute,
-    state::{toml_error_to_diagnostic, FileId, TomlError, Treehouse},
+    state::{FileId, Treehouse},
+    tree::{attributes::Content, SemaBranchId},
 };
 
-use super::{
-    attributes::{Attributes, Content},
-    markdown, EscapeHtml,
-};
+use super::{markdown, EscapeHtml};
 
-pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId, branch: &Branch) {
-    let attributes = parse_attributes(treehouse, file_id, branch);
-
+pub fn branch_to_html(
+    s: &mut String,
+    treehouse: &mut Treehouse,
+    file_id: FileId,
+    branch_id: SemaBranchId,
+) {
     // Reborrow because the closure requires unique access (it adds a new diagnostic.)
     let source = treehouse.source(file_id);
+    let branch = treehouse.tree.branch(branch_id);
 
     let has_children =
-        !branch.children.is_empty() || matches!(attributes.content, Content::Link(_));
-
-    let id = format!(
-        "{}:{}",
-        treehouse
-            .tree_path(file_id)
-            .expect("file should have a tree path"),
-        attributes.id
-    );
+        !branch.children.is_empty() || matches!(branch.attributes.content, Content::Link(_));
 
     let class = if has_children { "branch" } else { "leaf" };
-    let component = if let Content::Link(_) = attributes.content {
+    let component = if let Content::Link(_) = branch.attributes.content {
         "th-b-linked"
     } else {
         "th-b"
     };
 
-    let linked_branch = if let Content::Link(link) = &attributes.content {
+    let linked_branch = if let Content::Link(link) = &branch.attributes.content {
         format!(" data-th-link=\"{}\"", EscapeHtml(link))
     } else {
         String::new()
@@ -46,7 +40,7 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
     write!(
         s,
         "<li is=\"{component}\" class=\"{class}\" id=\"{}\"{linked_branch}>",
-        EscapeAttribute(&id)
+        EscapeAttribute(&branch.html_id)
     )
     .unwrap();
     {
@@ -77,13 +71,38 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
             unindented_block_content.push('\n');
         }
 
-        let markdown_parser = pulldown_cmark::Parser::new_ext(&unindented_block_content, {
-            use pulldown_cmark::Options;
-            Options::ENABLE_STRIKETHROUGH | Options::ENABLE_TABLES
-        });
+        let broken_link_callback = &mut |broken_link: BrokenLink<'_>| {
+            if let LinkType::Reference | LinkType::Shortcut = broken_link.link_type {
+                broken_link
+                    .reference
+                    .split_once(':')
+                    .and_then(|(kind, linked)| match kind {
+                        "branch" => treehouse
+                            .branches_by_named_id
+                            .get(linked)
+                            .map(|&branch_id| {
+                                (
+                                    format!("#{}", treehouse.tree.branch(branch_id).html_id).into(),
+                                    "".into(),
+                                )
+                            }),
+                        _ => None,
+                    })
+            } else {
+                None
+            }
+        };
+        let markdown_parser = pulldown_cmark::Parser::new_with_broken_link_callback(
+            &unindented_block_content,
+            {
+                use pulldown_cmark::Options;
+                Options::ENABLE_STRIKETHROUGH | Options::ENABLE_TABLES
+            },
+            Some(broken_link_callback),
+        );
         markdown::push_html(s, markdown_parser);
 
-        if let Content::Link(link) = &attributes.content {
+        if let Content::Link(link) = &branch.attributes.content {
             write!(
                 s,
                 "<noscript><a class=\"navigate icon-go\" href=\"{}.html\">Go to linked tree: <code>{}</code></a></noscript>",
@@ -95,7 +114,7 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
 
         s.push_str("<th-bb>");
         {
-            if let Content::Link(link) = &attributes.content {
+            if let Content::Link(link) = &branch.attributes.content {
                 write!(
                     s,
                     "<a class=\"icon icon-go\" href=\"{}.html\" title=\"linked tree\"></a>",
@@ -107,7 +126,7 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
             write!(
                 s,
                 "<a class=\"icon icon-permalink\" href=\"#{}\" title=\"permalink\"></a>",
-                EscapeAttribute(&id)
+                EscapeAttribute(&branch.html_id)
             )
             .unwrap();
         }
@@ -115,7 +134,15 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
 
         if has_children {
             s.push_str("</summary>");
-            branches_to_html(s, treehouse, file_id, &branch.children);
+            {
+                s.push_str("<ul>");
+                let num_children = branch.children.len();
+                for i in 0..num_children {
+                    let child_id = treehouse.tree.branch(branch_id).children[i];
+                    branch_to_html(s, treehouse, file_id, child_id);
+                }
+                s.push_str("</ul>");
+            }
             s.push_str("</details>");
         } else {
             s.push_str("</div>");
@@ -124,90 +151,14 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
     s.push_str("</li>");
 }
 
-fn parse_attributes(treehouse: &mut Treehouse, file_id: usize, branch: &Branch) -> Attributes {
-    let source = treehouse.source(file_id);
-
-    let mut successfully_parsed = true;
-    let mut attributes = if let Some(attributes) = &branch.attributes {
-        toml_edit::de::from_str(&source[attributes.data.clone()]).unwrap_or_else(|error| {
-            treehouse
-                .diagnostics
-                .push(toml_error_to_diagnostic(TomlError {
-                    message: error.message().to_owned(),
-                    span: error.span(),
-                    file_id,
-                    input_range: attributes.data.clone(),
-                }));
-            successfully_parsed = false;
-            Attributes::default()
-        })
-    } else {
-        Attributes::default()
-    };
-    let successfully_parsed = successfully_parsed;
-
-    // Only check for attribute validity if the attributes were parsed successfully.
-    if successfully_parsed {
-        let attribute_warning_span = branch
-            .attributes
-            .as_ref()
-            .map(|attributes| attributes.percent.clone())
-            .unwrap_or(branch.kind_span.clone());
-
-        // Check that every block has an ID.
-        if attributes.id.is_empty() {
-            attributes.id = format!("treehouse-missingno-{}", treehouse.next_missingno());
-            treehouse.diagnostics.push(Diagnostic {
-                severity: Severity::Warning,
-                code: Some("attr".into()),
-                message: "branch does not have an `id` attribute".into(),
-                labels: vec![Label {
-                    style: LabelStyle::Primary,
-                    file_id,
-                    range: attribute_warning_span.clone(),
-                    message: String::new(),
-                }],
-                notes: vec![
-                    format!(
-                        "note: a generated id `{}` will be used, but this id is unstable and will not persist across generations",
-                        attributes.id
-                    ),
-                    format!("help: run `treehouse fix {}` to add missing ids to branches", treehouse.filename(file_id)),
-                ],
-            });
-        }
-
-        // Check that link-type blocks are `+`-type to facilitate lazy loading.
-        if let Content::Link(_) = &attributes.content {
-            if branch.kind == BranchKind::Expanded {
-                treehouse.diagnostics.push(Diagnostic {
-                    severity: Severity::Warning,
-                    code: Some("attr".into()),
-                    message: "`content.link` branch is expanded by default".into(),
-                    labels: vec![Label {
-                        style: LabelStyle::Primary,
-                        file_id,
-                        range: branch.kind_span.clone(),
-                        message: String::new(),
-                    }],
-                    notes: vec![
-                        "note: `content.link` branches should normally be collapsed to allow for lazy loading".into(),
-                    ],
-                });
-            }
-        }
-    }
-    attributes
-}
-
 pub fn branches_to_html(
     s: &mut String,
     treehouse: &mut Treehouse,
     file_id: FileId,
-    branches: &[Branch],
+    branches: &[SemaBranchId],
 ) {
     s.push_str("<ul>");
-    for child in branches {
+    for &child in branches {
         branch_to_html(s, treehouse, file_id, child);
     }
     s.push_str("</ul>");
