@@ -1,13 +1,41 @@
-class LinkedBranch extends HTMLLIElement {
+const branchStateKey = "treehouse.openBranches";
+let branchState = JSON.parse(localStorage.getItem(branchStateKey)) || {};
+
+function saveBranchIsOpen(branchID, state) {
+    branchState[branchID] = state;
+    localStorage.setItem(branchStateKey, JSON.stringify(branchState));
+}
+
+function branchIsOpen(branchID) {
+    return branchState[branchID];
+}
+
+class Branch extends HTMLLIElement {
+    constructor() {
+        super();
+
+        this.details = this.childNodes[0];
+        this.innerUL = this.details.childNodes[1];
+
+        let isOpen = branchIsOpen(this.id);
+        if (isOpen !== undefined) {
+            this.details.open = isOpen;
+        }
+        this.details.addEventListener("toggle", _ => {
+            saveBranchIsOpen(this.id, this.details.open);
+        });
+    }
+}
+
+customElements.define("th-b", Branch, { extends: "li" });
+
+class LinkedBranch extends Branch {
     constructor() {
         super();
 
         this.linkedTree = this.getAttribute("data-th-link");
 
-        this.details = this.childNodes[0];
-        this.innerUL = this.details.childNodes[1];
-
-        this.state = "notloaded";
+        this.loadingState = "notloaded";
 
         this.loadingText = document.createElement("p");
         {
@@ -19,12 +47,13 @@ class LinkedBranch extends HTMLLIElement {
         this.innerUL.appendChild(this.loadingText);
 
         // This produces a warning during static generation but we still want to handle that
-        // correctly. Having an expanded-by-default linked block can be useful in development.
+        // correctly, as Branch saves the state in localStorage. Having an expanded-by-default
+        // linked block can be useful in development.
         if (this.details.open) {
             this.loadTree();
         }
 
-        this.details.addEventListener("toggle", event => {
+        this.details.addEventListener("toggle", _ => {
             if (this.details.open) {
                 this.loadTree();
             }
@@ -32,8 +61,8 @@ class LinkedBranch extends HTMLLIElement {
     }
 
     loadTree() {
-        if (this.state == "notloaded") {
-            this.state = "loading";
+        if (this.loadingState == "notloaded") {
+            this.loadingState = "loading";
 
             fetch(`/${this.linkedTree}.html`)
                 .then(response => {
@@ -46,26 +75,22 @@ class LinkedBranch extends HTMLLIElement {
                     let parser = new DOMParser();
                     let linkedDocument = parser.parseFromString(text, "text/html");
                     let main = linkedDocument.getElementsByTagName("main")[0];
-                    let ul /*: Element */ = main.getElementsByTagName("ul")[0];
-                    console.log(ul);
+                    let ul = main.getElementsByTagName("ul")[0];
 
                     this.loadingText.remove();
+                    this.innerUL.innerHTML = ul.innerHTML;
 
-                    for (let i = 0; i < ul.childNodes.length; ++i) {
-                        this.innerUL.appendChild(ul.childNodes[i]);
-                    }
-
-                    this.state = "loaded";
+                    this.loadingState = "loaded";
                 })
                 .catch(error => {
                     this.loadingText.innerText = error.toString();
-                    this.state = "error";
+                    this.loadingState = "error";
                 });
         }
     }
 }
 
-customElements.define("th-linked-branch", LinkedBranch, { extends: "li" });
+customElements.define("th-b-linked", LinkedBranch, { extends: "li" });
 
 function expandDetailsRecursively(element) {
     while (element && element.tagName != "MAIN") {

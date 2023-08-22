@@ -31,17 +31,21 @@ pub fn branch_to_html(s: &mut String, treehouse: &mut Treehouse, file_id: FileId
     );
 
     let class = if has_children { "branch" } else { "leaf" };
+    let component = if let Content::Link(_) = attributes.content {
+        "th-b-linked"
+    } else {
+        "th-b"
+    };
+
     let linked_branch = if let Content::Link(link) = &attributes.content {
-        format!(
-            " is=\"th-linked-branch\" data-th-link=\"{}\"",
-            EscapeHtml(link)
-        )
+        format!(" data-th-link=\"{}\"", EscapeHtml(link))
     } else {
         String::new()
     };
+
     write!(
         s,
-        "<li class=\"{class}\" id=\"{}\"{linked_branch}>",
+        "<li is=\"{component}\" class=\"{class}\" id=\"{}\"{linked_branch}>",
         EscapeAttribute(&id)
     )
     .unwrap();

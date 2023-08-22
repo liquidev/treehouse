@@ -3,11 +3,11 @@
 
     - welcome! make yourself at home
 
-        - this is my treehouse, the place on the Internet I like to call home.
+    ---
 
     % id = "about"
       content.link = "about"
-    + ## about yourself
+    + ## about me
 
     % id = "about-treehouse"
       content.link = "about-treehouse"

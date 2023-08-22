@@ -6,7 +6,6 @@ use codespan_reporting::{
     files::SimpleFiles,
     term::termcolor::{ColorChoice, StandardStream},
 };
-use log::debug;
 use ulid::Ulid;
 
 pub type Files = SimpleFiles<String, String>;

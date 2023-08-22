@@ -136,8 +136,10 @@
     % id = "01H89RFHCQ2GWJPTAKTRGS1QAC"
     - weird poems and philosophical talk are over, it's time to focus on the tech.
 
+        - call this an overview, Defense of Design, or what have you
+
     % id = "01H89RFHCQF4N9T05B9DVWX67K"
-    - treehouse is built in the programming language that gives me the most pleasure while developing.
+    - treehouse is built in the programming language that gives me the most pleasure coding.
 
         - no need for you to know more. :shhh:
 
@@ -149,10 +151,10 @@
         - but being the altruist I am - don't worry, it _will_ be open source one day.
 
             - in case you're reading this in the far future, and this is still here…
-              you wouldn't mind [dropping me a line](#01H89P3CH8CD28KGX9GVRFK60E) would you?
+              you wouldn't mind [dropping me a line][b:01H89P3CH8CD28KGX9GVRFK60E] would you?
 
     % id = "01H89RFHCQAQVXP6B2H0T8NNDS"
-    - personally… the language you build a personal project in almost never matters. it's rather how you execute your ideas.
+    - personally… the language you build a personal project with almost never matters. it's rather how you execute your ideas.
 
         + therefore I find boasting that my project is powered by a `$LANGUAGE` or a `$FRAMEWORK` unnecessary.
 
@@ -162,7 +164,7 @@
                 - (yes, I know that website is super old, but I still find it incredibly funny :hueh:)
 
     % id = "01H89RFHCQFWC2FWBAE9PVNC08"
-    - as I alluded to [here](#01H89RFHCQ3EAP0F6PRSEK7S1T), treehouse is built to decay gracefully
+    - as I alluded to [here][b:01H89RFHCQ3EAP0F6PRSEK7S1T], treehouse is built to decay gracefully
       as you take away the fancy parts.
 
         - you will be able to read it just fine without JavaScript, just that it'll be a little
@@ -185,6 +187,14 @@
 
                     - if you have accessibility concerns about this decision, please let me know.
 
+            - it also saves your progress as you read. if you refresh the page, you'll notice you end up exactly where you left off!
+
+            - but, there is one very crucial piece of JavaScript that makes this website tick, and your experience **will be degraded** if you disable it. that feature is linking to branches.
+
+                - by default, if you link to an element by its id and it's contained within a `<details>`, the `<details>` will not expand. :ralsei_dead:
+
+                - therefore there's a bit of JS to make that work, _and_ to tie that together with lazy loading.
+
         - treehouse will not work *as* fine without CSS though - the `<details>` will look extremely
           janky, but the content should still be fully readable.
 
@@ -193,20 +203,21 @@
         - the structure of `.tree` files is extremely minimal. there are only a few syntactic features to speak of.
 
         - here's a taste of `.tree`:
-        ```
-        \% id = "root"
-        \- this is a branch
 
-            \% id = "child"
-            \- this is a child branch
+            - ```
+            \% id = "root"
+            \- this is a branch
 
-            \+ this is a branch that is collapsed
+                \% id = "child"
+                \- this is a child branch
 
-                \- and this is a child of that branch
+                \+ this is a branch that is collapsed
 
-            \% content.link = "some-other-tree"
-            \- and this branch links to another tree
-        ```
+                    \- and this is a child of that branch
+
+                \% content.link = "some-other-tree"
+                \- and this branch links to another tree
+            ```
 
         - the `.tree` format is line-based. that means the `%`, `-`, and `+` tokens are only
           interpreted when at the beginning of a line.
@@ -219,15 +230,15 @@
 
             - …may or may not be expanded by default (this is the branch's _kind_) - that's what the minus `-` and plus `+` tokens do
 
-            - …are sequenced like: optional attributes, kind, content
+        - each branch is constructed in this order: optional attributes, kind, content
 
-            - …end when another line beginning with `%`, `-`, or `+` is found.
+        - and ends when another line beginning with `%`, `-`, or `+` is found.
 
         - other than that, `.tree` assumes nothing about what format the branch attributes or content are encoded in.
 
             - I chose TOML and Markdown for their ease of use and flexibility, but the parser couldn't care less.
 
-                - …actually, that's a lie. see that code example above? Markdown code fences \`\`\` are handled specially to let you do that kind of stuff. that's all.
+                - …actually, that's a lie. see that code example above? Markdown code fences \`\`\` are handled specially to let embed `.tree` source code blocks within `.tree` files. that's all.
 
     - you may have noticed in that code example above that almost every branch has an `id` attribute.
 
@@ -260,6 +271,16 @@
                     - ulids on the other hand are 26 digits encoded with [Crockford's base32](https://www.crockford.com/base32.html)
 
                         - which is cool because it's much denser while avoiding ambiguous characters - `0`, `O`, and `o` are all interpreted as `0` (zero).
+
+    - noticed how fast the treehouse restores your state? there's basically no delay.
+
+        - this is because it restores your state _as it's loading in_, by using [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).
+
+            - despite many people calling that API extremely low-level, I beg to differ. it's actually pretty easy and pleasant to use.
+
+            - most importantly it lets me enhance vanilla `<li>` elements with custom behavior executed on load, which I use to restore your reading progress as the page is loading in.
+
+        - linked branches also use Web Components by the way.
 
     - while not strictly a technical topic, I'd like to shout out [Recursive](https://recursive.design) for being an awesome font :ralsei_love:
 
