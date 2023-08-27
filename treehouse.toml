@@ -4,6 +4,6 @@ site = "http://localhost:8080"
 title = "liquidex's treehouse"
 author = "liquidex"
 
-[links]
+[defs]
 "stitchkit/repo" = "https://github.com/liquidev/stitchkit"
 "dawd3/repo" = "https://github.com/liquidev/dawd3"

@@ -13,8 +13,8 @@ pub struct Config {
     /// User-defined keys.
     pub user: HashMap<String, String>,
 
-    /// Links exported to Markdown for use with reference syntax `[text][key]`.
-    pub links: HashMap<String, String>,
+    /// Links exported to Markdown for use with reference syntax `[text][def:key]`.
+    pub defs: HashMap<String, String>,
 }
 
 impl Config {

@@ -84,6 +84,10 @@ pub fn branch_to_html(
                     .reference
                     .split_once(':')
                     .and_then(|(kind, linked)| match kind {
+                        "def" => config
+                            .defs
+                            .get(linked)
+                            .map(|link| (link.clone().into(), "".into())),
                         "branch" => treehouse
                             .branches_by_named_id
                             .get(linked)
