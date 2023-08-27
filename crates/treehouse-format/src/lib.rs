@@ -13,6 +13,9 @@ pub enum ParseErrorKind {
 
     #[error("at least {expected} spaces of indentation were expected, but got {got}")]
     InconsistentIndentation { got: usize, expected: usize },
+
+    #[error("unterminated code block")]
+    UnterminatedCodeBlock,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]

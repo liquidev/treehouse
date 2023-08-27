@@ -224,18 +224,18 @@
 
             % id = "01H8V55APD5686J8GTXP118V8E"
             - ```
-            \% id = "root"
-            \- this is a branch
+            % id = "root"
+            - this is a branch
 
-                \% id = "child"
-                \- this is a child branch
+                % id = "child"
+                - this is a child branch
 
-                \+ this is a branch that is collapsed
+                + this is a branch that is collapsed
 
-                    \- and this is a child of that branch
+                    - and this is a child of that branch
 
-                \% content.link = "some-other-tree"
-                \- and this branch links to another tree
+                % content.link = "some-other-tree"
+                - and this branch links to another tree
             ```
 
         % id = "01H8V55APDB49SPHPPMV2BCMW3"

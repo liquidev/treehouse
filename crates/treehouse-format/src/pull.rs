@@ -40,9 +40,19 @@ pub struct Parser<'a> {
     pub position: usize,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum AllowCodeBlocks {
+    No,
+    Yes,
+}
+
 impl<'a> Parser<'a> {
     fn current(&self) -> Option<char> {
         self.input[self.position..].chars().next()
+    }
+
+    fn current_starts_with(&self, s: &str) -> bool {
+        self.input[self.position..].starts_with(s)
     }
 
     fn advance(&mut self) {
@@ -56,6 +66,12 @@ impl<'a> Parser<'a> {
             self.advance();
         }
         count
+    }
+
+    fn eat_while(&mut self, cond: impl Fn(char) -> bool) {
+        while self.current().map(&cond).is_some_and(|x| x) {
+            self.advance();
+        }
     }
 
     fn eat_until(&mut self, cond: impl Fn(char) -> bool) {
@@ -76,21 +92,46 @@ impl<'a> Parser<'a> {
         &mut self,
         indent_level: usize,
         cond: impl Fn(char) -> bool,
+        allow_code_blocks: AllowCodeBlocks,
     ) -> Result<(), ParseError> {
+        let mut code_block: Option<Range<usize>> = None;
         loop {
-            self.eat_until(|c| c == '\n');
-            let before_indentation = self.position;
-            let line_indent_level = self.eat_as_long_as(' ');
-            let after_indentation = self.position;
-            if self.current().map(&cond).is_some_and(identity) || self.current().is_none() {
-                self.position = before_indentation;
-                break;
-            } else if !matches!(self.current(), Some('\n')) && line_indent_level < indent_level {
-                return Err(ParseErrorKind::InconsistentIndentation {
-                    got: line_indent_level,
-                    expected: indent_level,
+            if let Some(range) = &code_block {
+                self.eat_while(|c| c == ' ');
+                if self.current_starts_with("```") {
+                    code_block = None;
+                    self.position += 3;
+                    self.eat_until(|c| c == '\n');
+                    continue;
                 }
-                .at(before_indentation..after_indentation));
+                self.eat_until(|c| c == '\n');
+
+                if self.current().is_none() {
+                    return Err(ParseErrorKind::UnterminatedCodeBlock.at(range.clone()));
+                }
+            } else {
+                self.eat_while(|c| c == ' ');
+                if allow_code_blocks == AllowCodeBlocks::Yes && self.current_starts_with("```") {
+                    code_block = Some(self.position..self.position + 3);
+                    self.position += 3;
+                    continue;
+                }
+
+                self.eat_until(|c| c == '\n');
+                let before_indentation = self.position;
+                let line_indent_level = self.eat_as_long_as(' ');
+                let after_indentation = self.position;
+                if self.current().map(&cond).is_some_and(identity) || self.current().is_none() {
+                    self.position = before_indentation;
+                    break;
+                } else if !matches!(self.current(), Some('\n')) && line_indent_level < indent_level
+                {
+                    return Err(ParseErrorKind::InconsistentIndentation {
+                        got: line_indent_level,
+                        expected: indent_level,
+                    }
+                    .at(before_indentation..after_indentation));
+                }
             }
         }
         Ok(())
@@ -107,7 +148,11 @@ impl<'a> Parser<'a> {
             let start = self.position;
             self.advance();
             let after_percent = self.position;
-            self.eat_indented_lines_until(indent_level, |c| c == '-' || c == '+')?;
+            self.eat_indented_lines_until(
+                indent_level,
+                |c| c == '-' || c == '+',
+                AllowCodeBlocks::No,
+            )?;
             self.eat_as_long_as(' ');
             let end = self.position;
             Some(Attributes {
@@ -128,7 +173,11 @@ impl<'a> Parser<'a> {
         let kind_end = self.position;
 
         let content_start = self.position;
-        self.eat_indented_lines_until(indent_level, |c| c == '-' || c == '+' || c == '%')?;
+        self.eat_indented_lines_until(
+            indent_level,
+            |c| c == '-' || c == '+' || c == '%',
+            AllowCodeBlocks::Yes,
+        )?;
         let content_end = self.position;
 
         Ok(Some(BranchEvent {
