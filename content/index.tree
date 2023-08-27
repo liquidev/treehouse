@@ -4,36 +4,31 @@
     % id = "01H8V556P1PND8DQ73XBTZZJH7"
     - welcome! make yourself at home
 
-    ---
+    - _"owo, what's this?"_
 
-    % id = "about"
-      content.link = "about"
-    + ## about me
+        % id = "about"
+        content.link = "about"
+        + ## about me
 
-    % id = "about-treehouse"
-      content.link = "about-treehouse"
-    + ## about this
-
-    ---
+        % id = "about-treehouse"
+        content.link = "about-treehouse"
+        + ## about this
 
     % id = "01H8V556P1GRAA3717VH3QJFMV"
-    - below you can find my Special Interest Corners™
+    - hobby corners
 
-        % id = "01H8V556P1KDBC9EYYSA1F44ZJ"
-        - ie. thoughts on stuff that I wanna jot down somewhere
+        % id = "programming"
+        content.link = "2023-08-20-under-construction"
+        + ## programming
 
-    % id = "programming"
-      content.link = "2023-08-20-under-construction"
-    + ## programming
+        % id = "music"
+        content.link = "2023-08-20-under-construction"
+        + ## music
 
-    % id = "music"
-      content.link = "2023-08-20-under-construction"
-    + ## music
+        % id = "games"
+        content.link = "2023-08-20-under-construction"
+        + ## games
 
-    % id = "games"
-      content.link = "2023-08-20-under-construction"
-    + ## games
-
-    % id = "3d-printing"
-      content.link = "2023-08-20-under-construction"
-    + ## 3D printing
+        % id = "3d-printing"
+        content.link = "2023-08-20-under-construction"
+        + ## 3D printing
