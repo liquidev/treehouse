@@ -1,6 +1,6 @@
 pub mod fix;
+pub mod generate;
 mod parse;
-pub mod regenerate;
 
 use std::path::PathBuf;
 
@@ -15,14 +15,14 @@ pub struct ProgramArgs {
 #[derive(Subcommand)]
 pub enum Command {
     /// Regenerate the website.
-    Regenerate(#[clap(flatten)] RegenerateArgs),
+    Generate(#[clap(flatten)] GenerateArgs),
 
     /// Populate missing metadata in blocks.
     Fix(#[clap(flatten)] FixArgs),
 }
 
 #[derive(Args)]
-pub struct RegenerateArgs {
+pub struct GenerateArgs {
     /// Start a web server serving the static files. Useful with `cargo watch`.
     #[clap(short, long)]
     pub serve: bool,

@@ -17,13 +17,13 @@ You have been warned.
 To build the website:
 
 ```sh
-cargo run -p treehouse regenerate
+cargo run -p treehouse generate
 ```
 
 This will spit out a directory `target/site` containing the static pages. You're free to use any HTTP server you wish, but for development purposes treehouse includes one in the CLI:
 
 ```sh
-cargo run -p treehouse regenerate --serve
+cargo run -p treehouse generate --serve
 ```
 
 This will fire up a server on port 8080. No way to change that, sorry. Edit the source code.
@@ -31,7 +31,7 @@ This will fire up a server on port 8080. No way to change that, sorry. Edit the 
 If you're developing, you may wanna use [`cargo-watch`](https://crates.io/crates/cargo-watch):
 
 ```sh
-cargo watch -- cargo run -p treehouse regenerate --serve
+cargo watch -- cargo run -p treehouse generate --serve
 ```
 
 The website will reload itself automatically if you change any file in the repository.

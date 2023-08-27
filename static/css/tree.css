@@ -11,7 +11,7 @@
     --tree-icon-space: 28px;
 
     /* I have no clue why this works, deal with it */
-    --tree-hover-expansion: 0.01px;
+    --tree-hover-expansion: 6px;
 
     position: relative;
 }
@@ -19,6 +19,11 @@
 .tree details>summary {
     list-style: none;
     cursor: pointer;
+}
+
+/* Can webkit not be a dick for once? */
+.tree details>summary::-webkit-details-marker {
+    display: none;
 }
 
 .tree li {
@@ -80,6 +85,8 @@
     background-position: var(--tree-icon-position);
     padding-left: var(--tree-icon-space);
     margin-left: calc(- var(--tree-icon-space));
+    padding-top: var(--tree-hover-expansion);
+    padding-bottom: var(--tree-hover-expansion);
 }
 
 .tree details[open]>summary {

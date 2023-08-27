@@ -3,7 +3,7 @@ use std::path::Path;
 use clap::Parser;
 use cli::{
     fix::fix_file_cli,
-    regenerate::{self, regenerate_or_report_error, Paths},
+    generate::{self, regenerate_or_report_error, Paths},
     Command, ProgramArgs,
 };
 use log::{error, info};
@@ -19,7 +19,7 @@ async fn fallible_main() -> anyhow::Result<()> {
     let args = ProgramArgs::parse();
 
     match args.command {
-        Command::Regenerate(regenerate_args) => {
+        Command::Generate(regenerate_args) => {
             let dirs = Paths {
                 target_dir: Path::new("target/site"),
                 config_file: Path::new("treehouse.toml"),
@@ -35,7 +35,7 @@ async fn fallible_main() -> anyhow::Result<()> {
             regenerate_or_report_error(&dirs);
 
             if regenerate_args.serve {
-                regenerate::web_server().await?;
+                generate::web_server().await?;
             }
         }
 

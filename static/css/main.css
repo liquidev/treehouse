@@ -1,6 +1,13 @@
 /* Color scheme. */
 
 :root {
+    /* naturally */
+    --liquidex-brand-blue: #058ef0;
+
+    --text-color-light: #55423e;
+    --link-color-light: #004ec8;
+    --link-color-visited-light: #6c2380;
+
     --background-color: rgb(255, 253, 246);
     --text-color: #55423e;
     --link-color: #004ec8;
@@ -51,6 +58,15 @@ main {
 body {
     background-color: var(--background-color);
     color: var(--text-color);
+
+    scrollbar-color: var(--background-color);
+    scrollbar-width: auto;
+    scrollbar-gutter: stable;
+}
+
+body::selection {
+    /* Even though this color doesn't yield the most readable text, browsers  */
+    background-color: var(--liquidex-brand-blue);
 }
 
 /* Set up typography */
@@ -127,13 +143,13 @@ em {
 
 p,
 pre {
-    margin: 6px 0;
+    margin: 0 0;
 }
 
 h1,
 h2,
 h3 {
-    margin: 12px 0;
+    margin: 4px 0;
 }
 
 /* Lay out elements a little less compactly (actually just have some blank space past the end) */
@@ -207,6 +223,7 @@ th {
 .noscript {
     padding: 16px;
     background-color: #fde748;
+    color: var(--text-color-light);
     border: 1px solid #6c581c;
     border-radius: 8px;
     width: fit-content;
@@ -221,6 +238,19 @@ th {
 
 .noscript p:last-child {
     margin-bottom: 0;
+}
+
+.noscript a {
+    color: var(--link-color-light);
+}
+
+.noscript a:visited {
+    color: var(--link-color-visited-light);
+}
+
+/* also, webkit. */
+#webkit-makes-me-go-insane {
+    display: none;
 }
 
 /* Give the logo on the top some nicer looks */
