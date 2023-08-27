@@ -20,6 +20,7 @@ use walkdir::WalkDir;
 
 use crate::{
     cli::parse::parse_tree_with_diagnostics,
+    config::Config,
     html::{navmap::build_navigation_map, tree::branches_to_html},
     tree::SemaRoots,
 };
@@ -95,7 +96,7 @@ impl Generator {
         Ok(())
     }
 
-    fn generate_all_files(&self, dirs: &Dirs<'_>) -> anyhow::Result<Treehouse> {
+    fn generate_all_files(&self, config: &Config, paths: &Paths<'_>) -> anyhow::Result<Treehouse> {
         let mut treehouse = Treehouse::new();
 
         let mut handlebars = Handlebars::new();
@@ -103,7 +104,7 @@ impl Generator {
             &mut handlebars,
             &mut treehouse,
             "tree",
-            &dirs.template_dir.join("tree.hbs"),
+            &paths.template_dir.join("tree.hbs"),
         )?;
 
         struct ParsedTree {
@@ -116,11 +117,11 @@ impl Generator {
         for path in &self.tree_files {
             let utf8_filename = path.to_string_lossy();
 
-            let tree_path = path.strip_prefix(dirs.content_dir).unwrap_or(path);
+            let tree_path = path.strip_prefix(paths.content_dir).unwrap_or(path);
             let target_path = if tree_path == OsStr::new("index.tree") {
-                dirs.target_dir.join("index.html")
+                paths.target_dir.join("index.html")
             } else {
-                dirs.target_dir.join(tree_path).with_extension("html")
+                paths.target_dir.join(tree_path).with_extension("html")
             };
             debug!("generating: {path:?} -> {target_path:?}");
 
@@ -162,12 +163,19 @@ impl Generator {
             branches_to_html(
                 &mut tree,
                 &mut treehouse,
+                config,
                 parsed_tree.file_id,
                 &roots.branches,
             );
             treehouse.roots.insert(parsed_tree.tree_path, roots);
 
-            let template_data = TemplateData { tree };
+            #[derive(Serialize)]
+            pub struct TemplateData<'a> {
+                pub config: &'a Config,
+                pub tree: String,
+            }
+
+            let template_data = TemplateData { config, tree };
             let templated_html = match handlebars.render("tree", &template_data) {
                 Ok(html) => html,
                 Err(error) => {
@@ -196,37 +204,38 @@ impl Generator {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub struct Dirs<'a> {
+pub struct Paths<'a> {
     pub target_dir: &'a Path,
     pub static_dir: &'a Path,
     pub template_dir: &'a Path,
     pub content_dir: &'a Path,
+
+    pub config_file: &'a Path,
 }
 
-#[derive(Serialize)]
-pub struct TemplateData {
-    pub tree: String,
-}
-
-pub fn regenerate(dirs: &Dirs<'_>) -> anyhow::Result<()> {
+pub fn regenerate(paths: &Paths<'_>) -> anyhow::Result<()> {
     let start = Instant::now();
 
+    info!("loading config");
+    let mut config = Config::load(paths.config_file)?;
+    config.site = std::env::var("TREEHOUSE_SITE").unwrap_or(config.site);
+
     info!("cleaning target directory");
-    let _ = std::fs::remove_dir_all(dirs.target_dir);
-    std::fs::create_dir_all(dirs.target_dir)?;
+    let _ = std::fs::remove_dir_all(paths.target_dir);
+    std::fs::create_dir_all(paths.target_dir)?;
 
     info!("copying static directory to target directory");
-    copy_dir(dirs.static_dir, dirs.target_dir.join("static"))?;
+    copy_dir(paths.static_dir, paths.target_dir.join("static"))?;
 
     info!("generating standalone pages");
     let mut generator = Generator::default();
-    generator.add_directory_rec(dirs.content_dir)?;
-    let treehouse = generator.generate_all_files(dirs)?;
+    generator.add_directory_rec(paths.content_dir)?;
+    let treehouse = generator.generate_all_files(&config, paths)?;
 
     info!("generating navigation map");
     let navigation_map = build_navigation_map(&treehouse, "index");
     std::fs::write(
-        dirs.target_dir.join("navmap.js"),
+        paths.target_dir.join("navmap.js"),
         navigation_map.to_javascript(),
     )?;
 
@@ -238,10 +247,10 @@ pub fn regenerate(dirs: &Dirs<'_>) -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn regenerate_or_report_error(dirs: &Dirs<'_>) {
+pub fn regenerate_or_report_error(paths: &Paths<'_>) {
     info!("regenerating site content");
 
-    match regenerate(dirs) {
+    match regenerate(paths) {
         Ok(_) => (),
         Err(error) => eprintln!("error: {error:?}"),
     }

@@ -1,3 +1,5 @@
+// This is definitely not a three.js ripoff.
+
 import { navigationMap } from "/navmap.js";
 
 const branchStateKey = "treehouse.openBranches";
@@ -68,7 +70,7 @@ class LinkedBranch extends Branch {
 
     async loadTreePromise(_initiator) {
         try {
-            let response = await fetch(`/${this.linkedTree}.html`);
+            let response = await fetch(`${TREEHOUSE_SITE}/${this.linkedTree}.html`);
             if (response.status == 404) {
                 throw `Hmm, seems like the tree "${this.linkedTree}" does not exist.`;
             }
@@ -107,7 +109,7 @@ function expandDetailsRecursively(element) {
 }
 
 function navigateToPage(page) {
-    window.location.pathname = `/${page}.html`
+    window.location.href = `${TREEHOUSE_SITE}/${page}.html`
 }
 
 async function navigateToBranch(fragment) {

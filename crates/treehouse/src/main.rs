@@ -3,12 +3,13 @@ use std::path::Path;
 use clap::Parser;
 use cli::{
     fix::fix_file_cli,
-    regenerate::{self, regenerate_or_report_error, Dirs},
+    regenerate::{self, regenerate_or_report_error, Paths},
     Command, ProgramArgs,
 };
 use log::{error, info};
 
 mod cli;
+mod config;
 mod html;
 mod paths;
 mod state;
@@ -19,8 +20,9 @@ async fn fallible_main() -> anyhow::Result<()> {
 
     match args.command {
         Command::Regenerate(regenerate_args) => {
-            let dirs = Dirs {
+            let dirs = Paths {
                 target_dir: Path::new("target/site"),
+                config_file: Path::new("treehouse.toml"),
 
                 // NOTE: These are intentionally left unconfigurable from within treehouse.toml
                 // because this is is one of those things that should be consistent between sites.

@@ -4,6 +4,7 @@ use pulldown_cmark::{BrokenLink, LinkType};
 use treehouse_format::pull::BranchKind;
 
 use crate::{
+    config::Config,
     html::EscapeAttribute,
     state::{FileId, Treehouse},
     tree::{attributes::Content, SemaBranchId},
@@ -14,6 +15,7 @@ use super::{markdown, EscapeHtml};
 pub fn branch_to_html(
     s: &mut String,
     treehouse: &mut Treehouse,
+    config: &Config,
     file_id: FileId,
     branch_id: SemaBranchId,
 ) {
@@ -110,7 +112,8 @@ pub fn branch_to_html(
         if let Content::Link(link) = &branch.attributes.content {
             write!(
                 s,
-                "<noscript><a class=\"navigate icon-go\" href=\"{}.html\">Go to linked tree: <code>{}</code></a></noscript>",
+                "<noscript><a class=\"navigate icon-go\" href=\"{}/{}.html\">Go to linked tree: <code>{}</code></a></noscript>",
+                EscapeAttribute(&config.site),
                 EscapeAttribute(link),
                 EscapeHtml(link),
             )
@@ -122,7 +125,8 @@ pub fn branch_to_html(
             if let Content::Link(link) = &branch.attributes.content {
                 write!(
                     s,
-                    "<a class=\"icon icon-go\" href=\"{}.html\" title=\"linked tree\"></a>",
+                    "<a class=\"icon icon-go\" href=\"{}/{}.html\" title=\"linked tree\"></a>",
+                    EscapeAttribute(&config.site),
                     EscapeAttribute(link),
                 )
                 .unwrap();
@@ -144,7 +148,7 @@ pub fn branch_to_html(
                 let num_children = branch.children.len();
                 for i in 0..num_children {
                     let child_id = treehouse.tree.branch(branch_id).children[i];
-                    branch_to_html(s, treehouse, file_id, child_id);
+                    branch_to_html(s, treehouse, config, file_id, child_id);
                 }
                 s.push_str("</ul>");
             }
@@ -159,12 +163,13 @@ pub fn branch_to_html(
 pub fn branches_to_html(
     s: &mut String,
     treehouse: &mut Treehouse,
+    config: &Config,
     file_id: FileId,
     branches: &[SemaBranchId],
 ) {
     s.push_str("<ul>");
     for &child in branches {
-        branch_to_html(s, treehouse, file_id, child);
+        branch_to_html(s, treehouse, config, file_id, child);
     }
     s.push_str("</ul>");
 }

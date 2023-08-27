@@ -9,18 +9,19 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="{{ site }}/static/css/main.css">
-    <link rel="stylesheet" href="{{ site }}/static/css/tree.css">
-    <link rel="stylesheet" href="{{ site }}/static/font/font.css">
+    <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
+    <link rel="stylesheet" href="{{ config.site }}/static/css/tree.css">
+    <link rel="stylesheet" href="{{ config.site }}/static/font/font.css">
 
-    <script type="module" src="{{ site }}/navmap.js"></script>
-    <script type="module" src="{{ site }}/static/js/tree.js"></script>
-    <script type="module" src="{{ site }}/static/js/usability.js"></script>
+    <script>const TREEHOUSE_SITE = `{{ config.site }}`;</script>
+    <script type="module" src="{{ config.site }}/navmap.js"></script>
+    <script type="module" src="{{ config.site }}/static/js/tree.js"></script>
+    <script type="module" src="{{ config.site }}/static/js/usability.js"></script>
 </head>
 
 <body>
     <nav>
-        <a href="{{ site }}/" title="Back to homepage">
+        <a href="{{ config.site }}/" title="Back to homepage">
             <svg class="logo" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd"
                     d="M8 3H7H6V4V5H4V6H6V9V10H7H10V12H11V10H12H13V9V8V7H12H11H10V8V9H7V6H8H9V5V4V3H8ZM12 9H11V8H12V9ZM7 5V4H8V5H7ZM3 5H2V6H3V5ZM10 13H11V14H10V13Z"
