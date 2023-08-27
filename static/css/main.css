@@ -271,8 +271,10 @@ nav .logo {
 /* Style emojis to be readable */
 
 img.emoji {
-    max-height: 1.375em;
+    max-width: 1.5em;
+    max-height: 1.5em;
     vertical-align: bottom;
+    object-fit: contain;
 }
 
 /* Funny joke */
