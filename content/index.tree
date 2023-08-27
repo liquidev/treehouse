@@ -23,18 +23,5 @@
     % id = "01H8V556P1GRAA3717VH3QJFMV"
     - hobby corners
 
-        % id = "programming"
-          content.link = "2023-08-20-under-construction"
-        + ## programming
-
-        % id = "music"
-          content.link = "2023-08-20-under-construction"
-        + ## music
-
-        % id = "games"
-          content.link = "2023-08-20-under-construction"
-        + ## games
-
-        % id = "3d-printing"
-          content.link = "2023-08-20-under-construction"
-        + ## 3D printing
+        % id = "01H8W1K64326GMGW56NRMYGGPC"
+        - (nothing here yet. I literally just started this website! check back later for a treat.)
