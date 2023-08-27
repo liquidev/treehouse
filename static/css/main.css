@@ -3,10 +3,26 @@
 :root {
     --background-color: rgb(255, 253, 246);
     --text-color: #55423e;
+    --link-color: #004ec8;
+    --link-color-visited: #6c2380;
 
     --shaded-background: rgba(0, 0, 0, 5%);
     --border-1: rgba(0, 0, 0, 15%);
     --border-2: rgba(0, 0, 0, 30%);
+    --hover: rgba(0, 0, 0, 15%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: rgb(30, 40, 53);
+        --text-color: #d7cdbf;
+        --link-color: #93cce8;
+        --link-color-visited: #f7afde;
+
+        --shaded-background: #f7e5df0c;
+        --border-1: #f7e5df26;
+        --border-2: #f7e5df4d;
+    }
 }
 
 /* Article-style layout. Center everything and give it a maximum width */
@@ -71,7 +87,7 @@ h1 {
     --recursive-casl: 0.0;
     --recursive-wght: 900;
 
-    font-size: 2.5rem;
+    font-size: 3.5rem;
 }
 
 h2 {
@@ -150,11 +166,11 @@ img {
 /* Fix the default blue and ugly purple links normally have */
 
 a {
-    color: #004ec8;
+    color: var(--link-color);
 }
 
 a:visited {
-    color: #6c2380;
+    color: var(--link-color-visited);
 }
 
 /* Make blockquotes a bit prettier */
