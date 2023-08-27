@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en-US">
+<html lang="en-US" prefix="og: https://ogp.me/ns#">
 
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,10 @@
     <title>{{ config.user.title }}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:title" content="{{ config.user.title }}">
+    <meta property="og:site_name" content="{{ config.user.title }}">
+    <meta property="og:description" content="{{ config.user.description }}">
 
     <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
     <link rel="stylesheet" href="{{ config.site }}/static/css/tree.css">

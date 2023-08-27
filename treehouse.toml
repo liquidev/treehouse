@@ -3,6 +3,7 @@ site = "http://localhost:8080"
 [user]
 title = "liquidex's treehouse"
 author = "liquidex"
+description = "a place on the Internet I like to call home"
 
 [defs]
 "stitchkit/repo" = "https://github.com/liquidev/stitchkit"
