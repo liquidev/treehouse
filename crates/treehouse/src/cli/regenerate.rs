@@ -1,6 +1,7 @@
 use std::{
     ffi::OsStr,
     path::{Path, PathBuf},
+    time::Instant,
 };
 
 use anyhow::{bail, Context};
@@ -18,7 +19,9 @@ use tower_livereload::LiveReloadLayer;
 use walkdir::WalkDir;
 
 use crate::{
-    cli::parse::parse_tree_with_diagnostics, html::tree::branches_to_html, tree::SemaRoots,
+    cli::parse::parse_tree_with_diagnostics,
+    html::{navmap::build_navigation_map, tree::branches_to_html},
+    tree::SemaRoots,
 };
 
 use crate::state::{FileId, Treehouse};
@@ -103,6 +106,13 @@ impl Generator {
             &dirs.template_dir.join("tree.hbs"),
         )?;
 
+        struct ParsedTree {
+            tree_path: String,
+            file_id: FileId,
+            target_path: PathBuf,
+        }
+        let mut parsed_trees = vec![];
+
         for path in &self.tree_files {
             let utf8_filename = path.to_string_lossy();
 
@@ -127,40 +137,58 @@ impl Generator {
                     continue;
                 }
             };
-            let file_id = treehouse.add_file(
-                utf8_filename.into_owned(),
-                Some(tree_path.with_extension("").to_string_lossy().into_owned()),
-                source,
-            );
+            let tree_path = tree_path.with_extension("").to_string_lossy().into_owned();
+            let file_id =
+                treehouse.add_file(utf8_filename.into_owned(), Some(tree_path.clone()), source);
 
             if let Ok(roots) = parse_tree_with_diagnostics(&mut treehouse, file_id) {
                 let roots = SemaRoots::from_roots(&mut treehouse, file_id, roots);
-
-                let mut tree = String::new();
-                branches_to_html(&mut tree, &mut treehouse, file_id, &roots.branches);
-
-                let template_data = TemplateData { tree };
-                let templated_html = match handlebars.render("tree", &template_data) {
-                    Ok(html) => html,
-                    Err(error) => {
-                        Self::wrangle_handlebars_error_into_diagnostic(
-                            &mut treehouse,
-                            tree_template,
-                            error.line_no,
-                            error.column_no,
-                            error.desc,
-                        )?;
-                        continue;
-                    }
-                };
-
-                std::fs::create_dir_all(
-                    target_path
-                        .parent()
-                        .expect("there should be a parent directory to generate files into"),
-                )?;
-                std::fs::write(target_path, templated_html)?;
+                treehouse.roots.insert(tree_path.clone(), roots);
+                parsed_trees.push(ParsedTree {
+                    tree_path,
+                    file_id,
+                    target_path,
+                });
             }
+        }
+
+        for parsed_tree in parsed_trees {
+            let mut tree = String::new();
+            // Temporarily steal the tree out of the treehouse.
+            let roots = treehouse
+                .roots
+                .remove(&parsed_tree.tree_path)
+                .expect("tree should have been added to the treehouse");
+            branches_to_html(
+                &mut tree,
+                &mut treehouse,
+                parsed_tree.file_id,
+                &roots.branches,
+            );
+            treehouse.roots.insert(parsed_tree.tree_path, roots);
+
+            let template_data = TemplateData { tree };
+            let templated_html = match handlebars.render("tree", &template_data) {
+                Ok(html) => html,
+                Err(error) => {
+                    Self::wrangle_handlebars_error_into_diagnostic(
+                        &mut treehouse,
+                        tree_template,
+                        error.line_no,
+                        error.column_no,
+                        error.desc,
+                    )?;
+                    continue;
+                }
+            };
+
+            std::fs::create_dir_all(
+                parsed_tree
+                    .target_path
+                    .parent()
+                    .expect("there should be a parent directory to generate files into"),
+            )?;
+            std::fs::write(parsed_tree.target_path, templated_html)?;
         }
 
         Ok(treehouse)
@@ -181,6 +209,8 @@ pub struct TemplateData {
 }
 
 pub fn regenerate(dirs: &Dirs<'_>) -> anyhow::Result<()> {
+    let start = Instant::now();
+
     info!("cleaning target directory");
     let _ = std::fs::remove_dir_all(dirs.target_dir);
     std::fs::create_dir_all(dirs.target_dir)?;
@@ -193,7 +223,17 @@ pub fn regenerate(dirs: &Dirs<'_>) -> anyhow::Result<()> {
     generator.add_directory_rec(dirs.content_dir)?;
     let treehouse = generator.generate_all_files(dirs)?;
 
+    info!("generating navigation map");
+    let navigation_map = build_navigation_map(&treehouse, "index");
+    std::fs::write(
+        dirs.target_dir.join("navmap.js"),
+        navigation_map.to_javascript(),
+    )?;
+
     treehouse.report_diagnostics()?;
+
+    let duration = start.elapsed();
+    info!("generation done in {duration:?}");
 
     Ok(())
 }

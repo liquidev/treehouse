@@ -111,7 +111,7 @@
                 - but you may not find the experience favorable
 
     % id = "01H89RFHCQ7HTZSP6P2RZR8JHE"
-    + but most importantly of all, it is *weird*.
+    + but most important of all, it is *weird*.
 
         % id = "01H89RFHCQTRVPZ0AJ0DGJHXKX"
         - weird as me
@@ -131,11 +131,13 @@
     % id = "01H89RFHCQ2GWJPTAKTRGS1QAC"
     - weird poems and philosophical talk are over, it's time to focus on the tech.
 
+        % id = "01H8V55APDEF8WTQ3KFC7E9HWB"
         - call this an overview, Defense of Design, or what have you
 
     % id = "01H89RFHCQF4N9T05B9DVWX67K"
     - treehouse is built in the programming language that gives me the most pleasure coding.
 
+        % id = "01H8V55APDXH5N1YC2WXDBCDN4"
         - no need for you to know more. :shhh:
 
         % id = "01H89RFHCQRA4BBBWDC8K68BB0"
@@ -145,60 +147,80 @@
         % id = "01H89RFHCQA32MCR4MDCANDNC7"
         - but being the altruist I am - don't worry, it _will_ be open source one day.
 
+            % id = "01H8V55APDHC0DZNF67DS76P8H"
             - in case you're reading this in the far future, and this is still here…
               you wouldn't mind [dropping me a line][branch:01H89P3CH8CD28KGX9GVRFK60E] would you?
 
     % id = "01H89RFHCQAQVXP6B2H0T8NNDS"
     - personally… the language you build a personal project with almost never matters. it's rather how you execute your ideas.
 
+        % id = "01H8V55APDRZHHG69A6BWQM8YE"
         + therefore I find boasting that my project is powered by a `$LANGUAGE` or a `$FRAMEWORK` unnecessary.
 
+            % id = "01H8V55APDNJ4W3MY1A204PHJ3"
             + but if you really care that much, it's built with Rust, plain HTML5, plain CSS, and
               [Vanilla JS](http://vanilla-js.com/).
 
+                % id = "01H8V55APDYHZG2QXQ78HZE97V"
                 - (yes, I know that website is super old, but I still find it incredibly funny :hueh:)
 
     % id = "01H89RFHCQFWC2FWBAE9PVNC08"
     - as I alluded to [here][branch:01H89RFHCQ3EAP0F6PRSEK7S1T], treehouse is built to decay gracefully
       as you take away the fancy parts.
 
+        % id = "01H8V55APDMPF3WFTNTFSYBQRF"
         - you will be able to read it just fine without JavaScript, just that it'll be a little
           less pleasant.
 
+            % id = "01H8V55APD1RSSRMDZ3CEE9S9C"
             - that's because the JS handles stuff like lazy loading of linked trees.
 
+                % id = "01H8V55APDAPSR7R9M569GW4S7"
                 - you may have seen a brief _"Loading…"_ text flash before your eyes as you opened this
                 _about this_ branch - that's it downloading another tree and pasting it into this document
 
+                    % id = "01H8V55APDS9BNC2TQ5S5VYC0G"
                     - when JS is unavailable we fall back to a plain old `<a>` link through a
                     `<noscript>` tag. if you have uBlock Origin, or any other JS blocker, you can try
                     that out yourself!
 
+            % id = "01H8V55APD503DMXJD9JA2WJGS"
             - the JS also lets you select text in these `<details>` elements without them collapsing
               as you release the mouse button.
 
+                % id = "01H8V55APD34KE6ED6MRTW34H6"
                 - I have no clue why it is this way by default, but frankly it's like a 5 line
                   usability fix, so why not.
 
+                    % id = "01H8V55APDR3VCEANQ6XVJP3X8"
                     - if you have accessibility concerns about this decision, please let me know.
 
+            % id = "01H8V55APDFW5SPAKSQ04K5HRE"
             - it also saves your progress as you read. if you refresh the page, you'll notice you end up exactly where you left off!
 
+            % id = "01H8V55APDNSXZMZJ2K1KW11KN"
             - but, there is one very crucial piece of JavaScript that makes this website tick, and your experience **will be degraded** if you disable it. that feature is linking to branches.
 
+                % id = "01H8V55APDBG6AH2W3RNMX724X"
                 - by default, if you link to an element by its id and it's contained within a `<details>`, the `<details>` will not expand. :ralsei_dead:
 
+                % id = "01H8V55APDE0KSKKAS8RBRPYRM"
                 - therefore there's a bit of JS to make that work, _and_ to tie that together with lazy loading.
 
+        % id = "01H8V55APDTZSSYTY17SYZ6DGQ"
         - treehouse will not work *as* fine without CSS though - the `<details>` will look extremely
           janky, but the content should still be fully readable.
 
+    % id = "01H8V55APDWN8TV31K4SXBTTWB"
     - myself, I'm writing this content in a bespoke format called `.tree`.
 
+        % id = "01H8V55APDGX4EYV8W7ECXZ6FP"
         - the structure of `.tree` files is extremely minimal. there are only a few syntactic features to speak of.
 
+        % id = "01H8V55APDR95HSV0TX7TK63AF"
         - here's a taste of `.tree`:
 
+            % id = "01H8V55APD5686J8GTXP118V8E"
             - ```
             \% id = "root"
             \- this is a branch
@@ -214,95 +236,141 @@
                 \- and this branch links to another tree
             ```
 
+        % id = "01H8V55APDB49SPHPPMV2BCMW3"
         - the `.tree` format is line-based. that means the `%`, `-`, and `+` tokens are only
           interpreted when at the beginning of a line.
 
+        % id = "01H8V55APD67W8FHEZK6E2A21K"
         - the basic unit of `.tree` is a branch. branches…
 
+            % id = "01H8V55APDQ1KS7S313GK590GM"
             - …are located at a specific _indent level_
 
+            % id = "01H8V55APDHNRFCGH9STD46J0F"
             - …may or may not have _attributes_ - that's what the percentage sign `%` begins
 
+            % id = "01H8V55APDF9C7Y0QDYF3EBMMS"
             - …may or may not be expanded by default (this is the branch's _kind_) - that's what the minus `-` and plus `+` tokens do
 
+        % id = "01H8V55APDJ6EYE4PR370JAT4W"
         - each branch is constructed in this order: optional attributes, kind, content
 
+        % id = "01H8V55APDGT47G5DKZKTQ1S80"
         - and ends when another line beginning with `%`, `-`, or `+` is found.
 
+        % id = "01H8V55APDQ3VYBBTTMNFTVNV4"
         - other than that, `.tree` assumes nothing about what format the branch attributes or content are encoded in.
 
+            % id = "01H8V55APDCXPW8JPRYZHY9NXV"
             - I chose TOML and Markdown for their ease of use and flexibility, but the parser couldn't care less.
 
+                % id = "01H8V55APDWDPSHNZX6QJFM8ZA"
                 - …actually, that's a lie. see that code example above? Markdown code fences \`\`\` are handled specially to let embed `.tree` source code blocks within `.tree` files. that's all.
 
+    % id = "01H8V55APDVQB6AD23Y6PZPPB8"
     - you may have noticed in that code example above that almost every branch has an `id` attribute.
 
+        % id = "01H8V55APD4H5JT8NTYCCTN77G"
         - this is because I want every branch to be individually linkable and quotable.
 
+            % id = "01H8V55APDPSZNP9AK7QRK62BG"
             - if you ever want to link anything I said in an argument online: hover over a branch, right-click that little _permalink_ icon that's on the right side of the screen, and _Copy Link_.
 
+        % id = "01H8V55APDCZ0HY20GGXYE8D1G"
         - but manually coming up with ids for branches would be quite the nuisance.
 
+        % id = "01H8V55APDXV0KRVEF9PTA72J7"
         - that's why with the power of Tools Programming™, I built a tool that fills out all the ids for me.
 
+            % id = "01H8V55APD8VG7WE6JX5JBDJEC"
             - I chose [ulids](https://github.com/ulid/spec) for generated ids, for a few reasons:
 
+                % id = "01H8V55APD2J58ENT1T0JRJ7H6"
                 - they're guaranteed to be unique, so I can be sure no two branches end up having the same id
 
+                    % id = "01H8V55APDGV6PKJKZ16CJ1YXY"
                     - which is precisely what lets me pull the trick where I embed one tree within another, and you just dig into `index.html`.
 
+                % id = "01H8V55APD1CYZD8GE3AK87QK2"
                 - they embed a timestamp, which I can use to display the date/time when a branch was written, because I generally `fix` branches right after writing
 
+                    % id = "01H8V55APDFXW5A5J85HJQP17C"
                     - as well as highlight branches which were added since your last visit
 
+                    % id = "01H8V55APDPZK4C8H5TTHTHH7J"
                     - not that either of these features are implemented as of writing this (2023-08-20)
 
+                % id = "01H8V55APDXB9AXTAGAE9TNQRB"
                 - they're much more compact than [uuids](https://en.wikipedia.org/wiki/Uuid)
 
+                    % id = "01H8V55APDZE5AE92GDM2TH2EF"
                     - which use 32 hexadecimal digits separated unevenly by 4 dashes, giving you 36 characters.
 
+                        % id = "01H8V55APDS478E3ED5CRVT6RE"
                         - who even remembers how many digits there are between each dash? I know I don't.
 
+                    % id = "01H8V55APDXP1D0MHGN2DXBT16"
                     - ulids on the other hand are 26 digits encoded with [Crockford's base32](https://www.crockford.com/base32.html)
 
+                        % id = "01H8V55APD79QTC2NFC6X7S3W4"
                         - which is cool because it's much denser while avoiding ambiguous characters - `0`, `O`, and `o` are all interpreted as `0` (zero).
 
+    % id = "01H8V55APDXT064G9PA78JW0CM"
     - noticed how fast the treehouse restores your state? there's basically no delay.
 
+        % id = "01H8V55APDGS626M5Y6DDAS9ZE"
         - this is because it restores your state _as it's loading in_, by using [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).
 
+            % id = "01H8V55APD73AG65NP2VGX6169"
             - despite many people calling that API extremely low-level, I beg to differ. it's actually pretty easy and pleasant to use.
 
+            % id = "01H8V55APDDHYNRZXQDEG0A242"
             - most importantly it lets me enhance vanilla `<li>` elements with custom behavior executed on load, which I use to restore your reading progress as the page is loading in.
 
+        % id = "01H8V55APD4V54M2EKQKQ4GNP8"
         - linked branches also use Web Components by the way.
 
+    % id = "01H8V55APDKY0HYEJM2C1CJHEG"
     - while not strictly a technical topic, I'd like to shout out [Recursive](https://recursive.design) for being an awesome font :ralsei_love:
 
+        % id = "01H8V55APD88JCQBQ4SHVCYR97"
         - (not to be confused with Font Awesome, which I do not use here. icon designs are my own.)
 
+        % id = "01H8V55APD0S00ACN0YY7Y9MSW"
         - being a variable font, I can tweak the text's look and feel on many different axes.
 
+        % id = "01H8V55APDRG88JRV74MMDTV4J"
         - the one that I wanted to shout out in particular is `CASL`, which lets me make it look a lot more happy and playful.
 
+            % id = "01H8V55APDMP5FE9ZCMRACH18W"
             + almost like Comic Sans, but without all the stigma.
 
+                % id = "01H8V55APDPGMD33J4M3SJ2QKP"
                 - I actually considered using [Comic Neue](https://comicneue.com/) as the font on this website, but ultimately chose Recursive.
 
+                    % id = "01H8V55APDXBS7HMDSCEJ1JDPY"
                     - Comic Neue and not the Real™ Comic Sans MS because it's licensed under the SIL Open Font License, which means I could redistribute it on my website.
 
+                        % id = "01H8V55APDFT0Y4ECEM92XFTTR"
                         - not everyone runs Windows or macOS, so just assuming the reader has Comic Sans installed isn't ideal.
 
+            % id = "01H8V55APD2BPGQXEK7JARYJ9H"
             - in particular the variant on my website is 100% casual (`CASL`), and -2.0 slanted (`slnt`).
 
+                % id = "01H8V55APDXZJE3HHH5AQ8ZQHF"
                 + that little bit of slant makes it look just a little more like handwriting.
 
+                    % id = "01H8V55APDGSB2Y742S07DHTAZ"
                     - I actually thought of handwriting all the text in the treehouse, but ultimately thought it would be too much work. and a technical challenge too.
 
+                        % id = "01H8V55APDDXH02F91RM19RDHX"
                         - how to make it scalable (as in, how to keep it smooth when you zoom in?)
 
+                        % id = "01H8V55APDQ1N44QASCHVDB4D5"
                         - how to make it scalable (as in, my hand really fucking hurts from writing this much, and I *really* do not wanna go back to the times of writing school essays please?)
 
+                        % id = "01H8V55APDP5T3EYPVMVN9QVK7"
                         - how to make it scalable (as in, how to distribute this many images to the user without tanking their internet connection?)
 
+                        % id = "01H8V55APDB8PC2BF5P9TVYJ35"
                         - not to mention I'd have to handwrite a lot of text, and *then* either use OCR or type it all out again for accessibility. yeah, no thanks methinks.

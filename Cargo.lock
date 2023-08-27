@@ -1231,6 +1231,7 @@ dependencies = [
  "pulldown-cmark",
  "rand",
  "serde",
+ "serde_json",
  "tokio",
  "toml_edit",
  "tower-http",

@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en-US">
 
 <head>
     <meta charset="UTF-8">
 
     <title>{{ config.user.title }}</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="{{ site }}/static/css/main.css">
     <link rel="stylesheet" href="{{ site }}/static/css/tree.css">
     <link rel="stylesheet" href="{{ site }}/static/font/font.css">
 
+    <script type="module" src="{{ site }}/navmap.js"></script>
     <script type="module" src="{{ site }}/static/js/tree.js"></script>
     <script type="module" src="{{ site }}/static/js/usability.js"></script>
 </head>
@@ -37,6 +38,10 @@
                 way of remembering you closed it, and don't wanna host this site on a dynamic server.</small>
         </div>
     </noscript>
+
+    <nav>
+        <a href="{{ site }}/" title="Back to index"></a>
+    </nav>
 
     <main class="tree">
         {{{ tree }}}

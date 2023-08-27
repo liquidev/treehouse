@@ -8,7 +8,7 @@ use codespan_reporting::{
 };
 use ulid::Ulid;
 
-use crate::tree::{SemaBranchId, SemaTree};
+use crate::tree::{SemaBranchId, SemaRoots, SemaTree};
 
 pub type Files = SimpleFiles<String, String>;
 pub type FileId = <Files as codespan_reporting::files::Files<'static>>::FileId;
@@ -20,6 +20,7 @@ pub struct Treehouse {
 
     pub tree: SemaTree,
     pub branches_by_named_id: HashMap<String, SemaBranchId>,
+    pub roots: HashMap<String, SemaRoots>,
 
     // Bit of a hack because I don't wanna write my own `Files`.
     tree_paths: Vec<Option<String>>,
@@ -42,6 +43,7 @@ impl Treehouse {
 
             tree: SemaTree::default(),
             branches_by_named_id: HashMap::new(),
+            roots: HashMap::new(),
 
             tree_paths: vec![],
 

@@ -17,7 +17,6 @@ pub fn branch_to_html(
     file_id: FileId,
     branch_id: SemaBranchId,
 ) {
-    // Reborrow because the closure requires unique access (it adds a new diagnostic.)
     let source = treehouse.source(file_id);
     let branch = treehouse.tree.branch(branch_id);
 

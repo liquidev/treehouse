@@ -1,6 +1,7 @@
 use std::fmt::{self, Display, Write};
 
 mod markdown;
+pub mod navmap;
 pub mod tree;
 
 pub struct EscapeAttribute<'a>(&'a str);
