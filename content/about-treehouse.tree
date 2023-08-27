@@ -156,29 +156,21 @@
         % id = "01H8V55APDXH5N1YC2WXDBCDN4"
         - no need for you to know more. :shhh:
 
+        % id = "01H89RFHCQAQVXP6B2H0T8NNDS"
+        - personally… the language you build a personal project with almost never matters. it's rather how you execute your ideas.
+
+            % id = "01H8V55APDRZHHG69A6BWQM8YE"
+            + therefore I find boasting that my project is powered by a `$LANGUAGE` or a `$FRAMEWORK` unnecessary.
+
+                % id = "01H8V55APDNJ4W3MY1A204PHJ3"
+                + but if you really care that much, it's built with Rust, plain HTML5, plain CSS, and
+                [Vanilla JS](http://vanilla-js.com/).
+
+                    % id = "01H8V55APDYHZG2QXQ78HZE97V"
+                    - (yes, I know that website is super old, but I still find it incredibly funny :hueh:)
+
         % id = "01H89RFHCQRA4BBBWDC8K68BB0"
-        - I don't currently have the software open source because I wanna figure out a strategy for
-          building *it* (the software) and *this* (the content) in parallel,
-
-        % id = "01H89RFHCQA32MCR4MDCANDNC7"
-        - but being the altruist I am - don't worry, it _will_ be open source one day.
-
-            % id = "01H8V55APDHC0DZNF67DS76P8H"
-            - in case you're reading this in the far future, and this is still here…
-              you wouldn't mind [dropping me a line][branch:01H89P3CH8CD28KGX9GVRFK60E] would you?
-
-    % id = "01H89RFHCQAQVXP6B2H0T8NNDS"
-    - personally… the language you build a personal project with almost never matters. it's rather how you execute your ideas.
-
-        % id = "01H8V55APDRZHHG69A6BWQM8YE"
-        + therefore I find boasting that my project is powered by a `$LANGUAGE` or a `$FRAMEWORK` unnecessary.
-
-            % id = "01H8V55APDNJ4W3MY1A204PHJ3"
-            + but if you really care that much, it's built with Rust, plain HTML5, plain CSS, and
-              [Vanilla JS](http://vanilla-js.com/).
-
-                % id = "01H8V55APDYHZG2QXQ78HZE97V"
-                - (yes, I know that website is super old, but I still find it incredibly funny :hueh:)
+        - if you wanna browse the source code, feel free to [check it out on GitHub][def:treehouse/repo]
 
     % id = "01H89RFHCQFWC2FWBAE9PVNC08"
     - as I alluded to [here][branch:01H89RFHCQ3EAP0F6PRSEK7S1T], treehouse is built to decay gracefully
