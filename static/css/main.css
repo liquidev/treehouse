@@ -244,3 +244,31 @@ img.emoji {
     max-height: 1.375em;
     vertical-align: bottom;
 }
+
+/* Funny joke */
+
+@keyframes hello-there {
+    0% {
+        opacity: 0%;
+    }
+
+    70% {
+        opacity: 0%;
+    }
+
+    100% {
+        opacity: 70%;
+    }
+}
+
+.oops-you-seem-to-have-gotten-stuck {
+    margin-top: 16px;
+    display: none;
+    position: absolute;
+    opacity: 0%;
+}
+
+#index\:treehouse>details:not([open])>summary .oops-you-seem-to-have-gotten-stuck {
+    display: inline;
+    animation: 4s hello-there forwards;
+}

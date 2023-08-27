@@ -1,7 +1,8 @@
-use std::{collections::HashMap, path::Path};
+use std::{collections::HashMap, ffi::OsStr, path::Path};
 
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
+use walkdir::WalkDir;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Config {
@@ -27,5 +28,32 @@ impl Config {
     pub fn load(path: &Path) -> anyhow::Result<Self> {
         let string = std::fs::read_to_string(path).context("cannot read config file")?;
         toml_edit::de::from_str(&string).context("error in config file")
+    }
+
+    fn is_emoji_file(path: &Path) -> bool {
+        path.extension() == Some(OsStr::new("png")) || path.extension() == Some(OsStr::new("svg"))
+    }
+
+    pub fn autopopulate_emoji(&mut self, dir: &Path) -> anyhow::Result<()> {
+        for file in WalkDir::new(dir) {
+            let entry = file?;
+            if entry.file_type().is_file() && Self::is_emoji_file(entry.path()) {
+                if let Some(emoji_name) = entry.path().file_stem() {
+                    let emoji_name = emoji_name.to_string_lossy();
+                    if !self.emoji.contains_key(emoji_name.as_ref()) {
+                        self.emoji.insert(
+                            emoji_name.into_owned(),
+                            entry
+                                .path()
+                                .strip_prefix(dir)
+                                .unwrap_or(entry.path())
+                                .to_string_lossy()
+                                .into_owned(),
+                        );
+                    }
+                }
+            }
+        }
+        Ok(())
     }
 }

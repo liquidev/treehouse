@@ -219,6 +219,7 @@ pub fn regenerate(paths: &Paths<'_>) -> anyhow::Result<()> {
     info!("loading config");
     let mut config = Config::load(paths.config_file)?;
     config.site = std::env::var("TREEHOUSE_SITE").unwrap_or(config.site);
+    config.autopopulate_emoji(&paths.static_dir.join("emoji"))?;
 
     info!("cleaning target directory");
     let _ = std::fs::remove_dir_all(paths.target_dir);
