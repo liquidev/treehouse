@@ -15,6 +15,12 @@ pub struct Config {
 
     /// Links exported to Markdown for use with reference syntax `[text][def:key]`.
     pub defs: HashMap<String, String>,
+
+    /// Overrides for emoji filenames. Useful for setting up aliases.
+    ///
+    /// On top of this, emojis are autodiscovered by walking the `static/emoji` directory.
+    #[serde(default)]
+    pub emoji: HashMap<String, String>,
 }
 
 impl Config {

@@ -237,3 +237,10 @@ nav .logo {
     opacity: 100%;
     color: var(--text-color);
 }
+
+/* Style emojis to be readable */
+
+img.emoji {
+    max-height: 1.375em;
+    vertical-align: bottom;
+}

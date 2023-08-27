@@ -30,12 +30,18 @@ use pulldown_cmark::escape::{escape_href, escape_html, StrWrite};
 use pulldown_cmark::{Alignment, CodeBlockKind, Event, LinkType, Tag};
 use pulldown_cmark::{CowStr, Event::*};
 
+use crate::config::Config;
+use crate::state::Treehouse;
+
 enum TableState {
     Head,
     Body,
 }
 
 struct HtmlWriter<'a, I, W> {
+    treehouse: &'a Treehouse,
+    config: &'a Config,
+
     /// Iterator supplying events.
     iter: I,
 
@@ -49,6 +55,8 @@ struct HtmlWriter<'a, I, W> {
     table_alignments: Vec<Alignment>,
     table_cell_index: usize,
     numbers: HashMap<CowStr<'a>, usize>,
+
+    in_code_block: bool,
 }
 
 impl<'a, I, W> HtmlWriter<'a, I, W>
@@ -56,8 +64,10 @@ where
     I: Iterator<Item = Event<'a>>,
     W: StrWrite,
 {
-    fn new(iter: I, writer: W) -> Self {
+    fn new(treehouse: &'a Treehouse, config: &'a Config, iter: I, writer: W) -> Self {
         Self {
+            treehouse,
+            config,
             iter,
             writer,
             end_newline: true,
@@ -65,6 +75,7 @@ where
             table_alignments: vec![],
             table_cell_index: 0,
             numbers: HashMap::new(),
+            in_code_block: false,
         }
     }
 
@@ -95,7 +106,7 @@ where
                     self.end_tag(tag)?;
                 }
                 Text(text) => {
-                    escape_html(&mut self.writer, &text)?;
+                    self.run_text(&text)?;
                     self.end_newline = text.ends_with('\n');
                 }
                 Code(text) => {
@@ -211,6 +222,7 @@ where
                 }
             }
             Tag::CodeBlock(info) => {
+                self.in_code_block = true;
                 if !self.end_newline {
                     self.write_newline()?;
                 }
@@ -342,6 +354,7 @@ where
             }
             Tag::CodeBlock(_) => {
                 self.write("</code></pre>\n")?;
+                self.in_code_block = false;
             }
             Tag::List(Some(_)) => {
                 self.write("</ol>\n")?;
@@ -369,6 +382,107 @@ where
                 self.write("</div>\n")?;
             }
         }
+        Ok(())
+    }
+
+    fn run_text(&mut self, text: &str) -> io::Result<()> {
+        struct EmojiParser<'a> {
+            text: &'a str,
+            position: usize,
+        }
+
+        enum Token<'a> {
+            Text(&'a str),
+            Emoji(&'a str),
+        }
+
+        impl<'a> EmojiParser<'a> {
+            fn current(&self) -> Option<char> {
+                self.text[self.position..].chars().next()
+            }
+
+            fn next_token(&mut self) -> Option<Token<'a>> {
+                match self.current() {
+                    Some(':') => {
+                        let text_start = self.position;
+                        self.position += 1;
+                        if self.current().is_some_and(|c| c.is_alphabetic()) {
+                            let name_start = self.position;
+                            while let Some(c) = self.current() {
+                                if c.is_alphanumeric() || c == '_' {
+                                    self.position += c.len_utf8();
+                                } else {
+                                    break;
+                                }
+                            }
+                            if self.current() == Some(':') {
+                                let name_end = self.position;
+                                self.position += 1;
+                                Some(Token::Emoji(&self.text[name_start..name_end]))
+                            } else {
+                                Some(Token::Text(&self.text[text_start..self.position]))
+                            }
+                        } else {
+                            Some(Token::Text(&self.text[text_start..self.position]))
+                        }
+                    }
+                    Some(_) => {
+                        let start = self.position;
+                        while let Some(c) = self.current() {
+                            if c == ':' {
+                                break;
+                            } else {
+                                self.position += c.len_utf8();
+                            }
+                        }
+                        let end = self.position;
+                        Some(Token::Text(&self.text[start..end]))
+                    }
+                    None => None,
+                }
+            }
+        }
+
+        if self.in_code_block {
+            escape_html(&mut self.writer, text)?;
+        } else {
+            let mut parser = EmojiParser { text, position: 0 };
+            while let Some(token) = parser.next_token() {
+                match token {
+                    Token::Text(text) => escape_html(&mut self.writer, text)?,
+                    Token::Emoji(name) => {
+                        if let Some(filename) = self.config.emoji.get(name) {
+                            let branch_id = self
+                                .treehouse
+                                .branches_by_named_id
+                                .get(&format!("emoji/{name}"))
+                                .copied();
+                            if let Some(branch) = branch_id.map(|id| self.treehouse.tree.branch(id))
+                            {
+                                self.writer.write_str("<a href=\"#")?;
+                                escape_html(&mut self.writer, &branch.html_id)?;
+                                self.writer.write_str("\">")?;
+                            }
+                            self.writer.write_str("<img class=\"emoji\" title=\":")?;
+                            escape_html(&mut self.writer, name)?;
+                            self.writer.write_str(":\" src=\"")?;
+                            escape_html(&mut self.writer, &self.config.site)?;
+                            self.writer.write_str("/static/emoji/")?;
+                            escape_html(&mut self.writer, filename)?;
+                            self.writer.write_str("\">")?;
+                            if branch_id.is_some() {
+                                self.writer.write_str("</a>")?;
+                            }
+                        } else {
+                            self.writer.write_str(":")?;
+                            escape_html(&mut self.writer, name)?;
+                            self.writer.write_str(":")?;
+                        }
+                    }
+                }
+            }
+        }
+
         Ok(())
     }
 
@@ -431,9 +545,9 @@ where
 /// </ul>
 /// "#);
 /// ```
-pub fn push_html<'a, I>(s: &mut String, iter: I)
+pub fn push_html<'a, I>(s: &mut String, treehouse: &'a Treehouse, config: &'a Config, iter: I)
 where
     I: Iterator<Item = Event<'a>>,
 {
-    HtmlWriter::new(iter, s).run().unwrap();
+    HtmlWriter::new(treehouse, config, iter, s).run().unwrap();
 }

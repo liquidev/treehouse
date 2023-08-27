@@ -135,6 +135,7 @@ async function navigateToBranch(fragment) {
                 let [_root, ...path] = fullPath;
                 if (path !== undefined) {
                     let isNotAtIndexHtml = window.location.pathname != "/index.html";
+                    let lastBranch = null;
                     for (let linked of path) {
                         let branch = LinkedBranch.byLink.get(linked);
 
@@ -144,7 +145,10 @@ async function navigateToBranch(fragment) {
                         }
 
                         await branch.loadTree("navigateToBranch");
-                        branch.details.open = true;
+                        lastBranch = branch;
+                    }
+                    if (lastBranch != null) {
+                        expandDetailsRecursively(lastBranch.details);
                     }
                     window.location.hash = window.location.hash;
                 }

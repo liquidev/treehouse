@@ -111,7 +111,7 @@ pub fn branch_to_html(
             },
             Some(broken_link_callback),
         );
-        markdown::push_html(s, markdown_parser);
+        markdown::push_html(s, treehouse, config, markdown_parser);
 
         if let Content::Link(link) = &branch.attributes.content {
             write!(
