@@ -2,7 +2,7 @@ pub mod fix;
 pub mod generate;
 mod parse;
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use clap::{Args, Parser, Subcommand};
 
@@ -19,6 +19,11 @@ pub enum Command {
 
     /// Populate missing metadata in blocks.
     Fix(#[clap(flatten)] FixArgs),
+
+    /// Populate missing metadata in blocks across all files.
+    ///
+    /// By default only prints which files would be changed. To apply the changes, use `--apply`.
+    FixAll(#[clap(flatten)] FixAllArgs),
 }
 
 #[derive(Args)]
@@ -42,4 +47,22 @@ pub struct FixArgs {
     /// Write the previous version back to the specified path.
     #[clap(long)]
     pub backup: Option<PathBuf>,
+}
+
+#[derive(Args)]
+pub struct FixAllArgs {
+    /// If you're happy with the suggested changes, specifying this will apply them to the file
+    /// (overwrite it in place.)
+    #[clap(long)]
+    pub apply: bool,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct Paths<'a> {
+    pub target_dir: &'a Path,
+    pub static_dir: &'a Path,
+    pub template_dir: &'a Path,
+    pub content_dir: &'a Path,
+
+    pub config_file: &'a Path,
 }

@@ -2,9 +2,9 @@ use std::path::Path;
 
 use clap::Parser;
 use cli::{
-    fix::fix_file_cli,
-    generate::{self, regenerate_or_report_error, Paths},
-    Command, ProgramArgs,
+    fix::{fix_all_cli, fix_file_cli},
+    generate::{self, regenerate_or_report_error},
+    Command, Paths, ProgramArgs,
 };
 use log::{error, info};
 
@@ -18,21 +18,22 @@ mod tree;
 async fn fallible_main() -> anyhow::Result<()> {
     let args = ProgramArgs::parse();
 
+    let paths = Paths {
+        target_dir: Path::new("target/site"),
+        config_file: Path::new("treehouse.toml"),
+
+        // NOTE: These are intentionally left unconfigurable from within treehouse.toml
+        // because this is is one of those things that should be consistent between sites.
+        static_dir: Path::new("static"),
+        template_dir: Path::new("template"),
+        content_dir: Path::new("content"),
+    };
+
     match args.command {
         Command::Generate(regenerate_args) => {
-            let dirs = Paths {
-                target_dir: Path::new("target/site"),
-                config_file: Path::new("treehouse.toml"),
+            info!("regenerating using directories: {paths:#?}");
 
-                // NOTE: These are intentionally left unconfigurable from within treehouse.toml
-                // because this is is one of those things that should be consistent between sites.
-                static_dir: Path::new("static"),
-                template_dir: Path::new("template"),
-                content_dir: Path::new("content"),
-            };
-            info!("regenerating using directories: {dirs:#?}");
-
-            regenerate_or_report_error(&dirs);
+            regenerate_or_report_error(&paths);
 
             if regenerate_args.serve {
                 generate::web_server().await?;
@@ -40,6 +41,7 @@ async fn fallible_main() -> anyhow::Result<()> {
         }
 
         Command::Fix(fix_args) => fix_file_cli(fix_args)?,
+        Command::FixAll(fix_args) => fix_all_cli(fix_args, &paths)?,
     }
 
     Ok(())

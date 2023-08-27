@@ -27,6 +27,8 @@ use crate::{
 
 use crate::state::{FileId, Treehouse};
 
+use super::Paths;
+
 #[derive(Default)]
 struct Generator {
     tree_files: Vec<PathBuf>,
@@ -201,16 +203,6 @@ impl Generator {
 
         Ok(treehouse)
     }
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct Paths<'a> {
-    pub target_dir: &'a Path,
-    pub static_dir: &'a Path,
-    pub template_dir: &'a Path,
-    pub content_dir: &'a Path,
-
-    pub config_file: &'a Path,
 }
 
 pub fn regenerate(paths: &Paths<'_>) -> anyhow::Result<()> {

@@ -2,12 +2,13 @@ use std::ops::Range;
 
 use anyhow::Context;
 use treehouse_format::ast::Branch;
+use walkdir::WalkDir;
 
 use crate::state::{FileId, Treehouse};
 
 use super::{
     parse::{self, parse_toml_with_diagnostics, parse_tree_with_diagnostics},
-    FixArgs,
+    FixAllArgs, FixArgs, Paths,
 };
 
 struct Fix {
@@ -145,6 +146,40 @@ pub fn fix_file_cli(fix_args: FixArgs) -> anyhow::Result<()> {
         }
     } else {
         treehouse.report_diagnostics()?;
+    }
+
+    Ok(())
+}
+
+pub fn fix_all_cli(fix_all_args: FixAllArgs, paths: &Paths<'_>) -> anyhow::Result<()> {
+    for entry in WalkDir::new(paths.content_dir) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            let file = std::fs::read_to_string(entry.path())
+                .with_context(|| format!("cannot read file to fix: {:?}", entry.path()))?;
+            let utf8_filename = entry.path().to_string_lossy();
+
+            let mut treehouse = Treehouse::new();
+            let file_id = treehouse.add_file(utf8_filename.into_owned(), None, file);
+
+            if let Ok(fixed) = fix_file(&mut treehouse, file_id) {
+                if fixed != treehouse.source(file_id) {
+                    if fix_all_args.apply {
+                        println!("fixing: {:?}", entry.path());
+                        std::fs::write(entry.path(), fixed).with_context(|| {
+                            format!("cannot overwrite original file: {:?}", entry.path())
+                        })?;
+                    } else {
+                        println!("will fix: {:?}", entry.path());
+                    }
+                }
+            } else {
+                treehouse.report_diagnostics()?;
+            }
+        }
+    }
+    if !fix_all_args.apply {
+        println!("run with `--apply` to apply changes");
     }
 
     Ok(())
