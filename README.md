@@ -23,10 +23,10 @@ cargo run -p treehouse generate
 This will spit out a directory `target/site` containing the static pages. You're free to use any HTTP server you wish, but for development purposes treehouse includes one in the CLI:
 
 ```sh
-cargo run -p treehouse generate --serve
+cargo run -p treehouse generate --serve 8080
 ```
 
-This will fire up a server on port 8080. No way to change that, sorry. Edit the source code.
+This will fire up a server on port 8080.
 
 If you're developing, you may wanna use [`cargo-watch`](https://crates.io/crates/cargo-watch):
 

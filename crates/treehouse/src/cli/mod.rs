@@ -28,9 +28,9 @@ pub enum Command {
 
 #[derive(Args)]
 pub struct GenerateArgs {
-    /// Start a web server serving the static files. Useful with `cargo watch`.
+    /// Start a web server serving the static files on the given port. Useful with `cargo watch`.
     #[clap(short, long)]
-    pub serve: bool,
+    pub serve: Option<u16>,
 }
 
 #[derive(Args)]

@@ -81,6 +81,26 @@ impl<'a> Parser<'a> {
         self.advance();
     }
 
+    fn eat_until_line_break(&mut self) {
+        loop {
+            match self.current() {
+                Some('\r') => {
+                    self.advance();
+                    if self.current() == Some('\n') {
+                        self.advance();
+                        break;
+                    }
+                }
+                Some('\n') => {
+                    self.advance();
+                    break;
+                }
+                Some(_) => self.advance(),
+                None => break,
+            }
+        }
+    }
+
     pub fn peek_indent_level(&mut self) -> usize {
         let position = self.position;
         let indent_level = self.eat_as_long_as(' ');
@@ -101,10 +121,10 @@ impl<'a> Parser<'a> {
                 if self.current_starts_with("```") {
                     code_block = None;
                     self.position += 3;
-                    self.eat_until(|c| c == '\n');
+                    self.eat_until_line_break();
                     continue;
                 }
-                self.eat_until(|c| c == '\n');
+                self.eat_until_line_break();
 
                 if self.current().is_none() {
                     return Err(ParseErrorKind::UnterminatedCodeBlock.at(range.clone()));
@@ -117,14 +137,14 @@ impl<'a> Parser<'a> {
                     continue;
                 }
 
-                self.eat_until(|c| c == '\n');
+                self.eat_until_line_break();
                 let before_indentation = self.position;
                 let line_indent_level = self.eat_as_long_as(' ');
                 let after_indentation = self.position;
                 if self.current().map(&cond).is_some_and(identity) || self.current().is_none() {
                     self.position = before_indentation;
                     break;
-                } else if !matches!(self.current(), Some('\n')) && line_indent_level < indent_level
+                } else if !matches!(self.current(), Some('\n') | Some('\r')) && line_indent_level < indent_level
                 {
                     return Err(ParseErrorKind::InconsistentIndentation {
                         got: line_indent_level,

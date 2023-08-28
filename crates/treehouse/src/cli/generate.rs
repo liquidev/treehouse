@@ -249,14 +249,14 @@ pub fn regenerate_or_report_error(paths: &Paths<'_>) {
     }
 }
 
-pub async fn web_server() -> anyhow::Result<()> {
+pub async fn web_server(port: u16) -> anyhow::Result<()> {
     let app = Router::new().nest_service("/", ServeDir::new("target/site"));
 
     #[cfg(debug_assertions)]
     let app = app.layer(LiveReloadLayer::new());
 
-    info!("serving on port 8080");
-    Ok(axum::Server::bind(&([0, 0, 0, 0], 8080).into())
+    info!("serving on port {port}");
+    Ok(axum::Server::bind(&([0, 0, 0, 0], port).into())
         .serve(app.into_make_service())
         .await?)
 }

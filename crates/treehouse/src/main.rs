@@ -35,8 +35,8 @@ async fn fallible_main() -> anyhow::Result<()> {
 
             regenerate_or_report_error(&paths);
 
-            if regenerate_args.serve {
-                generate::web_server().await?;
+            if let Some(port) = regenerate_args.serve {
+                generate::web_server(port).await?;
             }
         }
 
