@@ -74,13 +74,6 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn eat_until(&mut self, cond: impl Fn(char) -> bool) {
-        while self.current().map(&cond).is_some_and(|x| !x) {
-            self.advance();
-        }
-        self.advance();
-    }
-
     fn eat_until_line_break(&mut self) {
         loop {
             match self.current() {
@@ -144,7 +137,8 @@ impl<'a> Parser<'a> {
                 if self.current().map(&cond).is_some_and(identity) || self.current().is_none() {
                     self.position = before_indentation;
                     break;
-                } else if !matches!(self.current(), Some('\n') | Some('\r')) && line_indent_level < indent_level
+                } else if !matches!(self.current(), Some('\n') | Some('\r'))
+                    && line_indent_level < indent_level
                 {
                     return Err(ParseErrorKind::InconsistentIndentation {
                         got: line_indent_level,
