@@ -145,7 +145,7 @@
 }
 
 .tree details:not([open])>summary>.branch-summary>:last-child::after {
-    content: '';
+    content: '\00A0';
     display: inline-block;
 
     background-image:
@@ -159,6 +159,12 @@
 
     vertical-align: text-bottom;
     margin-left: 0.5em;
+
+    margin-right: -32px;
+}
+
+.tree details:not([open])>summary>.branch-summary>:last-child {
+    padding-right: 32px;
 }
 
 @media (hover: none) {

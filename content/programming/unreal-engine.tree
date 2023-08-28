@@ -11,7 +11,7 @@
 + ### Blueprint
 
     % id = "01H8Y0CKD1H9MFQ74ERYNQHF35"
-    - NOTE TO SELF: this section could really use some screenshots
+    + NOTE TO SELF: this section could really use some screenshots
 
         % id = "01H8Y0CKD1QWDY8304APN69VG6"
         - I don't have UE installed on my home computer yet, so you'll have to take my word for a lot of these things
@@ -36,7 +36,7 @@
               I had no reason to revisit it since so I simply don't know if it's any better now, but if it is, [let's chat][branch:hello]!)
 
     % id = "01H8Y0CKD1G06CG62XWZ02JREC"
-    - writing Blueprints is actually pretty darn nice and there's a lot to learn from the editor UX
+    + writing Blueprints is actually pretty darn nice and there's a lot to learn from the editor UX
 
         % id = "01H8Y0CKD1G86TY8AF6Z2SQ85P"
         - I say this mainly with regards to writing new nodes. it's as simple as dragging your mouse out of a pin, and a window will pop up giving you suggestions on what could be connected there
@@ -56,7 +56,7 @@
                   it'll not only create a function call node, but also hook up `DefaultSceneRoot` as its `self` parameter
 
         % id = "01H8Y0CKD1KM42PKVSGB4QASG3"
-        - another cool thing that happens with nodes (or pins rather) is when you try to connect two pins of incompatible types
+        + another cool thing that happens with nodes (or pins rather) is when you try to connect two pins of incompatible types
 
             % id = "01H8Y0CKD1NES5RBGVTPRH3F0Q"
             - Blueprint is strongly typed so you can't just pass in a `Float` where a `String` is expected
@@ -69,10 +69,10 @@
                 - I do have a gripe with this though and it's where it places the node. it tries very hard to center it but unfortunately never succeeds. perhaps a bug I could fix one day?
 
         % id = "01H8Y0CKD1G3PV1NMWV590H6Y3"
-        - therefore most of the time writing Blueprints is very ergonomic
+        + in the end most of the time writing Blueprints is very ergonomic
 
             % id = "01H8Y0CKD1C5TJXXD40B99WQ3C"
-            - except when it isn't because Blueprint is still an imperative language and has a concept similar to statements (`Exec` pins), which breaks the entire idea of pure data flow and
+            + except when it isn't because Blueprint is still an imperative language and has a concept similar to statements (`Exec` pins), which breaks the entire idea of pure data flow and
               introduces control flow into the mix
 
                 % id = "01H8Y0CKD1J2P2HZ507YBSNVKK"
@@ -101,7 +101,7 @@
                               a version without an `Exec` pin
 
                 % id = "01H8Y0CKD1N37WTCY66CM7R198"
-                - in fact I'm seeing a bit of a semblance to the classic [function coloring problem][def:article/function_coloring]
+                + in fact I'm seeing a bit of a semblance to the classic [function coloring problem][def:article/function_coloring]
 
                     % id = "01H8Y0CKD19JMY87YY50M3RCQF"
                     + except where it usually applies to the `async` concept found in most modern programming languages, here it applies to the concept of control flow vs data flow
@@ -110,7 +110,7 @@
                         - and speaking of `async`, [Blueprint handles the classic `async` problem very gracefully][branch:01H8Y0CKD106HXQAJK87XV0H93]!
 
         % id = "01H8Y0CKD106HXQAJK87XV0H93"
-        - did I mention how well Blueprints handle latent tasks?
+        + did I mention how well Blueprints handle latent tasks?
 
             % id = "01H8Y427B03JNPTWW025ES176K"
             - since control flow is based on those `Exec` pins, you can easily map your classic concept of callbacks to simply firing off the appropriate `Exec` pin
@@ -128,7 +128,7 @@
                 - which is annoying but not terrible, since most of that latent, high level gameplay logic happens inside the main event graph anyways
 
     % id = "01H8Y96DGCWWTAP5X8ZYPCJZQC"
-    - that isn't to say the editor UI is perfect
+    + that isn't to say the editor UI is perfect
 
         % id = "01H8Y96DGCRP0W6YWJ3PYJ2GES"
         - it's actually quite janky and there tend to be brief flashes of content falling into place
@@ -137,7 +137,7 @@
             - this is true of other parts of the Unreal editor UI but I'll focus on Blueprint here
 
         % id = "01H8Y96DGDDRA8DD6PRGDCF8GP"
-        - the annoying thing is that node UIs are laid out lazily, by default using an algorithm that does not produce precise results for pin locations
+        + the annoying thing is that node UIs are laid out lazily, by default using an algorithm that does not produce precise results for pin locations
 
             % id = "01H8Y96DGDT0Y23G86HEKNWF4H"
             - which means that when you first load a Blueprint, some of the wires will be bent in weird ways, and will fall into place as you zoom out and explore the graph more
@@ -146,7 +146,7 @@
             - the effect looks quite janky and really upsets my inner perfectionist
 
         % id = "01H8Y96DGDJG41P3XTFE8F4Y1M"
-        - another annoyance I have is that as you zoom out, the nodes start looking just a little bit differently due to font sizes being snapped to integers.
+        + another annoyance I have is that as you zoom out, the nodes start looking just a little bit differently due to font sizes being snapped to integers.
 
             % id = "01H8Y96DGDRCBKWBXC7AXZV43E"
             - at very low zoom levels, nodes stop rendering their text altogether, which makes their layout shift even more.
@@ -158,19 +158,16 @@
                     - which can make it frustrating to lay nodes out on a large scale, because you'll only find out your nodes are overlapping when you zoom in real close
 
             % id = "01H8Y96DGDSM03EJJVN9FS6SSB"
-            - there's a `Straighten Connection` feature, which you can use to make your graphs look more aesthetically pleasing
+            - there's a `Straighten Connection` feature, which you can use to make your graphs look more aesthetically pleasing, but it only straightens the nodes such that they look good on the current zoom level
 
-                % id = "01H8Y96DGD2NSQYJH1P0Y888QA"
-                - but it only straightens the nodes such that they look good on the current zoom level
-
-                    % id = "01H8Y96DGDNTKMGSJZDJN2GSJB"
-                    - so what'll happen with it sometimes is you'll straighten a connection, then zoom in, and the connection won't be quite straight because of the aforementioned layout shift
+                % id = "01H8Y96DGDNTKMGSJZDJN2GSJB"
+                - so what'll happen with it sometimes is you'll straighten a connection, then zoom in, and the connection won't be quite straight because of the aforementioned layout shift
 
     % id = "01H8Y0CKD1103FHF332M2Q4MG7"
-    - maintaining Blueprints in a large project though could be a lot better
+    + maintaining Blueprints in a large project though could be a lot better
 
         % id = "01H8Y0CKD1PPEPX8EEFRAM2VE1"
-        - with regards to your graphs becoming really large
+        + with regards to your graphs becoming really large
 
             % id = "01H8Y0CKD1DFSJ4BDPPFMGK66M"
             - everybody kinda sorta just formats nodes however they see fit, and there is no unified autoformatter
@@ -187,20 +184,24 @@
                         % id = "01H8Y427B0PJN75GA33S9CZJYH"
                         - I can't believe I remembered the spelling of that word. *portmanteau*.
 
+                - there are plugins on the marketplace that solve this, but I refuse to believe Epic Games doesn't have this problem themselves
+
+                    - I'd guess it's just not very high up their priorities
+
         % id = "01H8Y0CKD1QF5YBTKF3JEZCN5W"
-        - with regards to assets (how long this darn stuff takes to load)
+        + with regards to assets (how long this darn stuff takes to load)
 
             % id = "01H8Y0CKD1B1MZH39Z7EKB6KDT"
             - the biggest offender here being that hard references are the default
 
                 % id = "01H8Y427B17K7219TPH8VRFZ96"
-                - thus you can add a Mesh Component to your Blueprint and it'll load the entire thing when you wanna tweak a variable or some logic in the event graph
+                - thus you can add a Mesh Component to your Blueprint and it'll load *the entire mesh with all the textures and skeleton and everything* when you wanna tweak a variable or some logic in the event graph
 
                     % id = "01H8Y427B1QNZHJ5Z8W0QNFYPE"
                     - and not asynchronously in the background, you will have to _wait_ for it to finish loading. which is pretty annoying
 
     % id = "01H8Y0CKD16HEQKQX1NJG9GG42"
-    - and the runtime performance isn't the best for a few reasons
+    + and the runtime performance isn't the best for a few reasons
 
         % id = "01H8Y427B1ZKJA16V17NG80QHS"
         - the VM isn't implemented in the most optimal way
@@ -216,3 +217,7 @@
 
             % id = "01H8Y427B1G7ZYE3S8RRHG5WRQ"
             - and it's not hard to extract the performance sensitive parts to C++ because Blueprint offers tools for refactoring your code
+
+    - but that doesn't prevent me from liking it!
+
+        - since it's way more pleasant to write game logic in than C++, given that you don't need to wait a minute for your code to recompile.
