@@ -9,6 +9,7 @@
     --link-color-visited-light: #6c2380;
 
     --background-color: rgb(255, 253, 246);
+    --background-color-tooltip: rgb(226, 223, 214);
     --text-color: #55423e;
     --link-color: #004ec8;
     --link-color-visited: #6c2380;
@@ -22,6 +23,7 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --background-color: rgb(30, 40, 53);
+        --background-color-tooltip: rgb(23, 31, 41);
         --text-color: #d7cdbf;
         --link-color: #93cce8;
         --link-color-visited: #f7afde;
@@ -271,11 +273,53 @@ nav .logo {
 
 /* Style emojis to be readable */
 
-img.emoji {
+img[is="th-emoji"] {
     max-width: 1.5em;
     max-height: 1.5em;
     vertical-align: bottom;
     object-fit: contain;
+}
+
+/* And also style emoji tooltips. */
+
+.emoji-wrapper {
+    position: relative;
+}
+
+.emoji-tooltip {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    z-index: 100;
+
+    background-color: var(--background-color-tooltip);
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 6px;
+}
+
+.emoji-wrapper:hover .emoji-tooltip {
+    display: flex;
+}
+
+.emoji-tooltip img {
+    display: block;
+    max-width: 64px;
+    max-height: 64px;
+}
+
+.emoji-tooltip p {
+    --recursive-wght: 550;
+    color: var(--text-color);
+    font-size: 0.75em;
+    margin: 0;
+    padding-top: 4px;
+    line-height: 1;
 }
 
 /* Funny joke */

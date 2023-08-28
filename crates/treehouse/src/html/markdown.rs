@@ -463,7 +463,7 @@ where
                                 escape_html(&mut self.writer, &branch.html_id)?;
                                 self.writer.write_str("\">")?;
                             }
-                            self.writer.write_str("<img class=\"emoji\" title=\":")?;
+                            self.writer.write_str("<img is=\"th-emoji\" title=\":")?;
                             escape_html(&mut self.writer, name)?;
                             self.writer.write_str(":\" src=\"")?;
                             escape_html(&mut self.writer, &self.config.site)?;
