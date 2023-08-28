@@ -184,8 +184,10 @@
                         % id = "01H8Y427B0PJN75GA33S9CZJYH"
                         - I can't believe I remembered the spelling of that word. *portmanteau*.
 
+                % id = "01H8YT7R15B3Z3T486DB53TR51"
                 - there are plugins on the marketplace that solve this, but I refuse to believe Epic Games doesn't have this problem themselves
 
+                    % id = "01H8YT7R15VTF7VPX5QK7K233J"
                     - I'd guess it's just not very high up their priorities
 
         % id = "01H8Y0CKD1QF5YBTKF3JEZCN5W"
@@ -218,6 +220,8 @@
             % id = "01H8Y427B1G7ZYE3S8RRHG5WRQ"
             - and it's not hard to extract the performance sensitive parts to C++ because Blueprint offers tools for refactoring your code
 
+    % id = "01H8YT7R15MFW3RRQAF8CM4EP6"
     - but that doesn't prevent me from liking it!
 
+        % id = "01H8YT7R15ZJWBY0TN6F6HN95Y"
         - since it's way more pleasant to write game logic in than C++, given that you don't need to wait a minute for your code to recompile.
