@@ -111,7 +111,13 @@ pub fn branch_to_html(
             },
             Some(broken_link_callback),
         );
+        if has_children {
+            s.push_str("<span class=\"branch-summary\">")
+        }
         markdown::push_html(s, treehouse, config, markdown_parser);
+        if has_children {
+            s.push_str("</span>")
+        }
 
         if let Content::Link(link) = &branch.attributes.content {
             write!(
