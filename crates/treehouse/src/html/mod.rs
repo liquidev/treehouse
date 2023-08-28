@@ -1,5 +1,6 @@
 use std::fmt::{self, Display, Write};
 
+pub mod breadcrumbs;
 mod markdown;
 pub mod navmap;
 pub mod tree;

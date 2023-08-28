@@ -21,7 +21,11 @@ use walkdir::WalkDir;
 use crate::{
     cli::parse::parse_tree_with_diagnostics,
     config::Config,
-    html::{navmap::build_navigation_map, tree::branches_to_html},
+    html::{
+        breadcrumbs::breadcrumbs_to_html,
+        navmap::{build_navigation_map, NavigationMap},
+        tree::branches_to_html,
+    },
     tree::SemaRoots,
 };
 
@@ -32,6 +36,12 @@ use super::Paths;
 #[derive(Default)]
 struct Generator {
     tree_files: Vec<PathBuf>,
+}
+
+struct ParsedTree {
+    tree_path: String,
+    file_id: FileId,
+    target_path: PathBuf,
 }
 
 impl Generator {
@@ -98,22 +108,8 @@ impl Generator {
         Ok(())
     }
 
-    fn generate_all_files(&self, config: &Config, paths: &Paths<'_>) -> anyhow::Result<Treehouse> {
+    fn parse_trees(&self, paths: &Paths<'_>) -> anyhow::Result<(Treehouse, Vec<ParsedTree>)> {
         let mut treehouse = Treehouse::new();
-
-        let mut handlebars = Handlebars::new();
-        let tree_template = Self::register_template(
-            &mut handlebars,
-            &mut treehouse,
-            "tree",
-            &paths.template_dir.join("tree.hbs"),
-        )?;
-
-        struct ParsedTree {
-            tree_path: String,
-            file_id: FileId,
-            target_path: PathBuf,
-        }
         let mut parsed_trees = vec![];
 
         for path in &self.tree_files {
@@ -155,7 +151,28 @@ impl Generator {
             }
         }
 
+        Ok((treehouse, parsed_trees))
+    }
+
+    fn generate_all_files(
+        &self,
+        treehouse: &mut Treehouse,
+        config: &Config,
+        paths: &Paths<'_>,
+        navigation_map: &NavigationMap,
+        parsed_trees: impl IntoIterator<Item = ParsedTree>,
+    ) -> anyhow::Result<()> {
+        let mut handlebars = Handlebars::new();
+        let tree_template = Self::register_template(
+            &mut handlebars,
+            treehouse,
+            "tree",
+            &paths.template_dir.join("tree.hbs"),
+        )?;
+
         for parsed_tree in parsed_trees {
+            let breadcrumbs = breadcrumbs_to_html(config, navigation_map, &parsed_tree.tree_path);
+
             let mut tree = String::new();
             // Temporarily steal the tree out of the treehouse.
             let roots = treehouse
@@ -164,7 +181,7 @@ impl Generator {
                 .expect("tree should have been added to the treehouse");
             branches_to_html(
                 &mut tree,
-                &mut treehouse,
+                treehouse,
                 config,
                 parsed_tree.file_id,
                 &roots.branches,
@@ -174,15 +191,20 @@ impl Generator {
             #[derive(Serialize)]
             pub struct TemplateData<'a> {
                 pub config: &'a Config,
+                pub breadcrumbs: String,
                 pub tree: String,
             }
+            let template_data = TemplateData {
+                config,
+                breadcrumbs,
+                tree,
+            };
 
-            let template_data = TemplateData { config, tree };
             let templated_html = match handlebars.render("tree", &template_data) {
                 Ok(html) => html,
                 Err(error) => {
                     Self::wrangle_handlebars_error_into_diagnostic(
-                        &mut treehouse,
+                        treehouse,
                         tree_template,
                         error.line_no,
                         error.column_no,
@@ -201,7 +223,7 @@ impl Generator {
             std::fs::write(parsed_tree.target_path, templated_html)?;
         }
 
-        Ok(treehouse)
+        Ok(())
     }
 }
 
@@ -220,16 +242,25 @@ pub fn regenerate(paths: &Paths<'_>) -> anyhow::Result<()> {
     info!("copying static directory to target directory");
     copy_dir(paths.static_dir, paths.target_dir.join("static"))?;
 
-    info!("generating standalone pages");
+    info!("parsing tree");
     let mut generator = Generator::default();
     generator.add_directory_rec(paths.content_dir)?;
-    let treehouse = generator.generate_all_files(&config, paths)?;
+    let (mut treehouse, parsed_trees) = generator.parse_trees(paths)?;
 
     info!("generating navigation map");
     let navigation_map = build_navigation_map(&treehouse, "index");
     std::fs::write(
         paths.target_dir.join("navmap.js"),
         navigation_map.to_javascript(),
+    )?;
+
+    info!("generating standalone pages");
+    generator.generate_all_files(
+        &mut treehouse,
+        &config,
+        paths,
+        &navigation_map,
+        parsed_trees,
     )?;
 
     treehouse.report_diagnostics()?;

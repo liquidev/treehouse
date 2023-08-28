@@ -33,6 +33,12 @@
                     fill="currentColor" />
             </svg>
         </a>
+
+        {{#if breadcrumbs}}
+        <ol class="breadcrumbs">
+            {{{ breadcrumbs }}}
+        </ol>
+        {{/if}}
     </nav>
 
     <noscript>
