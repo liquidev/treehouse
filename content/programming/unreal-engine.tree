@@ -127,6 +127,45 @@
                 % id = "01H8Y427B0SPJ3NJCFS7S4YGR9"
                 - which is annoying but not terrible, since most of that latent, high level gameplay logic happens inside the main event graph anyways
 
+    % id = "01H8Y96DGCWWTAP5X8ZYPCJZQC"
+    - that isn't to say the editor UI is perfect
+
+        % id = "01H8Y96DGCRP0W6YWJ3PYJ2GES"
+        - it's actually quite janky and there tend to be brief flashes of content falling into place
+
+            % id = "01H8Y96DGDVZ4DZ4AZE7EDYNFP"
+            - this is true of other parts of the Unreal editor UI but I'll focus on Blueprint here
+
+        % id = "01H8Y96DGDDRA8DD6PRGDCF8GP"
+        - the annoying thing is that node UIs are laid out lazily, by default using an algorithm that does not produce precise results for pin locations
+
+            % id = "01H8Y96DGDT0Y23G86HEKNWF4H"
+            - which means that when you first load a Blueprint, some of the wires will be bent in weird ways, and will fall into place as you zoom out and explore the graph more
+
+            % id = "01H8Y96DGDCEF6FEQWGX2BQ6AH"
+            - the effect looks quite janky and really upsets my inner perfectionist
+
+        % id = "01H8Y96DGDJG41P3XTFE8F4Y1M"
+        - another annoyance I have is that as you zoom out, the nodes start looking just a little bit differently due to font sizes being snapped to integers.
+
+            % id = "01H8Y96DGDRCBKWBXC7AXZV43E"
+            - at very low zoom levels, nodes stop rendering their text altogether, which makes their layout shift even more.
+
+                % id = "01H8Y96DGDGRBZXWH31G08FRYM"
+                - the effect of this is that nodes themselves take up less space, and it appears as though there is more space between them than there actually is
+
+                    % id = "01H8Y96DGD1QSAJ0QWD2ZYXKEW"
+                    - which can make it frustrating to lay nodes out on a large scale, because you'll only find out your nodes are overlapping when you zoom in real close
+
+            % id = "01H8Y96DGDSM03EJJVN9FS6SSB"
+            - there's a `Straighten Connection` feature, which you can use to make your graphs look more aesthetically pleasing
+
+                % id = "01H8Y96DGD2NSQYJH1P0Y888QA"
+                - but it only straightens the nodes such that they look good on the current zoom level
+
+                    % id = "01H8Y96DGDNTKMGSJZDJN2GSJB"
+                    - so what'll happen with it sometimes is you'll straighten a connection, then zoom in, and the connection won't be quite straight because of the aforementioned layout shift
+
     % id = "01H8Y0CKD1103FHF332M2Q4MG7"
     - maintaining Blueprints in a large project though could be a lot better
 
