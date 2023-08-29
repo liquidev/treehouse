@@ -3,11 +3,11 @@
 import { navigationMap } from "/navmap.js";
 
 const branchStateKey = "treehouse.openBranches";
-let branchState = JSON.parse(localStorage.getItem(branchStateKey)) || {};
+let branchState = JSON.parse(sessionStorage.getItem(branchStateKey)) || {};
 
 function saveBranchIsOpen(branchID, state) {
     branchState[branchID] = state;
-    localStorage.setItem(branchStateKey, JSON.stringify(branchState));
+    sessionStorage.setItem(branchStateKey, JSON.stringify(branchState));
 }
 
 function branchIsOpen(branchID) {
