@@ -17,16 +17,16 @@ pub fn breadcrumbs_to_html(
             if element != "index" {
                 s.push_str("<li class=\"breadcrumb\">");
                 {
-                    let element = path
+                    let short_element = path
                         .get(i - 1)
                         .map(|p| format!("{p}/"))
                         .and_then(|prefix| element.strip_prefix(prefix.as_str()).map(Cow::Borrowed))
                         .unwrap_or_else(|| Cow::Owned(format!("/{element}")));
                     write!(
                         s,
-                        "<a href=\"{site}/{element}.html\">{element}</a>",
+                        "<a href=\"{site}/{element}.html\">{short_element}</a>",
                         site = EscapeAttribute(&config.site),
-                        element = EscapeAttribute(&element)
+                        element = EscapeAttribute(element)
                     )
                     .unwrap();
                 }
