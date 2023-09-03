@@ -183,7 +183,7 @@ pre {
 /* And don't let code examples fly off and overflow the window */
 
 pre {
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 /* Also don't let images get out of hand */
