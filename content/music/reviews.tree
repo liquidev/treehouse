@@ -13,11 +13,18 @@
     % id = "01H969NN1BDK73M64B9DSNP2JE"
     - streaming services suck so I am not linking to any
 
+        % id = "01H9DQNG980CAPHFNX08JE5Z82"
+        - unless I need to talk about a particular moment in a track, in that case - YouTube. but in case you wish to visit that dumpster fire of a website, I highly recommend making use of uBlock Origin
+
         % id = "01H969NN1BC7GFBVG8S26RX922"
         - some albums' Bandcamp pages let you listen to a couple tracks before nagging you about Buying The Thing, so you can use that for preview purposes
 
             % id = "01H969NN1BQX07505EM3093W47"
             - or use your favorite streaming service's search engine, but I'd prefer if you supported the artist by buying their music :ralsei_love:
+
+% id = "music/album/aphex-twin/syro"
+  content.link = "music/reviews/aphex-twin/syro"
++ ### album: Aphex Twin - Syro
 
 % id = "music/album/radiohead/hail-to-the-thief"
 + ### album: Radiohead - Hail to the Thief
