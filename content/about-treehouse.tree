@@ -287,41 +287,41 @@
         % id = "01H8V55APDCZ0HY20GGXYE8D1G"
         - but manually coming up with ids for branches would be quite the nuisance.
 
-        % id = "01H8V55APDXV0KRVEF9PTA72J7"
-        - that's why with the power of Tools Programming™, I built a tool that fills out all the ids for me.
+            % id = "01H8V55APDXV0KRVEF9PTA72J7"
+            - that's why with the power of Tools Programming™, I built a tool that fills out all the ids for me.
 
-            % id = "01H8V55APD8VG7WE6JX5JBDJEC"
-            - I chose [ulids](https://github.com/ulid/spec) for generated ids, for a few reasons:
+                % id = "01H8V55APD8VG7WE6JX5JBDJEC"
+                - I chose [ulids](https://github.com/ulid/spec) for generated ids, for a few reasons:
 
-                % id = "01H8V55APD2J58ENT1T0JRJ7H6"
-                - they're guaranteed to be unique, so I can be sure no two branches end up having the same id
+                    % id = "01H8V55APD2J58ENT1T0JRJ7H6"
+                    - they're guaranteed to be unique, so I can be sure no two branches end up having the same id
 
-                    % id = "01H8V55APDGV6PKJKZ16CJ1YXY"
-                    - which is precisely what lets me pull the trick where I embed one tree within another, and you just dig into `index.html`.
+                        % id = "01H8V55APDGV6PKJKZ16CJ1YXY"
+                        - which is precisely what lets me pull the trick where I embed one tree within another, and you just dig into `index.html`.
 
-                % id = "01H8V55APD1CYZD8GE3AK87QK2"
-                - they embed a timestamp, which I can use to display the date/time when a branch was written, because I generally `fix` branches right after writing
+                    % id = "01H8V55APD1CYZD8GE3AK87QK2"
+                    - they embed a timestamp, which I can use to display the date/time when a branch was written, because I generally `fix` branches right after writing
 
-                    % id = "01H8V55APDFXW5A5J85HJQP17C"
-                    - as well as highlight branches which were added since your last visit
+                        % id = "01H8V55APDFXW5A5J85HJQP17C"
+                        - as well as highlight branches which were added since your last visit
 
-                    % id = "01H8V55APDPZK4C8H5TTHTHH7J"
-                    - not that either of these features are implemented as of writing this (2023-08-20)
+                        % id = "01H8V55APDPZK4C8H5TTHTHH7J"
+                        - not that either of these features are implemented as of writing this (2023-08-20)
 
-                % id = "01H8V55APDXB9AXTAGAE9TNQRB"
-                - they're much more compact than [uuids](https://en.wikipedia.org/wiki/Uuid)
+                    % id = "01H8V55APDXB9AXTAGAE9TNQRB"
+                    - they're much more compact than [uuids](https://en.wikipedia.org/wiki/Uuid)
 
-                    % id = "01H8V55APDZE5AE92GDM2TH2EF"
-                    - which use 32 hexadecimal digits separated unevenly by 4 dashes, giving you 36 characters.
+                        % id = "01H8V55APDZE5AE92GDM2TH2EF"
+                        - which use 32 hexadecimal digits separated unevenly by 4 dashes, giving you 36 characters.
 
-                        % id = "01H8V55APDS478E3ED5CRVT6RE"
-                        - who even remembers how many digits there are between each dash? I know I don't.
+                            % id = "01H8V55APDS478E3ED5CRVT6RE"
+                            - who even remembers how many digits there are between each dash? I know I don't.
 
-                    % id = "01H8V55APDXP1D0MHGN2DXBT16"
-                    - ulids on the other hand are 26 digits encoded with [Crockford's base32](https://www.crockford.com/base32.html)
+                        % id = "01H8V55APDXP1D0MHGN2DXBT16"
+                        - ulids on the other hand are 26 digits encoded with [Crockford's base32](https://www.crockford.com/base32.html)
 
-                        % id = "01H8V55APD79QTC2NFC6X7S3W4"
-                        - which is cool because it's much denser while avoiding ambiguous characters - `0`, `O`, and `o` are all interpreted as `0` (zero).
+                            % id = "01H8V55APD79QTC2NFC6X7S3W4"
+                            - which is cool because it's much denser while avoiding ambiguous characters - `0`, `O`, and `o` are all interpreted as `0` (zero).
 
     % id = "01H8V55APDXT064G9PA78JW0CM"
     - noticed how fast the treehouse restores your state? there's basically no delay.
@@ -347,20 +347,20 @@
         % id = "01H8V55APD0S00ACN0YY7Y9MSW"
         - being a variable font, I can tweak the text's look and feel on many different axes.
 
-        % id = "01H8V55APDRG88JRV74MMDTV4J"
-        - the one that I wanted to shout out in particular is `CASL`, which lets me make it look a lot more happy and playful.
+            % id = "01H8V55APDRG88JRV74MMDTV4J"
+            - the one that I wanted to shout out in particular is `CASL`, which lets me make it look a lot more happy and playful.
 
-            % id = "01H8V55APDMP5FE9ZCMRACH18W"
-            + almost like Comic Sans, but without all the stigma.
+                % id = "01H8V55APDMP5FE9ZCMRACH18W"
+                + almost like Comic Sans, but without all the stigma.
 
-                % id = "01H8V55APDPGMD33J4M3SJ2QKP"
-                - I actually considered using [Comic Neue](https://comicneue.com/) as the font on this website, but ultimately chose Recursive.
+                    % id = "01H8V55APDPGMD33J4M3SJ2QKP"
+                    - I actually considered using [Comic Neue](https://comicneue.com/) as the font on this website, but ultimately chose Recursive.
 
-                    % id = "01H8V55APDXBS7HMDSCEJ1JDPY"
-                    - Comic Neue and not the Real™ Comic Sans MS because it's licensed under the SIL Open Font License, which means I could redistribute it on my website.
+                        % id = "01H8V55APDXBS7HMDSCEJ1JDPY"
+                        - Comic Neue and not the Real™ Comic Sans MS because it's licensed under the SIL Open Font License, which means I could redistribute it on my website.
 
-                        % id = "01H8V55APDFT0Y4ECEM92XFTTR"
-                        - not everyone runs Windows or macOS, so just assuming the reader has Comic Sans installed isn't ideal.
+                            % id = "01H8V55APDFT0Y4ECEM92XFTTR"
+                            - not everyone runs Windows or macOS, so just assuming the reader has Comic Sans installed isn't ideal.
 
             % id = "01H8V55APD2BPGQXEK7JARYJ9H"
             - in particular the variant on my website is 100% casual (`CASL`), and -2.0 slanted (`slnt`).
