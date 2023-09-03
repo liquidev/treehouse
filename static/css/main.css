@@ -173,12 +173,23 @@ body {
 
 /* Make code examples a little prettier by giving them visual separation from the rest of the page */
 
+code {
+    padding: 3px 4px;
+    background-color: var(--shaded-background);
+    border-radius: 4px;
+}
+
 pre {
     padding: 8px 12px;
     margin: 12px 0;
     background-color: var(--shaded-background);
     border-radius: 8px;
 }
+
+pre>code {
+    background: none;
+}
+
 
 /* And don't let code examples fly off and overflow the window */
 
