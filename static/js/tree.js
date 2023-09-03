@@ -2,6 +2,8 @@
 
 import { navigationMap } from "/navmap.js";
 
+/* Branch persistence */
+
 const branchStateKey = "treehouse.openBranches";
 let branchState = JSON.parse(sessionStorage.getItem(branchStateKey)) || {};
 
@@ -33,6 +35,8 @@ class Branch extends HTMLLIElement {
 }
 
 customElements.define("th-b", Branch, { extends: "li" });
+
+/* Linked branches */
 
 class LinkedBranch extends Branch {
     static byLink = new Map();
@@ -96,8 +100,20 @@ class LinkedBranch extends Branch {
     }
 }
 
-
 customElements.define("th-b-linked", LinkedBranch, { extends: "li" });
+
+/* Fragment navigation */
+
+let rehashing = false;
+function rehash() { // https://www.youtube.com/watch?v=Tv1SYqLllKI
+    if (!rehashing) {
+        rehashing = true;
+        let hash = window.location.hash;
+        window.location.hash = "";
+        window.location.hash = hash;
+        rehashing = false;
+    }
+}
 
 function expandDetailsRecursively(element) {
     while (element && element.tagName != "MAIN") {
@@ -113,15 +129,13 @@ function navigateToPage(page) {
 }
 
 async function navigateToBranch(fragment) {
-    if (fragment.length == 0) {
-        return;
-    }
+    if (fragment.length == 0) return;
 
     let element = document.getElementById(fragment);
     if (element !== null) {
         // If the element is already loaded on the page, we're good.
         expandDetailsRecursively(element);
-        window.location.hash = window.location.hash;
+        rehash();
     } else {
         // The element is not loaded, we need to load the tree that has it.
         let parts = fragment.split(':');
@@ -150,7 +164,7 @@ async function navigateToBranch(fragment) {
                     if (lastBranch != null) {
                         expandDetailsRecursively(lastBranch.details);
                     }
-                    window.location.hash = window.location.hash;
+                    rehash();
                 }
             } else {
                 // In case the navigation map does not contain the given page, we can try
@@ -163,7 +177,7 @@ async function navigateToBranch(fragment) {
 
 async function navigateToCurrentBranch() {
     let location = window.location.hash.substring(1);
-    navigateToBranch(location);
+    await navigateToBranch(location);
 }
 
 // When you click on a link, and the destination is within a <details> that is not expanded,
