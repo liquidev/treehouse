@@ -75,7 +75,8 @@ body::selection {
 
 body,
 pre,
-code {
+code,
+kbd {
     font-family: 'RecVar', sans-serif;
     font-size: 14px;
     line-height: 1.5;
@@ -133,7 +134,8 @@ h4 {
 }
 
 pre,
-code {
+code,
+kbd {
     --recursive-mono: 1.0;
     --recursive-casl: 0.0;
     --recursive-slnt: 0.0;
@@ -179,6 +181,12 @@ code {
     border-radius: 4px;
 }
 
+kbd {
+    padding: 3px 6px;
+    border: 1px solid var(--border-1);
+    border-radius: 6px;
+}
+
 pre {
     padding: 8px 12px;
     margin: 12px 0;
@@ -187,7 +195,9 @@ pre {
 }
 
 pre>code {
+    padding: 0;
     background: none;
+    border-radius: 0px;
 }
 
 /* And don't let code examples fly off and overflow the window */
