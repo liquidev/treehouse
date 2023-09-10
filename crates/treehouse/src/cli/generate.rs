@@ -136,7 +136,7 @@ impl Generator {
                     continue;
                 }
             };
-            let tree_path = tree_path.with_extension("").to_string_lossy().into_owned();
+            let tree_path = tree_path.with_extension("").to_string_lossy().replace('\\', "/");
             let file_id =
                 treehouse.add_file(utf8_filename.into_owned(), Some(tree_path.clone()), source);
 

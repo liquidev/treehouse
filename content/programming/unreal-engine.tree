@@ -36,81 +36,80 @@
               I had no reason to revisit it since so I simply don't know if it's any better now, but if it is, [let's chat][branch:hello]!)
 
     % id = "01H8Y0CKD1G06CG62XWZ02JREC"
-    + writing Blueprints is actually pretty darn nice and there's a lot to learn from the editor UX
+    + writing Blueprints is actually pretty darn nice and there's a lot to learn from the editor UX and basic refactoring tools
 
         % id = "01H8Y0CKD1G86TY8AF6Z2SQ85P"
-        - I say this mainly with regards to writing new nodes. it's as simple as dragging your mouse out of a pin, and a window will pop up giving you suggestions on what could be connected there
+        + when you drag your mouse out of a pin, and a window will pop up giving you suggestions on what could be connected there
 
-        % id = "01H8Y0CKD1P9SNK3TV967M705C"
-        - then you select from the list and it creates the node, autoconnecting stuff as necessary
+            % id = "01H8Y0CKD1P9SNK3TV967M705C"
+            + then you select from the list and it creates the node, autoconnecting stuff as necessary
 
-            % id = "01H8Y0CKD1PQS2J2WB22ASZY17"
-            - one of the nicer autoconnections it can do is when you want to call a function on an actor component
+                % id = "01H8Y0CKD1PQS2J2WB22ASZY17"
+                - one of the nicer autoconnections it can do is when you want to call a function on an actor component
 
-                % id = "01H8Y0CKD16PFNWJ6EAARHA7BD"
-                - instance functions require you to pass in a `self` to call the function on
+                    % id = "01H8Y0CKD16PFNWJ6EAARHA7BD"
+                    - instance functions require you to pass in a `self` to call the function on
 
-                % id = "01H8Y0CKD1FVPCA5NBY5KK1F5X"
-                - so what it does is it suggests functions to call on all the _concrete components
-                  you already have in your actor_, and when you select something like `Destroy Component (DefaultSceneRoot)`,
-                  it'll not only create a function call node, but also hook up `DefaultSceneRoot` as its `self` parameter
+                    % id = "01H8Y0CKD1FVPCA5NBY5KK1F5X"
+                    - so what it does is it suggests functions to call on all the _concrete components
+                    you already have in your actor_, and when you select something like `Destroy Component (DefaultSceneRoot)`,
+                    it'll not only create a function call node, but also hook up `DefaultSceneRoot` as its `self` parameter
 
         % id = "01H8Y0CKD1KM42PKVSGB4QASG3"
-        + another cool thing that happens with nodes (or pins rather) is when you try to connect two pins of incompatible types
+        + when you try to connect two pins of incompatible types, it'll automatically insert a conversion node for you
 
             % id = "01H8Y0CKD1NES5RBGVTPRH3F0Q"
-            - Blueprint is strongly typed so you can't just pass in a `Float` where a `String` is expected
+            - Blueprint is strongly typed so you can't just pass in a `Float` where a `String` is expected, but luckily this makes the system way less painful
 
-            % id = "01H8Y0CKD1VVMB8RVECVGZP0V2"
-            - but instead of having you explicitly type out "o dear Blueprint I would like to convert this `Float` to a `String`", you can just join the two pins together and it'll insert a
-              conversion node for you automatically
+            % id = "01H8Y0CKD10GQBNNP0RBJEWKW4"
+            - I do have a gripe with this though and it's where it places the node. it tries very hard to center it but unfortunately never succeeds.
 
-                % id = "01H8Y0CKD10GQBNNP0RBJEWKW4"
-                - I do have a gripe with this though and it's where it places the node. it tries very hard to center it but unfortunately never succeeds. perhaps a bug I could fix one day?
+                % id = "01H987QXFE445XNN5YDS2FYR5F"
+                + perhaps a bug I could fix one day?
 
-        % id = "01H8Y0CKD1G3PV1NMWV590H6Y3"
-        + in the end most of the time writing Blueprints is very ergonomic
+        % id = "01H987QXFEYSE260S996BE84DV"
+        - from [Oskar Kogut](https://github.com/kretoskar): if you change a `BlueprintCallable` function to `const` (or otherwise make it pure,) the editor will automatically correct the `Exec` pin flow for you
 
-            % id = "01H8Y0CKD1C5TJXXD40B99WQ3C"
-            + except when it isn't because Blueprint is still an imperative language and has a concept similar to statements (`Exec` pins), which breaks the entire idea of pure data flow and
-              introduces control flow into the mix
+    % id = "01H8Y0CKD1C5TJXXD40B99WQ3C"
+    + the design of Blueprint the Language is pretty dated - it is still an imperative language and has a concept similar to statements (`Exec` pins), which breaks the entire idea of pure data
+    flow and introduces control flow into the mix
 
-                % id = "01H8Y0CKD1J2P2HZ507YBSNVKK"
-                - this split is called _pure_ and _impure_ nodes, where impure nodes are those that perform control flow (ie. those with `Exec` pins)
+        % id = "01H8Y0CKD1J2P2HZ507YBSNVKK"
+        - this split is called _pure_ and _impure_ nodes, where impure nodes are those that perform control flow (ie. those with `Exec` pins)
 
-                % id = "01H8Y0CKD1P5JQCGHEY405KKPH"
-                - this results in weird edge cases like needing two separate node types to handle branching (one that can have side effects - `Branch`, and another that can't - `Select`)
+        % id = "01H8Y0CKD1P5JQCGHEY405KKPH"
+        + this results in weird edge cases like needing two separate node types to handle branching (one that can have side effects - `Branch`, and another that can't - `Select`)
 
-                    % id = "01H8Y0CKD1EGWTQYHT2WYQSZY5"
-                    - `Branch` is used to shuttle control flow between two `Exec` lines, based on a `Bool`. you get a `True` branch and a `False` branch
+            % id = "01H8Y0CKD1EGWTQYHT2WYQSZY5"
+            - `Branch` is used to shuttle control flow between two `Exec` lines, based on a `Bool`. you get a `True` branch and a `False` branch
 
-                    % id = "01H8Y0CKD1WFEWNYPZWGCH3N7X"
-                    - and `Select` is used to choose a value based on another value, kind of like a ternary in C++
+            % id = "01H8Y0CKD1WFEWNYPZWGCH3N7X"
+            + and `Select` is used to choose a value based on another value, kind of like a ternary in C++
 
-                        % id = "01H8Y0CKD156C0ZAXK7JS9W81D"
-                        - however it is quite annoying because you can only switch on enums (and other stuff that has a finite set of values,) whereas with `Branch` you can use any `Bool` condition you want
+                % id = "01H8Y0CKD156C0ZAXK7JS9W81D"
+                - however it is quite annoying because you can only switch on enums (and other stuff that has a finite set of values,) whereas with `Branch` you can use any `Bool` condition you want
 
-                        % id = "01H8Y0CKD1YP7Q3HVJJZNJAJKG"
-                        - this would be fine if not for the existence of Gameplay Tags, which precisely _do not_ have a finite set of values
+                % id = "01H8Y0CKD1YP7Q3HVJJZNJAJKG"
+                + this would be fine if not for the existence of Gameplay Tags, which precisely _do not_ have a finite set of values
 
-                            % id = "01H8Y0CKD1P7D9QMPVQYWSDFT5"
-                            - there is a `Switch on Gameplay Tag` node, but that is for control flow and not data flow!
+                    % id = "01H8Y0CKD1P7D9QMPVQYWSDFT5"
+                    - there is a `Switch on Gameplay Tag` node, but that is for control flow and not data flow!
 
-                            % id = "01H8Y0CKD126918N282MNBXD2C"
-                            - this isn't an unsolvable problem but it illustrates the pure vs impure issue pretty well - you'd have to duplicate the implementation of `Switch on Gameplay Tag` to have
-                              a version without an `Exec` pin
+                    % id = "01H8Y0CKD126918N282MNBXD2C"
+                    - this isn't an unsolvable problem but it illustrates the pure vs impure issue pretty well - you'd have to duplicate the implementation of `Switch on Gameplay Tag` to have
+                        a version without an `Exec` pin
 
-                % id = "01H8Y0CKD1N37WTCY66CM7R198"
-                + in fact I'm seeing a bit of a semblance to the classic [function coloring problem][def:article/function_coloring]
+        % id = "01H8Y0CKD1N37WTCY66CM7R198"
+        + I'm seeing a bit of a semblance to the classic [function coloring problem][def:article/function_coloring]
 
-                    % id = "01H8Y0CKD19JMY87YY50M3RCQF"
-                    + except where it usually applies to the `async` concept found in most modern programming languages, here it applies to the concept of control flow vs data flow
+            % id = "01H8Y0CKD19JMY87YY50M3RCQF"
+            + except where it usually applies to the `async` concept found in most modern programming languages, here it applies to the concept of control flow vs data flow
 
-                        % id = "01H8Y0CKD1Q8RXXK3KE4F4XAFF"
-                        - and speaking of `async`, [Blueprint handles the classic `async` problem very gracefully][branch:01H8Y0CKD106HXQAJK87XV0H93]!
+                % id = "01H8Y0CKD1Q8RXXK3KE4F4XAFF"
+                - and speaking of `async`, [Blueprint handles the classic `async` problem very gracefully][branch:01H8Y0CKD106HXQAJK87XV0H93]!
 
         % id = "01H8Y0CKD106HXQAJK87XV0H93"
-        + did I mention how well Blueprints handle latent tasks?
+        + despite its flaws, one of Blueprint's strengths is asynchronous and latent tasks
 
             % id = "01H8Y427B03JNPTWW025ES176K"
             - since control flow is based on those `Exec` pins, you can easily map your classic concept of callbacks to simply firing off the appropriate `Exec` pin
@@ -128,7 +127,7 @@
                 - which is annoying but not terrible, since most of that latent, high level gameplay logic happens inside the main event graph anyways
 
     % id = "01H8Y96DGCWWTAP5X8ZYPCJZQC"
-    + that isn't to say the editor UI is perfect
+    + the editor UI, despite [being helpful as it is][branch:01H8Y0CKD1G06CG62XWZ02JREC], is far from perfect
 
         % id = "01H8Y96DGCRP0W6YWJ3PYJ2GES"
         - it's actually quite janky and there tend to be brief flashes of content falling into place
@@ -137,16 +136,16 @@
             - this is true of other parts of the Unreal editor UI but I'll focus on Blueprint here
 
         % id = "01H8Y96DGDDRA8DD6PRGDCF8GP"
-        + the annoying thing is that node UIs are laid out lazily, by default using an algorithm that does not produce precise results for pin locations
+        + node UIs are laid out lazily, by default using an algorithm that does not produce precise results for pin locations
 
             % id = "01H8Y96DGDT0Y23G86HEKNWF4H"
             - which means that when you first load a Blueprint, some of the wires will be bent in weird ways, and will fall into place as you zoom out and explore the graph more
 
-            % id = "01H8Y96DGDCEF6FEQWGX2BQ6AH"
-            - the effect looks quite janky and really upsets my inner perfectionist
+                % id = "01H8Y96DGDCEF6FEQWGX2BQ6AH"
+                - the effect looks quite janky and really upsets my inner perfectionist
 
         % id = "01H8Y96DGDJG41P3XTFE8F4Y1M"
-        + another annoyance I have is that as you zoom out, the nodes start looking just a little bit differently due to font sizes being snapped to integers.
+        + as you zoom out, the nodes start looking just a little bit different due to font sizes being snapped to integers
 
             % id = "01H8Y96DGDRCBKWBXC7AXZV43E"
             - at very low zoom levels, nodes stop rendering their text altogether, which makes their layout shift even more.
@@ -164,7 +163,7 @@
                 - so what'll happen with it sometimes is you'll straighten a connection, then zoom in, and the connection won't be quite straight because of the aforementioned layout shift
 
     % id = "01H8Y0CKD1103FHF332M2Q4MG7"
-    + maintaining Blueprints in a large project though could be a lot better
+    + maintaining Blueprints in a large project could be a lot better
 
         % id = "01H8Y0CKD1PPEPX8EEFRAM2VE1"
         + with regards to your graphs becoming really large
@@ -173,10 +172,10 @@
             - everybody kinda sorta just formats nodes however they see fit, and there is no unified autoformatter
 
                 % id = "01H8Y0CKD1VRVNMZ827RF7XBCA"
-                - there's a reason people say Go's tooling is frickin' amazing, you know
+                - there's a reason people say Go's tooling is frickin' amazing, you know. it keeps codebases consistent!
 
                 % id = "01H8Y0CKD1980VGHFBYGM8PN3E"
-                + this results in what we Hat in Time modders used to call _Kismetti_ in the Unreal Engine 3 days but now we'd call _Blueprintti_
+                + this results in what we Hat in Time modders used to call _Kismetti_ in the Unreal Engine 3 days but nowadays we'd call _Blueprintti_
 
                     % id = "01H8Y0CKD179SBZ58F5JMDC5F3"
                     + which is a portmanteau of Blueprint and spaghetti.
@@ -203,7 +202,7 @@
                     - and not asynchronously in the background, you will have to _wait_ for it to finish loading. which is pretty annoying
 
     % id = "01H8Y0CKD16HEQKQX1NJG9GG42"
-    + and the runtime performance isn't the best for a few reasons
+    + the runtime performance isn't the best for a few reasons
 
         % id = "01H8Y427B1ZKJA16V17NG80QHS"
         - the VM isn't implemented in the most optimal way
@@ -221,7 +220,7 @@
             - and it's not hard to extract the performance sensitive parts to C++ because Blueprint offers tools for refactoring your code
 
     % id = "01H8YT7R15MFW3RRQAF8CM4EP6"
-    - but that doesn't prevent me from liking it!
+    - but all that doesn't prevent me from liking it!
 
         % id = "01H8YT7R15ZJWBY0TN6F6HN95Y"
         - since it's way more pleasant to write game logic in than C++, given that you don't need to wait a minute for your code to recompile.
