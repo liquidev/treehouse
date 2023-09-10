@@ -8,9 +8,6 @@
   content.link = "programming/projects"
 + ## projects
 
-    % id = "01H9R1NKBQ9PEQT49XJZ6PB1KH"
-    - (actually nothing here yet lol, I was about to write something here but forgot but now don't wanna delete a branch I'm gonna bring back again anyways)
-
 % content.link = "programming/cxx"
   id = "programming/cxx"
 + ## C++
