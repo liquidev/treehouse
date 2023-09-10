@@ -5,6 +5,7 @@
     - and also more than just bit magic but I like how that sounds
 
 % id = "programming/projects"
+  content.link = "programming/projects"
 + ## projects
 
 % content.link = "programming/unreal-engine"
