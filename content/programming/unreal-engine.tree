@@ -189,6 +189,19 @@
                     % id = "01H8YT7R15VTF7VPX5QK7K233J"
                     - I'd guess it's just not very high up their priorities
 
+            % id = "01HA4HJKRVQ9GVMNY6NSY0T3T6"
+            - refactoring your nodes is a hell of a pain. Blueprint is kind of write-only
+
+                % id = "01HA4HJKRVBSRB5T1GM0TBE1C7"
+                - say you're calling `ApplyGameplayEffectToTarget` a bunch of times and you want to replace those occurrences with a custom function that wraps `ApplyGameplayEffectToTarget`
+                with some extra semantic information, to make it more discoverable, searchable, and easy to use
+
+                    % id = "01HA4HJKRVGD7CW6T3MHRKNJS7"
+                    - well then good luck :hueh:
+
+                    % id = "01HA4HJKRVBN3RR32Q9WHMKVFY"
+                    - in a text-based language you could use a dumb search and replace to accomplish this task, but there is no such thing in Blueprint. :cry:
+
         % id = "01H8Y0CKD1QF5YBTKF3JEZCN5W"
         + with regards to assets (how long this darn stuff takes to load)
 
