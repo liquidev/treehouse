@@ -1,0 +1,137 @@
+% id = "01HA0GPJ8B0BZCTCDFZMDAW4W4"
+- [repo][def:stitchkit/repo]
+
+% id = "01HA0GPJ8BXETX6BWP8E9484DT"
+- my UnrealScript compiler
+
+% id = "01HA0GPJ8B6QW73GAH6KJQP0GD"
++ part of the Stitchkit project, which aims to build a set of Hat in Time modding tools that are a joy to use
+
+    % id = "01HA0GPJ8B0YJBXVS61M57VRX0"
+    - the name "MuScript" is actually a reference to Mustache Girl
+
+% id = "01HA0GPJ8BKRNXP9KJQCAWW4MD"
++ ### architecture
+
+    % id = "01HA0GPJ8BP1QVDE9Z2GHFV5DV"
+    - MuScript uses a query-based architecture similar to rustc
+
+        % id = "01HA0GPJ8BCX44E6N7BG350AET"
+        - the classic pass-based compiler architecture has the compiler drive itself by first
+          parsing all files, then analyzing them, then emitting bytecode - in passes
+
+        % id = "01HA0GPJ8B4K7VTV8BC45FW4YW"
+        - a query-based architecture works by driving the compiler by asking it questions
+
+            % id = "01HA0GPJ8BYPDRG206ZYREYPBX"
+            + the most interesting question to us all being "do you know the bytecode of this package?"
+
+                % id = "01HA0GPJ8BZM9NGGGX765JM0CD"
+                + which then triggers another question "do you know the classes in this package?"
+
+                    % id = "01HA0GPJ8B9HZMCJ3DK0C2DT2Y"
+                    + which then triggers another question "do you know the contents (variables, functions, structs, enums, states, ...) of those classes?"
+
+                        % id = "01HA0GPJ8BFPFDFB37ZHVWHZKV"
+                        + which then triggers another question "do you know all the variables in class `ComfortZone`?"
+
+                            % id = "01HA0GPJ8BGWWAHAM5CZ722ZZH"
+                            + which then triggers another question "do you know the ID of the type `Int`?"
+
+                                % id = "01HA0GPJ8BDN6XYJBP792XWDWG"
+                                - "yeah, it's 4."
+
+                            % id = "01HA0GPJ8B95ZTVG14HVTBXSBF"
+                            - "there's this variable `HuggingQuota` with ID 427."
+
+                        % id = "01HA0GPJ8BKCAEVNC9CJB7JA9S"
+                        + which then triggers another question "do you know all the functions in class `ComfortZone`?"
+
+                            % id = "01HA0GPJ8BY6VT4PMGK2Q8J640"
+                            + which then triggers another question "do you know the bytecode of function `Hug`?"
+
+                                % id = "01HA0GPJ8BR6ZX06RSQJEVWXMQ"
+                                + which then triggers another question "do you know the ID of the class `Person`?"
+
+                                    % id = "01HA0GPJ8BYP7GQK2HV804YF9S"
+                                    - "yes indeed, this class exists and has ID 42."
+
+                                % id = "01HA0GPJ8BBS7TKTY2D203VMN1"
+                                + which then triggers another question "do you know the bytecode of this function?"
+
+                                    % id = "01HA0GPJ8BDJMHGD7S3A7F4Z4Q"
+                                    - …you get the idea.
+
+                                % id = "01HA0GPJ8B7GXF79PMKF89NZ3H"
+                                - "alright, here's the bytecode for `Hug`."
+
+                            % id = "01HA0GPJ8BTB9AF5QCQF555BX3"
+                            - "that's all."
+
+% id = "01HA0GPJ8BY2R40Y5GP515853E"
++ ### ideas
+
+    % id = "01HA0GPJ8BSMZ13V2S7DPZ508P"
+    - I jot down various silly ideas for MuScript in the future here
+
+    % id = "01HA0GPJ8B05TABAEC9JV73VRR"
+    + parallelization with an event loop
+
+        % id = "01HA0GPJ8B48K60BWQ2XZZ0PB5"
+        + the thing with a pass-based architecture is that with enough locking, it *may* be easy to parallelize.
+
+            % id = "01HA0GPJ8B5QB6DF8YVTYC2HJY"
+            + I can imagine parallelization existing on many levels here.
+
+                % id = "01HA0GPJ8BMQ8JAH09YGC3Y7VW"
+                - if you have a language like Zig where every line can be tokenized independently, you can spawn a task per line.
+
+                % id = "01HA0GPJ8BKGJ15YYNS9C1QRYB"
+                - you could analyze all the type declarations in parallel. though with dependencies it gets hairy.
+
+                % id = "01HA0GPJ8B2984NNB7E8X0Z1X7"
+                - you could analyze the contents of classes in parallel.
+
+            % id = "01HA0GPJ8BFYNKVA6Z923E2370"
+            - thing is, this stuff gets pretty hairy when you get to think about dependencies between all these different stages.
+
+                % id = "01HA0GPJ8B915YCDR0MZSW5RN1"
+                - hence why we haven't seen very many compilers that would adopt this architecture; most of them just sort of do their thing on one thread, and expect to parallelize by spawning more processes
+                  of `cc` or `rustc` or what have you.
+
+        % id = "01HA0GPJ8BHF1KRM8KGFMT1875"
+        + where with a pass-based architecture the problem is dependencies between independent stages you're trying to parallelize, with a query-based architecture like MuScript's it gets even harder,
+        because the entire compiler is effectively a dependency ~~hell~~ machine.
+
+            % id = "01HA0GPJ8B20D3MKV6TMB19GW2"
+            - one query depends on 10 subqueries, which all depend on their own subqueries, and so on and so forth.
+
+                % id = "01HA0GPJ8BA4T1C36R8WFJ3G2F"
+                - but there's _technically_ nothing holding us back from executing certain queries in parallel.
+
+                    % id = "01HA0GPJ8B3FGTM417H46N0EXD"
+                    - in fact, imagine if we executed _all_ queries in parallel.
+
+        % id = "01HA0GPJ8BENERTESAFQJ7G3R9"
+        + enter: the `async` event loop compiler
+
+            % id = "01HA0GPJ8BF9E0MW1WS2EJY0J8"
+            - there is a central event loop that distributes tasks to be done to multiple threads
+
+            % id = "01HA0GPJ8B5WA232A319JTEFM2"
+            - every query function is `async`
+
+                % id = "01HA0GPJ8BQ15PT2M4BTA1ZNDX"
+                - meaning it suspends execution of the current function, writes back "need to compute the type ID of `Person` because that's not yet available" into a concurrent set (very important that it's a _set_) - let's call this set the "TODO set"
+
+            % id = "01HA0GPJ8B34GP8TD21AY8NXS1"
+            - on the next iteration, the event loop spawns a task for each element of the TODO set, and the tasks compute all the questions asked
+
+                % id = "01HA0GPJ8BKPHBPN44HM6WHKDJ"
+                - because we're using a set, the computation is never duplicated; remember that if an answer has already been memoized, it does not spawn a task and instead returns the answer immediately
+
+                    % id = "01HA0GPJ8B0V2VJMAV1YCQ19Q8"
+                    - though this may be hard to do with Rust because, as far as I know, there is no way to suspend a function conditionally? **(needs research.)**
+
+            % id = "01HA0GPJ8BBREEJCJRWPJJNR3N"
+            - once there are no more tasks in the queue, we're done compiling
