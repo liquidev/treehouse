@@ -1,4 +1,4 @@
-% id = "01HA0GPJ8B0BZCTCDFZMDAW4W4"
+% id = "01HA4P1KVBKC1YAV3MNGCEK2SG"
 - [repo][def:stitchkit/repo]
 
 % id = "01HA4KNTTKQ3XXPMQ4BYEK7ASD"
@@ -53,19 +53,19 @@
     - also see [MuScript's insanium][branch:01HA4KNTTGG3YX2GYFQ89M2V6Q]
 
     % id = "01HA4KNTTKF0EGFMG2229Z9XKB"
-    - hot reloading scripts in the editor
+    + hot reloading scripts in the editor
 
         % id = "01HA4KNTTK5VS9BR12H3M5CFXE"
         - in theory if we control the editor process, we should be able to search the address space for various anchor points
 
             % id = "01HA4NZ9DAWBD2KQW8YB8Z7WPZ"
-            - scripts can be up to 65536 bytes long - this might not seem like much, but bytecode is much more compact than text!
+            + scripts can be up to 65536 bytes long - this might not seem like much, but bytecode is much more compact than text!
 
                 % id = "01HA4NZ9DARFC10P5AFT6J03E1"
                 - from my analyses when building [Yarnbox][branch:programing/projects/yarnbox], most chunks of bytecode don't exceed 4096 bytes
 
             % id = "01HA4KNTTKW393XV8CPZSW2J7H"
-            - the engine loads your bytecode *mostly* verbatim, so we could include a recognizable signature at the end of every script
+            + the engine loads your bytecode *mostly* verbatim, so we could include a recognizable signature at the end of every script
 
                 % id = "01HA4NZ9DADP5E842D1630NH19"
                 - I imagine we could use a short string of bytes that's unlikely to collide with anything yet fast to search for. probably 16 bytes (128 bits) would be enough but we can experiment
@@ -82,6 +82,12 @@
 
                 % id = "01HA4NZ9DA9YKXHM4FDT5T1KBT"
                 - and the typical mod doesn't have that many functions (what, 200 maybe? that would be ~12.5 MiB of memory, which ain't much)
+
+        - with the bytecode of the script found in memory, we can modify it arbitrarily however we want
+
+            - except it's not that simple because scripts contain object references, and we have no way to resolve those to addresses
+
+                - we could use `DynamicLoadObject` though, as cursed as that is :thinking:
 
         % id = "01HA4NZ9DAJWYBEZV2P1PYA4DW"
         - the downside of this is that we could only modify the bytecode of functions.
