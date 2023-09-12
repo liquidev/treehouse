@@ -67,8 +67,18 @@
         % id = "01H8W7VEVPSHDWDH58HFKBMGD6"
         - but I don't wanna replace it because it's just too good
 
+- ### [Noto Color Emoji](https://github.com/googlefonts/noto-emoji/)
+
+    - most Unicode emojis on this website use an old version of Noto Color Emoji, aka [blob emoji](https://en.wikipedia.org/wiki/Blob_emoji).
+
+        - commit `914c9ecb`
+
+        - because they're super comfy and cute :smile:
+
+            - really wish Google had kept them around for longer, I hate the modern Noto emojis. they're so corporate and soulless. the blobs were so nice, why did you take them away? :cry:
+
 % id = "01H8W7VEVP9FHW7QKZFXDRPRGD"
 - ### [Twemoji](https://github.com/twitter/twemoji)
 
-    % id = "01H8W7VEVPAT6NMJX9FG3KVYE3"
-    - yeah I stole a couple of those. but you can view those on [the *real* emojipedia](https://emojipedia.org) because they're pretty ubiquitous and easy to understand.
+    - sometimes used as placeholders for blobs I couldn't find in the original Noto emojis. someday I might design my own placeholders.
+
