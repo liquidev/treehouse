@@ -1,3 +1,11 @@
+% id = "programming/projects/stitchkit"
+  content.link = "programming/projects/stitchkit"
++ ### Stitchkit
+
 % id = "programming/projects/muscript"
   content.link = "programming/projects/muscript"
 + ### MuScript
+
+% id = "programming/projects/yarnbox"
+  content.link = "programming/projects/yarnbox"
++ ### Yarnbox

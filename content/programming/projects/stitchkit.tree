@@ -1,0 +1,90 @@
+% id = "01HA0GPJ8B0BZCTCDFZMDAW4W4"
+- [repo][def:stitchkit/repo]
+
+% id = "01HA4KNTTKQ3XXPMQ4BYEK7ASD"
+- a heartwarmingly joyful to use modding toolkit for A Hat in Time
+
+% id = "01HA4KNTTKP66JZQSJGSMH4DGJ"
++ ### philosophy
+
+    % id = "01HA4KNTTKEAKZHHQ7ST7WF80G"
+    + better than vanilla
+
+        % id = "01HA4KNTTKYFC57JSX0E8B3P45"
+        - the experience of using Stitchkit should always be more pleasant than the vanilla modding tools
+
+            % id = "01HA4KNTTKBEC62498QK5S4FR4"
+            - if it's somehow worse, that's a bug
+
+    % id = "01HA4KNTTKMD2J4FW653CMADR7"
+    + fix the problems, don't fear breakage
+
+        % id = "01HA4KNTTKG3YFJDC3E20WQQ2N"
+        - applies to [MuScript][branch:programming/projects/muscript] in particular - we are not afraid to make the language better, even if it breaks your code
+
+    % id = "01HA4KNTTK77FYN351SRRA9A2X"
+    + if it ain't broke, don't fix it
+
+        % id = "01HA4KNTTK7P44BH53T2G7NPSW"
+        - while fixing issues is important, we want the modding tools to remain familiar to existing vanilla users.
+
+            % id = "01HA4KNTTK3E434W16S72WVYQC"
+            - for example the syntax of UnrealScript may be a bit dated, but it is perfectly readable without much reason to change it. no need to invent a new language.
+
+    % id = "01HA4KNTTKZ785HH49ACCJCVCH"
+    + be helpful
+
+        % id = "01HA4KNTTK4ZYMRF7JHXM0X3GM"
+        - people who come to mod AHiT are often not professional programmers to put up with shitty tools that have overly cryptic error messages and terrible user experience across the board.
+
+        % id = "01HA4KNTTKCB8X790D4N1NR8QC"
+        - we want to help people fuel their imagination instead of hindering it
+
+% id = "01HA4KNTTK4TCWTWQXDWPPEQE0"
++ ### insanium
+
+    % id = "01HA4KNTTK6V6WGVTG2FH84JQ5"
+    - section for absolutely insane ideas that will never work but fill my inner hackerman with joy
+
+        % id = "01HA4NZ9DAMZ90TS7SZA3F2A9F"
+        - organized from least insane to most insane
+
+    % id = "01HA4KNTTKNHFVJGB3DVVHA8NB"
+    - also see [MuScript's insanium][branch:01HA4KNTTGG3YX2GYFQ89M2V6Q]
+
+    % id = "01HA4KNTTKF0EGFMG2229Z9XKB"
+    - hot reloading scripts in the editor
+
+        % id = "01HA4KNTTK5VS9BR12H3M5CFXE"
+        - in theory if we control the editor process, we should be able to search the address space for various anchor points
+
+            % id = "01HA4NZ9DAWBD2KQW8YB8Z7WPZ"
+            - scripts can be up to 65536 bytes long - this might not seem like much, but bytecode is much more compact than text!
+
+                % id = "01HA4NZ9DARFC10P5AFT6J03E1"
+                - from my analyses when building [Yarnbox][branch:programing/projects/yarnbox], most chunks of bytecode don't exceed 4096 bytes
+
+            % id = "01HA4KNTTKW393XV8CPZSW2J7H"
+            - the engine loads your bytecode *mostly* verbatim, so we could include a recognizable signature at the end of every script
+
+                % id = "01HA4NZ9DADP5E842D1630NH19"
+                - I imagine we could use a short string of bytes that's unlikely to collide with anything yet fast to search for. probably 16 bytes (128 bits) would be enough but we can experiment
+                with less
+
+                % id = "01HA4NZ9DA4HADG7SFDTPKKJ11"
+                - I say it loads your code *mostly* verbatim because it actually parses the bytecode to translate archive object indices to
+
+            % id = "01HA4NZ9DAW2KEDX62E810PA03"
+            - since we can't reallocate memory, we'll have to always preallocate all 65536 bytes - but 64 KiB isn't that much in the first place,
+
+                % id = "01HA4NZ9DA1YJ949VCKME3HQXW"
+                - well not until you realize how many functions there are in the engine (I haven't counted.) but you can't modify those so no need to support this functionality there
+
+                % id = "01HA4NZ9DA9YKXHM4FDT5T1KBT"
+                - and the typical mod doesn't have that many functions (what, 200 maybe? that would be ~12.5 MiB of memory, which ain't much)
+
+        % id = "01HA4NZ9DAJWYBEZV2P1PYA4DW"
+        - the downside of this is that we could only modify the bytecode of functions.
+
+            % id = "01HA4NZ9DAKCW9PF0T4HKR2PX8"
+            - I imagine there could be some hacks we could do to trigger running arbitrary code inside the context of the editor, but I haven't thought those through yet fully

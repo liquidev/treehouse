@@ -1,0 +1,11 @@
+% id = "01HA4NZ9DC15Y3EQ0E3A4EKEJ2"
+- [repo][def:abit/repo]
+
+% id = "01HA4NZ9DCMH8A92GF8V3VEE93"
+- part of the ABiT mod loader project
+
+    % id = "01HA4NZ9DCZH4DPQWB4QVKM7N9"
+    - which is now dead because Gears for Breakfast took away the game's debug symbols :cry:
+
+% id = "01HA4NZ9DCAST8G6262A6YQA1D"
+- dynamic bytecode patcher - it injects into your game, fiddles with the bytecode as it loads, and modifies existing code that way
