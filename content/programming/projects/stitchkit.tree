@@ -83,10 +83,13 @@
                 % id = "01HA4NZ9DA9YKXHM4FDT5T1KBT"
                 - and the typical mod doesn't have that many functions (what, 200 maybe? that would be ~12.5 MiB of memory, which ain't much)
 
+        % id = "01HA4PDZ8DTRSED9G8QNNDG422"
         - with the bytecode of the script found in memory, we can modify it arbitrarily however we want
 
+            % id = "01HA4PDZ8DYY6G6314F4CRVHXQ"
             - except it's not that simple because scripts contain object references, and we have no way to resolve those to addresses
 
+                % id = "01HA4PDZ8D4198D8MG0GY5P9Q7"
                 - we could use `DynamicLoadObject` though, as cursed as that is :thinking:
 
         % id = "01HA4NZ9DAJWYBEZV2P1PYA4DW"
