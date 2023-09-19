@@ -5,13 +5,13 @@
     - I don't embed any audio here for copyright reasons (thanks DMCA I love you (I actually really frickin' hate you))
 
     % id = "01H969NN1BBPGJMR5QTA3FV5M0"
-    - all links lead to places where you can legally obtain a copy of an album
+    + all links lead to places where you can legally obtain a copy of an album
 
         % id = "01H969NN1BMN7VY2PE4YNFHZWA"
         - unless I could not find such a place; in that case, I describe how I got a hold of a copy.
 
     % id = "01H969NN1BDK73M64B9DSNP2JE"
-    - streaming services suck so I am not linking to any
+    + streaming services suck so I am not linking to any
 
         % id = "01H9DQNG980CAPHFNX08JE5Z82"
         - unless I need to talk about a particular moment in a track, in that case - YouTube. but in case you wish to visit that dumpster fire of a website, I highly recommend making use of uBlock Origin
@@ -22,15 +22,20 @@
             % id = "01H969NN1BQX07505EM3093W47"
             - or use your favorite streaming service's search engine, but I'd prefer if you supported the artist by buying their music :ralsei_love:
 
-% id = "music/album/aphex-twin/drukqs"
-  content.link = "music/reviews/aphex-twin/drukqs"
-+ ### album: Aphex Twin - drukQs
+    % id = "01H9R1NKBDQJ0ZRBC55EHMDV3M"
+    + I take various approaches to reviewing music
 
-    % id = "01H9JB094GTG1TJ029CQ4PNMS0"
-    - buy: [Bandcamp](https://aphextwin.bandcamp.com/album/drukqs)
+        % id = "01H9R1NKBDN8NFW3BANM7PZYQF"
+        + some of it is interpretations, some of it is describing why I vibe with it and what elements of the composition I like
 
-    % id = "01H9JB094GS63ZP0Y22W6F5A27"
-    - (no review yet, section only for permalinking purposes)
+            % id = "01H9R1NKBDCN8YD9KZX0GYSKQ2"
+            - it depends heavily on the album in question. some music is so crazy you cannot synaesthesize anything but abstract shapes
+
+        % id = "01H9R1NKBDCNH2TP7C5KRE313N"
+        + sometimes I only list my favorite tracks, sometimes I list all of them
+
+            % id = "01H9R1NKBDN6AXFGQ9T3MSZ80B"
+            - it depends heavily on the album in question. if it makes a story that is meant to be listened in its entirety, I will include the full track list and emphasize tracks with descriptions.
 
 % id = "music/album/aphex-twin/syro"
   content.link = "music/reviews/aphex-twin/syro"
@@ -40,24 +45,38 @@
   content.link = "music/reviews/radiohead/a-moon-shaped-pool"
 + ### album: Radiohead - A Moon Shaped Pool
 
-% id = "music/album/radiohead/hail-to-the-thief"
-+ ### album: Radiohead - Hail to the Thief
-
-    % id = "01H969NN1B6W19ENMTBJ0D48AF"
-    - buy: [Bandcamp](https://radiohead.bandcamp.com/album/hail-to-the-thief)
-
-    % id = "01H969NN1BFK69VYJ39RX6GQ81"
-    - (no review yet, section only for permalinking purposes)
-
 % id = "music/album/radiohead/ok-computer"
   content.link = "music/reviews/radiohead/ok-computer"
 + ### album: Radiohead - OK Computer
 
-% id = "music/album/radiohead/the-king-of-limbs"
-+ ### album: Radiohead - The King of Limbs
+% id = "music/album/telefon-tel-aviv/map-of-what-is-effortless"
+  content.link = "music/reviews/telefon-tel-aviv/map-of-what-is-effortless"
++ ### album: Telefon Tel Aviv - Map of What Is Effortless
 
-    % id = "01H9JB094HBXF1G48ZME4WV2JA"
-    - buy: [Bandcamp](https://radiohead.bandcamp.com/album/the-king-of-limbs)
+% id = "01H9R1NKBDKVKZ2515CJJ2G8HJ"
++ the following albums I haven't had time to review yet, but I'm including them here for permalinking in case I do review them in the future
 
-    % id = "01H9JB094HGCA0D7EGR39FC509"
-    - (no review yet, section only for permalinking purposes)
+    % id = "music/album/aphex-twin/drukqs"
+      content.link = "music/reviews/aphex-twin/drukqs"
+    + ### album: Aphex Twin - drukQs
+
+        % id = "01H9JB094GTG1TJ029CQ4PNMS0"
+        - buy: [Bandcamp](https://aphextwin.bandcamp.com/album/drukqs)
+
+    % id = "music/album/the-flashbulb/our-simulacra"
+    + ### album: The Flashbulb - Our Simulacra
+
+        % id = "01H9R1NKBD8JA76ZBEFTJ62XV0"
+        - buy: [Bandcamp](https://theflashbulb.bandcamp.com/album/our-simulacra)
+
+    % id = "music/album/radiohead/hail-to-the-thief"
+    + ### album: Radiohead - Hail to the Thief
+
+        % id = "01H969NN1B6W19ENMTBJ0D48AF"
+        - buy: [Bandcamp](https://radiohead.bandcamp.com/album/hail-to-the-thief)
+
+    % id = "music/album/radiohead/the-king-of-limbs"
+    + ### album: Radiohead - The King of Limbs
+
+        % id = "01H9JB094HBXF1G48ZME4WV2JA"
+        - buy: [Bandcamp](https://radiohead.bandcamp.com/album/the-king-of-limbs)

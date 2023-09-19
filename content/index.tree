@@ -30,3 +30,7 @@
         % id = "music"
           content.link = "music"
         + ## music
+
+        % id = "games"
+          content.link = "games"
+        + ## games
