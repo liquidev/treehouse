@@ -126,7 +126,7 @@ function expandDetailsRecursively(element) {
 
 function navigateToPage(page) {
     console.log(page);
-    window.location.pathname = `${TREEHOUSE_SITE}/${page}.html`
+    window.location.pathname = `${page}.html`
 }
 
 async function navigateToBranch(fragment) {
