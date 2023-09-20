@@ -136,6 +136,93 @@
             % id = "01HA0GPJ8BBREEJCJRWPJJNR3N"
             - once there are no more tasks in the queue, we're done compiling
 
+    % id = "01HAS9RREB6JCSQY986TE1SXVV"
+    + parsing less
+
+        % id = "01HAS9RREB1VS73PWNRDVXE9C1"
+        - I measured the compiler's performance yesterday and most time is actually spent on parsing, out of all things
+
+            % id = "01HAS9RREB8K52CGJNJDSHMHFP"
+            - going along with the philosophy of [be lazy][branch:01HAS6RMNCZS9Y84N8WZ6594D1], we should probably be parsing less things then
+
+        % id = "01HAS9RREBH11B8VFZNNJR6SZH"
+        + I don't think we need to parse method bodies if we're not emitting IR
+
+            % id = "01HAS9RREBXTPT2VKWJCD484C6"
+            - basically, out of this code:
+            ```unrealscript
+            function Hug(Hat_Player OtherPlayer)
+            {
+                PlayAnimation('Hugging');
+                // or something, idk UE3
+            }
+            ```
+            parse only this:
+            ```unrealscript
+            function Hug(Hat_Player OtherPlayer) { /* token blob: PlayAnimation ( 'Hugging' ) ; */ }
+            ```
+            omitting the entire method body and treating it as an opaque blob of tokens until we need to emit IR
+
+        % id = "01HAS9RREBHFF98VX1YDRC78NA"
+        + I don't think we need to parse the entire class if we only care about its superclass
+
+            % id = "01HAS9RREBG6V27P9C5CZJBD9K"
+            - basically, out of this code:
+            ```unrealscript
+            class lqGoatBoy extends Hat_Player;
+
+            defaultproperties
+            {
+                Model = SkeletalMesh'lqFluffyZone.Sk_GoatBoy';
+                // etc
+            }
+            ```
+            only parse the following:
+            ```
+            class lqGoatBoy extends Hat_Player;
+
+            /* parser stops here, rest of text is ignored until needed */
+            ```
+            and then only parse the rest if any class items are requested
+
+            % id = "01HASA3CG20D3EC87SCTWVR48A"
+            - real case: getting the superclasses of `Hat_Player` takes a really long time because it's _big_
+            (`Hat_Player.uc` itself is around 8000 lines of code, and it has many superclasses which are also pretty big)
+
+    % id = "01HAS9RREBVAXX28EX3TGWTCSW"
+    + lexing first
+
+        % id = "01HAS9RREBM9VXFEPXKQ2R3EAZ"
+        - something that MuScript does not do currently is a separate tokenization stage
+
+            % id = "01HAS9RREBE94GKXXM70TZ6RMJ"
+            + this is because UnrealScript has some fairly idiosyncratic syntax which requires us to treat _some_ things in braces `{}` as strings, such as `cpptext`
+
+                % id = "01HAS9RREBQY6AWTXMD6DNS9DF"
+                - ```unrealscript
+                cpptext
+                {
+                    // this has to be parsed as C++ code, which has some differing lexing rules
+                    template <typename T>
+                    void Hug(T& Whomst)
+                    {
+                        DoHug(T::StaticClass(), &Whomst);
+                    }
+                }
+                ```
+
+            % id = "01HAS9RREB4ZC9MN8YQWWNN7D2"
+            - but C++ is similar enough to UnrealScript that we may be able to get away with lexing it using the main UnrealScript lexer
+
+            % id = "01HAS9RREBN6FS43W0YKC1BXJE"
+            - we could even lex variable metadata `var int Something <ToolTip=bah>;` using the lexer, storing invalid characters and errors as some `InvalidCharacter` token kind or something
+
+                % id = "01HAS9RREBAXYQWNA068KKNG07"
+                + and that's without emitting diagnostics - let the parser handle those instead
+
+                    % id = "01HAS9RREBWZKAZGFKH3BXE409"
+                    - one place where the current approach of the lexer eagerly emitting diagnostics fails is the case of `<ToolTip=3D location>`, where `3D` is parsed as a number literal with an invalid suffix and thus errors out
+
 % id = "01HA4KNTTGG3YX2GYFQ89M2V6Q"
 + ### insanium
 
