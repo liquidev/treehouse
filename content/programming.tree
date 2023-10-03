@@ -15,3 +15,7 @@
 % content.link = "programming/unreal-engine"
   id = "programming/unreal-engine"
 + ### Unreal Engine
+
+% content.link = "programming/opinions"
+  id = "programming/opinions"
++ ### opinions

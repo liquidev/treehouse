@@ -1,0 +1,87 @@
+% id = "01HBTSXTTAAAHGKD4TZZW14KFK"
+- "bad opinion zone"
+
+% id = "01HBTSXTTAMWJ2BM6395YS72FN"
++ log verbosity levels are stupid
+
+    % id = "01HBTSXTTA946PJ04NN50P393T"
+    - because when should you use any log level other than `error`, `warn`, or `info`?
+
+        % id = "01HBTSXTTAA873BYW2X3499W4P"
+        - for debug info that doesn't affect most users, there will always be lower verbosity levels
+        than `info`, but in my experience these are *always* extremely specific, and clumping them
+        all into `debug` or `trace` doesn't make much sense
+
+            % id = "01HBTSXTTAQ9S7Q1SSPN0BCG8F"
+            + in that case I believe it is better to declare separate channels that can be filtered individually, and use `info` for everything
+
+                % id = "01HBTSXTTAHCQ5YH1FZT3WKNTZ"
+                - you say `info` sounds wrong for debug info? well,
+
+                    % id = "01HBTSXTTATA4GW13QBC8YMWP1"
+                    - guess what, it's debug ***info***
+
+                    % id = "01HBTSXTTANNMHXDGG1M4W70XN"
+                    - the very concept of logs is to dump a load of (debug) info for later analysis,
+                    so making some distinction between debug and non-debug info while logs are
+                    _inherently_ for debugging seems a little silly to me
+
+        % id = "01HBTSXTTADJCTV9RTWT4NPASS"
+        + use severities instead of verbosities
+
+            % id = "01HBTSXTTA3KN26DS4QMPSHEEC"
+            - `error` is "OH SHIT OH FUCK UHHH"
+
+            % id = "01HBTSXTTATK9W0TRGM50SKWRE"
+            - `warn` is "ding ding ding! something ain't right, but I'll carry on"
+
+            % id = "01HBTSXTTA8Z5JJHFKH4T88G0B"
+            - `info` is just that - info
+
+            % id = "01HBTSXTTANQXBN7FQQSBXTSB1"
+            - and there is really no need for anything lower, because guess what: [`debug` and `trace`](https://docs.rs/tracing/latest/tracing/struct.Level.html)
+            and [`Display` and `Verbose` and `VeryVerbose`](https://docs.unrealengine.com/4.26/en-US/API/Runtime/Core/Logging/ELogVerbosity__Type/)
+            and what have you - they're all just more `info` for you
+
+                % id = "01HBTSXTTAE94HEE60GZFBEAW7"
+                - and while writing logging code it's always hard to decide which info should be
+                stuffed into which verbosity, because which info will be interesting to you at the
+                time you read logs depends on what you're looking for at a given moment
+
+    % id = "01HBTSXTTAKZ3MKD3EJPX84J9N"
+    + this is something I haven't tried yet, but one day I wanna build a logging framework one day that associates severities with whole categories rather than individual log messages
+
+        % id = "01HBTSXTTAD4TQ0A8JP71KZMXA"
+        - but at that point, do we even need severities at all? would a hierarchy of categories suffice?
+
+        % id = "01HBTSXTTAW160GH44JV3JYV3Y"
+        - I have no clue how well that will work but it would be pretty interesting
+
+% id = "01HBTSXTTASQDZK2HMCZXR3JJ4"
++ tracing is better than logging
+
+    % id = "01HBTSXTTA08SCA313HSFWB13T"
+    - information about time spans is very valuable for profiling
+
+    % id = "01HBTSXTTAAHQ0Q8GY78Z1RYFN"
+    - and you do not have to worry about "should I log before I start the operation, or after I end the operation?"
+
+    % id = "01HBTSXTTAJ6R319P2N6HT54CA"
+    + additionally, traces made of spans are way easier to visualize than tonnes of logs
+
+        % id = "01HBTSXTTA3M93STVPHA898GM4"
+        - if you've never tried [Perfetto](https://ui.perfetto.dev/) or similar tools, I highly recommend giving it a shot
+
+    % id = "01HBTSXTTAB9WD17FNDE5RYP8Y"
+    + I also imagine visualizing traces live in your CLI could yield a very nice user experience,
+    with a visible progress indicator as to what eg. [your compiler][branch:programming/projects/muscript]
+    is working on right now at a glance, reassuring you that it is not stuck on some
+    `while (true) {}` in constant evaluation
+
+        % id = "01HBTSXTTA3Q36Y98GSBRVCS3B"
+        - perhaps emitting warnings along the road for things that take alarmingly long, so that you
+        can keep your build times in check
+
+        % id = "01HBTSXTTAA89CXD17GBNR3FEQ"
+        - though printing to stdout is quite slow, so perhaps limiting the frequency or depth would
+        be a worthwhile thing to do
