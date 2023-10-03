@@ -192,3 +192,17 @@ async function navigateToCurrentBranch() {
 // expand the <details> recursively.
 window.addEventListener("popstate", navigateToCurrentBranch);
 addEventListener("DOMContentLoaded", navigateToCurrentBranch);
+
+// When you enter the website through a link someone sent you, it would be nice if the linked branch
+// got expanded by default.
+async function expandLinkedBranch() {
+    let hash = window.location.hash;
+    if (hash.length > 0) {
+        let linkedBranch = document.getElementById(hash.substring(1));
+        if (linkedBranch.children.length > 0 && linkedBranch.children[0].tagName == "DETAILS") {
+            expandDetailsRecursively(linkedBranch.children[0]);
+        }
+    }
+}
+
+addEventListener("DOMContentLoaded", expandLinkedBranch);
