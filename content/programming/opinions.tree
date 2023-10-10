@@ -85,3 +85,63 @@
         % id = "01HBTSXTTAA89CXD17GBNR3FEQ"
         - though printing to stdout is quite slow, so perhaps limiting the frequency or depth would
         be a worthwhile thing to do
+
+% id = "01HCD90XT3G0J8G9Y48H5QT1GJ"
++ don't use [`RefCell<T>`](https://doc.rust-lang.org/std/cell/struct.RefCell.html)
+
+    % id = "01HCD90XT3X82R37WTJJABZF4Y"
+    + usually if you have to resort to `RefCell<T>`, it means something is wrong with your architecture
+
+        % id = "01HCD90XT3QQA9MCB77Q04W148"
+        - `Cell<T>` less so but still you should avoid it whenever possible
+
+        % id = "01HCD90XT36Q0WTZNRCEWZQE1X"
+        - `Rc<RefCell<T>>` is an immediate red flag when I read someone's code. it means they don't
+        really know what they're doing and are just trying to sidestep the language
+
+    % id = "01HCD90XT3QNZ7H77Z4QMW66QJ"
+    - it's really not that hard to avoid, try bumping your resources up a scope and borrow them
+    from there
+
+    % id = "01HCD90XT32M4F61W5QRRRXG0K"
+    + using `RefCell` has a few disadvantages
+
+        % id = "01HCD90XT3R214HQM03TSRZV6K"
+        + first, `RefCell` is _literally_ turning off the borrow checker
+
+            % id = "01HCD90XT3V4K4RKRQXX5BCCRB"
+            - or really deferring it until runtime, but then what's the point. Rust's borrowing
+            rules are meant to prevent bugs, not cause more of them
+
+        % id = "01HCD90XT3DVTHP82Z5NAAF7RP"
+        + second, your program can now panic in unexpected places, because it turns out runtime
+        borrows can be really hard to predict
+
+            % id = "01HCD90XT34QD8MCN0BA35AV0F"
+            - as evidenced by a random crash I once got while using [druid](https://lib.rs/crates/druid)
+            which was caused by a overlapping mutable then immutable borrows at runtime
+
+                % id = "01HCD90XT39NZ0BSY630MFNG1X"
+                - therefore maybe uhhh... don't use it in libraries? :pleading:
+
+        % id = "01HCD90XT3GT9G16EQDAK76WEC"
+        + third, it incurs a runtime overhead for the borrow checking, which in 99% of cases is
+        totally unnecessary
+
+            % id = "01HCD90XT3V3B1TVPX7GS8SPDQ"
+            - (this is more about non-pessimization rather than premature microoptimization, so
+            don't yell at me with your "it'll be fast enough" arguments please)
+
+        % id = "01HCD90XT37138S38DN0V3DKHF"
+        + fourth, and this one is extremely easy to spot - your code becomes really verbose!
+
+            % id = "01HCD90XT3WNGWD4GA2Y63D42H"
+            - yes please, `.borrow()` me everywhere!
+
+            % id = "01HCD90XT361QQB2YNFBY51N2A"
+            - and you end up with lots of temporaries because of the [`Ref<'b, T>`](https://doc.rust-lang.org/std/cell/struct.Ref.html)
+            guards you have to keep in scope.
+
+                % id = "01HCD90XT34K9BREXAKA5FFP3M"
+                - remember that you cannot do `&ref_cell.borrow().some_field` because that would
+                drop the temporary `Ref<'b, T>` guard after the expression ends
