@@ -145,3 +145,17 @@
                 % id = "01HCD90XT34K9BREXAKA5FFP3M"
                 - remember that you cannot do `&ref_cell.borrow().some_field` because that would
                 drop the temporary `Ref<'b, T>` guard after the expression ends
+
+% id = "01HCG7KTGGAFS07QYJXZG6WHJJ"
++ `None` or `Invalid` cases in enums are a bad idea
+
+    % id = "01HCG7KTGGHWTT1ME9GQ5VPFPR"
+    - by having them, you're forcing your users into an API that forces them to think about the
+    invalid case every time they read the value.
+
+        % id = "01HCG7KTGGBJRX5JGQTFD59P4W"
+        - you're repeating the million dollar mistake - `null`
+
+        % id = "01HCG7KTGGYQ8EQB97AMFJPWYK"
+        - instead, use an explicit `Option<T>` or `std::optional<T>` or `T?` or ... when you need
+        to represent a possibly-invalid case
