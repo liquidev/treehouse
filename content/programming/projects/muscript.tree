@@ -189,6 +189,7 @@
             - real case: getting the superclasses of `Hat_Player` takes a really long time because it's _big_
             (`Hat_Player.uc` itself is around 8000 lines of code, and it has many superclasses which are also pretty big)
 
+% id = "01HD6NRBEZ8FMFMHW0TF62VBEC"
 + ### ideas I tried out
 
     % id = "01HAS9RREBVAXX28EX3TGWTCSW"
@@ -225,18 +226,23 @@
                     % id = "01HAS9RREBWZKAZGFKH3BXE409"
                     - one place where the current approach of the lexer eagerly emitting diagnostics fails is the case of `<ToolTip=3D location>`, where `3D` is parsed as a number literal with an invalid suffix and thus errors out
 
+        % id = "01HD6NRBEZ2TCHKY1C4JK2EK0N"
         - implementing this taught me one important lesson: context switching is expensive
 
+            % id = "01HD6NRBEZCKP5ZYZ3XQ9PVJTD"
             - having the lexer as a separate pass made the parsing 2x faster, speeding up the
             compiler pretty much two-fold (because that's where the compiler was spending most of its time)
 
+                % id = "01HD6NRBEZP6V4J1MS84C6KN1P"
                 - my suspicion as to why this was slow is that the code for parsing, preprocessing,
                 and reading tokens was scattered across memory - also with lots of branches that
                 needed to be checked for each token requested by the parser
 
+            % id = "01HD6NRBEZDM4QSN38TZJCXRAA"
             + I think also having token data in one contiguous block of memory also helped, though
             isn't as efficient as it could be _yet_.
 
+                % id = "01HD6NRBEZWSA9HFNPKQPRHQK1"
                 - the current data structure as of writing this is
                 ```rust
                 struct Token {
@@ -251,6 +257,7 @@
                 (with some irrelevant things omitted - things like source files are not relevant
                 for token streams themselves)
 
+                    % id = "01HD6NRBEZXCE5TQSMQHQ29D90"
                     - I don't know if I'll ever optimize this to be even more efficient than it
                     already is, but source ranges are mostly irrelevant to the high level task of
                     matching tokens, so maybe arranging the storage like
@@ -262,6 +269,7 @@
                     ```
                     could help
 
+                        % id = "01HD6NRBEZ90Z3GJ8GBFGN0KFC"
                         - another thing that could help is changing the `usize` source ranges to
                         `u32`, but I don't love the idea because it'll make it even harder to
                         support large files - not that we necessarily _will_ ever support them,
