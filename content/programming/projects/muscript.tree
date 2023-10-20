@@ -69,7 +69,7 @@
                             - "that's all."
 
 % id = "01HA0GPJ8BY2R40Y5GP515853E"
-+ ### ideas
++ ### ideas to try out
 
     % id = "01HA0GPJ8BSMZ13V2S7DPZ508P"
     - I jot down various silly ideas for MuScript in the future here
@@ -189,11 +189,13 @@
             - real case: getting the superclasses of `Hat_Player` takes a really long time because it's _big_
             (`Hat_Player.uc` itself is around 8000 lines of code, and it has many superclasses which are also pretty big)
 
++ ### ideas I tried out
+
     % id = "01HAS9RREBVAXX28EX3TGWTCSW"
-    + lexing first
+    + :done: lexing first
 
         % id = "01HAS9RREBM9VXFEPXKQ2R3EAZ"
-        - something that MuScript does not do currently is a separate tokenization stage
+        - something that MuScript did not use to do is have a separate tokenization stage
 
             % id = "01HAS9RREBE94GKXXM70TZ6RMJ"
             + this is because UnrealScript has some fairly idiosyncratic syntax which requires us to treat _some_ things in braces `{}` as strings, such as `cpptext`
@@ -212,16 +214,58 @@
                 ```
 
             % id = "01HAS9RREB4ZC9MN8YQWWNN7D2"
-            - but C++ is similar enough to UnrealScript that we may be able to get away with lexing it using the main UnrealScript lexer
+            - but C++ is similar enough to UnrealScript that we are able to get away with lexing it using the main UnrealScript lexer
 
             % id = "01HAS9RREBN6FS43W0YKC1BXJE"
-            - we could even lex variable metadata `var int Something <ToolTip=bah>;` using the lexer, storing invalid characters and errors as some `InvalidCharacter` token kind or something
+            - we even lex variable metadata `var int Something <ToolTip=bah>;` using the lexer, storing invalid characters and errors as some `InvalidCharacter` token kind or something
 
                 % id = "01HAS9RREBAXYQWNA068KKNG07"
                 + and that's without emitting diagnostics - let the parser handle those instead
 
                     % id = "01HAS9RREBWZKAZGFKH3BXE409"
                     - one place where the current approach of the lexer eagerly emitting diagnostics fails is the case of `<ToolTip=3D location>`, where `3D` is parsed as a number literal with an invalid suffix and thus errors out
+
+        - implementing this taught me one important lesson: context switching is expensive
+
+            - having the lexer as a separate pass made the parsing 2x faster, speeding up the
+            compiler pretty much two-fold (because that's where the compiler was spending most of its time)
+
+                - my suspicion as to why this was slow is that the code for parsing, preprocessing,
+                and reading tokens was scattered across memory - also with lots of branches that
+                needed to be checked for each token requested by the parser
+
+            + I think also having token data in one contiguous block of memory also helped, though
+            isn't as efficient as it could be _yet_.
+
+                - the current data structure as of writing this is
+                ```rust
+                struct Token {
+                    kind: TokenKind,
+                    source_range: Range<usize>,
+                }
+
+                struct TokenArena {
+                    tokens: Vec<Token>,
+                }
+                ```
+                (with some irrelevant things omitted - things like source files are not relevant
+                for token streams themselves)
+
+                    - I don't know if I'll ever optimize this to be even more efficient than it
+                    already is, but source ranges are mostly irrelevant to the high level task of
+                    matching tokens, so maybe arranging the storage like
+                    ```rs
+                    struct Tokens {
+                        kinds: Vec<TokenKind>,
+                        source_ranges: Vec<Range<usize>>,
+                    }
+                    ```
+                    could help
+
+                        - another thing that could help is changing the `usize` source ranges to
+                        `u32`, but I don't love the idea because it'll make it even harder to
+                        support large files - not that we necessarily _will_ ever support them,
+                        but it's something to consider
 
 % id = "01HA4KNTTGG3YX2GYFQ89M2V6Q"
 + ### insanium
