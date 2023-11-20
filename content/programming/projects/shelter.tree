@@ -1,0 +1,174 @@
+% id = "01HFP3E77CH0NDBBDCGFSNCS36"
++ _shelter_ is my design for a potential operating system and runtime which foregoes the entire
+legacy of today's systems
+
+    % id = "01HFP3E77CM5QN1D53CJX6F5J2"
+    + compatibility is not a design goal for shelter, the idea is that we build the entire universe
+    from scratch
+
+        % id = "01HFP3E77C2ZM0FAKKXNHPEWVW"
+        - therefore shelter is not compatible with UNIX, POSIX, or Windows
+
+        % id = "01HFP3E77CC7MFCH0TF5T75W5C"
+        - it should be possible to build compatibility layers, but they probably won't be part of
+        the project
+
+    % id = "01HFP3E77CVPJMQ69305QHRXDH"
+    + the design goal is to build a **secure operating system you can trust**
+
+        % id = "01HFP3E77CFCF260WBQWTBNPP7"
+        - gone will be the days where you download an executable from the Internet and have no idea
+        what harm it can do to your system
+
+        % id = "01HFP3E77C7ZXSSGQKTH4Z8NC0"
+        - security is to be achieved while keeping the system fundamentally simple. the less code
+        you have to inspect, the better
+
+    % id = "01HFP3E77CGBD4ZQ2JN4Z761VE"
+    + **NOTE:** at this point shelter is nothing more than an incomplete design. OS development is
+    something I wanna get into but haven't enough time to research everything as of now, therefore
+    I'm jotting down my ideas here
+
+        % id = "01HFP3E77C69TH3Q0ARNST97FH"
+        - but if all goes well you'll be able to run it one day
+
+% id = "01HFP3E77CJD3AFS2R4N5T9EDE"
++ ### design
+
+    % id = "01HFP3E77CX8AKTESGYGJBMFJ8"
+    + execution environment
+
+        % id = "01HFP3E77C4EBDPJMEWGA9XSX4"
+        + the execution environment of shelter is one big JIT compiler.
+        code is portable between CPU architectures and exchanged via a compact intermediate
+        representation (IR), which is then compiled to machine code when installed into the system
+
+            % id = "01HFP3E77CBJ6SRFW34HW7BE4V"
+            - compilers which emit this IR must not perform aggressive inlining. this is
+            important for the OS's [function database][branch:01HFP3E77CSZCHA4TS0R7VNT9N] to
+            work correctly and be able to deduplicate functions aggresively.
+            instead, inlining is done by the JIT upon compilation (or maybe even based on profiling)
+
+        % id = "01HFP7K50TV3FQ5PYXA5S6P9FT"
+        - note that although there is a JIT, there is no garbage collection. memory is allocated
+        and freed manually by running programs
+
+        % id = "01HFP7K50TBSSHSJAYVE7SY5T7"
+        - the environment supports algebraic effects, which are used to annotate functions which may
+        perform I/O, access the network, and perform mischief using them.
+
+    % id = "01HFP3E77CSZCHA4TS0R7VNT9N"
+    + executable code
+
+        % id = "01HFP3E77CDB6Z6YKPJ1PJS0KC"
+        - this is probably the most exciting part of shelter: how executable code is not stored
+        within `.exe` and `.dll` files, but rather in a database managed by the OS
+
+            % id = "01HFP3E77CNXNFQBZWT3JD47ZD"
+            - the database is basically just this:
+            ```rust
+            struct CodeDatabase {
+                types: HashMap<Hash<Type>, Type>,
+                functions: HashMap<Hash<Function>, Function>,
+            }
+            ```
+
+                % id = "01HFP3E77CRP3HFGTRYFJ2HMWQ"
+                - `Hash<T>` is the hash of the value `T`.
+
+                % id = "01HFP3E77CZJFH9NRMM8SJ96HD"
+                - `Hash<T>` is large enough to practically prevent any and all collisions (is 256 bits with a cryptographically secure hash function enough?)
+
+            % id = "01HFP3E77C6ZYGDFKBVXZYMME9"
+            + functions in the database are fully anonymous; function names can be given via
+            separate debug info that can be attached to a running program to provide stack traces
+
+                % id = "01HFP3E77CM03HZQ20VZ5PEY2E"
+                - this debug info correlates a function's properties with source code and is
+                completely optional
+
+            % id = "01HFP3E77CKS7CFPFCZJEDJ5G8"
+            - functions from within the database can be aliased in the filesystem. you can create
+            a file which executes a function annotated as a valid entrypoint
+
+            % id = "01HFP7K50T39EG59CXFJ76E1GT"
+            + function metadata includes reflection data - argument/return types, generics (so that
+            monomorphization is performed on-demand by the JIT to save disk space), and annotations
+            (so that the OS can know eg. which functions are valid program entry points)
+
+                % id = "01HFP7K50TPHWNZC1AK9ZG9AKQ"
+                - this reflection data can be queried by anyone in userspace
+
+                % id = "01HFP7K50TRDETH3JKNYJPQ6QK"
+                - it can be used eg. to implement a shell, which executes named functions, such as `ls` here:
+                ```
+                @os.entrypoint
+                fun ls(
+                    caps: (working_directory: shell.WorkingDirectory(:read)),
+                    args: (compact: shell.Flag(short: "l")),
+                ): Result(())
+                :: os.stdio.Write + os.Filesystem =
+                    caps.working_directory.path
+                    | fs.walk fun (entry) = {
+                        if args.compact.is_set then {
+                            print("\{entry | fs.dirent.path? | path.filename}")
+                        } else {
+                            print("\{entry.kind}\t\{entry | fs.dirent.path? | path.filename}")
+                        }
+                    }
+                ```
+
+    % id = "01HFP3E77CGCWJKS84AJJDZJ71"
+    + capability based security
+
+        % id = "01HFP7K50TK8CVWP87J2BNBXVW"
+        - functions can only do what they say they do, and access what they say they access
+
+            % id = "01HFP7K50TDBR6JM70Q4RSX52A"
+            + the first of these is achieved through an effect system within the language runtime
+
+                % id = "01HFP7K50TA32V17YTEHY1SNTN"
+                - a function can only write to stdout if it declares it performs the `os.stdio.Write` effect
+
+            % id = "01HFP7K50TTGW5SQXFVDJBY8TG"
+            + the second of these is achieved through explicitly passing capabilities as function arguments
+
+                % id = "01HFP7K50TAQ44W2XCKE8Q4RDS"
+                - you do not have access to a directory if you're not explicitly given
+                a `fs.Directory` value
+
+                    % id = "01HFP7K50TJ692F8BTKH3RVXMV"
+                    - moreso, if you need to read or write directory values, the directory needs to
+                    explicitly be locked (using an rwlock) to help prevent TOCTOU race conditions
+
+                        % id = "01HFP7K50TE1KYTC5RZ7P49FGW"
+                        - not to say such race conditions will be completely impossible, but they
+                        will be much harder to run into on accident
+
+                % id = "01HFP7K50T23DK68VYAQTE24Z0"
+                - it's also impossible to fabricate capabilities because low-level memory access can
+                only be performed explicitly through byte slices, and only types whose definition is
+                public can be cast into byte slices
+
+    % id = "01HFP3E77CSA2KMW35EF2VVDRV"
+    + package management
+
+        % id = "01HFP7K50TF07N4W61C8GC2GVZ"
+        - because functions are identifiable by their hash, it's easy to implement a decentralized
+        function registry
+
+            % id = "01HFP7K50TKFBQ6G0GXE8J4H3Y"
+            - the OS can store a list of mirrors and request functions from them as needed
+
+                % id = "01HFP7K50TE0FDHXT0EMEAY5GS"
+                - if one mirror doesn't have a function, the system can request it from another mirror
+
+                    % id = "01HFP7K50T35YCZEWST3ZV4M6Q"
+                    - if no mirrors have a function, tell the user
+
+            % id = "01HFP7K50TSTWWCWRPG5A3TCXJ"
+            - functions downloaded from the Internet can be validated by checking that the hash of
+            the received function matches that of the requested function
+
+                % id = "01HFP7K50THRGCDEYKB4SYWQFD"
+                - the bytecode's structure should be validated at this point as well
