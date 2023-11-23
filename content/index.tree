@@ -35,6 +35,7 @@
           content.link = "games"
         + ## games
 
+    % id = "01HFYZKREWE2AM61ZRW3R501H6"
     - various thoughts
 
         % id = "philosophy"
