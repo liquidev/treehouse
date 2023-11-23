@@ -34,3 +34,9 @@
         % id = "games"
           content.link = "games"
         + ## games
+
+    - various thoughts
+
+        % id = "philosophy"
+          content.link = "philosophy"
+        + ## philosophy and worldview
