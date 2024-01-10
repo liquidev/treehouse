@@ -73,6 +73,12 @@ body::selection {
 
 /* Set up typography */
 
+@font-face {
+    font-family: 'RecVar';
+    src: url('../font/Recursive_VF_1.085.woff2');
+}
+
+
 body,
 pre,
 code,
@@ -88,6 +94,12 @@ kbd {
     --recursive-wght: 400;
     --recursive-slnt: -2.0;
     --recursive-crsv: 0.5;
+
+    --recursive-simplified-f: "ss03";
+    --recursive-simplified-g: "ss04";
+    --recursive-simplified-l: "ss05";
+    --recursive-simplified-r: "ss06";
+    --recursive-no-serif-L-Z: "ss08";
 }
 
 *,
@@ -99,6 +111,13 @@ kbd {
         "wght" var(--recursive-wght),
         "slnt" var(--recursive-slnt),
         "CRSV" var(--recursive-crsv);
+
+    font-feature-settings:
+        var(--recursive-simplified-f),
+        var(--recursive-simplified-g),
+        var(--recursive-simplified-l),
+        var(--recursive-simplified-r),
+        var(--recursive-no-serif-L-Z);
 }
 
 h1 {
@@ -107,6 +126,7 @@ h1 {
     --recursive-wght: 900;
 
     font-size: 3.5rem;
+    font-feature-settings: var(--recursive-simplified-r) 0;
 }
 
 h2 {
