@@ -10,7 +10,28 @@ use ulid::Ulid;
 
 use crate::tree::{SemaBranchId, SemaRoots, SemaTree};
 
-pub type Files = SimpleFiles<String, String>;
+#[derive(Debug, Clone)]
+pub enum Source {
+    Tree { input: String, tree_path: String },
+    Other(String),
+}
+
+impl Source {
+    pub fn input(&self) -> &str {
+        match &self {
+            Source::Tree { input, .. } => input,
+            Source::Other(source) => source,
+        }
+    }
+}
+
+impl AsRef<str> for Source {
+    fn as_ref(&self) -> &str {
+        self.input()
+    }
+}
+
+pub type Files = SimpleFiles<String, Source>;
 pub type FileId = <Files as codespan_reporting::files::Files<'static>>::FileId;
 
 /// Treehouse compilation context.
@@ -22,17 +43,7 @@ pub struct Treehouse {
     pub branches_by_named_id: HashMap<String, SemaBranchId>,
     pub roots: HashMap<String, SemaRoots>,
 
-    // Bit of a hack because I don't wanna write my own `Files`.
-    tree_paths: Vec<Option<String>>,
-
     missingno_generator: ulid::Generator,
-}
-
-#[derive(Debug, Clone)]
-pub struct BranchRef {
-    pub html_id: String,
-    pub file_id: FileId,
-    pub kind_span: Range<usize>,
 }
 
 impl Treehouse {
@@ -45,25 +56,16 @@ impl Treehouse {
             branches_by_named_id: HashMap::new(),
             roots: HashMap::new(),
 
-            tree_paths: vec![],
-
             missingno_generator: ulid::Generator::new(),
         }
     }
 
-    pub fn add_file(
-        &mut self,
-        filename: String,
-        tree_path: Option<String>,
-        source: String,
-    ) -> FileId {
-        let id = self.files.add(filename, source);
-        self.tree_paths.push(tree_path);
-        id
+    pub fn add_file(&mut self, filename: String, source: Source) -> FileId {
+        self.files.add(filename, source)
     }
 
     /// Get the source code of a file, assuming it was previously registered.
-    pub fn source(&self, file_id: FileId) -> &str {
+    pub fn source(&self, file_id: FileId) -> &Source {
         self.files
             .get(file_id)
             .expect("file should have been registered previously")
@@ -79,7 +81,10 @@ impl Treehouse {
     }
 
     pub fn tree_path(&self, file_id: FileId) -> Option<&str> {
-        self.tree_paths[file_id].as_deref()
+        match self.source(file_id) {
+            Source::Tree { tree_path, .. } => Some(tree_path),
+            Source::Other(_) => None,
+        }
     }
 
     pub fn report_diagnostics(&self) -> anyhow::Result<()> {
@@ -97,6 +102,12 @@ impl Treehouse {
         self.missingno_generator
             .generate()
             .expect("just how much disk space do you have?")
+    }
+
+    pub fn has_errors(&self) -> bool {
+        self.diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.severity == Severity::Error)
     }
 }
 

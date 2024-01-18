@@ -5,17 +5,14 @@ use std::{
 };
 
 use anyhow::{bail, Context};
-use axum::Router;
 use codespan_reporting::{
     diagnostic::{Diagnostic, Label, LabelStyle, Severity},
     files::Files as _,
 };
 use copy_dir::copy_dir;
 use handlebars::Handlebars;
-use log::{debug, info};
+use log::{debug, error, info};
 use serde::Serialize;
-use tower_http::services::ServeDir;
-use tower_livereload::LiveReloadLayer;
 use walkdir::WalkDir;
 
 use crate::{
@@ -26,6 +23,7 @@ use crate::{
         navmap::{build_navigation_map, NavigationMap},
         tree::branches_to_html,
     },
+    state::Source,
     tree::SemaRoots,
 };
 
@@ -63,7 +61,8 @@ impl Generator {
     ) -> anyhow::Result<FileId> {
         let source = std::fs::read_to_string(path)
             .with_context(|| format!("cannot read template file {path:?}"))?;
-        let file_id = treehouse.add_file(path.to_string_lossy().into_owned(), None, source);
+        let file_id =
+            treehouse.add_file(path.to_string_lossy().into_owned(), Source::Other(source));
         let source = treehouse.source(file_id);
         if let Err(error) = handlebars.register_template_string(name, source) {
             Self::wrangle_handlebars_error_into_diagnostic(
@@ -136,9 +135,17 @@ impl Generator {
                     continue;
                 }
             };
-            let tree_path = tree_path.with_extension("").to_string_lossy().replace('\\', "/");
-            let file_id =
-                treehouse.add_file(utf8_filename.into_owned(), Some(tree_path.clone()), source);
+            let tree_path = tree_path
+                .with_extension("")
+                .to_string_lossy()
+                .replace('\\', "/");
+            let file_id = treehouse.add_file(
+                utf8_filename.into_owned(),
+                Source::Tree {
+                    input: source,
+                    tree_path: tree_path.clone(),
+                },
+            );
 
             if let Ok(roots) = parse_tree_with_diagnostics(&mut treehouse, file_id) {
                 let roots = SemaRoots::from_roots(&mut treehouse, file_id, roots);
@@ -186,19 +193,29 @@ impl Generator {
                 parsed_tree.file_id,
                 &roots.branches,
             );
-            treehouse.roots.insert(parsed_tree.tree_path, roots);
+
+            #[derive(Serialize)]
+            pub struct Page {
+                pub title: String,
+                pub breadcrumbs: String,
+                pub tree: String,
+            }
 
             #[derive(Serialize)]
             pub struct TemplateData<'a> {
                 pub config: &'a Config,
-                pub breadcrumbs: String,
-                pub tree: String,
+                pub page: Page,
             }
             let template_data = TemplateData {
                 config,
-                breadcrumbs,
-                tree,
+                page: Page {
+                    title: roots.attributes.title.clone(),
+                    breadcrumbs,
+                    tree,
+                },
             };
+
+            treehouse.roots.insert(parsed_tree.tree_path, roots);
 
             let templated_html = match handlebars.render("tree", &template_data) {
                 Ok(html) => html,
@@ -227,7 +244,7 @@ impl Generator {
     }
 }
 
-pub fn regenerate(paths: &Paths<'_>) -> anyhow::Result<()> {
+pub fn generate(paths: &Paths<'_>) -> anyhow::Result<Treehouse> {
     let start = Instant::now();
 
     info!("loading config");
@@ -268,26 +285,19 @@ pub fn regenerate(paths: &Paths<'_>) -> anyhow::Result<()> {
     let duration = start.elapsed();
     info!("generation done in {duration:?}");
 
-    Ok(())
-}
-
-pub fn regenerate_or_report_error(paths: &Paths<'_>) {
-    info!("regenerating site content");
-
-    match regenerate(paths) {
-        Ok(_) => (),
-        Err(error) => eprintln!("error: {error:?}"),
+    if !treehouse.has_errors() {
+        Ok(treehouse)
+    } else {
+        bail!("generation errors occurred; diagnostics were emitted with detailed descriptions");
     }
 }
 
-pub async fn web_server(port: u16) -> anyhow::Result<()> {
-    let app = Router::new().nest_service("/", ServeDir::new("target/site"));
+pub fn regenerate_or_report_error(paths: &Paths<'_>) -> anyhow::Result<Treehouse> {
+    info!("regenerating site content");
 
-    #[cfg(debug_assertions)]
-    let app = app.layer(LiveReloadLayer::new());
-
-    info!("serving on port {port}");
-    Ok(axum::Server::bind(&([0, 0, 0, 0], port).into())
-        .serve(app.into_make_service())
-        .await?)
+    let result = generate(paths);
+    if let Err(e) = &result {
+        error!("{e:?}");
+    }
+    result
 }

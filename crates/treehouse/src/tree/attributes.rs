@@ -1,5 +1,15 @@
 use serde::Deserialize;
 
+/// Top-level `%%` root attributes.
+#[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize)]
+pub struct RootAttributes {
+    /// Title of the generated .html page.
+    ///
+    /// The page's tree path is used if empty.
+    #[serde(default)]
+    pub title: String,
+}
+
 /// Branch attributes.
 #[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize)]
 pub struct Attributes {

@@ -151,6 +151,34 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    pub fn top_level_attributes(&mut self) -> Result<Option<Attributes>, ParseError> {
+        let start = self.position;
+        match self.current() {
+            Some('%') => {
+                let after_one_percent = self.position;
+                self.advance();
+                if self.current() == Some('%') {
+                    self.advance();
+                    let after_two_percent = self.position;
+                    self.eat_indented_lines_until(
+                        0,
+                        |c| c == '-' || c == '+' || c == '%',
+                        AllowCodeBlocks::No,
+                    )?;
+                    let end = self.position;
+                    Ok(Some(Attributes {
+                        percent: start..after_two_percent,
+                        data: after_two_percent..end,
+                    }))
+                } else {
+                    self.position = after_one_percent;
+                    Ok(None)
+                }
+            }
+            _ => Ok(None),
+        }
+    }
+
     pub fn next_branch(&mut self) -> Result<Option<BranchEvent>, ParseError> {
         if self.current().is_none() {
             return Ok(None);

@@ -1,0 +1,21 @@
+%% title = "GET /b"
+
+% id = "b"
+- # GET /b?<span class="http-request-parameter">branch</span>
+
+<style>
+.http-request-parameter { opacity: 80%; --recursive-wght: 700; }
+</style>
+
+    % id = "01HMF8KQ990KC8Q08XYSKTV4TQ"
+    - this endpoint takes you to the <span class="http-request-parameter">branch</span> with the given ID
+
+        % id = "01HMF8KQ99VBWQSG1Y8NDTM8QA"
+        - it also includes proper OpenGraph metadata for the page, unlike the raw .html files.
+        therefore it's used for permalinks (those on the far right side of the branch →)
+
+    % id = "01HMF8KQ99KWR1K9QHKPYY2K15"
+    + c'mon, [give it a whirl](/b?the-end-is-never)
+
+        % id = "01HMF8KQ99WX9P6D05T5VYBSKK"
+        - <https://www.youtube.com/watch?v=8Kban1IOQ4M>

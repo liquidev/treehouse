@@ -5,13 +5,19 @@
 <head>
     <meta charset="UTF-8">
 
-    <title>{{ config.user.title }}</title>
+    <title>{{#if (ne page.title config.user.title)}}{{ page.title }} · {{/if}}{{ config.user.title }}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <meta property="og:title" content="{{ config.user.title }}">
     <meta property="og:site_name" content="{{ config.user.title }}">
-    <meta property="og:description" content="{{ config.user.description }}">
+    <meta property="og:title" content="{{ page.title }}">
+    {{!--
+    This is a bit of a hack to quickly insert metadata into generated pages without going through Handlebars, which
+    would involve registering, parsing, and generating a page from a template.
+    Yes it would be more flexible that way, but it doesn't need to be.
+    It just needs to be a string replacement.
+    --}}
+    <!-- treehouse-ca37057a-cff5-45b3-8415-3b02dbf6c799-per-branch-metadata -->
 
     <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
     <link rel="stylesheet" href="{{ config.site }}/static/css/tree.css">
@@ -34,9 +40,9 @@
             </svg>
         </a>
 
-        {{#if breadcrumbs}}
+        {{#if page.breadcrumbs}}
         <ol class="breadcrumbs">
-            {{{ breadcrumbs }}}
+            {{{ page.breadcrumbs }}}
         </ol>
         {{/if}}
     </nav>
@@ -57,7 +63,8 @@
                 if you don't believe me, you're free to inspect the source yourself! all the scripts are written
                 lovingly in vanilla JS (not minified!) by yours truly ❤️</p>
             <small>and if this box is annoying, feel free to block it with uBlock Origin or something. I have no
-                way of remembering you closed it, and don't wanna host this site on a dynamic server.</small>
+                way of remembering you closed it, and don't wanna add a database to this website. simplicity
+                rules!</small>
         </div>
     </noscript>
 
@@ -70,7 +77,7 @@
     </div>
 
     <main class="tree">
-        {{{ tree }}}
+        {{{ page.tree }}}
     </main>
 </body>
 

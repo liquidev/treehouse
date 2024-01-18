@@ -1,6 +1,7 @@
 pub mod fix;
 pub mod generate;
 mod parse;
+pub mod serve;
 
 use std::path::{Path, PathBuf};
 
@@ -24,14 +25,21 @@ pub enum Command {
     ///
     /// By default only prints which files would be changed. To apply the changes, use `--apply`.
     FixAll(#[clap(flatten)] FixAllArgs),
+
+    /// `generate` and start a treehouse server.
+    ///
+    /// The server uses the generated files and provides extra functionality on top, handling
+    Serve {
+        #[clap(flatten)]
+        generate: GenerateArgs,
+
+        #[clap(flatten)]
+        serve: ServeArgs,
+    },
 }
 
 #[derive(Args)]
-pub struct GenerateArgs {
-    /// Start a web server serving the static files on the given port. Useful with `cargo watch`.
-    #[clap(short, long)]
-    pub serve: Option<u16>,
-}
+pub struct GenerateArgs {}
 
 #[derive(Args)]
 pub struct FixArgs {
@@ -55,6 +63,13 @@ pub struct FixAllArgs {
     /// (overwrite it in place.)
     #[clap(long)]
     pub apply: bool,
+}
+
+#[derive(Args)]
+pub struct ServeArgs {
+    /// The port under which to serve the treehouse.
+    #[clap(short, long, default_value_t = 8080)]
+    pub port: u16,
 }
 
 #[derive(Debug, Clone, Copy)]

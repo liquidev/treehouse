@@ -17,6 +17,8 @@ function branchIsOpen(branchID) {
 }
 
 class Branch extends HTMLLIElement {
+    static branchesByNamedID = new Map();
+
     constructor() {
         super();
 
@@ -31,6 +33,9 @@ class Branch extends HTMLLIElement {
         this.details.addEventListener("toggle", _ => {
             saveBranchIsOpen(this.id, this.details.open);
         });
+
+        Branch.branchesByNamedID.set(this.id.split(':')[1], this);
+        console.log(Branch.branchesByNamedID)
     }
 }
 
@@ -46,8 +51,6 @@ class LinkedBranch extends Branch {
 
         this.linkedTree = this.getAttribute("data-th-link");
         LinkedBranch.byLink.set(this.linkedTree, this);
-
-        this.loadingState = "notloaded";
 
         this.loadingText = document.createElement("p");
         {
@@ -109,8 +112,10 @@ function rehash() { // https://www.youtube.com/watch?v=Tv1SYqLllKI
     if (!rehashing) {
         rehashing = true;
         let hash = window.location.hash;
-        window.location.hash = "";
-        window.location.hash = hash;
+        if (hash.length > 0) {
+            window.location.hash = "";
+            window.location.hash = hash;
+        }
         rehashing = false;
     }
 }
@@ -183,9 +188,17 @@ async function navigateToBranch(fragment) {
     }
 }
 
+function getCurrentlyHighlightedBranch() {
+    if (window.location.pathname == "/b" && window.location.search.length > 0) {
+        let shortID = window.location.search.substring(1);
+        return Branch.branchesByNamedID.get(shortID).id;
+    } else {
+        return window.location.hash.substring(1);
+    }
+}
+
 async function navigateToCurrentBranch() {
-    let location = window.location.hash.substring(1);
-    await navigateToBranch(location);
+    await navigateToBranch(getCurrentlyHighlightedBranch());
 }
 
 // When you click on a link, and the destination is within a <details> that is not expanded,
@@ -196,9 +209,9 @@ addEventListener("DOMContentLoaded", navigateToCurrentBranch);
 // When you enter the website through a link someone sent you, it would be nice if the linked branch
 // got expanded by default.
 async function expandLinkedBranch() {
-    let hash = window.location.hash;
-    if (hash.length > 0) {
-        let linkedBranch = document.getElementById(hash.substring(1));
+    let currentlyHighlightedBranch = getCurrentlyHighlightedBranch();
+    if (currentlyHighlightedBranch.length > 0) {
+        let linkedBranch = document.getElementById(currentlyHighlightedBranch);
         if (linkedBranch.children.length > 0 && linkedBranch.children[0].tagName == "DETAILS") {
             expandDetailsRecursively(linkedBranch.children[0]);
         }
@@ -206,3 +219,12 @@ async function expandLinkedBranch() {
 }
 
 addEventListener("DOMContentLoaded", expandLinkedBranch);
+
+async function highlightCurrentBranch() {
+    let branch = document.getElementById(getCurrentlyHighlightedBranch());
+    if (branch != null) {
+        branch.classList.add("target");
+    }
+}
+
+addEventListener("DOMContentLoaded", highlightCurrentBranch);

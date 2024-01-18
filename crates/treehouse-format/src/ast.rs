@@ -7,11 +7,14 @@ use crate::{
 
 #[derive(Debug, Clone)]
 pub struct Roots {
+    pub attributes: Option<Attributes>,
     pub branches: Vec<Branch>,
 }
 
 impl Roots {
     pub fn parse(parser: &mut Parser) -> Result<Self, ParseError> {
+        let attributes = parser.top_level_attributes()?;
+
         let mut branches = vec![];
         while let Some((branch, indent_level)) = Branch::parse_with_indent_level(parser)? {
             if indent_level != 0 {
@@ -19,7 +22,10 @@ impl Roots {
             }
             branches.push(branch);
         }
-        Ok(Self { branches })
+        Ok(Self {
+            attributes,
+            branches,
+        })
     }
 }
 

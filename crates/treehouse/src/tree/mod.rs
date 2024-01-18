@@ -9,9 +9,11 @@ use treehouse_format::{
 };
 
 use crate::{
-    state::{toml_error_to_diagnostic, FileId, TomlError, Treehouse},
+    state::{toml_error_to_diagnostic, FileId, Source, TomlError, Treehouse},
     tree::attributes::{Attributes, Content},
 };
+
+use self::attributes::RootAttributes;
 
 #[derive(Debug, Default, Clone)]
 pub struct SemaTree {
@@ -35,18 +37,58 @@ impl SemaTree {
 
 #[derive(Debug, Clone)]
 pub struct SemaRoots {
+    pub attributes: RootAttributes,
     pub branches: Vec<SemaBranchId>,
 }
 
 impl SemaRoots {
     pub fn from_roots(treehouse: &mut Treehouse, file_id: FileId, roots: Roots) -> Self {
         Self {
+            attributes: Self::parse_attributes(treehouse, file_id, &roots),
             branches: roots
                 .branches
                 .into_iter()
                 .map(|branch| SemaBranch::from_branch(treehouse, file_id, branch))
                 .collect(),
         }
+    }
+
+    fn parse_attributes(
+        treehouse: &mut Treehouse,
+        file_id: FileId,
+        roots: &Roots,
+    ) -> RootAttributes {
+        let source = treehouse.source(file_id);
+
+        let mut successfully_parsed = true;
+        let mut attributes = if let Some(attributes) = &roots.attributes {
+            toml_edit::de::from_str(&source.input()[attributes.data.clone()]).unwrap_or_else(
+                |error| {
+                    treehouse
+                        .diagnostics
+                        .push(toml_error_to_diagnostic(TomlError {
+                            message: error.message().to_owned(),
+                            span: error.span(),
+                            file_id,
+                            input_range: attributes.data.clone(),
+                        }));
+                    successfully_parsed = false;
+                    RootAttributes::default()
+                },
+            )
+        } else {
+            RootAttributes::default()
+        };
+        let successfully_parsed = successfully_parsed;
+
+        if successfully_parsed && attributes.title.is_empty() {
+            attributes.title = match treehouse.source(file_id) {
+                Source::Tree { tree_path, .. } => tree_path.clone(),
+                _ => panic!("parse_attributes called for a non-.tree file"),
+            }
+        }
+
+        attributes
     }
 }
 
@@ -132,18 +174,20 @@ impl SemaBranch {
 
         let mut successfully_parsed = true;
         let mut attributes = if let Some(attributes) = &branch.attributes {
-            toml_edit::de::from_str(&source[attributes.data.clone()]).unwrap_or_else(|error| {
-                treehouse
-                    .diagnostics
-                    .push(toml_error_to_diagnostic(TomlError {
-                        message: error.message().to_owned(),
-                        span: error.span(),
-                        file_id,
-                        input_range: attributes.data.clone(),
-                    }));
-                successfully_parsed = false;
-                Attributes::default()
-            })
+            toml_edit::de::from_str(&source.input()[attributes.data.clone()]).unwrap_or_else(
+                |error| {
+                    treehouse
+                        .diagnostics
+                        .push(toml_error_to_diagnostic(TomlError {
+                            message: error.message().to_owned(),
+                            span: error.span(),
+                            file_id,
+                            input_range: attributes.data.clone(),
+                        }));
+                    successfully_parsed = false;
+                    Attributes::default()
+                },
+            )
         } else {
             Attributes::default()
         };

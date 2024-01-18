@@ -61,7 +61,7 @@ pub fn branch_to_html(
             s.push_str("<div>");
         }
 
-        let raw_block_content = &source[branch.content.clone()];
+        let raw_block_content = &source.input()[branch.content.clone()];
         let mut unindented_block_content = String::with_capacity(raw_block_content.len());
         for line in raw_block_content.lines() {
             // Bit of a jank way to remove at most branch.indent_level spaces from the front.
@@ -93,7 +93,11 @@ pub fn branch_to_html(
                             .get(linked)
                             .map(|&branch_id| {
                                 (
-                                    format!("#{}", treehouse.tree.branch(branch_id).html_id).into(),
+                                    format!(
+                                        "/b?{}",
+                                        treehouse.tree.branch(branch_id).attributes.id
+                                    )
+                                    .into(),
                                     "".into(),
                                 )
                             }),
@@ -144,8 +148,8 @@ pub fn branch_to_html(
 
             write!(
                 s,
-                "<a class=\"icon icon-permalink\" href=\"#{}\" title=\"permalink\"></a>",
-                EscapeAttribute(&branch.html_id)
+                "<a class=\"icon icon-permalink\" href=\"/b?{}\" title=\"permalink\"></a>",
+                EscapeAttribute(&branch.attributes.id)
             )
             .unwrap();
         }
