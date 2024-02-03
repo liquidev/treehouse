@@ -3,7 +3,7 @@
 source "${BASH_SOURCE%/*}/daemon/common.bash"
 build_log="/tmp/treehouse_build.log"
 
-trap 'kill 0' EXIT
+trap 'trap - SIGTERM && kill 0' SIGTERM SIGINT EXIT
 
 rm -f $reload_fifo
 mkfifo $reload_fifo
