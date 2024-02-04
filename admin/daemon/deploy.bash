@@ -2,4 +2,4 @@
 
 cd ~/repo
 git pull
-"${BASH_SOURCE%/*}/reload.bash"
+bash "${BASH_SOURCE%/*}/reload.bash"
