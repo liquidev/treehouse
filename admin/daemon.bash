@@ -2,6 +2,8 @@
 
 source "${BASH_SOURCE%/*}/daemon/common.bash"
 
+echo "PATH: $PATH"
+
 trap 'trap - SIGTERM && kill 0' SIGTERM SIGINT EXIT
 
 rm -f $reload_fifo
