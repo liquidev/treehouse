@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 source "${BASH_SOURCE%/*}/daemon/common.bash"
-build_log="/tmp/treehouse_build.log"
 
 trap 'trap - SIGTERM && kill 0' SIGTERM SIGINT EXIT
 
