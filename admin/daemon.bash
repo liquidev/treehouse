@@ -10,7 +10,7 @@ mkfifo $reload_fifo
 reload() {
     # This just kind of assumes regeneration doesn't take too long.
     kill "$treehouse_pid"
-    cargo run --release -- serve --port 8082 > "$build_log" &
+    cargo run --release -- serve --port 8082 > "$build_log" 2>&1 &
     treehouse_pid="$!"
 }
 
