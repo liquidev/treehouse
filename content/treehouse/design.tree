@@ -1,0 +1,59 @@
+%% title = "notes on design of the treehouse"
+
+% id = "01HNXFMAYCMB3Y1K48172AY1MF"
+- notes on design of the treehouse
+
+% id = "01HNXFMAYC80R2F1ASXPBTM7MX"
++ adding dates next to branches
+
+    % id = "01HNXFMAYCPJVWXR7XWB4NVD9H"
+    - where the heck to put branch dates??
+
+        % id = "01HNXFMAYCSNZTGJN3PSQDY5QF"
+        - I've designed the tree to preserve creation dates of most branches.
+        branches which do not have explicit names use ULIDs, which encode a Unix timestamp in the lower 40 bits.
+        therefore I know the dates of when most branches were created, and would in fact like to display them somewhere on the page
+
+            % id = "01HNXFMAYC4EYPN5CME0F1PP2Z"
+            - problem is that it's not at all obvious where this info should live on the page.
+            stuffing dates into the existing design is surprisingly hard, and this branch is supposed to illustrate that.
+
+    % id = "01HNXFMAYCFQD79DZ6S10VHXA8"
+    - **requirement:** dates should not detract from main content
+
+        % id = "01HNXFMAYCHJS7EK266YEXWCYX"
+        - **idea:** dates are invisible until you hover over a branch
+
+    % id = "01HNXFMAYCKHVNBYN38K1RZ0W8"
+    - **requirement:** as all content in the treehouse, dates have to be visible on mobile
+
+    % id = "01HNXFMAYCECPK1W6KC4W6EE9C"
+    + **idea:** put dates after the branch's content
+
+        % id = "01HNXFMAYC3ARWZKWZPB35YV3C"
+        - **problem:** this does not interact well with the hover idea in case the date overflows the last line of the branch.
+        in that case, if the date is invisible, it will occupy unnecessary empty space
+
+    % id = "01HNXFMAYCGQEYEKYZ1WD6R4MF"
+    + **idea:** put dates to the left of the _permalink_/_linked tree_ buttons (aka the button bar)
+
+        % id = "01HNXFMAYCHM18PRFQS75VX5QA"
+        + **variant:** we make the date take up more space in the button bar
+
+            % id = "01HNXFMAYCVFW54J0QXQFNG0DK"
+            - how much? different locales render dates with differing lengths, I wouldn't want to assume how much space is needed…
+
+            % id = "01HNXFMAYCN82FAHEZABRK5NH6"
+            - besides, horizontal space on mobile is very limited
+
+        % id = "01HNXFMAYCXRHNVS5T4C821DV9"
+        + **variant:** we make the date _not_ take up more space, but rather make it have a background
+
+            % id = "01HNXFMAYC5FZ155Q3MNGH9Q00"
+            + **problem:** main content is then obscured by the date
+
+                % id = "01HNXFMAYC2VNCCM64KEY93400"
+                + **solution:** make the date invisible until you hover over it
+
+                    % id = "01HNXFMAYC6HZXD4JKT62BZRQ0"
+                    - **problem:** how do we communicate this behavior to users? invisible elements are horrible UX
