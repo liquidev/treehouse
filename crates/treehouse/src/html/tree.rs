@@ -61,6 +61,8 @@ pub fn branch_to_html(
             s.push_str("<div>");
         }
 
+        s.push_str("<th-bp></th-bp>");
+
         let raw_block_content = &source.input()[branch.content.clone()];
         let mut unindented_block_content = String::with_capacity(raw_block_content.len());
         for line in raw_block_content.lines() {
@@ -115,13 +117,9 @@ pub fn branch_to_html(
             },
             Some(broken_link_callback),
         );
-        if has_children {
-            s.push_str("<span class=\"branch-summary\">")
-        }
+        s.push_str("<th-bc>");
         markdown::push_html(s, treehouse, config, markdown_parser);
-        if has_children {
-            s.push_str("</span>")
-        }
+        s.push_str("</th-bc>");
 
         if let Content::Link(link) = &branch.attributes.content {
             write!(
