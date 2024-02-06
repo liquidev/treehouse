@@ -255,14 +255,6 @@ th-bb {
     }
 }
 
-.tree a.navigate {
-    background-repeat: no-repeat;
-    background-position: 0 50%;
-    opacity: 50%;
-    color: #000;
-    padding-left: 20px;
-}
-
 .tree .link-loading {
     padding-left: 24px;
     opacity: 50%;
