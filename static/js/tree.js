@@ -35,7 +35,6 @@ class Branch extends HTMLLIElement {
         });
 
         Branch.branchesByNamedID.set(this.id.split(':')[1], this);
-        console.log(Branch.branchesByNamedID)
     }
 }
 
