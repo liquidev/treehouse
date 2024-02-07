@@ -24,6 +24,7 @@
         % id = "01HP20D2R4BF3ZX5SVV6RJJ6HK"
         - JavaScript requirement due to dates being formatted in your system's locale
 
+        % id = "01HP20RMB3YD660J8M2SJ2V6DT"
         - right now these are invisible on the mobile layout because it's unclear where they should be positioned :ralsei_dead:
 
     % id = "01HP20D2R4B5QDQ2JT06QF8G8E"
@@ -35,8 +36,10 @@
         % id = "01HP20D2R4W85SKCJX2R10RHHC"
         - yeah, *these* ones - like the one that just disappeared when you clicked on the branch above
 
+    % id = "01HP20RMB3RX6HSBHKM6FVDS44"
     + [`/b` endpoint](/b) is now used for shorter links. it also generates OpenGraph metadata so that Your Favorite Messaging Platform can display the linked branch's content
 
+        % id = "01HP20RMB37M1XB6ZC9VWXK98R"
         - what's left here is to add some more OpenGraph to do stuff like: thumbnails, default descriptions, and so on and so forth - but the seeds for that have already been planted :smile:
 
     % id = "01HP20D2R4MBTW82TVT9MWY3GZ"
