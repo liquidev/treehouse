@@ -122,8 +122,6 @@ pub fn branch_to_html(
         );
         s.push_str("<th-bc>");
         markdown::push_html(s, treehouse, config, markdown_parser);
-        s.push_str("</th-bc>");
-
         if let Content::Link(link) = &branch.attributes.content {
             write!(
                 s,
@@ -134,6 +132,7 @@ pub fn branch_to_html(
             )
             .unwrap();
         }
+        s.push_str("</th-bc>");
 
         s.push_str("<th-bb>");
         {
