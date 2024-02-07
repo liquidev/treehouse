@@ -22,6 +22,13 @@
     }
 }
 
+/*** Variables ***/
+
+:root {
+    --tree-indent-width: 28px;
+    --transition-duration: 0.15s;
+}
+
 /*** Breadcrumbs ***/
 
 .breadcrumbs {
@@ -69,14 +76,36 @@
 
 /*** Tree ***/
 
-/* Compute an indent level appropriate for the viewport. */
-.tree ul {
-    padding-left: clamp(8px, 2vw, 24px);
+.tree {
+    --tree-indent-guide-dim: transparent;
+    --tree-indent-guide-highlighted: transparent;
 }
 
-/* Top level should not have an indent. */
+.tree:has(.branch-container:hover) {
+    --tree-indent-guide-dim: transparent;
+    --tree-indent-guide-highlighted: var(--border-1);
+}
+
+/* Use an indent level appropriate for the viewport. */
+.tree ul {
+    --tree-responsive-indent-width: clamp(8px, 2vw, var(--tree-indent-width));
+
+    /* Draw indent guides. */
+    padding-left: calc(var(--tree-responsive-indent-width) / 2);
+    margin-left: calc(var(--tree-responsive-indent-width) / 2);
+    border-left: 1px solid var(--tree-indent-guide-dim);
+
+    transition: border-left-color var(--transition-duration);
+}
+
+.tree details:has(.branch-container:hover)>ul {
+    border-left-color: var(--tree-indent-guide-highlighted);
+}
+
+/* Top level should not have an indent or a border. */
 .tree>ul {
     padding-left: 0;
+    border-left: none;
 }
 
 .tree details {
@@ -107,9 +136,12 @@
     &>div {
         box-sizing: border-box;
 
+        margin-bottom: -1px;
+        border-bottom: 1px solid transparent;
+        transition: border-bottom-color var(--transition-duration);
+
         &:hover {
-            border-bottom: 1px solid var(--border-1);
-            margin-bottom: -1px;
+            border-bottom-color: var(--border-1);
         }
     }
 
@@ -130,6 +162,7 @@
 
     /* Give it a shaded background on hover */
     background-color: transparent;
+    transition: background-color var(--transition-duration);
 
     &:hover {
         background-color: var(--shaded-background);
@@ -155,7 +188,7 @@
 /* bp - bullet point */
 th-bp {
     display: block;
-    width: 28px;
+    width: var(--tree-indent-width);
     height: 24px;
 
     background-image: var(--icon-leaf);
@@ -219,6 +252,7 @@ th-bb {
 
     /* Keep the button bar invisible by default. */
     opacity: 0%;
+    transition: opacity var(--transition-duration);
 }
 
 /* When the parent is hovered over, display the button bar. */
@@ -280,10 +314,24 @@ th-bb .branch-date {
 
     &>details>summary,
     &>div {
-        border-bottom: 1px dashed var(--border-2);
-        margin-bottom: -1px;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+        background-color: var(--shaded-background);
+        background: linear-gradient(to right,
+                transparent 12.5%, var(--shaded-background),
+                transparent, var(--shaded-background),
+                transparent, var(--shaded-background) 87.5%);
+        background-size: 800% 100%;
+        background-position-x: 100%;
+        animation: hey-listen 2s linear;
+    }
+}
+
+@keyframes hey-listen {
+    0% {
+        background-position-x: 0%;
+    }
+
+    100% {
+        background-position-x: 100%;
     }
 }
 

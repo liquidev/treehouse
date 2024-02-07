@@ -24,7 +24,7 @@ use crate::{
         tree::branches_to_html,
     },
     state::Source,
-    tree::SemaRoots,
+    tree::{attributes::RootAttributes, SemaRoots},
 };
 
 use crate::state::{FileId, Treehouse};

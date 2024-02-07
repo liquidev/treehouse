@@ -1,13 +1,21 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Top-level `%%` root attributes.
-#[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct RootAttributes {
     /// Title of the generated .html page.
     ///
     /// The page's tree path is used if empty.
     #[serde(default)]
     pub title: String,
+
+    /// Summary of the generated .html page.
+    #[serde(default)]
+    pub description: Option<String>,
+
+    /// ID of picture attached to the page, to be used as a thumbnail.
+    #[serde(default)]
+    pub thumbnail: Option<String>,
 }
 
 /// Branch attributes.

@@ -29,7 +29,9 @@
         --link-color-visited: #f7afde;
 
         --shaded-background: #f7e5df0c;
+        --border-0: #f7e5df1a;
         --border-1: #f7e5df26;
+        --border-1-and-a-half: #f7e5df3a;
         --border-2: #f7e5df4d;
     }
 }

@@ -56,9 +56,9 @@ pub fn branch_to_html(
                 BranchKind::Expanded => "<details open>",
                 BranchKind::Collapsed => "<details>",
             });
-            s.push_str("<summary>");
+            s.push_str("<summary class=\"branch-container\">");
         } else {
-            s.push_str("<div>");
+            s.push_str("<div class=\"branch-container\">");
         }
 
         s.push_str("<th-bp></th-bp>");
