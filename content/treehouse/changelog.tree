@@ -1,0 +1,45 @@
+%% title = "what's going on inside the house? (a changelog)"
+
+% id = "01HP20D2R4ZK30H85H0WBR5WK7"
+- **revision 2:** just really comfy UX :relieved:
+
+    % id = "01HP20D2R46FP213WVSZPHZXZN"
+    - first thing you probably noticed: added indent guides (may require a modern browser due to usage of [`:has`](https://developer.mozilla.org/en-US/docs/Web/CSS/:has))
+
+    % id = "01HP20D2R40HW0SMETK14WKDF2"
+    + added some nice animations
+
+        % id = "01HP20D2R4WD9CC3X8MP3RWWHR"
+        - hovering over branches is now animated
+
+        % id = "01HP20D2R4E24GK562RN108E34"
+        - when a branch is focused via a hyperlink, the background will now pulse in and out to grab your attention
+
+            % id = "01HP20D2R4SFE4S1JREWP50SQ5"
+            - this replaces the previous dotted underline which my friends reported to be hard to spot
+
+    % id = "01HP20D2R4C0DZAKKB84FCQNXN"
+    + added dates to branches (requires JavaScript)
+
+        % id = "01HP20D2R4BF3ZX5SVV6RJJ6HK"
+        - JavaScript requirement due to dates being formatted in your system's locale
+
+        - right now these are invisible on the mobile layout because it's unclear where they should be positioned :ralsei_dead:
+
+    % id = "01HP20D2R4B5QDQ2JT06QF8G8E"
+    - added page titles (you can see them on this page!)
+
+    % id = "01HP20D2R4F2XZVBBQNVW6CVHE"
+    + fixed "hey expand me" chevrons sometimes shifting layout when a branch is expanded
+
+        % id = "01HP20D2R4W85SKCJX2R10RHHC"
+        - yeah, *these* ones - like the one that just disappeared when you clicked on the branch above
+
+    + [`/b` endpoint](/b) is now used for shorter links. it also generates OpenGraph metadata so that Your Favorite Messaging Platform can display the linked branch's content
+
+        - what's left here is to add some more OpenGraph to do stuff like: thumbnails, default descriptions, and so on and so forth - but the seeds for that have already been planted :smile:
+
+    % id = "01HP20D2R4MBTW82TVT9MWY3GZ"
+    - internals: branches are now based on flexboxes rather than background images.
+    this requires sending a bit more HTML, but [the layout is a lot more stable][branch:01HP20D2R4F2XZVBBQNVW6CVHE] as well as being [easier to extend][branch:01HP20D2R4C0DZAKKB84FCQNXN]
+
