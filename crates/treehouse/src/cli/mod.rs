@@ -36,6 +36,9 @@ pub enum Command {
         #[clap(flatten)]
         serve: ServeArgs,
     },
+
+    /// Generates a new ulid and prints it to stdout.
+    Ulid,
 }
 
 #[derive(Args)]

@@ -251,6 +251,8 @@ pub fn generate(paths: &Paths<'_>) -> anyhow::Result<Treehouse> {
     let mut config = Config::load(paths.config_file)?;
     config.site = std::env::var("TREEHOUSE_SITE").unwrap_or(config.site);
     config.autopopulate_emoji(&paths.static_dir.join("emoji"))?;
+    config.autopopulate_pics(&paths.static_dir.join("pic"))?;
+    dbg!(&config.pics);
 
     info!("cleaning target directory");
     let _ = std::fs::remove_dir_all(paths.target_dir);

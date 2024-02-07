@@ -103,6 +103,9 @@ pub fn branch_to_html(
                                     "".into(),
                                 )
                             }),
+                        "pic" => config.pics.get(linked).map(|filename| {
+                            (format!("/static/pic/{}", &filename).into(), "".into())
+                        }),
                         _ => None,
                     })
             } else {

@@ -46,6 +46,14 @@ async fn fallible_main() -> anyhow::Result<()> {
 
         Command::Fix(fix_args) => fix_file_cli(fix_args)?,
         Command::FixAll(fix_args) => fix_all_cli(fix_args, &paths)?,
+
+        Command::Ulid => {
+            let mut rng = rand::thread_rng();
+            let ulid = ulid::Generator::new()
+                .generate_with_source(&mut rng)
+                .expect("failed to generate ulid");
+            println!("{ulid}");
+        }
     }
 
     Ok(())
