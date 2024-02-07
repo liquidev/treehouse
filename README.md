@@ -14,24 +14,22 @@ You have been warned.
 
 ## Building
 
-To build the website:
+To serve the website on `http://localhost:8080`:
 
 ```sh
-cargo run -p treehouse generate
+cargo run -p treehouse serve
 ```
 
-This will spit out a directory `target/site` containing the static pages. You're free to use any HTTP server you wish, but for development purposes treehouse includes one in the CLI:
+This will start a server on port 8080. You can change the port by using `--port`, but note that you'll also have to override the website address. The treehouse hardcodes all URLs to point to its own address and therefore needs a base URL, provided with `$TREEHOUSE_SITE` or more permanently by setting `site` inside `treehouse.toml`:
 
 ```sh
-cargo run -p treehouse generate --serve 8080
+TREEHOUSE_SITE="http://localhost:8081" cargo run -p treehouse serve --port 8081
 ```
-
-This will fire up a server on port 8080.
 
 If you're developing, you may wanna use [`cargo-watch`](https://crates.io/crates/cargo-watch):
 
 ```sh
-cargo watch -- cargo run -p treehouse generate --serve
+cargo watch -- cargo run -p treehouse serve
 ```
 
 The website will reload itself automatically if you change any file in the repository.
