@@ -1,0 +1,120 @@
+%% title = "data validation quick fixes in Unreal Engine 5.4"
+
+% id = "01HP1FESY3H9K1QVSM1XMNC8NS"
+- a few days ago I got a really cool change into Unreal, which allows you to add quick fixes to any data validation warning/error you emit:
+
+![a screenshot with a validation error in it; beneath the error there's a hint that it may be fixed automatically, coupled with a link you can click on to fix the issue][pic:01HP1G5WC29GP4KQY1NV1F1RR1]
+
+% id = "01HP1FESY3K11EJJ9NSFBDCTWS"
++ you can get this change in...
+
+    % id = "01HP1FESY3CP8AJ00AQ9B6FQB2"
+    - [Git commit `0a6de35a5beb8534e19579cf1058460b4eb2bc79`](https://github.com/EpicGames/UnrealEngine/commit/0a6de35a5beb8534e19579cf1058460b4eb2bc79)
+
+    % id = "01HP1FESY3RW98YQZFS04Q7E7C"
+    - Perforce changelist 31126352
+
+% id = "01HP1FESY3XJRMHKB173XWF130"
++ the API revolves around the `UE::DataValidation::IFixer` type. _fixers_ are pieces of code that can fix your issues given their application conditions are met
+
+    % id = "01HP1FESY38JWXNSJKPZNHP33Q"
+    + the interface you have to implement is:
+    ```cpp
+    struct IFixer
+    {
+        virtual EFixApplicability GetApplicability(int32 FixIndex) const = 0;
+        virtual FFixResult ApplyFix(int32 FixIndex) = 0;
+    }
+    ```
+
+        % id = "01HP1FESY3PZH00WDD85CNF1BX"
+        - for the curious cats among us: `FixIndex` is an arbitrary number that can be passed to `FFixToken`, to handle multiple different fixes with one fixer
+
+    % id = "01HP1FESY3328D7ECZZX3EZCNE"
+    + first, the editor calls `GetApplicability` to know whether the fix can be applied
+
+        % id = "01HP1FESY32EFSRX75ZWJ0K7PW"
+        - `EFixApplicability::CanBeApplied` should be returned if the fix can be applied at the moment
+
+        % id = "01HP1FESY3RN3ECQHJ8R3HS4GD"
+        - `EFixApplicability::Applied` should be returned if the fix has been applied and can no longer be applied anymore
+
+        % id = "01HP1FESY327FZMRZ64844XC9A"
+        - `EFixApplicability::DidNotApply` should be returned if the fix was not applied and can no longer be applied anymore
+
+    % id = "01HP1FESY3N19T00CNY2T182VG"
+    + then, if `GetApplicability()` returns `EFixApplicability::CanBeApplied`, `ApplyFix` is called to actually run the fix
+
+        % id = "01HP1FESY3NGQRKA57QTTVC19W"
+        - this function is safe to assume the caller has ensured that the fix `CanBeApplied` and therefore need not do any extra validity checks
+
+        % id = "01HP1FESY3AAEHF4HSMAJ3B21H"
+        - other than that it's free to do whatever it wants
+
+        % id = "01HP1FESY3CBMBJA3CQPEMCFND"
+        - after a fix is applied, the fixer returns an `FFixResult` which is used to display a notification to the user informing them of the changes
+
+    % id = "01HP1FESY3GB4N76JDV8RVG4VD"
+    - fortunately you don't have to define a new struct for each fix, and instead can use `UE::DataValidation::TLambdaFixer` together with the `UE::DataValidation::MakeFix` function for more convenience
+
+% id = "01HP1FESY3EJ7TK4SPTD0TBBN9"
++ once you have a fixer, you can display it in your (`FTokenizedMessage`-based) validation messages using `FFixToken`
+
+    % id = "01HP1FESY30HDA6JNR323GXD3D"
+    - minimal example:
+    ```cpp
+    auto Message = FTokenizedMessage::Create(
+        EMessageVerbosity::Error,
+        LOCTEXT(
+            "FoundNoneEntries",
+            "Found None entries in ability array."
+            "Please remove them, otherwise they may cause crashes during runtime."
+        )
+    );
+    Message->AddToken(
+        UE::DataValidation::MakeFix(
+            [this]
+            {
+                Abilities.SetNum(Algo::RemoveIf(
+                    Abilities,
+                    [](const UGameplayAbility* Ability) { return Ability == nullptr; }
+                ));
+                return FFixResult::Success(LOCTEXT("NoneEntriesRemoved", "None entries have been removed"));
+            }
+        )
+        ->CreateToken(LOCTEXT("RemoveNoneEntries", "Remove the None entries"))
+    );
+    Context.AddMessage(MoveTemp(Message));
+    ```
+
+% id = "01HP1FESY3V73R3JZEQHQ36V58"
+- the user can then apply a fix by clicking on it in the Message Log message that contains it
+
+% id = "01HP1FESY3JM8WPZMRNCZC8GBA"
++ fixers can be freely stacked and composed - there are a few such layers available out of the box in the engine
+
+    % id = "01HP1FESY3VK9X1TB81VR2VA83"
+    - the set is quite limited at the moment, but you're free to create your own or contribute them to mainline Unreal :ralsei_love:
+
+    % id = "01HP1FESY3TC6DMBWQ3CEMGRW1"
+    - `UE::DataValidation::FSingleUseFixer` makes it so that your fix's applicability becomes `EFixApplicability::Applied` after the user applies the fix
+
+    % id = "01HP1FESY32ZA4K57ATCKPM800"
+    - `UE::DataValidation::FObjectSetDependentFixer` makes it so that your fix becomes `DidNotApply` after the specified objects are deleted from memory
+
+    % id = "01HP1FESY3W381HMBCEGCZ3HK7"
+    - `UE::DataValidation::FAutoSavingFixer` tells the user to save any assets modified by the fix after it's applied
+
+    % id = "01HP1FESY3SENV59V4462YSZJY"
+    - `UE::DataValidation::FValidatingFixer` runs data validation on any assets modified by the fix after it's applied
+
+    % id = "01HP1FESY3AZN3AVF7Z02JHXZA"
+    - `UE::DataValidation::FMutuallyExclusiveFixSet` is actually not a fixer, but a fixer _builder_ -
+    you give it a set of fixers, and it will make it so that when one is applied, it becomes `EFixApplicability::Applied`, and the rest becomes `EFixApplicability::DidNotApply` -
+    thus creating a set of mutually-exclusive fixes
+
+    % id = "01HP1FESY3CC1NZZMQQP56TTD4"
+    - you can refer to the `DataValidationFixers.h` header file for more documentation
+
+% id = "01HP1FESY3WH21KDDYAHWZG294"
+- all of this is going to be available in Unreal 5.4 :sparkles:
