@@ -198,6 +198,7 @@ impl Generator {
             pub struct Page {
                 pub title: String,
                 pub breadcrumbs: String,
+                pub tree_path: Option<String>,
                 pub tree: String,
             }
 
@@ -211,6 +212,9 @@ impl Generator {
                 page: Page {
                     title: roots.attributes.title.clone(),
                     breadcrumbs,
+                    tree_path: treehouse
+                        .tree_path(parsed_tree.file_id)
+                        .map(|s| s.to_owned()),
                     tree,
                 },
             };

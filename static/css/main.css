@@ -313,13 +313,19 @@ th {
     display: none;
 }
 
-/* Give the logo on the top some nicer looks */
+/* Style the navigation bar. */
 
 nav {
     display: flex;
     align-items: center;
 }
 
+nav .nav-page {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Give the logo on the top some nicer looks */
 nav .logo {
     width: 48px;
     height: 48px;
@@ -327,6 +333,15 @@ nav .logo {
     display: block;
     opacity: 100%;
     color: var(--text-color);
+}
+
+/* Style page titles */
+h1.page-title {
+    --recursive-wght: 800;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 32px;
+    font-size: 1.25rem;
 }
 
 /* Style emojis to be readable */

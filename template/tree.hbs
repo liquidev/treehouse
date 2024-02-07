@@ -41,11 +41,17 @@
             </svg>
         </a>
 
-        {{#if page.breadcrumbs}}
-        <ol class="breadcrumbs">
-            {{{ page.breadcrumbs }}}
-        </ol>
-        {{/if}}
+        <div class="nav-page">
+            {{#if page.breadcrumbs}}
+            <ol class="breadcrumbs">
+                {{{ page.breadcrumbs }}}
+            </ol>
+            {{/if}}
+
+            {{#if (and (ne page.title config.user.title) (ne page.title page.tree_path))}}
+            <h1 class="page-title">{{ page.title }}</h1>
+            {{/if}}
+        </div>
     </nav>
 
     <noscript>
