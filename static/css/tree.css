@@ -71,7 +71,7 @@
 
 /* Compute an indent level appropriate for the viewport. */
 .tree ul {
-    padding-left: clamp(12px, 2vw, 24px);
+    padding-left: clamp(8px, 2vw, 24px);
 }
 
 /* Top level should not have an indent. */
@@ -187,9 +187,6 @@ th-bc {
 
 /* Display a chevron hinting that the collapsed branch has more content in its children. */
 .tree details:not([open])>summary>th-bc>:last-child {
-    /* Add some padding such that text wraps together with this element. */
-    padding-right: 32px;
-
     &::after {
         content: '\00A0';
         display: inline-block;
@@ -218,6 +215,7 @@ th-bb {
 
     display: flex;
     flex-direction: row;
+    align-items: center;
 
     /* Keep the button bar invisible by default. */
     opacity: 0%;
@@ -228,10 +226,23 @@ th-bb {
     opacity: 100%;
 }
 
-/* For media without hover functionality, th-bb should always be visible */
+/* For media without hover functionality, th-bb should always be visible. */
 @media (hover: none) {
     .tree th-bb {
         opacity: 100%;
+    }
+}
+
+/* Style branch dates to be smaller and less noticable. */
+th-bb .branch-date {
+    opacity: 50%;
+    font-size: 0.8em;
+}
+
+/* Hide branch dates on very small displays. No clue how to fix this just yet. */
+@media (max-width: 600px) {
+    th-bb .branch-date {
+        display: none;
     }
 }
 
@@ -255,11 +266,15 @@ th-bb {
     }
 }
 
+/* Style the loading text to not be too attention grabbing. */
 .tree .link-loading {
     padding-left: 24px;
     opacity: 50%;
 }
 
+/* Highlight branch selected by # or ? in URL.
+    The latter is not supported by CSS so we use some auxiliary JavaScript to add a .target class
+    to the element highlighted by ?. */
 .tree :target,
 .tree .target {
 

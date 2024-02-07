@@ -1,6 +1,7 @@
 // This is definitely not a three.js ripoff.
 
 import { navigationMap } from "/navmap.js";
+import * as ulid from './ulid.js';
 
 /* Branch persistence */
 
@@ -22,19 +23,41 @@ class Branch extends HTMLLIElement {
     constructor() {
         super();
 
+        this.isLeaf = this.classList.contains("leaf");
+
         this.details = this.childNodes[0];
         this.innerUL = this.details.childNodes[1];
+
+        if (this.isLeaf) {
+            this.contentContainer = this.childNodes[0];
+        } else {
+            this.contentContainer = this.details.childNodes[0];
+        }
+        this.bulletPoint = this.contentContainer.childNodes[0];
+        this.branchContent = this.contentContainer.childNodes[1];
+        this.buttonBar = this.contentContainer.childNodes[2];
 
         let doPersist = !this.hasAttribute("data-th-do-not-persist");
         let isOpen = branchIsOpen(this.id);
         if (doPersist && isOpen !== undefined) {
             this.details.open = isOpen;
         }
-        this.details.addEventListener("toggle", _ => {
-            saveBranchIsOpen(this.id, this.details.open);
-        });
+        if (!this.isLeaf) {
+            this.details.addEventListener("toggle", _ => {
+                saveBranchIsOpen(this.id, this.details.open);
+            });
+        }
 
-        Branch.branchesByNamedID.set(this.id.split(':')[1], this);
+        let namedID = this.id.split(':')[1];
+        Branch.branchesByNamedID.set(namedID, this);
+
+        if (ulid.isCanonicalUlid(namedID)) {
+            let timestamp = ulid.getTimestamp(namedID);
+            let date = document.createElement("span");
+            date.classList.add("branch-date");
+            date.innerText = timestamp.toLocaleDateString();
+            this.buttonBar.insertBefore(date, this.buttonBar.firstChild);
+        }
     }
 }
 
