@@ -232,6 +232,13 @@ img {
     max-width: 100%;
 }
 
+/* Also regarding images - make them look a bit more pretty by default */
+
+img.pic {
+    border-radius: 6px;
+    margin: 8px 0;
+}
+
 /* Fix the default blue and ugly purple links normally have */
 
 a {

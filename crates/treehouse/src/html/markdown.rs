@@ -292,7 +292,7 @@ where
                 self.write("\">")
             }
             Tag::Image(_link_type, dest, title) => {
-                self.write("<img src=\"")?;
+                self.write("<img class=\"pic\" src=\"")?;
                 escape_href(&mut self.writer, &dest)?;
                 self.write("\" alt=\"")?;
                 self.raw_text()?;
