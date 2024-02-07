@@ -286,3 +286,11 @@ th-bb .branch-date {
         border-bottom-right-radius: 0;
     }
 }
+
+/* <noscript> navigation links */
+.tree .navigate {
+    padding-left: 24px;
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    opacity: 80%;
+}
