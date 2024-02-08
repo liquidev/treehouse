@@ -358,17 +358,19 @@ img[is="th-emoji"] {
 /* And also style emoji tooltips. */
 
 .emoji-wrapper {
+    --transition-duration: 0.2s;
+
     position: relative;
 }
 
 .emoji-tooltip {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
 
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(-10%) scale(0.8);
     width: max-content;
     z-index: 100;
 
@@ -376,10 +378,20 @@ img[is="th-emoji"] {
     padding: 8px;
     margin-top: 8px;
     border-radius: 6px;
+
+    transition:
+        opacity var(--transition-duration) cubic-bezier(0.22, 1, 0.36, 1),
+        filter var(--transition-duration) cubic-bezier(0.22, 1, 0.36, 1),
+        transform var(--transition-duration) cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 0%;
+    filter: blur(3px);
+    pointer-events: none;
 }
 
 .emoji-wrapper:hover .emoji-tooltip {
-    display: flex;
+    opacity: 100%;
+    filter: blur(0px);
+    transform: translateX(-50%) scale(1.0);
 }
 
 .emoji-tooltip img {
