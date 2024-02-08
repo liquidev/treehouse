@@ -216,6 +216,11 @@ th-bc {
 
     /* Grow to fill the entire available space. This pushes out th-bb to the far right. */
     flex-grow: 1;
+
+    /* Bit of a hack to make <pre>s in <th-bc> have scrollbars proper. */
+    &:has(pre) {
+        overflow: auto;
+    }
 }
 
 /* Display a chevron hinting that the collapsed branch has more content in its children. */

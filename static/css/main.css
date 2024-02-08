@@ -18,6 +18,10 @@
     --border-1: rgba(0, 0, 0, 15%);
     --border-2: rgba(0, 0, 0, 30%);
     --hover: rgba(0, 0, 0, 15%);
+
+    /* Hack to enable theme-matching scrollbars in <pre> */
+    --shaded-against-background: #f2f0ea;
+    --shaded-against-background-twice: #e6e4de;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,6 +37,9 @@
         --border-1: #f7e5df26;
         --border-1-and-a-half: #f7e5df3a;
         --border-2: #f7e5df4d;
+
+        --shaded-against-background: #29313e;
+        --shaded-against-background-twice: #333a46;
     }
 }
 
@@ -212,8 +219,14 @@ kbd {
 pre {
     padding: 8px 12px;
     margin: 12px 0;
-    background-color: var(--shaded-background);
+    background-color: var(--shaded-against-background);
     border-radius: 8px;
+
+    transition: background-color var(--transition-duration);
+}
+
+.tree summary:hover pre {
+    background-color: var(--shaded-against-background-twice);
 }
 
 pre>code {
@@ -225,7 +238,9 @@ pre>code {
 /* And don't let code examples fly off and overflow the window */
 
 pre {
-    overflow-x: auto;
+    min-width: 0;
+    width: auto;
+    overflow: auto;
 }
 
 /* Also don't let images get out of hand */
