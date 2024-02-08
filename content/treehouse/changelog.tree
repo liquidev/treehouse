@@ -1,9 +1,12 @@
 %% title = "what's going on inside the house? (a changelog)"
 
+% id = "01HP45HV411QDDK8ZBNNBNR6AX"
 - **revision 3:** just a bit more polish :relieved:
 
+    % id = "01HP45HV41AP9PY0DZN47H8NJ2"
     - emoji tooltips now have a neat animation on hover rather than just sort of appearing and disappearing immediately
 
+    % id = "01HP45HV4126B4M6KF7NJWEB3R"
     - pages can now have thumbnails that display in embeds
 
 % id = "01HP20D2R4ZK30H85H0WBR5WK7"
