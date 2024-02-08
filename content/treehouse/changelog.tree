@@ -1,5 +1,11 @@
 %% title = "what's going on inside the house? (a changelog)"
 
+- **revision 3:** just a bit more polish :relieved:
+
+    - emoji tooltips now have a neat animation on hover rather than just sort of appearing and disappearing immediately
+
+    - pages can now have thumbnails that display in embeds
+
 % id = "01HP20D2R4ZK30H85H0WBR5WK7"
 - **revision 2:** just really comfy UX :relieved:
 
