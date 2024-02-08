@@ -24,7 +24,7 @@ use crate::{
         tree::branches_to_html,
     },
     state::Source,
-    tree::{attributes::RootAttributes, SemaRoots},
+    tree::SemaRoots,
 };
 
 use crate::state::{FileId, Treehouse};
@@ -107,7 +107,11 @@ impl Generator {
         Ok(())
     }
 
-    fn parse_trees(&self, paths: &Paths<'_>) -> anyhow::Result<(Treehouse, Vec<ParsedTree>)> {
+    fn parse_trees(
+        &self,
+        config: &Config,
+        paths: &Paths<'_>,
+    ) -> anyhow::Result<(Treehouse, Vec<ParsedTree>)> {
         let mut treehouse = Treehouse::new();
         let mut parsed_trees = vec![];
 
@@ -148,7 +152,7 @@ impl Generator {
             );
 
             if let Ok(roots) = parse_tree_with_diagnostics(&mut treehouse, file_id) {
-                let roots = SemaRoots::from_roots(&mut treehouse, file_id, roots);
+                let roots = SemaRoots::from_roots(&mut treehouse, config, file_id, roots);
                 treehouse.roots.insert(tree_path.clone(), roots);
                 parsed_trees.push(ParsedTree {
                     tree_path,
@@ -197,9 +201,16 @@ impl Generator {
             #[derive(Serialize)]
             pub struct Page {
                 pub title: String,
+                pub thumbnail: Option<Thumbnail>,
                 pub breadcrumbs: String,
                 pub tree_path: Option<String>,
                 pub tree: String,
+            }
+
+            #[derive(Serialize)]
+            pub struct Thumbnail {
+                pub url: String,
+                pub alt: Option<String>,
             }
 
             #[derive(Serialize)]
@@ -211,6 +222,22 @@ impl Generator {
                 config,
                 page: Page {
                     title: roots.attributes.title.clone(),
+                    thumbnail: roots
+                        .attributes
+                        .thumbnail
+                        .as_ref()
+                        .map(|thumbnail| Thumbnail {
+                            url: format!(
+                                "{}/static/pic/{}",
+                                config.site,
+                                config
+                                    .pics
+                                    .get(&thumbnail.id)
+                                    .map(|x| &**x)
+                                    .unwrap_or("404.png")
+                            ),
+                            alt: thumbnail.alt.clone(),
+                        }),
                     breadcrumbs,
                     tree_path: treehouse
                         .tree_path(parsed_tree.file_id)
@@ -268,7 +295,7 @@ pub fn generate(paths: &Paths<'_>) -> anyhow::Result<Treehouse> {
     info!("parsing tree");
     let mut generator = Generator::default();
     generator.add_directory_rec(paths.content_dir)?;
-    let (mut treehouse, parsed_trees) = generator.parse_trees(paths)?;
+    let (mut treehouse, parsed_trees) = generator.parse_trees(&config, paths)?;
 
     info!("generating navigation map");
     let navigation_map = build_navigation_map(&treehouse, "index");

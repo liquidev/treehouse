@@ -9,6 +9,7 @@ use treehouse_format::{
 };
 
 use crate::{
+    config::Config,
     state::{toml_error_to_diagnostic, FileId, Source, TomlError, Treehouse},
     tree::attributes::{Attributes, Content},
 };
@@ -42,9 +43,14 @@ pub struct SemaRoots {
 }
 
 impl SemaRoots {
-    pub fn from_roots(treehouse: &mut Treehouse, file_id: FileId, roots: Roots) -> Self {
+    pub fn from_roots(
+        treehouse: &mut Treehouse,
+        config: &Config,
+        file_id: FileId,
+        roots: Roots,
+    ) -> Self {
         Self {
-            attributes: Self::parse_attributes(treehouse, file_id, &roots),
+            attributes: Self::parse_attributes(treehouse, config, file_id, &roots),
             branches: roots
                 .branches
                 .into_iter()
@@ -55,6 +61,7 @@ impl SemaRoots {
 
     fn parse_attributes(
         treehouse: &mut Treehouse,
+        config: &Config,
         file_id: FileId,
         roots: &Roots,
     ) -> RootAttributes {
@@ -85,6 +92,44 @@ impl SemaRoots {
             attributes.title = match treehouse.source(file_id) {
                 Source::Tree { tree_path, .. } => tree_path.clone(),
                 _ => panic!("parse_attributes called for a non-.tree file"),
+            }
+        }
+
+        if let Some(thumbnail) = &attributes.thumbnail {
+            if thumbnail.alt.is_none() {
+                treehouse.diagnostics.push(Diagnostic {
+                    severity: Severity::Warning,
+                    code: Some("sema".into()),
+                    message: "thumbnail without alt text".into(),
+                    labels: vec![Label {
+                        style: LabelStyle::Primary,
+                        file_id,
+                        range: roots.attributes.as_ref().unwrap().percent.clone(),
+                        message: "".into(),
+                    }],
+                    notes: vec![
+                        "note: alt text is important for people using screen readers".into(),
+                        "help: add alt text using the thumbnail.alt key".into(),
+                    ],
+                })
+            }
+
+            if !config.pics.contains_key(&thumbnail.id) {
+                treehouse.diagnostics.push(Diagnostic {
+                    severity: Severity::Warning,
+                    code: Some("sema".into()),
+                    message: format!(
+                        "thumbnail picture with id '{}' does not exist",
+                        thumbnail.id
+                    ),
+                    labels: vec![Label {
+                        style: LabelStyle::Primary,
+                        file_id,
+                        range: roots.attributes.as_ref().unwrap().percent.clone(),
+                        message: "".into(),
+                    }],
+                    notes: vec!["note: check your id for typos".into()],
+                })
             }
         }
 

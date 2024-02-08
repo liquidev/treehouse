@@ -1,5 +1,6 @@
 %% title = "new in Unreal Engine 5.4: data validation quick fixes"
-   thumbnail = "01HP1G5WC29GP4KQY1NV1F1RR1"
+   thumbnail.id = "01HP1G5WC29GP4KQY1NV1F1RR1"
+   thumbnail.alt = "a screenshot with a validation error in it; beneath the error there's a hint that it may be fixed automatically, coupled with a link you can click on to fix the issue"
 
 % id = "01HP1FESY3H9K1QVSM1XMNC8NS"
 - a few days ago I got a really cool change into Unreal, which allows you to add quick fixes to any data validation warning/error you emit:

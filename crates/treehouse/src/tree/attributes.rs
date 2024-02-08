@@ -15,7 +15,18 @@ pub struct RootAttributes {
 
     /// ID of picture attached to the page, to be used as a thumbnail.
     #[serde(default)]
-    pub thumbnail: Option<String>,
+    pub thumbnail: Option<Picture>,
+}
+
+/// A picture reference.
+#[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize, Serialize)]
+pub struct Picture {
+    /// ID of the picture.
+    pub id: String,
+
+    /// Optional alt text.
+    #[serde(default)]
+    pub alt: Option<String>,
 }
 
 /// Branch attributes.

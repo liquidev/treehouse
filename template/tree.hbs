@@ -18,6 +18,10 @@
     It just needs to be a string replacement.
     --}}
     <!-- treehouse-ca37057a-cff5-45b3-8415-3b02dbf6c799-per-branch-metadata -->
+    {{#if page.thumbnail}}
+    <meta property="og:image" content="{{ page.thumbnail.url }}">
+    <meta property="og:image:alt" content="{{ page.thumbnail.alt }}">
+    {{/if}}
 
     <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
     <link rel="stylesheet" href="{{ config.site }}/static/css/tree.css">
