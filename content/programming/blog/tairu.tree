@@ -1,0 +1,86 @@
+%% title = "tairu - an interactive exploration of 2D autotiling techniques"
+   scripts = ["tairu/tairu.js"]
+
++ I remember since my early days doing programming, I've been interested in how games like Terraria handle automatically tiling their terrain.
+
+    - in Terraria, you can fully modify the terrain however you want, and the tiles will connect to each other seamlessly.
+
+        - TODO: short videos demoing this here
+
+- once upon a time I heard of a technique called *bitwise autotiling*
+
+    + this technique involves assigning the cardinal directions (north, south, east, west) to a bitset.
+    then for each tile you look at which adjacent tiles should be connected to
+
+        - this connection condition can be whatever you want - in most cases it's just "is the adjacent tile of the same type as the current tile?"
+
+            - for example, "is the tile to the left a dirt tile?"
+
+    - and then you use this bitset to index into a lookup table of tiles
+
+        - for example, say we have the following grid of tiles:\
+        TODO editable grid on javascript
+
+        for each tile, we can assign a bitset of cardinal directions like so:\
+        TODO grid linked with the other grid to show which adjacent tiles each tile connects to
+
+    - in JavaScript it would look something like this:
+    ```javascript
+    // TODO code example
+    ```
+
+- bitwise autotiling is a really cool technique that I've used in plenty of games in the past
+
+    - my (very messy) LÖVE-based game engine `lovejam`, powering my game jam games from 2018, had an autotiling feature in its level editor based on this
+
+        - TODO video of Planet Overgamma editor doing the magic after issuing the `at` command (or whatever it was called, i forgor :skull:)
+
+    - every iteration of Planet Overgamma since then has been using this exact technique for procedurally generated, editable terrain
+
++ but one day I found a really cool project called Tilekit (TODO link)
+
+    + (of course it's really cool, after all rxi made it)
+
+        - for context rxi is the genius behind the Lua-powered, simple, and modular text editor `lite` that I was using for quite a while
+
+            - after a while I switched to a fork - Lite XL, which had better font rendering and more features
+
+            - I stopped using it because VS Code was just more feature packed and usable; no need to reinvent the wheel, rust-analyzer *just works.*
+
+                - the LSP plugin for Lite XL had some issues around autocompletions not filling in properly :pensive:\
+                it's likely a lot better now, but back then I decided this is too much for my nerves.
+                while tinkering with your editor is something really cool, in my experience it's only cool up to a point.
+
+- the cool thing with Tilekit is that it's *more* than just your average bitwise autotiling - of course it *can* do basic autotiling, but it can also do so much more
+
+    - if I had to describe it, it's basically something of a *shader langauge for tilesets.* this makes it really powerful, as you can do little programs like
+
+        - autotile using this base tileset
+
+        - if the tile above is empty AND with a 50% chance
+
+            - then grass
+
+        - if the tile above is solid AND with a 10% chance
+
+            - then vines
+
+        - if the tile above is vines AND with a 50% chance
+
+            - then vines
+
+    - I mean, after all - bitwise autotiling is basically a clever solution to an `if` complexity problem, so why not extend that with more logic and rules and stuff to let you build more complex maps
+
+- ever since then I've been wanting to build something just like Tilekit, but in the form of an educational, interactive blog post to demonstrate the ideas in a fun way
+
+    - and what you're reading is the result of that.
+
++ so let's get going! first, we'll build a basic tile editor using JavaScript.
+<script type="module" src="{{ config.site }}/static/js/tairu/tairu.js"></script>
+
+    + not my favorite language, but we're on the Web so it's not like we have much more of a choice.
+
+        - I could use TypeScript, but this page follows a philosophy of not introducing complexity where I can deal without it.
+        TypeScript is totally cool, but not necessary.
+
+    - I'll be using Web Components (in particular, custom elements) combined with canvas to add stuff onto the page.

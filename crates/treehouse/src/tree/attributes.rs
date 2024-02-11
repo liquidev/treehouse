@@ -16,6 +16,11 @@ pub struct RootAttributes {
     /// ID of picture attached to the page, to be used as a thumbnail.
     #[serde(default)]
     pub thumbnail: Option<Picture>,
+
+    /// Additional scripts to load into to the page.
+    /// These are relative to the /static/js directory.
+    #[serde(default)]
+    pub scripts: Vec<String>,
 }
 
 /// A picture reference.

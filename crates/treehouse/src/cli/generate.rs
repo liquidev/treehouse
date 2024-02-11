@@ -202,6 +202,7 @@ impl Generator {
             pub struct Page {
                 pub title: String,
                 pub thumbnail: Option<Thumbnail>,
+                pub scripts: Vec<String>,
                 pub breadcrumbs: String,
                 pub tree_path: Option<String>,
                 pub tree: String,
@@ -238,6 +239,7 @@ impl Generator {
                             ),
                             alt: thumbnail.alt.clone(),
                         }),
+                    scripts: roots.attributes.scripts.clone(),
                     breadcrumbs,
                     tree_path: treehouse
                         .tree_path(parsed_tree.file_id)

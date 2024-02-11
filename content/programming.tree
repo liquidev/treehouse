@@ -19,3 +19,8 @@
 % content.link = "programming/opinions"
   id = "programming/opinions"
 + ### opinions
+
+- ### blog
+
+    % content.link = "programming/blog/tairu"
+    + tairu - an interactive exploration of 2D autotiling techniques

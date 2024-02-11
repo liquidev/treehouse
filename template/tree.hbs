@@ -33,6 +33,10 @@
     <script type="module" src="{{ config.site }}/static/js/tree.js"></script>
     <script type="module" src="{{ config.site }}/static/js/emoji.js"></script>
     <script type="module" src="{{ config.site }}/static/js/thanks-webkit.js"></script>
+
+    {{#each page.scripts}}
+    <script type="module" src="{{ ../config.site }}/static/js/{{ this }}"></script>
+    {{/each}}
 </head>
 
 <body>
