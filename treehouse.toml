@@ -17,9 +17,12 @@ description = "a place on the Internet I like to call home"
 "treehouse/repo" = "https://github.com/liquidev/treehouse"
 "dispatchers/repo" = "https://github.com/liquidev/dispatchers"
 "abit/repo" = "https://github.com/abyteintime/abit"
+"rokugo/repo" = "https://github.com/rokugo-lang/rokugo"
 
 # Blog posts I like to reference
 "article/function_coloring" = "https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/"
+
+"word/iff" = "https://en.wiktionary.org/wiki/iff"
 
 [emoji]
 

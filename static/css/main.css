@@ -270,8 +270,9 @@ a:visited {
 
 blockquote {
     margin: 0;
-    padding: 2px 12px;
-    border-left: 4px solid var(--border-1px);
+    padding: 4px 12px;
+    margin: 4px 0;
+    border-left: 4px solid var(--border-1);
 }
 
 /* And tables. */

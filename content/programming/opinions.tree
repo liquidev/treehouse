@@ -1,5 +1,7 @@
+%% title = "Hotland - Bad Opinion Zone"
+
 % id = "01HBTSXTTAAAHGKD4TZZW14KFK"
-- "bad opinion zone"
+- > "Hotland - Bad Opinion Zone"
 
 % id = "01HBTSXTTAMWJ2BM6395YS72FN"
 + log verbosity levels are stupid
@@ -159,3 +161,111 @@
         % id = "01HCG7KTGGYQ8EQB97AMFJPWYK"
         - instead, use an explicit `Option<T>` or `std::optional<T>` or `T?` or ... when you need
         to represent a possibly-invalid case
+
+% id = "01HPEMVAH9JZWYPVN53GVFQNQY"
++ NaNs should crash the program
+
+    % id = "01HPEMVAH97PDHJJS70SKG5VMN"
+    - any time I see a NaN I cry inside knowing how much pain debugging it's gonna be.
+
+    % id = "01HPEMVAH9Y3W35Y6Z4QMCJ5QM"
+    - I'd rather have the program crash and burn at the point a `NaN` is produced rather than have to sift through all the math to find that one division by zero I didn't account for
+
+    % id = "01HPEMVAH9XG3RK62RFXD29RWV"
+    - this does influence performance negatively, but it saves *so much* debugging pain and finding out which non deterministic scenario causes a NaN to propagate through the system
+
+        % id = "01HPEMVAH9CKAEQBMC8S6MR0GQ"
+        - worst case scenario you pull a Rust and disable those checks on release mode. that *does* work, but I don't like the idea of disabling numeric safety checks on release mode either.
+
+% id = "01HPEQ01JRMM17Y30BP7ZFKZRJ"
++ operator overloading is good, but getters and setters are not
+
+    % id = "01HPEQ01JR57B057439SY90BQ9"
+    - this one stems from an argument I had today, so I'll write my thoughts for future generations' enjoyment here
+
+    % id = "01HPEQ01JR4YWC9Q6VYS82J0E3"
+    - I'll start by prefacing that I think operator overloading is good [*iff*][def:word/iff] it's implemented in a way that a single operator has only one, well-defined meaning
+
+        % id = "01HPEQ01JRBB8Z3P0KFJSR0SJN"
+        - this means `+` really means *addition* and nothing else.
+
+            % id = "01HPEQ01JRJJBP9C701B36ZR4N"
+            - this is practically impossible to enforce at a language level - what prevents the standard library authors from overloading `+` to mean string concatenation after all?
+
+                % id = "01HPEQ01JRY7R5QGJ2AM762PPN"
+                - however we can at least do our best by writing good defaults and coding standards that gently suggest what to do and what not to do
+
+                    % id = "01HPEQ01JR4ZC0M68818EDVDBF"
+                    - for example, allow users to define their own arbitrary operators that are explicitly *not* addition, to incentivize inventing new syntax for these things
+
+            % id = "01HPEQ01JRTWHH6PVNTFBDXPVT"
+            - the way I'd like to do it in [my dream language][def:rokugo/repo] is by a few means
+
+                % id = "01HPEQ01JRAAK5MQCZ7CFZ75FA"
+                - `(+)` is defined to be a polymorphic operator which calls into a module implementing the `AddSub` interface, which means you have to implement both addition *and* subtraction for `(+)` to work on your type
+                ```rokugo
+                let AddSub = interface {
+                    type T
+                    fun add (a : T) (b : T) : T
+                    fun subtract (a : T) (b : T) : T
+                }
+
+                fun (+) (a : let T) (b : T) : T
+                use AS : AddSub with { T } =
+                    AS.add a b
+                ```
+
+                % id = "01HPEQ01JR71RV53NNSFFDV6XN"
+                - note how this operator *does not* have any effects declared on it - this means addition and subtraction must not have any side effects such as I/O
+
+                % id = "01HPEQ01JRJR3ZAY24BP8TF5HH"
+                + the `(add AND subtract)` rule enforces types like strings to take a different operator, because `(-)` does not have a well-defined meaning on strings
+
+                    % id = "01HPEQ01JRGCPT2PGY5HK7HK7F"
+                    - is `"foobar" - "bar" == "foo"`?
+
+                        % id = "01HPEQ01JR3CVNNACZ6EGQ7NWM"
+                        - by extension, is `"foofoobarbar" - "bar" == "foofoobar"` or `"foofoobarbar" - "bar" == "foofoo"`?
+
+                    % id = "01HPEQ01JRK25NHG72ZX5XHEEJ"
+                    - maybe characters are subtracted from the left string one by one? such that `"foobar" - "bar" == "\x04\x0e\xfcbar"` (wtf)
+
+    % id = "01HPEQ01JR25J5BY54J6RJ0KEC"
+    - so now getters and setters: what's so bad about them?
+
+        % id = "01HPEQ01JRQPZJEDDXV4BJN1GP"
+        - the problem is that given the rule above - *one operator means one thing* - getters and setters completely destroy your assumptions about what `=` might do
+
+            % id = "01HPEQ01JR0E8C0VJZ1D9TJRAG"
+            - what's that? you didn't expect `camera.angle_z = 420` to throw because 420 is out of the `[-π/2, π/2]` range? oops!
+
+            % id = "01HPEQ01JR0T4C2YC7TE9ZHXHT"
+            - what's that? you didn't expect `camera.angle_z` to return a different value every time you access it? oh, well!
+
+                % id = "01HPEQ01JR2KWGJVP7T4SH1SXD"
+                - at least when it's spelled `camera.angle_z()` it suggests that it might do something weird, like access the thread RNG.
+
+        % id = "01HPEQ01JRDNA35YPYV30CJG42"
+        - not to mention all the infinite recursion annoyance that sometimes happens when implementing them manually
+
+            % id = "01HPEQ01JRQFSFVPQA41MFZ91T"
+            - this is less of a problem in languages that feature automatic generation of getters and setters - such as Kotlin
+            ```kotlin
+            var someVariable: String
+                get
+                private set
+                // no infinite recursion to be seen here!
+            ```
+            but it's still an issue in eg. JavaScript, where one mistake can send your call stack down the spiral:
+            ```javascript
+            class Example {
+                #someVariable = "";
+
+                get someVariable() { return this.someVariable; } // typo!!!!
+                set someVariable(value) { this.someVariable = value; } // typo again!!!!!!!!!! dammit!
+            }
+            ```
+            and the error is not caught until runtime.
+
+                % id = "01HPEQ01JRMMS1B400DP6DV5M9"
+                - it's easy to fix but still an annoyance whenever you write a getter/setter pair.
