@@ -362,6 +362,18 @@ h1.page-title {
     font-size: 1.25rem;
 }
 
+/* Style the footer */
+
+footer {
+    margin-top: 4rem;
+    text-align: right;
+    opacity: 40%;
+
+    & #footer-icon {
+        color: var(--text-color);
+    }
+}
+
 /* Style emojis to be readable */
 
 img[is="th-emoji"] {
