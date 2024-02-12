@@ -20,7 +20,9 @@
   id = "programming/opinions"
 + ### opinions
 
+% id = "01HPD4XQQ5GPQ20C6BPA8G670F"
 - ### blog
 
     % content.link = "programming/blog/tairu"
+      id = "01HPD4XQQ5WM0APCAX014HM43V"
     + tairu - an interactive exploration of 2D autotiling techniques

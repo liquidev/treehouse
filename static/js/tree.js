@@ -109,6 +109,11 @@ class LinkedBranch extends Branch {
             let linkedDocument = parser.parseFromString(text, "text/html");
             let main = linkedDocument.getElementsByTagName("main")[0];
             let ul = main.getElementsByTagName("ul")[0];
+            let styles = main.getElementsByTagName("link");
+            let scripts = main.getElementsByTagName("script");
+
+            this.append(...styles);
+            this.append(...scripts);
 
             this.loadingText.remove();
             this.innerUL.innerHTML = ul.innerHTML;

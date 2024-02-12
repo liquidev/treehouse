@@ -347,3 +347,11 @@ th-bb .branch-date {
     background-position: 0% 50%;
     opacity: 80%;
 }
+
+/* branch-quote class for "air quote branches"; used to separate a subtree from a parent tree
+   stylistically such that it's interpretable as a form of block quote. */
+ul.branch-quote {
+    padding: 8px;
+    border: 1px solid var(--border-1);
+    border-radius: 8px;
+}

@@ -203,6 +203,7 @@ impl Generator {
                 pub title: String,
                 pub thumbnail: Option<Thumbnail>,
                 pub scripts: Vec<String>,
+                pub styles: Vec<String>,
                 pub breadcrumbs: String,
                 pub tree_path: Option<String>,
                 pub tree: String,
@@ -240,6 +241,7 @@ impl Generator {
                             alt: thumbnail.alt.clone(),
                         }),
                     scripts: roots.attributes.scripts.clone(),
+                    styles: roots.attributes.styles.clone(),
                     breadcrumbs,
                     tree_path: treehouse
                         .tree_path(parsed_tree.file_id)

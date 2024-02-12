@@ -158,7 +158,16 @@ pub fn branch_to_html(
         if has_children {
             s.push_str("</summary>");
             {
-                s.push_str("<ul>");
+                s.push_str("<ul");
+                if !branch.attributes.classes.branch_children.is_empty() {
+                    write!(
+                        s,
+                        " class=\"{}\"",
+                        EscapeAttribute(&branch.attributes.classes.branch_children)
+                    )
+                    .unwrap();
+                }
+                s.push('>');
                 let num_children = branch.children.len();
                 for i in 0..num_children {
                     let child_id = treehouse.tree.branch(branch_id).children[i];

@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
     <link rel="stylesheet" href="{{ config.site }}/static/css/tree.css">
 
+
     <script>const TREEHOUSE_SITE = `{{ config.site }}`;</script>
     <script type="module" src="{{ config.site }}/navmap.js"></script>
     <script type="module" src="{{ config.site }}/static/js/ulid.js"></script>
@@ -33,10 +34,6 @@
     <script type="module" src="{{ config.site }}/static/js/tree.js"></script>
     <script type="module" src="{{ config.site }}/static/js/emoji.js"></script>
     <script type="module" src="{{ config.site }}/static/js/thanks-webkit.js"></script>
-
-    {{#each page.scripts}}
-    <script type="module" src="{{ ../config.site }}/static/js/{{ this }}"></script>
-    {{/each}}
 </head>
 
 <body>
@@ -92,6 +89,18 @@
     </div>
 
     <main class="tree">
+        {{!-- Append page styles and scripts into the main content, such that they can be inlined
+        into linked branches when those are loaded in. Putting them in the page's head would make
+        extracting them way more painful than it needs to be. --}}
+
+        {{#each page.styles}}
+        <link rel="stylesheet" src="{{ ../config.site }}/static/css/{{ this }}">
+        {{/each}}
+
+        {{#each page.scripts}}
+        <script type="module" src="{{ ../config.site }}/static/js/{{ this }}" defer></script>
+        {{/each}}
+
         {{{ page.tree }}}
     </main>
 

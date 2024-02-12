@@ -21,6 +21,11 @@ pub struct RootAttributes {
     /// These are relative to the /static/js directory.
     #[serde(default)]
     pub scripts: Vec<String>,
+
+    /// Additional styles to load into to the page.
+    /// These are relative to the /static/css directory.
+    #[serde(default)]
+    pub styles: Vec<String>,
 }
 
 /// A picture reference.
@@ -51,6 +56,10 @@ pub struct Attributes {
     /// Do not persist the branch in localStorage.
     #[serde(default)]
     pub do_not_persist: bool,
+
+    /// Strings of extra CSS class names to include in the generated HTML.
+    #[serde(default)]
+    pub classes: Classes,
 }
 
 /// Controls for block content presentation.
@@ -75,4 +84,11 @@ pub enum Content {
     /// Note that `Link` branches must not contain any children. If a `Link` branch does contain
     /// children, an `attribute`-type error is raised.
     Link(String),
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize)]
+pub struct Classes {
+    /// Classes to append to the branch's <ul> element containing its children.
+    #[serde(default)]
+    pub branch_children: String,
 }

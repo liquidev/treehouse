@@ -1,86 +1,131 @@
 %% title = "tairu - an interactive exploration of 2D autotiling techniques"
-   scripts = ["tairu/tairu.js"]
+   scripts = ["tairu/tiling-demo.js", "tairu/tairu.js"]
 
-+ I remember since my early days doing programming, I've been interested in how games like Terraria handle automatically tiling their terrain.
+% id = "01HPD4XQPWM8ECT2QM6AT9YRWB"
+- I remember since my early days doing programming, I've been interested in how games like Terraria handle automatically tiling their terrain.
 
+    % id = "01HPD4XQPWPDBH6QQAZER7A05G"
     - in Terraria, you can fully modify the terrain however you want, and the tiles will connect to each other seamlessly.
 
+        % id = "01HPD4XQPW8HE7681P7H686X4N"
         - TODO: short videos demoing this here
 
+% id = "01HPD4XQPWJBTJ4DWAQE3J87C9"
 - once upon a time I heard of a technique called *bitwise autotiling*
 
-    + this technique involves assigning the cardinal directions (north, south, east, west) to a bitset.
+    % id = "01HPD4XQPW6VK3FDW5QRCE6HSS"
+    + I learned about it back when I was building 2D Minecraft clones using [Construct 2](https://www.construct.net/en/construct-2/manuals/construct-2), and I wanted my terrain to look nice as it does in Terraria
+
+        % id = "01HPD4XQPWJ1CE9ZVRW98X7HE6"
+        - Construct 2 was one of my first programming experiences and the first game engine I truly actually liked :smile:
+
+    % id = "01HPD4XQPWHNFQPRHX13MYW8GT"
+    - this technique involves assigning the cardinal directions (north, south, east, west) to a bitset.
     then for each tile you look at which adjacent tiles should be connected to
 
+        % id = "01HPD4XQPWS2JS8RJH2P5TKPAB"
         - this connection condition can be whatever you want - in most cases it's just "is the adjacent tile of the same type as the current tile?"
 
+            % id = "01HPD4XQPWAANYFBYX681787D1"
             - for example, "is the tile to the left a dirt tile?"
 
+    % id = "01HPD4XQPWES5K2V2AKB7H0EHK"
     - and then you use this bitset to index into a lookup table of tiles
 
+        % id = "01HPD4XQPWD00GDZ0N5H1DRH2P"
         - for example, say we have the following grid of tiles:\
         TODO editable grid on javascript
 
         for each tile, we can assign a bitset of cardinal directions like so:\
         TODO grid linked with the other grid to show which adjacent tiles each tile connects to
 
+    % id = "01HPD4XQPWM0AAE6F162EZTFQY"
     - in JavaScript it would look something like this:
     ```javascript
     // TODO code example
     ```
 
+% id = "01HPD4XQPWT9N8X9BD9GKWD78F"
 - bitwise autotiling is a really cool technique that I've used in plenty of games in the past
 
-    - my (very messy) LÖVE-based game engine `lovejam`, powering my game jam games from 2018, had an autotiling feature in its level editor based on this
+    % id = "01HPD4XQPW5FQY8M04S6JEBDHQ"
+    - as I mentioned before, [I've known it since my Construct 2 days][branch:01HPD4XQPW6VK3FDW5QRCE6HSS], but when it comes to my released games [Planet Overgamma] would probably be the first to utilize it properly
 
-        - TODO video of Planet Overgamma editor doing the magic after issuing the `at` command (or whatever it was called, i forgor :skull:)
+    TODO video of some Planet Overgamma gameplay showing the autotiling in action
 
-    - every iteration of Planet Overgamma since then has been using this exact technique for procedurally generated, editable terrain
+    [Planet Overgamma]: https://liquidev.itch.io/planet-overgamma-classic
 
-+ but one day I found a really cool project called Tilekit (TODO link)
+        - this accursed game has been haunting me for years since; there have been many iterations.
+        he autotiling source code of the one in the video can be found [here][autotiling source code].
 
+        [autotiling source code]: https://github.com/liquidev/planet-overgamma/blob/classic/jam/map.lua#L209
+
+% id = "01HPD4XQPWPN6HNA6M6EH507C6"
++ but one day I found a really cool project called [Tilekit](https://rxi.itch.io/tilekit)
+
+    % id = "01HPD4XQPW11EQTBDQSGXW3S52"
     + (of course it's really cool, after all rxi made it)
 
+        % id = "01HPD4XQPWYHS327BV586SB085"
         - for context rxi is the genius behind the Lua-powered, simple, and modular text editor `lite` that I was using for quite a while
 
+            % id = "01HPD4XQPWJ9QAQ5MF2J5JBB8M"
             - after a while I switched to a fork - Lite XL, which had better font rendering and more features
 
+            % id = "01HPD4XQPWB11TZSX5VAAJ6TCD"
             - I stopped using it because VS Code was just more feature packed and usable; no need to reinvent the wheel, rust-analyzer *just works.*
 
+                % id = "01HPD4XQPW3G7BXTBBTD05MB8V"
                 - the LSP plugin for Lite XL had some issues around autocompletions not filling in properly :pensive:\
                 it's likely a lot better now, but back then I decided this is too much for my nerves.
                 while tinkering with your editor is something really cool, in my experience it's only cool up to a point.
 
+% id = "01HPD4XQPWV1BAPA27SNDFR93B"
 - the cool thing with Tilekit is that it's *more* than just your average bitwise autotiling - of course it *can* do basic autotiling, but it can also do so much more
 
+    % id = "01HPD4XQPWM1JSAPXVT6NBHKYY"
+      classes.branch_children = "branch-quote"
     - if I had to describe it, it's basically something of a *shader langauge for tilesets.* this makes it really powerful, as you can do little programs like
 
+        % id = "01HPD4XQPWE7ZVR0SS67DHTGHQ"
         - autotile using this base tileset
 
+        % id = "01HPD4XQPW2BFZYQQ920SYHM9M"
         - if the tile above is empty AND with a 50% chance
 
+            % id = "01HPD4XQPWJB7V67TS1M3HFCYE"
             - then grass
 
+        % id = "01HPD4XQPWF7K85Z0CEK4WDDBZ"
         - if the tile above is solid AND with a 10% chance
 
+            % id = "01HPD4XQPW5J3N6MVT9Z2W00S9"
             - then vines
 
+        % id = "01HPD4XQPWGCMCEAR5Z9EETSGP"
         - if the tile above is vines AND with a 50% chance
 
+            % id = "01HPD4XQPWP847T0EAM0FJ88T4"
             - then vines
 
-    - I mean, after all - bitwise autotiling is basically a clever solution to an `if` complexity problem, so why not extend that with more logic and rules and stuff to let you build more complex maps
+    % id = "01HPD4XQPWK58Z63X6962STADR"
+    - I mean, after all - bitwise autotiling is basically a clever solution to an `if` complexity problem, so why not extend that with more logic and rules and stuff to let you build more complex maps?
 
+% id = "01HPD4XQPW4Y075XWJCT6AATB2"
 - ever since then I've been wanting to build something just like Tilekit, but in the form of an educational, interactive blog post to demonstrate the ideas in a fun way
 
+    % id = "01HPD4XQPWR8J9WCNBNCTJERZS"
     - and what you're reading is the result of that.
 
-+ so let's get going! first, we'll build a basic tile editor using JavaScript.
-<script type="module" src="{{ config.site }}/static/js/tairu/tairu.js"></script>
+% id = "01HPD4XQPW1EP8YHACRJVMA0GM"
+- so let's get going! first, we'll build a basic tile editor using JavaScript.
 
+    % id = "01HPD4XQPWPNRTVJFNFGNHJMG1"
     + not my favorite language, but we're on the Web so it's not like we have much more of a choice.
 
+        % id = "01HPD4XQPWGK7M4XJYC99XE4T6"
         - I could use TypeScript, but this page follows a philosophy of not introducing complexity where I can deal without it.
         TypeScript is totally cool, but not necessary.
 
+    % id = "01HPD4XQPWAE0ZH46WME6WJSVP"
     - I'll be using Web Components (in particular, custom elements) combined with canvas to add stuff onto the page.
