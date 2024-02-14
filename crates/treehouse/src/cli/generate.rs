@@ -229,15 +229,7 @@ impl Generator {
                         .thumbnail
                         .as_ref()
                         .map(|thumbnail| Thumbnail {
-                            url: format!(
-                                "{}/static/pic/{}",
-                                config.site,
-                                config
-                                    .pics
-                                    .get(&thumbnail.id)
-                                    .map(|x| &**x)
-                                    .unwrap_or("404.png")
-                            ),
+                            url: config.pic_url(&thumbnail.id),
                             alt: thumbnail.alt.clone(),
                         }),
                     scripts: roots.attributes.scripts.clone(),

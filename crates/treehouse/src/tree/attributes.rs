@@ -60,6 +60,10 @@ pub struct Attributes {
     /// Strings of extra CSS class names to include in the generated HTML.
     #[serde(default)]
     pub classes: Classes,
+
+    /// Enable `mini_template` templating in this branch.
+    #[serde(default)]
+    pub template: bool,
 }
 
 /// Controls for block content presentation.
@@ -88,6 +92,10 @@ pub enum Content {
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize)]
 pub struct Classes {
+    /// Classes to append to the branch itself (<li is="th-b">).
+    #[serde(default)]
+    pub branch: String,
+
     /// Classes to append to the branch's <ul> element containing its children.
     #[serde(default)]
     pub branch_children: String,

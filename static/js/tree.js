@@ -112,11 +112,17 @@ class LinkedBranch extends Branch {
             let styles = main.getElementsByTagName("link");
             let scripts = main.getElementsByTagName("script");
 
-            this.append(...styles);
-            this.append(...scripts);
 
             this.loadingText.remove();
             this.innerUL.innerHTML = ul.innerHTML;
+
+            this.append(...styles);
+            for (let script of scripts) {
+                // No need to await for the import because we don't use the resulting module.
+                // Just fire and forger 💀
+                // and let them run in parallel.
+                import(script.src);
+            }
         } catch (error) {
             this.loadingText.innerText = error.toString();
         }

@@ -94,11 +94,11 @@
         extracting them way more painful than it needs to be. --}}
 
         {{#each page.styles}}
-        <link rel="stylesheet" src="{{ ../config.site }}/static/css/{{ this }}">
+        <link rel="stylesheet" href="{{ ../config.site }}/static/css/{{ this }}">
         {{/each}}
 
         {{#each page.scripts}}
-        <script type="module" src="{{ ../config.site }}/static/js/{{ this }}" defer></script>
+        <script type="module" src="{{ ../config.site }}/static/js/{{ this }}"></script>
         {{/each}}
 
         {{{ page.tree }}}

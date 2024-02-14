@@ -1,4 +1,5 @@
 pub mod attributes;
+pub mod mini_template;
 
 use std::ops::Range;
 

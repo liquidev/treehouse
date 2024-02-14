@@ -87,6 +87,12 @@ body::selection {
     src: url('../font/Recursive_VF_1.085.woff2');
 }
 
+@font-face {
+    font-family: 'RecVarMono';
+    src: url('../font/Recursive_VF_1.085.woff2');
+    font-variation-settings: "MONO" 1.0;
+}
+
 
 body,
 pre,
@@ -254,6 +260,29 @@ img {
 img.pic {
     border-radius: 6px;
     margin: 8px 0;
+}
+
+/* Image hints for tweaking rendering */
+img {
+    &[src*='+pixel'] {
+        image-rendering: crisp-edges;
+        border-radius: 0;
+    }
+
+    &[src*='+width160'] {
+        width: 160px;
+        height: auto;
+    }
+
+    &[src*='+width640'] {
+        width: 640px;
+        height: auto;
+    }
+
+    /* Resources for use in JavaScript. */
+    &.resource {
+        display: none;
+    }
 }
 
 /* Fix the default blue and ugly purple links normally have */

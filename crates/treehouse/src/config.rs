@@ -99,4 +99,12 @@ impl Config {
         }
         Ok(())
     }
+
+    pub fn pic_url(&self, id: &str) -> String {
+        format!(
+            "{}/static/pic/{}",
+            self.site,
+            self.pics.get(id).map(|x| &**x).unwrap_or("404.png")
+        )
+    }
 }

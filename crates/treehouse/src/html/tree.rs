@@ -7,7 +7,7 @@ use crate::{
     config::Config,
     html::EscapeAttribute,
     state::{FileId, Treehouse},
-    tree::{attributes::Content, SemaBranchId},
+    tree::{attributes::Content, mini_template, SemaBranchId},
 };
 
 use super::{markdown, EscapeHtml};
@@ -26,6 +26,12 @@ pub fn branch_to_html(
         !branch.children.is_empty() || matches!(branch.attributes.content, Content::Link(_));
 
     let class = if has_children { "branch" } else { "leaf" };
+    let mut class = String::from(class);
+    if !branch.attributes.classes.branch.is_empty() {
+        class.push(' ');
+        class.push_str(&branch.attributes.classes.branch);
+    }
+
     let component = if let Content::Link(_) = branch.attributes.content {
         "th-b-linked"
     } else {
@@ -64,7 +70,7 @@ pub fn branch_to_html(
         s.push_str("<th-bp></th-bp>");
 
         let raw_block_content = &source.input()[branch.content.clone()];
-        let mut unindented_block_content = String::with_capacity(raw_block_content.len());
+        let mut final_markdown = String::with_capacity(raw_block_content.len());
         for line in raw_block_content.lines() {
             // Bit of a jank way to remove at most branch.indent_level spaces from the front.
             let mut space_count = 0;
@@ -76,8 +82,8 @@ pub fn branch_to_html(
                 }
             }
 
-            unindented_block_content.push_str(&line[space_count..]);
-            unindented_block_content.push('\n');
+            final_markdown.push_str(&line[space_count..]);
+            final_markdown.push('\n');
         }
 
         let broken_link_callback = &mut |broken_link: BrokenLink<'_>| {
@@ -112,8 +118,11 @@ pub fn branch_to_html(
                 None
             }
         };
+        if branch.attributes.template {
+            final_markdown = mini_template::render(config, treehouse, &final_markdown);
+        }
         let markdown_parser = pulldown_cmark::Parser::new_with_broken_link_callback(
-            &unindented_block_content,
+            &final_markdown,
             {
                 use pulldown_cmark::Options;
                 Options::ENABLE_STRIKETHROUGH | Options::ENABLE_TABLES

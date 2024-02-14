@@ -1,1 +1,128 @@
+.tileset-cardinal-directions-demo th-bc {
+    & ul {
+        display: flex;
+        flex-direction: row;
+    }
 
+    & ul.tileset-demo {
+        margin-top: 16px;
+    }
+
+    & ul.tileset-demo::after {
+        display: none !important;
+    }
+
+    & li.full-image {
+        flex-shrink: 0;
+    }
+
+    & li.tileset-pieces {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+    }
+
+    & .horizontal-tile-strip {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        & .metal {
+            width: 48px;
+            height: 48px;
+
+            &>span {
+                font-size: 12px;
+            }
+        }
+    }
+
+    & .metal {
+        display: inline-block;
+        width: 56px;
+        height: 56px;
+        margin: 8px;
+        background-image: url('../pic/01HPHVDRV0F0251MD0A2EG66C4-tilemap-heavy-metal-16+pixel+width160.png');
+        background-size: 400%;
+        image-rendering: crisp-edges;
+        position: relative;
+    }
+
+
+    & .east,
+    & .south,
+    & .west,
+    & .north {
+        --recursive-wght: 900;
+        --recursive-casl: 0.0;
+        --recursive-slnt: 0.0;
+        --recursive-mono: 1.0;
+
+        font-size: 14px;
+        position: absolute;
+        color: #d3dce9;
+        padding: 2px 4px;
+    }
+
+    & .east {
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    & .south {
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    & .west {
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    & .north {
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    & .off {
+        opacity: 0%;
+    }
+
+    & .x-0 {
+        background-position-x: 0%;
+    }
+
+    & .x-1 {
+        background-position-x: 33.3333%;
+    }
+
+    & .x-2 {
+        background-position-x: 66.6666%;
+    }
+
+    & .x-3 {
+        background-position-x: 100%;
+    }
+
+    & .y-0 {
+        background-position-y: 0%;
+    }
+
+    & .y-1 {
+        background-position-y: 33.3333%;
+    }
+
+    & .y-2 {
+        background-position-y: 66.6666%;
+    }
+
+    & .y-3 {
+        background-position-y: 100%;
+    }
+}

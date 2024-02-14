@@ -1,5 +1,11 @@
 %% title = "tairu - an interactive exploration of 2D autotiling techniques"
-   scripts = ["tairu/tiling-demo.js", "tairu/tairu.js"]
+scripts = [
+    "tairu/cardinal-directions.js",
+    "tairu/framework.js",
+    "tairu/tairu.js",
+    "tairu/tilemap-registry.js",
+]
+styles = ["tairu.css"]
 
 % id = "01HPD4XQPWM8ECT2QM6AT9YRWB"
 - I remember since my early days doing programming, I've been interested in how games like Terraria handle automatically tiling their terrain.
@@ -11,7 +17,8 @@
         - TODO: short videos demoing this here
 
 % id = "01HPD4XQPWJBTJ4DWAQE3J87C9"
-- once upon a time I heard of a technique called *bitwise autotiling*
+- once upon a time I heard of a technique called...\
+**bitwise autotiling**
 
     % id = "01HPD4XQPW6VK3FDW5QRCE6HSS"
     + I learned about it back when I was building 2D Minecraft clones using [Construct 2](https://www.construct.net/en/construct-2/manuals/construct-2), and I wanted my terrain to look nice as it does in Terraria
@@ -19,31 +26,182 @@
         % id = "01HPD4XQPWJ1CE9ZVRW98X7HE6"
         - Construct 2 was one of my first programming experiences and the first game engine I truly actually liked :smile:
 
-    % id = "01HPD4XQPWHNFQPRHX13MYW8GT"
-    - this technique involves assigning the cardinal directions (north, south, east, west) to a bitset.
-    then for each tile you look at which adjacent tiles should be connected to
+    % id = "01HPJ8GHDET8ZGNN0AH3FWA8HX"
+    - let's begin with a tilemap. say we have the following grid of tiles: (the examples are interactive, try editing it!)
 
-        % id = "01HPD4XQPWS2JS8RJH2P5TKPAB"
-        - this connection condition can be whatever you want - in most cases it's just "is the adjacent tile of the same type as the current tile?"
+    <canvas
+        is="tairu-editor"
+        data-tilemap-id="bitwiseAutotiling"
+        data-tile-size="40">
+        Your browser does not support &lt;canvas&gt;.
+    </canvas>
 
-            % id = "01HPD4XQPWAANYFBYX681787D1"
-            - for example, "is the tile to the left a dirt tile?"
+    % id = "01HPJ8GHDEC0Z334M04MTNADV9"
+    - for each tile, we can assign a bitset of cardinal directions like so:
 
-    % id = "01HPD4XQPWES5K2V2AKB7H0EHK"
-    - and then you use this bitset to index into a lookup table of tiles
+    <canvas
+        is="tairu-editor-cardinal-directions"
+        data-tilemap-id="bitwiseAutotiling"
+        data-tile-size="40">
+        Your browser does not support &lt;canvas&gt;.
+    </canvas>
 
-        % id = "01HPD4XQPWD00GDZ0N5H1DRH2P"
-        - for example, say we have the following grid of tiles:\
-        TODO editable grid on javascript
+    % template = true
+      id = "01HPJ8GHDE9QKQ4QFZK1Z1KQD4"
+      classes.branch = "tileset-cardinal-directions-demo"
+    + now given a tileset, such as the one below that I drew a while ago, we can assign each tile to a set of cardinal directions.
+    I'll indicate where there's a connection between individual tiles with the letters **N**, **E**, **S**, **W**, standing for the cardinal directions **N**orth, **E**ast, **S**outh, and **W**est.
 
-        for each tile, we can assign a bitset of cardinal directions like so:\
-        TODO grid linked with the other grid to show which adjacent tiles each tile connects to
+    <ul class="tileset-demo">
+    <li class="full-image">
+    <img alt="a 16-tile tileset of 8x8 pixel metal" src="{% pic 01HPHVDRV0F0251MD0A2EG66C4 %}">
+    </li>
+    <li class="tileset-pieces">
+    <span class="metal x-0 y-0"><span class="east">E</span><span class="south">S</span></span>
+    <span class="metal x-1 y-0"><span class="east">E</span><span class="south">S</span><span class="west">W</span></span>
+    <span class="metal x-2 y-0"><span class="south">S</span><span class="west">W</span></span>
+    <span class="metal x-3 y-0"><span class="south">S</span></span>
+    <span class="metal x-0 y-1"><span class="east">E</span><span class="south">S</span><span class="north">N</span></span>
+    <span class="metal x-1 y-1"><span class="east">E</span><span class="south">S</span><span class="west">W</span><span class="north">N</span></span>
+    <span class="metal x-2 y-1"><span class="south">S</span><span class="west">W</span><span class="north">N</span></span>
+    <span class="metal x-3 y-1"><span class="south">S</span><span class="north">N</span></span>
+    <span class="metal x-0 y-2"><span class="east">E</span><span class="north">N</span></span>
+    <span class="metal x-1 y-2"><span class="east">E</span><span class="west">W</span><span class="north">N</span></span>
+    <span class="metal x-2 y-2"><span class="west">W</span><span class="north">N</span></span>
+    <span class="metal x-3 y-2"><span class="north">N</span></span>
+    <span class="metal x-0 y-3"><span class="east">E</span></span>
+    <span class="metal x-1 y-3"><span class="east">E</span><span class="west">W</span></span>
+    <span class="metal x-2 y-3"><span class="west">W</span></span>
+    <span class="metal x-3 y-3"></span>
+    </li>
+    </ul>
 
-    % id = "01HPD4XQPWM0AAE6F162EZTFQY"
-    - in JavaScript it would look something like this:
+        % id = "01HPMVT9BM65YD5AXWPT4Z67H5"
+        - (it's frustratingly hard to center individual letters like this in CSS. please forgive me for how crooked these are!)
+
+    % id = "01HPMVT9BM5V4BP8K80X0C1HJZ"
+    - note that the state of connection for a given cardinal direction can be represented using two values: **connected**, and **not connected**.
+    two values make one bit, so we can pack these four connection states into four bits, and use that as an array index!
+
+        % classes.branch = "tileset-cardinal-directions-demo"
+          id = "01HPMVT9BM4AXG2Z1D2QBH828G"
+        + for that to work though, we need to rearrange our tilemap somewhat such that we can index into it easily using our integer.
+        assuming we pack our bits as `NWSE` (bit 0 is east, each next bit we go clockwise),
+        therefore the final arrangement is this:
+
+        <div class="horizontal-tile-strip">
+        <span class="metal x-3 y-3"></span>
+        <span class="metal x-0 y-3"><span class="east">E</span></span>
+        <span class="metal x-3 y-0"><span class="south">S</span></span>
+        <span class="metal x-0 y-0"><span class="east">E</span><span class="south">S</span></span>
+        <span class="metal x-2 y-3"><span class="west">W</span></span>
+        <span class="metal x-1 y-3"><span class="east">E</span><span class="west">W</span></span>
+        <span class="metal x-2 y-0"><span class="south">S</span><span class="west">W</span></span>
+        <span class="metal x-1 y-0"><span class="east">E</span><span class="south">S</span><span class="west">W</span></span>
+        <span class="metal x-3 y-2"><span class="north">N</span></span>
+        <span class="metal x-0 y-2"><span class="east">E</span><span class="north">N</span></span>
+        <span class="metal x-3 y-1"><span class="south">S</span><span class="north">N</span></span>
+        <span class="metal x-0 y-1"><span class="east">E</span><span class="south">S</span><span class="north">N</span></span>
+        <span class="metal x-2 y-2"><span class="west">W</span><span class="north">N</span></span>
+        <span class="metal x-1 y-2"><span class="east">E</span><span class="west">W</span><span class="north">N</span></span>
+        <span class="metal x-2 y-1"><span class="south">S</span><span class="west">W</span><span class="north">N</span></span>
+        <span class="metal x-1 y-1"><span class="east">E</span><span class="south">S</span><span class="west">W</span><span class="north">N</span></span>
+        </div>
+
+        packing that into a single tilesheet, or rather tile *strip*, we get this image:
+
+        ![horizontal tile strip of 16 8x8 pixel metal tiles][pic:01HPMMR6DGKYTPZ9CK0WQWKNX5]
+
+    % id = "01HPMVT9BMMEM4HT4ANZ40992P"
+    - in JavaScript, drawing on a `<canvas>` using bitwise autotiling would look like this:
     ```javascript
-    // TODO code example
+    for (let y = 0; y < tilemap.height; ++y) {
+        for (let x = 0; x < tilemap.width; ++x) {
+            // Assume `tilemap.at` is a function which returns the type of tile
+            // stored at coordinates (x, y).
+            let tile = tilemap.at(x, y);
+
+            // We need to treat *some* tile as an empty (fully transparent) tile.
+            // In our case that'll be 0.
+            if (tile != 0) {
+                let tileset = tilesets[tile];
+
+                // Now it's time to represent the tile connections as bits.
+                // For each cardinal direction we produce a different bit value, or 0 if there is
+                // no connection:
+                let connectedWithEast = shouldConnect(tile, tilemap.at(x + 1, y)) ? 0b0001 : 0;
+                let connectedWithSouth = shouldConnect(tile, tilemap.at(x, y + 1)) ? 0b0010 : 0;
+                let connectedWithWest = shouldConnect(tile, tilemap.at(x - 1, y)) ? 0b0100 : 0;
+                let connectedWithNorth = shouldConnect(tile, tilemap.at(x, y - 1)) ? 0b1000 : 0;
+                // Then we OR them together into one integer.
+                let tileIndex = connectedWithNorth
+                    | connectedWithWest
+                    | connectedWithSouth
+                    | connectedWithEast;
+
+                // With that, we can draw the correct tile.
+                // Our strip is a single horizontal line, so we can assume
+                let tilesetTileSize = tileset.height;
+                let tilesetX = tileIndex * tilesetTileSize;
+                let tilesetY = 0;
+                ctx.drawImage(
+                    tilesets[tile],
+                    tilesetX, tilesetY, tilesetTileSize, tilesetTileSize,
+                    x * tileSize, y * tileSize, tileSize, tileSize,
+                );
+            }
+        }
+    }
     ```
+
+    % template = true
+      id = "01HPMVT9BM9CS9375MX4H9WKW8"
+    - and that gives us this result:
+
+    <canvas
+        is="tairu-editor"
+        data-tilemap-id="bitwiseAutotiling"
+        data-tile-size="40"
+    >
+        Your browser does not support &lt;canvas&gt;.
+        <img class="resource" src="{% pic 01HPMMR6DGKYTPZ9CK0WQWKNX5 %}" data-tairu-tileset="1">
+    </canvas>
+
+    % id = "01HPMVT9BM3WR0BNZFHP2BPZ8A"
+    - but if you play around with it (or have *already* played around with it, and are therefore left with a non-default tilemap)
+
+    ...something seems awful about it doesn't it?
+
+        % template = true
+          id = "01HPMVT9BMPA89037VPWPPWX8V"
+        - something's off about the corners. let me give you a fresh example to illustrate what I mean:
+
+        <canvas
+            is="tairu-editor"
+            data-tilemap-id="bitwiseAutotilingChapter2"
+            data-tile-size="40"
+        >
+            Your browser does not support &lt;canvas&gt;.
+            <img class="resource" src="{% pic 01HPMMR6DGKYTPZ9CK0WQWKNX5 %}" data-tairu-tileset="1">
+        </canvas>
+
+        % id = "01HPMVT9BM16EF3TV5J1K19JAM"
+        + see that tile in the bottom left corner of the `L` shape? it's missing a corner.
+        the top-right corner, to be exact, which makes it visually disjoint from the tiles to the north and the east.
+
+            % id = "01HPMVT9BM5VWJSMDNPK2SRNZV"
+            - (I'm totally not trying to say this implementation is an L so far)
+
+        % id = "01HPMVT9BMWG6QHQ125Z884W8Z"
+        + i'll cut right to the chase here and say it outright - the issue is that we simply don't have enough tiles to represent corner cases like this!
+
+            % id = "01HPMVT9BMQK8N1H68YV3J4CFQ"
+            - see what I did there?
+
+        % id = "01HPMVT9BMJTG3KD3K5EJ3BC93"
+        - the solution here is to introduce more tiles to handle these edge cases.
+
+        TODO Explain
 
 % id = "01HPD4XQPWT9N8X9BD9GKWD78F"
 - bitwise autotiling is a really cool technique that I've used in plenty of games in the past
@@ -55,6 +213,7 @@
 
     [Planet Overgamma]: https://liquidev.itch.io/planet-overgamma-classic
 
+        % id = "01HPJ8GHDEN4XRPT1AJ1BTNTFJ"
         - this accursed game has been haunting me for years since; there have been many iterations.
         he autotiling source code of the one in the video can be found [here][autotiling source code].
 
@@ -110,6 +269,9 @@
 
     % id = "01HPD4XQPWK58Z63X6962STADR"
     - I mean, after all - bitwise autotiling is basically a clever solution to an `if` complexity problem, so why not extend that with more logic and rules and stuff to let you build more complex maps?
+
+        % id = "01HPJ8GHDFRA2SPNHKJYD0SYPP"
+        - of course Tilekit's solution is a lot more simple, streamlined, and user-friendly, but you get the gist.
 
 % id = "01HPD4XQPW4Y075XWJCT6AATB2"
 - ever since then I've been wanting to build something just like Tilekit, but in the form of an educational, interactive blog post to demonstrate the ideas in a fun way
