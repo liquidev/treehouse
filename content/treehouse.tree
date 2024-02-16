@@ -9,3 +9,27 @@
     % id = "treehouse/changelog"
       content.link = "treehouse/changelog"
     + what's going on inside the house?
+
+    % id = "treehouse/credits"
+    + credits
+
+        % id = "01HPSX8W0WQF2BXQ9RMME20628"
+        - **liquidex's treehouse** is brought to you by…
+
+            % id = "01HPSX8W0W4ABATHQC52KXRPBV"
+            - [liquidex][branch:01H89P3CH836K8WKQ9BPR6RE3C]! of course. that's me!
+
+            % id = "01HPSX8W0WTAFZPEGZPDB9CBJ3"
+            - the piece of software called [treehouse][def:treehouse/repo] which powers this website. it's open source, together with the content!
+
+                % id = "01HPSX8W0WDZHMPA0JNRJ6KP86"
+                - but you may not wanna spoil the latter for yourself. have some fun exploring instead!
+
+            % id = "01HPSX8W0WXGR5AJ6D7332AJCT"
+            + [my girlfriend][def:person/vixenka], who's been supporting me in making this website more friendly towards stubborn people
+
+                % id = "01HPSX8W0WMX4YXY9WMAM40QKH"
+                - she says every part of this sentence apart from "*my girlfriend*" is untrue. I think I know better, so deal with it!
+
+            % id = "01HPSX8W0WF11C5VXT0DH69Y2Z"
+            - [ezioleq][def:person/ezioleq], for being an avid reader and pointing out lots of little things that could be improved
