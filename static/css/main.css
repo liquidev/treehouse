@@ -170,7 +170,9 @@ h4 {
 
 pre,
 code,
-kbd {
+kbd,
+th-literate-editor,
+th-literate-output {
     --recursive-mono: 1.0;
     --recursive-casl: 0.0;
     --recursive-slnt: 0.0;
@@ -210,10 +212,16 @@ body {
 
 /* Make code examples a little prettier by giving them visual separation from the rest of the page */
 
-code {
+code,
+th-literate-editor {
     padding: 3px 4px;
     background-color: var(--shaded-background);
     border-radius: 4px;
+}
+
+th-literate-editor,
+th-literate-output {
+    display: block;
 }
 
 kbd {
@@ -222,7 +230,9 @@ kbd {
     border-radius: 6px;
 }
 
-pre {
+pre,
+th-literate-editor,
+th-literate-output {
     padding: 8px 12px;
     margin: 12px 0;
     background-color: var(--shaded-against-background);
@@ -231,11 +241,22 @@ pre {
     transition: background-color var(--transition-duration);
 }
 
-.tree summary:hover pre {
-    background-color: var(--shaded-against-background-twice);
+th-literate-editor,
+th-literate-output {
+    white-space: pre;
 }
 
-pre>code {
+.tree summary:hover {
+
+    & pre,
+    & th-literate-editor,
+    & th-literate-output {
+        background-color: var(--shaded-against-background-twice);
+    }
+}
+
+pre>code,
+th-literate-output>code {
     padding: 0;
     background: none;
     border-radius: 0px;
@@ -492,4 +513,41 @@ img[is="th-emoji"] {
 #index\:treehouse>details:not([open])>summary .oops-you-seem-to-have-gotten-stuck {
     display: inline;
     animation: 4s hello-there forwards;
+}
+
+/* Literate programming support */
+
+th-literate-editor {
+    /* Override the cursor with an I-beam, because the editor captures clicks and does not bubble
+       them back up to the caller */
+    cursor: text;
+}
+
+th-literate-output {
+    position: relative;
+
+    & code {
+        display: block;
+    }
+
+    & code.error {
+        color: #e39393;
+    }
+
+    & code .return-value {
+        content: 'Return value: ';
+        opacity: 50%;
+    }
+
+    &::after {
+        content: 'Output';
+
+        padding: 8px;
+
+        position: absolute;
+        right: 0;
+        top: 0;
+
+        opacity: 50%;
+    }
 }

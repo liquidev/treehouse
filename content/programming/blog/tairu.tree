@@ -1,9 +1,12 @@
 %% title = "tairu - an interactive exploration of 2D autotiling techniques"
 scripts = [
+    "components/literate-programming.js",
     "tairu/cardinal-directions.js",
     "tairu/framework.js",
     "tairu/tairu.js",
     "tairu/tilemap-registry.js",
+    "tairu/tilemap.js",
+    "vendor/codejar.js",
 ]
 styles = ["tairu.css"]
 
@@ -17,11 +20,11 @@ styles = ["tairu.css"]
         - TODO: short videos demoing this here
 
 % id = "01HPD4XQPWJBTJ4DWAQE3J87C9"
-- once upon a time I heard of a technique called...\
+- once upon a time I stumbled upon a technique called...\
 **bitwise autotiling**
 
     % id = "01HPD4XQPW6VK3FDW5QRCE6HSS"
-    + I learned about it back when I was building 2D Minecraft clones using [Construct 2](https://www.construct.net/en/construct-2/manuals/construct-2), and I wanted my terrain to look nice as it does in Terraria
+    + I learned about it way back when I was just a kid building 2D Minecraft clones using [Construct 2](https://www.construct.net/en/construct-2/manuals/construct-2), and I wanted my terrain to look nice as it does in Terraria
 
         % id = "01HPD4XQPWJ1CE9ZVRW98X7HE6"
         - Construct 2 was one of my first programming experiences and the first game engine I truly actually liked :smile:
@@ -112,6 +115,10 @@ styles = ["tairu.css"]
 
         ![horizontal tile strip of 16 8x8 pixel metal tiles][pic:01HPMMR6DGKYTPZ9CK0WQWKNX5]
 
+            % id = "01HPQCCV4RB65D5Q4RANJKGC0D"
+            - **hint:** you can actually just use the original image, but use a lookup table from these indices to (x, y) coordinates.
+            this makes creating the assets a lot easier! (at the expense of some CPU time, though it is totally possible to offload tilemap rendering to the GPU - in that case it barely even matters.)
+
     % id = "01HPMVT9BMMEM4HT4ANZ40992P"
     - in JavaScript, drawing on a `<canvas>` using bitwise autotiling would look like this:
     ```javascript
@@ -193,21 +200,169 @@ styles = ["tairu.css"]
             - (I'm totally not trying to say this implementation is an L so far)
 
         % id = "01HPMVT9BMWG6QHQ125Z884W8Z"
-        + i'll cut right to the chase here and say it outright - the issue is that we simply don't have enough tiles to represent corner cases like this!
+        + i'll cut right to the chase here and say it outright - the issue is that we simply don't have enough tiles to represent *corner* cases like this!
 
             % id = "01HPMVT9BMQK8N1H68YV3J4CFQ"
             - see what I did there?
 
-        % id = "01HPMVT9BMJTG3KD3K5EJ3BC93"
-        - the solution here is to introduce more tiles to handle these edge cases.
+    % id = "01HPMVT9BMJTG3KD3K5EJ3BC93"
+    - the solution to that is to introduce more tiles to handle these edge cases.
 
-        TODO Explain
+        % classes.branch = "tileset-four-to-eight-demo"
+          id = "01HPQCCV4R5N97FJ1GS36HZJZ7"
+        - to represent the corners, we'll turn our four cardinal directions...
+
+        <ul class="directions-square">
+            <li class="east">E</li>
+            <li class="south">S</li>
+            <li class="west">W</li>
+            <li class="north">N</li>
+        </ul>
+
+        into eight *ordinal* directions:
+
+        <ul class="directions-square">
+            <li class="east">E</li>
+            <li class="south-east">SE</li>
+            <li class="south">S</li>
+            <li class="south-west">SW</li>
+            <li class="west">W</li>
+            <li class="north-west">NW</li>
+            <li class="north">N</li>
+            <li class="north-east"><a href="https://github.com/NoiseStudio/NoiseEngine/" title="NoiseEngine????">NE</a></li>
+        </ul>
+
+        % id = "01HPQCCV4R3GNEWZQFWGWH4Z6R"
+        - you might think that at this point we'll need 8 bits to represent our tiles, and that would make...
+
+        ***256 tiles!?***
+
+        nobody in their right mind would actually draw 256 separate tiles, right? ***RIGHT???***
+
+            % template = true
+              id = "01HPQCCV4RX13VR4DJAP2F9PFA"
+            - ...right! if you experiment with the bit combinations, you'll quickly find out that there is no difference if, relative to a single center tile, we have tiles on the corners:
+
+            <canvas
+                is="tairu-editor"
+                data-tilemap-id="bitwiseAutotilingCorners"
+                data-tile-size="40"
+            >
+                Your browser does not support &lt;canvas&gt;.
+                <img class="resource" src="{% pic 01HPMMR6DGKYTPZ9CK0WQWKNX5 %}" data-tairu-tileset="1">
+            </canvas>
+
+            these should all render the same way, despite technically having some [new neighbors](https://en.wikipedia.org/wiki/Moore_neighborhood).
+
+            % classes.branch = "tileset-four-to-eight-demo"
+              id = "01HPQCCV4RHZ8A7VMT2KM7T27P"
+            - what we can do about this is to ignore corners whenever zero or one of the tiles at their cardinal directions is connected -
+            for example, in the case of `E | SE | S`:
+
+            <ul class="directions-square e-s">
+                <li class="east">E</li>
+                <li class="south-east">SE</li>
+                <li class="south">S</li>
+            </ul>
+
+            we can completely ignore what happens in the northeast, northwest, and southwest, because the tile's cardinal directions do not fully contain any of these direction pairs.
+
+            % id = "01HPQCCV4R557T2SN7ES7Z4EJ7"
+            - we can verify this logic with a bit of code; with a bit of luck, we should be able to narrow down our tileset into something a lot more manageable.
+
+                + we'll start off by defining a bunch of variables to represent our ordinal directions:
+
+                ```javascript ordinal-directions
+                const E = 0b00000001;
+                const SE = 0b00000010;
+                const S = 0b00000100;
+                const SW = 0b00001000;
+                const W = 0b00010000;
+                const NW = 0b00100000;
+                const N = 0b01000000;
+                const NE = 0b10000000;
+                const ALL = E | SE | S | SW | W | NW | N | NE;
+                ```
+
+                as I've already said, we represent each direction using a single bit.
+
+                    - I'm using JavaScript by the way, because it's the native programming language of your web browser. read on to the end of this tangent to see why.
+
+                - now I don't know about you, but I find the usual C-style way of checking whether a bit is set extremely hard to read, so let's take care of that:
+
+                ```javascript ordinal-directions
+                function isSet(integer, bit) {
+                    return (integer & bit) == bit;
+                }
+                ```
+
+                - now we can write a function that will remove the aforementioned redundancies.
+                the logic is quite simple - for southeast, we only allow it to be set if both south and east are also set, and so on and so forth.
+
+                ```javascript ordinal-directions
+                // t is a tile index; variable name is short for brevity
+                function removeRedundancies(t) {
+                    if (isSet(t, SE) && (!isSet(t, S) || !isSet(t, E))) {
+                        t &= ~SE;
+                    }
+                    if (isSet(t, SW) && (!isSet(t, S) || !isSet(t, W))) {
+                        t &= ~SW;
+                    }
+                    if (isSet(t, NW) && (!isSet(t, N) || !isSet(t, W))) {
+                        t &= ~NW;
+                    }
+                    if (isSet(t, NE) && (!isSet(t, N) || !isSet(t, E))) {
+                        t &= ~NE;
+                    }
+                    return t;
+                }
+                ```
+
+                - with that, we can find a set of all unique non-redundant combinations:
+
+                ```javascript ordinal-directions
+                function ordinalDirections() {
+                    let unique = new Set();
+                    for (let i = 0; i <= ALL; ++i) {
+                        unique.add(removeRedundancies(i));
+                    }
+                    return Array.from(unique).sort((a, b) => a - b);
+                }
+                ```
+
+                    - by the way, I find it quite funny how JavaScript's [`Array.prototype.sort`] defaults to ASCII ordering *for all types.*
+                    even numbers! ain't that silly?
+
+                    [`Array.prototype.sort`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+
+                - and now it's time to _Let It Cook™_:
+
+                ```javascript ordinal-directions
+                let dirs = ordinalDirections();
+                console.log(dirs.length);
+                ```
+
+                ```output ordinal-directions
+                47
+                ```
+
+                    - forty seven! that's how many unique tiles we actually need.
+
+                    - you may find pixel art tutorials saying you need forty *eight* and not forty *seven*, but that is not quite correct -
+                    the forty eighth tile is actually just the empty tile! saying it's part of the tileset is quite misleading IMO.
+
+                    - phew... the nesting's getting quite unwieldy, let's wrap up this tangent and return back to doing some bitwise autotiling!
+
+        - so in reality we actually only need 47 tiles and not 256 - that's a whole lot less, that's 81.640625% less tiles we have to draw!
+
+            - and it's even possible to autogenerate most of them given just a few smaller 4x4 pieces - but for now, let's not go down that path.\
+            maybe another time.
 
 % id = "01HPD4XQPWT9N8X9BD9GKWD78F"
-- bitwise autotiling is a really cool technique that I've used in plenty of games in the past
+- bitwise autotiling is a really cool technique that I've used in plenty of games in the past.
 
     % id = "01HPD4XQPW5FQY8M04S6JEBDHQ"
-    - as I mentioned before, [I've known it since my Construct 2 days][branch:01HPD4XQPW6VK3FDW5QRCE6HSS], but when it comes to my released games [Planet Overgamma] would probably be the first to utilize it properly
+    - as I mentioned before, [I've known it since my Construct 2 days][branch:01HPD4XQPW6VK3FDW5QRCE6HSS], but when it comes to any released games [Planet Overgamma] would probably be the first to utilize it properly.
 
     TODO video of some Planet Overgamma gameplay showing the autotiling in action
 
@@ -215,7 +370,7 @@ styles = ["tairu.css"]
 
         % id = "01HPJ8GHDEN4XRPT1AJ1BTNTFJ"
         - this accursed game has been haunting me for years since; there have been many iterations.
-        he autotiling source code of the one in the video can be found [here][autotiling source code].
+        the autotiling source code of the one in the video can be found [here][autotiling source code].
 
         [autotiling source code]: https://github.com/liquidev/planet-overgamma/blob/classic/jam/map.lua#L209
 
@@ -223,19 +378,20 @@ styles = ["tairu.css"]
 + but one day I found a really cool project called [Tilekit](https://rxi.itch.io/tilekit)
 
     % id = "01HPD4XQPW11EQTBDQSGXW3S52"
-    + (of course it's really cool, after all rxi made it)
+    + (of course it's really cool, after all [rxi](https://github.com/rxi) made it)
 
         % id = "01HPD4XQPWYHS327BV586SB085"
-        - for context rxi is the genius behind the Lua-powered, simple, and modular text editor `lite` that I was using for quite a while
+        - for context rxi is the genius behind the Lua-powered, simple, and modular text editor [lite](https://github.com/rxi/lite) that I was using for quite a while
 
             % id = "01HPD4XQPWJ9QAQ5MF2J5JBB8M"
-            - after a while I switched to a fork - Lite XL, which had better font rendering and more features
+            - after a while I switched to a fork - [Lite XL](https://github.com/lite-xl/lite-xl), which had better font rendering and more features
 
             % id = "01HPD4XQPWB11TZSX5VAAJ6TCD"
             - I stopped using it because VS Code was just more feature packed and usable; no need to reinvent the wheel, rust-analyzer *just works.*
 
                 % id = "01HPD4XQPW3G7BXTBBTD05MB8V"
-                - the LSP plugin for Lite XL had some issues around autocompletions not filling in properly :pensive:\
+                - the LSP plugin for Lite XL had some issues around autocompletions not filling in properly :pensive:
+
                 it's likely a lot better now, but back then I decided this is too much for my nerves.
                 while tinkering with your editor is something really cool, in my experience it's only cool up to a point.
 
@@ -267,27 +423,10 @@ styles = ["tairu.css"]
             % id = "01HPD4XQPWP847T0EAM0FJ88T4"
             - then vines
 
+    - well... it's even simpler than that in terms of graphical presentation, but we'll get to that.
+
     % id = "01HPD4XQPWK58Z63X6962STADR"
     - I mean, after all - bitwise autotiling is basically a clever solution to an `if` complexity problem, so why not extend that with more logic and rules and stuff to let you build more complex maps?
 
         % id = "01HPJ8GHDFRA2SPNHKJYD0SYPP"
         - of course Tilekit's solution is a lot more simple, streamlined, and user-friendly, but you get the gist.
-
-% id = "01HPD4XQPW4Y075XWJCT6AATB2"
-- ever since then I've been wanting to build something just like Tilekit, but in the form of an educational, interactive blog post to demonstrate the ideas in a fun way
-
-    % id = "01HPD4XQPWR8J9WCNBNCTJERZS"
-    - and what you're reading is the result of that.
-
-% id = "01HPD4XQPW1EP8YHACRJVMA0GM"
-- so let's get going! first, we'll build a basic tile editor using JavaScript.
-
-    % id = "01HPD4XQPWPNRTVJFNFGNHJMG1"
-    + not my favorite language, but we're on the Web so it's not like we have much more of a choice.
-
-        % id = "01HPD4XQPWGK7M4XJYC99XE4T6"
-        - I could use TypeScript, but this page follows a philosophy of not introducing complexity where I can deal without it.
-        TypeScript is totally cool, but not necessary.
-
-    % id = "01HPD4XQPWAE0ZH46WME6WJSVP"
-    - I'll be using Web Components (in particular, custom elements) combined with canvas to add stuff onto the page.

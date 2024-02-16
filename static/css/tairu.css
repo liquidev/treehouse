@@ -63,6 +63,11 @@
         font-size: 14px;
         position: absolute;
         color: #d3dce9;
+        text-shadow:
+            1px 0 0 #1a2039,
+            -1px 0 0 #1a2039,
+            0 1px 0 #1a2039,
+            0 -1px 0 #1a2039;
         padding: 2px 4px;
     }
 
@@ -99,11 +104,11 @@
     }
 
     & .x-1 {
-        background-position-x: 33.3333%;
+        background-position-x: calc(100% / 3);
     }
 
     & .x-2 {
-        background-position-x: 66.6666%;
+        background-position-x: calc(200% / 3);
     }
 
     & .x-3 {
@@ -115,14 +120,102 @@
     }
 
     & .y-1 {
-        background-position-y: 33.3333%;
+        background-position-y: calc(100% / 3);
     }
 
     & .y-2 {
-        background-position-y: 66.6666%;
+        background-position-y: calc(200% / 3);
     }
 
     & .y-3 {
         background-position-y: 100%;
+    }
+}
+
+.tileset-four-to-eight-demo th-bc {
+    & .directions-square {
+        --recursive-wght: 900;
+        --recursive-casl: 0.0;
+        --recursive-slnt: 0.0;
+        --recursive-mono: 1.0;
+        color: #d3dce9;
+        text-shadow:
+            1px 0 0 #1a2039,
+            -1px 0 0 #1a2039,
+            0 1px 0 #1a2039,
+            0 -1px 0 #1a2039;
+
+        margin-block: 8px;
+        margin-left: 16px;
+        padding-left: 0;
+
+        width: 72px;
+        height: 72px;
+
+        background-image: url('../pic/01HPHVDRV0F0251MD0A2EG66C4-tilemap-heavy-metal-16+pixel+width160.png');
+        background-size: 400%;
+        background-position: 100% 100%;
+        image-rendering: crisp-edges;
+
+        position: relative;
+
+        li {
+            padding: 2px 4px;
+            position: absolute;
+        }
+
+        a {
+            text-decoration: none;
+            color: #d3dce9;
+            cursor: text;
+        }
+
+        & .east {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        & .south-east {
+            right: 0;
+            bottom: 0;
+        }
+
+        & .west {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        & .south-west {
+            left: 0;
+            bottom: 0;
+        }
+
+        & .north {
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+
+        & .north-west {
+            left: 0;
+            top: 0;
+        }
+
+        & .south {
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+        }
+
+        & .north-east {
+            right: 0;
+            top: 0;
+        }
+
+        &.e-s {
+            background-position: 0% 0%;
+        }
     }
 }

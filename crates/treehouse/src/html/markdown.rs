@@ -227,16 +227,29 @@ where
                     self.write_newline()?;
                 }
                 match info {
-                    CodeBlockKind::Fenced(info) => {
-                        let lang = info.split(' ').next().unwrap();
-                        if lang.is_empty() {
-                            self.write("<pre><code>")
-                        } else {
+                    CodeBlockKind::Fenced(language) => match CodeBlockMode::parse(&language) {
+                        CodeBlockMode::PlainText => self.write("<pre><code>"),
+                        CodeBlockMode::SyntaxHighlightOnly { language } => {
                             self.write("<pre><code class=\"language-")?;
-                            escape_html(&mut self.writer, lang)?;
+                            escape_html(&mut self.writer, language)?;
                             self.write("\">")
                         }
-                    }
+                        CodeBlockMode::LiterateProgram {
+                            language,
+                            kind,
+                            program_name,
+                        } => {
+                            self.write(match kind {
+                                LiterateCodeKind::Input => "<th-literate-editor ",
+                                LiterateCodeKind::Output => "<th-literate-output ",
+                            })?;
+                            self.write("data-program=\"")?;
+                            escape_html(&mut self.writer, program_name)?;
+                            self.write("\" data-language=\"")?;
+                            escape_html(&mut self.writer, language)?;
+                            self.write("\" role=\"code\">")
+                        }
+                    },
                     CodeBlockKind::Indented => self.write("<pre><code>"),
                 }
             }
@@ -352,8 +365,21 @@ where
             Tag::BlockQuote => {
                 self.write("</blockquote>\n")?;
             }
-            Tag::CodeBlock(_) => {
-                self.write("</code></pre>\n")?;
+            Tag::CodeBlock(kind) => {
+                self.write(match kind {
+                    CodeBlockKind::Fenced(language) => match CodeBlockMode::parse(&language) {
+                        CodeBlockMode::LiterateProgram {
+                            kind: LiterateCodeKind::Input,
+                            ..
+                        } => "</th-literate-editor>",
+                        CodeBlockMode::LiterateProgram {
+                            kind: LiterateCodeKind::Output,
+                            ..
+                        } => "</th-literate-output>",
+                        _ => "</code></pre>",
+                    },
+                    _ => "</code></pre>\n",
+                })?;
                 self.in_code_block = false;
             }
             Tag::List(Some(_)) => {
@@ -515,6 +541,44 @@ where
             }
         }
         Ok(())
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum LiterateCodeKind {
+    Input,
+    Output,
+}
+
+enum CodeBlockMode<'a> {
+    PlainText,
+    SyntaxHighlightOnly {
+        language: &'a str,
+    },
+    LiterateProgram {
+        language: &'a str,
+        kind: LiterateCodeKind,
+        program_name: &'a str,
+    },
+}
+
+impl<'a> CodeBlockMode<'a> {
+    fn parse(language: &'a str) -> CodeBlockMode<'a> {
+        if language.is_empty() {
+            CodeBlockMode::PlainText
+        } else if let Some((language, program_name)) = language.split_once(' ') {
+            CodeBlockMode::LiterateProgram {
+                language,
+                kind: if language == "output" {
+                    LiterateCodeKind::Output
+                } else {
+                    LiterateCodeKind::Input
+                },
+                program_name,
+            }
+        } else {
+            CodeBlockMode::SyntaxHighlightOnly { language }
+        }
     }
 }
 
