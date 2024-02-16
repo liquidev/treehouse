@@ -371,6 +371,7 @@ footer {
 
     & #footer-icon {
         color: var(--text-color);
+        padding-right: 24px;
     }
 }
 
