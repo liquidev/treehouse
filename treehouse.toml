@@ -25,7 +25,9 @@ description = "a place on the Internet I like to call home"
 "word/iff" = "https://en.wiktionary.org/wiki/iff"
 
 # People
+"person/areox" = "https://areox.boo"
 "person/ezioleq" = "https://ezioleq.com"
+"person/firstbober" = "https://firstbober.com"
 "person/vixenka" = "https://github.com/Vixenka"
 
 [emoji]
