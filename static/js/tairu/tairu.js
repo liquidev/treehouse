@@ -9,6 +9,52 @@ export function shouldConnect(a, b) {
     return a == b;
 }
 
+const dirs47 = {
+    E: 0b0000_0001,
+    SE: 0b0000_0010,
+    S: 0b0000_0100,
+    SW: 0b0000_1000,
+    W: 0b0001_0000,
+    NW: 0b0010_0000,
+    N: 0b0100_0000,
+    NE: 0b1000_0000,
+};
+
+function isSet(integer, bit) {
+    return (integer & bit) == bit;
+}
+
+function removeRedundancies(t) {
+    if (isSet(t, dirs47.SE) && (!isSet(t, dirs47.S) || !isSet(t, dirs47.E))) {
+        t &= ~dirs47.SE;
+    }
+    if (isSet(t, dirs47.SW) && (!isSet(t, dirs47.S) || !isSet(t, dirs47.W))) {
+        t &= ~dirs47.SW;
+    }
+    if (isSet(t, dirs47.NW) && (!isSet(t, dirs47.N) || !isSet(t, dirs47.W))) {
+        t &= ~dirs47.NW;
+    }
+    if (isSet(t, dirs47.NE) && (!isSet(t, dirs47.N) || !isSet(t, dirs47.E))) {
+        t &= ~dirs47.NE;
+    }
+    return t;
+}
+
+function ordinalDirections() {
+    let unique = new Set();
+    for (let i = 0; i <= 0b1111_1111; ++i) {
+        unique.add(removeRedundancies(i));
+    }
+    return Array.from(unique).sort((a, b) => a - b);
+}
+
+let xToConnectionBitSet = ordinalDirections();
+let connectionBitSetToX = new Uint8Array(256);
+for (let i = 0; i < xToConnectionBitSet.length; ++i) {
+    connectionBitSetToX[xToConnectionBitSet[i]] = i;
+}
+console.log(connectionBitSetToX);
+
 export class TileEditor extends Frame {
     constructor() {
         super();
@@ -44,12 +90,16 @@ export class TileEditor extends Frame {
 
         // 0st element is explicitly null because it represents the empty tile.
         this.tilesets = [null];
+        this.tilesets47 = [null];
 
         let attachedImages = this.getElementsByTagName("img");
         for (let image of attachedImages) {
             if (image.hasAttribute("data-tairu-tileset")) {
                 let tilesetIndex = parseInt(image.getAttribute("data-tairu-tileset"));
                 this.tilesets[tilesetIndex] = image;
+            } else if (image.hasAttribute("data-tairu-tileset-47")) {
+                let tilesetIndex = parseInt(image.getAttribute("data-tairu-tileset-47"));
+                this.tilesets47[tilesetIndex] = image;
             }
         }
 
@@ -105,7 +155,7 @@ export class TileEditor extends Frame {
 
     get hasTilesets() {
         // Remember that tile 0 represents emptiness.
-        return this.tilesets.length > 1;
+        return this.tilesets.length > 1 || this.tilesets47.length > 1;
     }
 
     drawTiles() {
@@ -135,22 +185,34 @@ export class TileEditor extends Frame {
             for (let x = 0; x < this.tilemap.width; ++x) {
                 let tile = this.tilemap.at(x, y);
                 if (tile != 0) {
-                    let tileset = this.tilesets[tile];
+                    let tileset16 = this.tilesets[tile];
+                    let tileset47 = this.tilesets47[tile];
+                    let tileset = tileset47 != null ? tileset47 : tileset16;
 
-                    let connectedWithEast = shouldConnect(tile, this.tilemap.at(x + 1, y)) ? 0b0001 : 0;
-                    let connectedWithSouth = shouldConnect(tile, this.tilemap.at(x, y + 1)) ? 0b0010 : 0;
-                    let connectedWithWest = shouldConnect(tile, this.tilemap.at(x - 1, y)) ? 0b0100 : 0;
-                    let connectedWithNorth = shouldConnect(tile, this.tilemap.at(x, y - 1)) ? 0b1000 : 0;
-                    let tileIndex = connectedWithNorth
-                        | connectedWithWest
-                        | connectedWithSouth
-                        | connectedWithEast;
+                    let tileIndex = 0;
+                    if (tileset47 != null) {
+                        let rawTileIndex = 0;
+                        rawTileIndex |= shouldConnect(tile, this.tilemap.at(x + 1, y)) ? dirs47.E : 0;
+                        rawTileIndex |= shouldConnect(tile, this.tilemap.at(x + 1, y + 1)) ? dirs47.SE : 0;
+                        rawTileIndex |= shouldConnect(tile, this.tilemap.at(x, y + 1)) ? dirs47.S : 0;
+                        rawTileIndex |= shouldConnect(tile, this.tilemap.at(x - 1, y + 1)) ? dirs47.SW : 0;
+                        rawTileIndex |= shouldConnect(tile, this.tilemap.at(x - 1, y)) ? dirs47.W : 0;
+                        rawTileIndex |= shouldConnect(tile, this.tilemap.at(x - 1, y - 1)) ? dirs47.NW : 0;
+                        rawTileIndex |= shouldConnect(tile, this.tilemap.at(x, y - 1)) ? dirs47.N : 0;
+                        rawTileIndex |= shouldConnect(tile, this.tilemap.at(x + 1, y - 1)) ? dirs47.NE : 0;
+                        tileIndex = connectionBitSetToX[removeRedundancies(rawTileIndex)];
+                    } else {
+                        tileIndex |= shouldConnect(tile, this.tilemap.at(x + 1, y)) ? 0b0001 : 0;
+                        tileIndex |= shouldConnect(tile, this.tilemap.at(x, y + 1)) ? 0b0010 : 0;
+                        tileIndex |= shouldConnect(tile, this.tilemap.at(x - 1, y)) ? 0b0100 : 0;
+                        tileIndex |= shouldConnect(tile, this.tilemap.at(x, y - 1)) ? 0b1000 : 0;
+                    }
 
                     let tilesetTileSize = tileset.height;
                     let tilesetX = tileIndex * tilesetTileSize;
                     let tilesetY = 0;
                     this.ctx.drawImage(
-                        this.tilesets[tile],
+                        tileset,
                         tilesetX, tilesetY, tilesetTileSize, tilesetTileSize,
                         x * this.tileSize, y * this.tileSize, this.tileSize, this.tileSize,
                     );

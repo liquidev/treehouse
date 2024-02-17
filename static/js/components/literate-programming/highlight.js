@@ -58,7 +58,7 @@ function tokenize(text, syntax) {
     return tokens;
 }
 
-export function highlight(element, syntax) {
+export function highlight(element, syntax, customize = null) {
     let tokens = tokenize(element.textContent, syntax);
 
     element.textContent = "";
@@ -67,6 +67,9 @@ export function highlight(element, syntax) {
         let span = document.createElement("span");
         span.textContent = token.string;
         span.classList.add(token.kind);
+        if (customize != null) {
+            customize(token, span);
+        }
         element.appendChild(span);
     }
 }

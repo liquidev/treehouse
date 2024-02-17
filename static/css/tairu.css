@@ -46,7 +46,7 @@
         margin: 8px;
         background-image: url('../pic/01HPHVDRV0F0251MD0A2EG66C4-tilemap-heavy-metal-16+pixel+width160.png');
         background-size: 400%;
-        image-rendering: crisp-edges;
+        image-rendering: pixelated;
         position: relative;
     }
 
@@ -155,7 +155,7 @@
         background-image: url('../pic/01HPHVDRV0F0251MD0A2EG66C4-tilemap-heavy-metal-16+pixel+width160.png');
         background-size: 400%;
         background-position: 100% 100%;
-        image-rendering: crisp-edges;
+        image-rendering: pixelated;
 
         position: relative;
 

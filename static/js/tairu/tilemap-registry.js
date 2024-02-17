@@ -36,5 +36,12 @@ export default {
         " x x ",
         "     ",
     ]),
+    bitwiseAutotiling47: parseTilemap([
+        "      x  ",
+        "   x     ",
+        "  xx xx  ",
+        "   xxxx  ",
+        "  x      ",
+    ]),
 };
 

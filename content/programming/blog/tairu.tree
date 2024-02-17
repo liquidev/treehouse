@@ -161,6 +161,8 @@ styles = ["tairu.css"]
     }
     ```
 
+    TODO this should be literate code
+
     % template = true
       id = "01HPMVT9BM9CS9375MX4H9WKW8"
     - and that gives us this result:
@@ -405,6 +407,98 @@ styles = ["tairu.css"]
             ```output ordinal-directions
             4
             ```
+
+            + for my own (and your) convenience, here's a complete list of *all* the possible combinations in order.
+
+                - ```javascript ordinal-directions
+                function toString(bitset) {
+                    if (bitset == 0) return "0";
+
+                    let directions = [];
+                    if (isSet(bitset, E)) directions.push("E");
+                    if (isSet(bitset, SE)) directions.push("SE");
+                    if (isSet(bitset, S)) directions.push("S");
+                    if (isSet(bitset, SW)) directions.push("SW");
+                    if (isSet(bitset, W)) directions.push("W");
+                    if (isSet(bitset, NW)) directions.push("NW");
+                    if (isSet(bitset, N)) directions.push("N");
+                    if (isSet(bitset, NE)) directions.push("NE");
+                    return directions.join(" | ");
+                }
+
+                for (let x in xToConnectionBitSet) {
+                    console.log(`${x} => ${toString(xToConnectionBitSet[x])}`);
+                }
+                ```
+                ```output ordinal-directions
+                0 => 0
+                1 => E
+                2 => S
+                3 => E | S
+                4 => E | SE | S
+                5 => W
+                6 => E | W
+                7 => S | W
+                8 => E | S | W
+                9 => E | SE | S | W
+                10 => S | SW | W
+                11 => E | S | SW | W
+                12 => E | SE | S | SW | W
+                13 => N
+                14 => E | N
+                15 => S | N
+                16 => E | S | N
+                17 => E | SE | S | N
+                18 => W | N
+                19 => E | W | N
+                20 => S | W | N
+                21 => E | S | W | N
+                22 => E | SE | S | W | N
+                23 => S | SW | W | N
+                24 => E | S | SW | W | N
+                25 => E | SE | S | SW | W | N
+                26 => W | NW | N
+                27 => E | W | NW | N
+                28 => S | W | NW | N
+                29 => E | S | W | NW | N
+                30 => E | SE | S | W | NW | N
+                31 => S | SW | W | NW | N
+                32 => E | S | SW | W | NW | N
+                33 => E | SE | S | SW | W | NW | N
+                34 => E | N | NE
+                35 => E | S | N | NE
+                36 => E | SE | S | N | NE
+                37 => E | W | N | NE
+                38 => E | S | W | N | NE
+                39 => E | SE | S | W | N | NE
+                40 => E | S | SW | W | N | NE
+                41 => E | SE | S | SW | W | N | NE
+                42 => E | W | NW | N | NE
+                43 => E | S | W | NW | N | NE
+                44 => E | SE | S | W | NW | N | NE
+                45 => E | S | SW | W | NW | N | NE
+                46 => E | SE | S | SW | W | NW | N | NE
+                ```
+
+        - with the lookup table generated, we are now able to prepare a tile strip like before - except now it's even more tedious work arranging the pieces together :ralsei_dead:
+
+        anyways I spent like 20 minutes doing that by hand, and now we have a neat tile strip just like before, except way longer:
+
+        ![horizontal tile strip of 47 8x8 pixel metal tiles][pic:01HPW47SHMSVAH7C0JR9HWXWCM]
+
+        - now let's hook it up to our tileset renderer! TODO literate program.
+
+        % template = true
+        - with the capability to render with 47-tile tilesets, our examples suddenly look a whole lot better!
+
+        <canvas
+            is="tairu-editor"
+            data-tilemap-id="bitwiseAutotiling47"
+            data-tile-size="40"
+        >
+            Your browser does not support &lt;canvas&gt;.
+            <img class="resource" src="{% pic 01HPW47SHMSVAH7C0JR9HWXWCM %}" data-tairu-tileset-47="1">
+        </canvas>
 
 % id = "01HPD4XQPWT9N8X9BD9GKWD78F"
 - bitwise autotiling is a really cool technique that I've used in plenty of games in the past.

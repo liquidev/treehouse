@@ -121,7 +121,14 @@ class InputMode {
     }
 
     static highlight(frame) {
-        highlight(frame, InputMode.JAVASCRIPT);
+        highlight(frame, InputMode.JAVASCRIPT, (token, span) => {
+            if (token.kind == "keyword1" && token.string == "export") {
+                // This is something a bit non-obvious about the treehouse's literate programs
+                // so let's document it.
+                span.classList.add("export");
+                span.title = "This item is exported and visible in code blocks that follow";
+            }
+        });
     }
 }
 
@@ -145,7 +152,7 @@ class OutputMode {
         if (this.worker != null) {
             this.worker.terminate();
         }
-        this.worker = new Worker(`${TREEHOUSE_SITE}/static/js/components/literate-programming/worker.js`, {
+        this.worker = new Worker(import.meta.resolve("./literate-programming/worker.js"), {
             type: "module",
             name: `evaluate LiterateOutput ${this.frame.programName}`
         });
@@ -186,13 +193,6 @@ class OutputMode {
                 else return x + "";
             })
             .join(" ");
-
-        if (output.kind == "result") {
-            let returnValueText = document.createElement("span");
-            returnValueText.classList.add("return-value");
-            returnValueText.textContent = "Return value: ";
-            line.insertBefore(returnValueText, line.firstChild);
-        }
 
         this.frame.appendChild(line);
     }
