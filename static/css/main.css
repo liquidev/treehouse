@@ -175,6 +175,7 @@ th-literate-program {
     --recursive-mono: 1.0;
     --recursive-casl: 0.0;
     --recursive-slnt: 0.0;
+    --recursive-wght: 450;
 }
 
 b,
@@ -546,5 +547,64 @@ th-literate-program[data-mode="output"] {
         top: 0;
 
         opacity: 50%;
+    }
+}
+
+/* Syntax highlighting */
+
+:root {
+    /* TODO: Light mode syntax highlighting */
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --syntax-comment: #aca8a4;
+        --syntax-identifier: var(--text-color);
+        --syntax-keyword1: #ffb06a;
+        --syntax-keyword2: #9acfe3;
+        --syntax-operator: #ec9f8d;
+        --syntax-function: #fbd283;
+        --syntax-literal: #e9b9f0;
+        --syntax-string: #b0dd7a;
+        --syntax-punct: #9d9a96;
+    }
+}
+
+.th-syntax-highlighting span {
+    &.comment {
+        --recursive-slnt: -16.0;
+        color: var(--syntax-comment);
+    }
+
+    &.identifier {
+        color: var(--syntax-identifier);
+    }
+
+    &.keyword1 {
+        color: var(--syntax-keyword1);
+    }
+
+    &.keyword2 {
+        color: var(--syntax-keyword2);
+    }
+
+    &.operator {
+        color: var(--syntax-operator);
+    }
+
+    &.function {
+        color: var(--syntax-function);
+    }
+
+    &.literal {
+        color: var(--syntax-literal);
+    }
+
+    &.string {
+        color: var(--syntax-string);
+    }
+
+    &.punct {
+        color: var(--syntax-punct);
     }
 }

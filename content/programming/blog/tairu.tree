@@ -288,7 +288,7 @@ styles = ["tairu.css"]
                 as I've already said, we represent each direction using a single bit.
 
                     % id = "01HPSY4Y19AW70YX8PPA7AS4DH"
-                    - I'm using JavaScript by the way, because it's the native programming language of your web browser. read on to the end of this tangent to see why.
+                    - I'm using JavaScript by the way, because it's the native programming language of your web browser. read on to see why.
 
                 % id = "01HPSY4Y19HPNXC54VP6TFFHXN"
                 - now I don't know about you, but I find the usual C-style way of checking whether a bit is set extremely hard to read, so let's take care of that:
@@ -405,9 +405,6 @@ styles = ["tairu.css"]
             ```output ordinal-directions
             4
             ```
-
-            TODO: The value from the previous output should not leak into this one. how do we do this? do we emit extra `pushMessage` calls inbetween the editors so that they know when to end?
-            maybe use a `classic` context instead of a module? or maybe have a way of sharing data between outputs? (return value?)
 
 % id = "01HPD4XQPWT9N8X9BD9GKWD78F"
 - bitwise autotiling is a really cool technique that I've used in plenty of games in the past.

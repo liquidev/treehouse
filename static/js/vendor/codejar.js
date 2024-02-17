@@ -34,11 +34,12 @@ export function CodeJar(editor, highlight, opt = {}) {
         isLegacy = true;
     if (isLegacy)
         editor.setAttribute('contenteditable', 'true');
-    const debounceHighlight = debounce(() => {
+    // PATCH(liquidex): Remove debouncing here.
+    const debounceHighlight = () => {
         const pos = save();
         doHighlight(editor, pos);
         restore(pos);
-    }, 30);
+    };
     let recording = false;
     const shouldRecord = (event) => {
         return !isUndo(event) && !isRedo(event)
@@ -78,14 +79,15 @@ export function CodeJar(editor, highlight, opt = {}) {
         }
         if (isLegacy && !isCopy(event))
             restore(save());
+
+        // PATCH(liquidex): Do highlighting on keypress for faster feedback.
+        requestAnimationFrame(debounceHighlight);
     });
     on('keyup', event => {
         if (event.defaultPrevented)
             return;
         if (event.isComposing)
             return;
-        if (prev !== toString())
-            debounceHighlight();
         debounceRecordHistory(event);
         onUpdate(toString());
     });
