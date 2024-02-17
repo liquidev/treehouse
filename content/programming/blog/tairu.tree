@@ -40,7 +40,7 @@ styles = ["tairu.css"]
     </canvas>
 
     % id = "01HPJ8GHDEC0Z334M04MTNADV9"
-    - for each tile, we can assign a bitset of cardinal directions like so:
+    - for each tile we can assign a bitset of cardinal directions, based on which tiles it should connect to - like so:
 
     <canvas
         is="tairu-editor-cardinal-directions"
@@ -372,22 +372,29 @@ styles = ["tairu.css"]
             - and it's even possible to autogenerate most of them given just a few smaller 4x4 pieces - but for now, let's not go down that path.\
             maybe another time.
 
+        % id = "01HPWJB4Y047YGYAP6XQXJ3576"
         - so we only need to draw 47 tiles, but to actually display them in a game we still need to pack them into an image.
 
+        % id = "01HPWJB4Y0QX6YR6TQKZ7T1C2E"
         - we *could* use a similar approach to the 16 tile version, but that would leave us with lots of wasted space!
 
+            % id = "01HPWJB4Y0HKGSDABB56CNFP9H"
             - think that with this redundancy elimination approach most of the tiles will never even be looked up by the renderer, because the bit combinations will be collapsed into a more canonical form before the lookup.
 
+        % id = "01HPWJB4Y0705RWPFB89V23M1P"
         - we could also use the approach I mentioned briefly [here][branch:01HPQCCV4RB65D5Q4RANJKGC0D], which involves introducing a lookup table - which sounds reasonable, so let's do it!
 
+        % id = "01HPWJB4Y0F9JGXQDAAVC3ERG1"
         - I don't want to write the lookup table by hand, so let's generate it! I'll reuse the redundancy elimination code from before to make this easier.
 
+            % id = "01HPWJB4Y0HTV32T4WMKCKWTVA"
             - we'll start by obtaining our ordinal directions array again:
 
             ```javascript ordinal-directions
             export let xToConnectionBitSet = ordinalDirections();
             ```
 
+            % id = "01HPWJB4Y03WYYZ3VTW27GP7Z3"
             - then we'll turn that array upside down... in other words, invert the index-value relationship, so that we can look up which X position in the tile strip to use for a specific connection combination.
 
             remember that our array has only 256 values, so it should be pretty cheap to represent using a `Uint8Array`:
@@ -399,6 +406,7 @@ styles = ["tairu.css"]
             }
             ```
 
+            % id = "01HPWJB4Y0CWQB9EZG6C91A0H0"
             - and there we go! we now have a mapping from our bitset to positions within the tile strip. try to play around with the code example to see which bitsets correspond to which position!
 
             ```javascript ordinal-directions
@@ -408,8 +416,10 @@ styles = ["tairu.css"]
             4
             ```
 
+            % id = "01HPWJB4Y09P9Q3NGN59XWX2X9"
             + for my own (and your) convenience, here's a complete list of *all* the possible combinations in order.
 
+                % id = "01HPWJB4Y01VJFMHYEC1WZ353W"
                 - ```javascript ordinal-directions
                 function toString(bitset) {
                     if (bitset == 0) return "0";
@@ -480,15 +490,18 @@ styles = ["tairu.css"]
                 46 => E | SE | S | SW | W | NW | N | NE
                 ```
 
+        % id = "01HPWJB4Y0NMP35M9138DV3P8W"
         - with the lookup table generated, we are now able to prepare a tile strip like before - except now it's even more tedious work arranging the pieces together :ralsei_dead:
 
         anyways I spent like 20 minutes doing that by hand, and now we have a neat tile strip just like before, except way longer:
 
         ![horizontal tile strip of 47 8x8 pixel metal tiles][pic:01HPW47SHMSVAH7C0JR9HWXWCM]
 
+        % id = "01HPWJB4Y0J3DHQV5F9GD3VNQ8"
         - now let's hook it up to our tileset renderer! TODO literate program.
 
         % template = true
+          id = "01HPWJB4Y00ARHBGDF2HTQQ4SD"
         - with the capability to render with 47-tile tilesets, our examples suddenly look a whole lot better!
 
         <canvas

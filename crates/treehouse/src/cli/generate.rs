@@ -1,4 +1,5 @@
 use std::{
+    collections::HashMap,
     ffi::OsStr,
     path::{Path, PathBuf},
     time::Instant,
@@ -174,12 +175,49 @@ impl Generator {
         parsed_trees: impl IntoIterator<Item = ParsedTree>,
     ) -> anyhow::Result<()> {
         let mut handlebars = Handlebars::new();
-        let tree_template = Self::register_template(
-            &mut handlebars,
-            treehouse,
-            "tree",
-            &paths.template_dir.join("tree.hbs"),
-        )?;
+
+        let mut template_file_ids = HashMap::new();
+        for entry in WalkDir::new(paths.template_dir) {
+            let entry = entry?;
+            let path = entry.path();
+            if !entry.file_type().is_dir() && path.extension() == Some(OsStr::new("hbs")) {
+                let relative_path = path
+                    .strip_prefix(paths.template_dir)?
+                    .to_string_lossy()
+                    .into_owned();
+                let file_id =
+                    Self::register_template(&mut handlebars, treehouse, &relative_path, path)?;
+                template_file_ids.insert(relative_path, file_id);
+            }
+        }
+
+        std::fs::create_dir_all(paths.template_target_dir)?;
+        for (name, &file_id) in &template_file_ids {
+            if !name.starts_with('_') {
+                #[derive(Serialize)]
+                struct StaticTemplateData<'a> {
+                    config: &'a Config,
+                }
+
+                let templated_html = match handlebars.render(name, &StaticTemplateData { config }) {
+                    Ok(html) => html,
+                    Err(error) => {
+                        Self::wrangle_handlebars_error_into_diagnostic(
+                            treehouse,
+                            file_id,
+                            error.line_no,
+                            error.column_no,
+                            error.desc,
+                        )?;
+                        continue;
+                    }
+                };
+                std::fs::write(
+                    paths.template_target_dir.join(name).with_extension("html"),
+                    templated_html,
+                )?;
+            }
+        }
 
         for parsed_tree in parsed_trees {
             let breadcrumbs = breadcrumbs_to_html(config, navigation_map, &parsed_tree.tree_path);
@@ -216,11 +254,11 @@ impl Generator {
             }
 
             #[derive(Serialize)]
-            pub struct TemplateData<'a> {
+            pub struct PageTemplateData<'a> {
                 pub config: &'a Config,
                 pub page: Page,
             }
-            let template_data = TemplateData {
+            let template_data = PageTemplateData {
                 config,
                 page: Page {
                     title: roots.attributes.title.clone(),
@@ -244,12 +282,12 @@ impl Generator {
 
             treehouse.roots.insert(parsed_tree.tree_path, roots);
 
-            let templated_html = match handlebars.render("tree", &template_data) {
+            let templated_html = match handlebars.render("_tree.hbs", &template_data) {
                 Ok(html) => html,
                 Err(error) => {
                     Self::wrangle_handlebars_error_into_diagnostic(
                         treehouse,
-                        tree_template,
+                        template_file_ids["_tree.hbs"],
                         error.line_no,
                         error.column_no,
                         error.desc,

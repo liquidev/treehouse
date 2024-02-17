@@ -1,0 +1,133 @@
+%% title = "the treehouse sandbox"
+scripts = ["components/literate-programming.js"]
+
+% id = "01HPWJB4Y5ST6AEK9VDYNS865P"
+- the sandbox is a framework for playing around with code
+
+    % id = "01HPWJB4Y5HSDMEHNJXVET212V"
+    - one might call it "literate programming" and indeed that's the name used inside the code
+
+    % id = "01HPWJB4Y583X6RXD060RZJ7WA"
+    - it's based on JavaScript; basically, you write scripts in JavaScript that may embed output into the parent page
+
+    % id = "01HPWJB4Y56KH9MVC7Y5DDJ0CH"
+    - this is a bit of documentation on how to use its features
+
+% id = "01HPWJB4Y5G4XXDE4ZPY3SWPXP"
++ ### basic usage
+
+    % id = "01HPWJB4Y5JG6SGV3A5SS6V0JY"
+    - the smallest building block is a module. each code block is a separate ES module, and therefore it has separate imports and exports.
+
+    % id = "01HPWJB4Y5HDEGNVRE307ND6H3"
+    - for example, in the example below, the two code blocks cannot access each other's variables:
+
+    ```javascript module-separation-broken
+    let myVariable = 1;
+    ```
+
+    ```javascript module-separation-broken
+    console.log(myVariable);
+    ```
+
+    ```output module-separation-broken
+    ReferenceError: myVariable is not defined
+    ```
+
+    % id = "01HPWJB4Y574NADEWXYWZR8C6C"
+    - to fix this, export the variable:
+
+    ```javascript module-separation-works
+    export let myVariable = 1;
+    ```
+
+    ```javascript module-separation-works
+    console.log(myVariable);
+    ```
+
+    ```output module-separation-works
+    1
+    ```
+
+% id = "01HPWJB4Y5GDMQTG6F6K4TDYWA"
++ ### outputting text
+
+    % id = "01HPWJB4Y55S28PVMBD4FKK98C"
+    - for code blocks which are followed by an `Output` block, such as [this one], it is possible to use `console.log` to output text to the console:
+
+    ```javascript text-output
+    console.log("Hello, world!");
+    ```
+
+    ```output text-output
+    Hello, world!
+    ```
+
+    % id = "01HPWJB4Y5CMHY36HW8EPTBSYG"
+    - `console.warn`, `console.error`, etc. are not supported right now. sorry.
+
+    % id = "01HPWJB4Y5CXAMYHGWSG72FP4J"
+    - code blocks are generally tied together when I say so. for example, you can access variables `export`ed from the above code blocks here; try making this example compile without touching this code block:
+
+    ```javascript text-output
+    console.log(x + 1);
+    ```
+
+    ```output text-output
+    3
+    ```
+
+        % id = "01HPWJB4Y54R6ZB0GHCXRF674M"
+        - you'll notice that if you edit the first code block in this section, both the code blocks' outputs get updated automatically. neat, huh?
+
+% id = "01HPWJB4Y57BVC7H5N94FREGRK"
++ ### outputting graphics
+
+    % id = "01HPWJB4Y5CB5MSBWMG58VMR2G"
+    - some code blocks allow for graphical output. such as this one:
+
+    ```javascript graphical-output
+    import { Sketch } from "treehouse/sandbox.js";
+
+    let sketch = new Sketch(200, 200);
+    sketch.ctx.fillStyle = "white";
+    sketch.ctx.fillRect(0, 0, sketch.canvas.width, sketch.canvas.height);
+    sketch.ctx.strokeStyle = "black";
+    sketch.ctx.strokeRect(32, 32, 32, 32);
+    ```
+
+    <th-literate-program data-mode="graphics" data-program="graphical-output"></th-literate-program>
+
+    % id = "01HPWJB4Y5ER6SAQZ17ZFH8RK7"
+    - `Sketch` is an API for drawing things using HTML `<canvas>`.
+
+        % id = "01HPWJB4Y5MRKCXRNSRFG7PVP5"
+        - the act of creating a `Sketch` using `new` causes a new `<canvas>` to be created.
+
+            % id = "01HPWJB4Y5HZG6QH5N6N2Q9Z99"
+            - this `<canvas>` can be accessed using the sketch's `canvas` field, and the canvas's 2D drawing context is accessible using the `ctx` field.
+
+        % id = "01HPWJB4Y5ANS55R32X7GJP1N7"
+        - this API wraps a lower-level message-passing API which is used to communicate with the main page, to let it set things like the sandbox `<iframe>`'s size (as well as make it visible).
+        see the source code for details.
+
+% id = "01HPWJB4Y5H9DKZT2ZA8PWNV99"
++ ### known issues
+
+    % id = "01HPWJB4Y56FPNHJNVGJQ57DWH"
+    - the code editors are very janky on Firefox right now.
+
+        % id = "01HPWJB4Y5T2GA42SJ80JNY2FK"
+        - the sandbox uses CodeJar to facilitate code editing, and to do this it uses `contenteditable` attributes.
+
+        % id = "01HPWJB4Y5H9M4W0ZYYPVWQ6MY"
+        - I love CodeJar for its simplicity. it brings you text editing, and you bring your own everything else. so I'd love to
+
+        % id = "01HPWJB4Y5WWPJXSWQDCMG6J32"
+        - however, for non-janky text editing, CodeJar uses `contenteditable="plaintext-only"`, which is only supported on Chromium-based browsers.
+
+            % id = "01HPWJB4Y5ZJC1P0M6D3VNM0SF"
+            - I may patch it at some point to support regular `contenteditable` better at some point, but it's not a priority right now.
+
+            % id = "01HPWJB4Y52XZJRRZ41F1XK0ZT"
+            - the sandbox is only used for small, editable, interactive code examples and is not intended to be a fully fledged IDE.

@@ -202,6 +202,42 @@ class OutputMode {
     }
 }
 
+class GraphicsMode {
+    constructor(frame) {
+        this.frame = frame;
+
+        this.iframe = document.createElement("iframe");
+        this.iframe.classList.add("hidden");
+        this.iframe.src = import.meta.resolve("../../html/sandbox.html");
+        this.frame.appendChild(this.iframe);
+
+        this.iframe.contentWindow.addEventListener("message", event => {
+            let message = event.data;
+            if (message.kind == "resize") {
+                this.resize(message);
+            }
+        });
+
+        this.iframe.contentWindow.addEventListener("DOMContentLoaded", () => this.evaluate());
+        this.frame.program.onChanged.push(_ => this.evaluate());
+
+        this.evaluate();
+    }
+
+    evaluate() {
+        this.iframe.contentWindow.postMessage({
+            action: "eval",
+            input: getLiterateProgramWorkerCommands(this.frame.programName),
+        });
+    }
+
+    resize(message) {
+        this.iframe.width = message.width;
+        this.iframe.height = message.height;
+        this.iframe.classList.remove("hidden");
+    }
+}
+
 class LiterateProgram extends HTMLElement {
     connectedCallback() {
         this.programName = this.getAttribute("data-program");
@@ -212,6 +248,8 @@ class LiterateProgram extends HTMLElement {
             this.modeImpl = new InputMode(this);
         } else if (this.mode == "output") {
             this.modeImpl = new OutputMode(this);
+        } else if (this.mode == "graphics") {
+            this.modeImpl = new GraphicsMode(this);
         }
     }
 

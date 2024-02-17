@@ -21,6 +21,8 @@ async fn fallible_main() -> anyhow::Result<()> {
 
     let paths = Paths {
         target_dir: Path::new("target/site"),
+        template_target_dir: Path::new("target/site/static/html"),
+
         config_file: Path::new("treehouse.toml"),
 
         // NOTE: These are intentionally left unconfigurable from within treehouse.toml

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>treehouse iframe sandbox</title>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+
+    <script type="importmap">{ "imports": { "treehouse/": "{{ config.site }}/static/js/" } }</script>
+
+    <script type="module">
+        import { evaluate } from "treehouse/components/literate-programming/eval.js";
+        console.log("yo");
+        addEventListener("message", async event => {
+            let message = event.data;
+            if (message.action == "eval") {
+                document.body.replaceChildren();
+                evaluate(message.input);
+            }
+        });
+    </script>
+</head>
+
+<body></body>
+
+</html>

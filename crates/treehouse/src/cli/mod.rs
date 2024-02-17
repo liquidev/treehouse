@@ -78,6 +78,8 @@ pub struct ServeArgs {
 #[derive(Debug, Clone, Copy)]
 pub struct Paths<'a> {
     pub target_dir: &'a Path,
+    pub template_target_dir: &'a Path,
+
     pub static_dir: &'a Path,
     pub template_dir: &'a Path,
     pub content_dir: &'a Path,

@@ -567,6 +567,21 @@ th-literate-program[data-mode="output"] {
     }
 }
 
+th-literate-program[data-mode="graphics"] {
+    padding: 0;
+    background: none;
+
+    & iframe {
+        border-style: none;
+        border-radius: 4px;
+    }
+
+    /* The inner iframe is hidden until something requests display. */
+    & iframe.hidden {
+        display: none;
+    }
+}
+
 /* Syntax highlighting */
 
 :root {
