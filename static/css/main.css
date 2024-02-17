@@ -171,8 +171,7 @@ h4 {
 pre,
 code,
 kbd,
-th-literate-editor,
-th-literate-output {
+th-literate-program {
     --recursive-mono: 1.0;
     --recursive-casl: 0.0;
     --recursive-slnt: 0.0;
@@ -213,13 +212,13 @@ body {
 /* Make code examples a little prettier by giving them visual separation from the rest of the page */
 
 code,
-th-literate-editor {
+th-literate-program {
     padding: 3px 4px;
     background-color: var(--shaded-background);
     border-radius: 4px;
 }
 
-th-literate-editor,
+th-literate-program,
 th-literate-output {
     display: block;
 }
@@ -231,8 +230,7 @@ kbd {
 }
 
 pre,
-th-literate-editor,
-th-literate-output {
+th-literate-program {
     padding: 8px 12px;
     margin: 12px 0;
     background-color: var(--shaded-against-background);
@@ -241,22 +239,20 @@ th-literate-output {
     transition: background-color var(--transition-duration);
 }
 
-th-literate-editor,
-th-literate-output {
+th-literate-program {
     white-space: pre;
 }
 
 .tree summary:hover {
 
     & pre,
-    & th-literate-editor,
-    & th-literate-output {
+    & th-literate-program {
         background-color: var(--shaded-against-background-twice);
     }
 }
 
 pre>code,
-th-literate-output>code {
+th-literate-program>code {
     padding: 0;
     background: none;
     border-radius: 0px;
@@ -518,13 +514,13 @@ img[is="th-emoji"] {
 
 /* Literate programming support */
 
-th-literate-editor {
+th-literate-program[data-mode="input"] {
     /* Override the cursor with an I-beam, because the editor captures clicks and does not bubble
        them back up to the caller */
     cursor: text;
 }
 
-th-literate-output {
+th-literate-program[data-mode="output"] {
     position: relative;
 
     & code {

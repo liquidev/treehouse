@@ -240,8 +240,12 @@ where
                             program_name,
                         } => {
                             self.write(match kind {
-                                LiterateCodeKind::Input => "<th-literate-editor ",
-                                LiterateCodeKind::Output => "<th-literate-output ",
+                                LiterateCodeKind::Input => {
+                                    "<th-literate-program data-mode=\"input\" "
+                                }
+                                LiterateCodeKind::Output => {
+                                    "<th-literate-program data-mode=\"output\" "
+                                }
                             })?;
                             self.write("data-program=\"")?;
                             escape_html(&mut self.writer, program_name)?;
@@ -368,14 +372,7 @@ where
             Tag::CodeBlock(kind) => {
                 self.write(match kind {
                     CodeBlockKind::Fenced(language) => match CodeBlockMode::parse(&language) {
-                        CodeBlockMode::LiterateProgram {
-                            kind: LiterateCodeKind::Input,
-                            ..
-                        } => "</th-literate-editor>",
-                        CodeBlockMode::LiterateProgram {
-                            kind: LiterateCodeKind::Output,
-                            ..
-                        } => "</th-literate-output>",
+                        CodeBlockMode::LiterateProgram { .. } => "</th-literate-program>",
                         _ => "</code></pre>",
                     },
                     _ => "</code></pre>\n",

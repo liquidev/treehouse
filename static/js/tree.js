@@ -163,14 +163,11 @@ function expandDetailsRecursively(element) {
 }
 
 function navigateToPage(page) {
-    console.log(page);
     window.location.pathname = `${page}.html`
 }
 
 async function navigateToBranch(fragment) {
     if (fragment.length == 0) return;
-
-    console.log(`nagivating to branch: ${fragment}`);
 
     let element = document.getElementById(fragment);
     if (element !== null) {
@@ -179,7 +176,6 @@ async function navigateToBranch(fragment) {
         rehash();
     } else {
         // The element is not loaded, we need to load the tree that has it.
-        console.log("element is not loaded");
         let parts = fragment.split(':');
         if (parts.length >= 2) {
             let [page, _id] = parts;
@@ -189,7 +185,6 @@ async function navigateToBranch(fragment) {
                 // navigation maps with roots other than index. Currently though only index is
                 // generated so that doesn't matter.
                 let [_root, ...path] = fullPath;
-                console.log(`_root: ${_root}, path: ${path}`)
                 if (path !== undefined) {
                     let isNotAtIndexHtml =
                         window.location.pathname != "" &&

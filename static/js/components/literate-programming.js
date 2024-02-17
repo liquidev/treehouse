@@ -5,74 +5,68 @@ let literatePrograms = new Map();
 function getLiterateProgram(name) {
     if (literatePrograms.get(name) == null) {
         literatePrograms.set(name, {
-            editors: [],
+            frames: [],
             onChanged: [],
+
+            outputCount: 0,
+
+            nextOutputIndex() {
+                let index = this.outputCount;
+                ++this.outputCount;
+                return index;
+            }
         });
     }
     return literatePrograms.get(name);
 }
 
-function getLiterateProgramSourceCode(name) {
-    let sources = [];
+function getLiterateProgramWorkerCommands(name) {
+    let commands = [];
     let literateProgram = getLiterateProgram(name);
-    for (let editor of literateProgram.editors) {
-        sources.push(editor.textContent);
+    for (let frame of literateProgram.frames) {
+        if (frame.mode == "input") {
+            commands.push({ kind: "module", source: frame.textContent });
+        } else if (frame.mode == "output") {
+            commands.push({ kind: "output", expected: frame.textContent });
+        }
     }
-    return sources.join("\n");
+    return commands;
 }
 
-class LiterateEditor extends HTMLElement {
-    constructor() {
-        super();
-    }
+class InputMode {
+    constructor(frame) {
+        this.frame = frame;
 
-    connectedCallback() {
-        this.literateProgramName = this.getAttribute("data-program");
-        getLiterateProgram(this.literateProgramName).editors.push(this);
-
-        this.codeJar = CodeJar(this, LiterateEditor.highlight);
+        this.codeJar = CodeJar(frame, InputMode.highlight);
         this.codeJar.onUpdate(() => {
-            let literateProgram = getLiterateProgram(this.literateProgramName);
-            for (let handler of literateProgram.onChanged) {
-                handler(this.literateProgramName);
+            for (let handler of frame.program.onChanged) {
+                handler(frame.programName);
             }
         })
 
-        this.addEventListener("click", event => event.preventDefault());
+        frame.addEventListener("click", event => event.preventDefault());
     }
 
-    static highlight(editor) {
+    static highlight(frame) {
         // TODO: Syntax highlighting
     }
 }
 
-customElements.define("th-literate-editor", LiterateEditor);
-
-function debounce(callback, timeout) {
-    let timeoutId = 0;
-    return (...args) => {
-        clearTimeout(timeout);
-        timeoutId = window.setTimeout(() => callback(...args), timeout);
-    };
-}
-
-class LiterateOutput extends HTMLElement {
-    constructor() {
-        super();
-
+class OutputMode {
+    constructor(frame) {
         this.clearResultsOnNextOutput = false;
-    }
 
-    connectedCallback() {
-        this.literateProgramName = this.getAttribute("data-program");
+        this.frame = frame;
+
+        this.frame.program.onChanged.push(_ => this.evaluate());
+        this.outputIndex = this.frame.program.nextOutputIndex();
+
         this.evaluate();
-
-        getLiterateProgram(this.literateProgramName).onChanged.push(_ => this.evaluate());
     }
 
-    evaluate = () => {
+    evaluate() {
         // This is a small bit of debouncing. If we cleared the output right away, the page would
-        // jitter around irritatingly
+        // jitter around irritatingly.
         this.clearResultsOnNextOutput = true;
 
         if (this.worker != null) {
@@ -80,23 +74,23 @@ class LiterateOutput extends HTMLElement {
         }
         this.worker = new Worker(`${TREEHOUSE_SITE}/static/js/components/literate-programming/worker.js`, {
             type: "module",
-            name: `evaluate LiterateOutput ${this.literateProgramName}`
+            name: `evaluate LiterateOutput ${this.frame.programName}`
         });
 
         this.worker.addEventListener("message", event => {
             let message = event.data;
             if (message.kind == "evalComplete") {
                 this.worker.terminate();
-            } else if (message.kind == "output") {
+            } else if (message.kind == "output" && message.outputIndex == this.outputIndex) {
                 this.addOutput(message.output);
             }
         });
 
         this.worker.postMessage({
             action: "eval",
-            input: getLiterateProgramSourceCode(this.literateProgramName),
+            input: getLiterateProgramWorkerCommands(this.frame.programName),
         });
-    };
+    }
 
     addOutput(output) {
         if (this.clearResultsOnNextOutput) {
@@ -112,10 +106,13 @@ class LiterateOutput extends HTMLElement {
         line.classList.add("output");
         line.classList.add(output.kind);
 
-        line.textContent = output.message.map(x => {
-            if (typeof x === "object") return JSON.stringify(x);
-            else return x + "";
-        }).join(" ");
+        // One day this will be more fancy. Today is not that day.
+        line.textContent = output.message
+            .map(x => {
+                if (typeof x === "object") return JSON.stringify(x);
+                else return x + "";
+            })
+            .join(" ");
 
         if (output.kind == "result") {
             let returnValueText = document.createElement("span");
@@ -124,12 +121,30 @@ class LiterateOutput extends HTMLElement {
             line.insertBefore(returnValueText, line.firstChild);
         }
 
-        this.appendChild(line);
+        this.frame.appendChild(line);
     }
 
     clearResults() {
-        this.replaceChildren();
+        this.frame.replaceChildren();
     }
 }
 
-customElements.define("th-literate-output", LiterateOutput);
+class LiterateProgram extends HTMLElement {
+    connectedCallback() {
+        this.programName = this.getAttribute("data-program");
+        this.program.frames.push(this);
+
+        this.mode = this.getAttribute("data-mode");
+        if (this.mode == "input") {
+            this.modeImpl = new InputMode(this);
+        } else if (this.mode == "output") {
+            this.modeImpl = new OutputMode(this);
+        }
+    }
+
+    get program() {
+        return getLiterateProgram(this.programName);
+    }
+}
+
+customElements.define("th-literate-program", LiterateProgram);

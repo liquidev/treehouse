@@ -36,7 +36,6 @@ export class TileEditor extends Frame {
         this.tileSize = parseInt(this.getAttribute("data-tile-size"));
 
         let tilemapId = this.getAttribute("data-tilemap-id");
-        console.log(tilemapRegistry);
         if (tilemapId != null) {
             this.tilemap = tilemapRegistry[this.getAttribute("data-tilemap-id")];
         } else {
@@ -188,5 +187,3 @@ export class TileEditor extends Frame {
     }
 }
 defineFrame("tairu-editor", TileEditor);
-
-console.log("tairu editor loaded");
