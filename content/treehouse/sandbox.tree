@@ -107,10 +107,6 @@ scripts = ["components/literate-programming.js"]
             % id = "01HPWJB4Y5HZG6QH5N6N2Q9Z99"
             - this `<canvas>` can be accessed using the sketch's `canvas` field, and the canvas's 2D drawing context is accessible using the `ctx` field.
 
-        % id = "01HPWJB4Y5ANS55R32X7GJP1N7"
-        - this API wraps a lower-level message-passing API which is used to communicate with the main page, to let it set things like the sandbox `<iframe>`'s size (as well as make it visible).
-        see the source code for details.
-
     % id = "01HPXYH05CWEAKZ406ZNA919TS"
     - it's also possible to use ordinary DOM elements, *however* instead of `document.body` you should use `treehouse/sandbox.js`'s `body()`.
 
