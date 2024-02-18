@@ -58,6 +58,30 @@ export function CodeJar(editor, highlight, opt = {}) {
         listeners.push([type, fn]);
         editor.addEventListener(type, fn);
     };
+
+    // PATCH(liquidex): Prevent cursor jank in Firefox.
+    on('beforeinput', event => {
+        if (isLegacy) {
+            if (event.inputType == "deleteContentBackward") {
+                event.preventDefault();
+
+                let position = save();
+                document.execCommand("delete");
+                if (position.end != position.start) {
+                    if (position.dir == "->") {
+                        position.end = position.start;
+                    } else {
+                        position.start = position.end;
+                    }
+                } else {
+                    position.start -= 1;
+                    position.end = position.start;
+                }
+                restore(position);
+            }
+        }
+    });
+
     on('keydown', event => {
         if (event.defaultPrevented)
             return;
