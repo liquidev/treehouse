@@ -10,13 +10,28 @@
             margin: 0;
             overflow: hidden;
         }
+
+        canvas {
+            display: block;
+        }
     </style>
 
     <script type="importmap">{ "imports": { "treehouse/": "{{ config.site }}/static/js/" } }</script>
 
     <script type="module">
         import { evaluate } from "treehouse/components/literate-programming/eval.js";
-        console.log("yo");
+
+        // I'm aware there's also ResizeObserver but it didn't seem to fire off any events when a
+        // canvas was added, rendering it pretty much useless.
+        let mutationObserver = new MutationObserver(() => {
+            postMessage({
+                kind: "resize",
+                width: document.body.scrollWidth,
+                height: document.body.scrollHeight,
+            });
+        });
+        mutationObserver.observe(document.body, { subtree: true, childList: true });
+
         addEventListener("message", async event => {
             let message = event.data;
             if (message.action == "eval") {
@@ -24,6 +39,7 @@
                 evaluate(message.input);
             }
         });
+
     </script>
 </head>
 
