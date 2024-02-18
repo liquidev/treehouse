@@ -200,11 +200,24 @@ class OutputMode {
     clearResults() {
         this.frame.replaceChildren();
     }
+
+    static messageOutputArrayToString(output) {
+        return output
+            .map(x => {
+                if (typeof x === "object") return JSON.stringify(x);
+                else return x + "";
+            })
+            .join(" ");
+    }
 }
 
 class GraphicsMode {
     constructor(frame) {
         this.frame = frame;
+
+        this.error = document.createElement("pre");
+        this.error.classList.add("error");
+        this.frame.appendChild(this.error);
 
         this.iframe = document.createElement("iframe");
         this.iframe.classList.add("hidden");
@@ -213,15 +226,20 @@ class GraphicsMode {
 
         this.iframe.contentWindow.addEventListener("message", event => {
             let message = event.data;
-            if (message.kind == "resize") {
+            if (message.kind == "ready") {
+                this.evaluate();
+            }
+            else if (message.kind == "resize") {
                 this.resize(message);
+            } else if (message.kind == "output" && message.output.kind == "error") {
+                this.error.textContent = OutputMode.messageOutputArrayToString(message.output.message);
+                this.iframe.classList.add("hidden");
+            } else if (message.kind == "evalComplete") {
+                this.error.textContent = "";
             }
         });
 
-        this.iframe.contentWindow.addEventListener("DOMContentLoaded", () => this.evaluate());
         this.frame.program.onChanged.push(_ => this.evaluate());
-
-        this.evaluate();
     }
 
     evaluate() {

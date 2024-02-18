@@ -18,7 +18,22 @@ async function withTemporaryGlobalScope(callback) {
     }
 }
 
-export async function evaluate(commands) {
+let evaluationComplete = null;
+
+export async function evaluate(commands, { start, success, error }) {
+    if (evaluationComplete != null) {
+        await evaluationComplete;
+    }
+
+    if (start != null) {
+        start();
+    }
+
+    let signalEvaluationComplete;
+    evaluationComplete = new Promise((resolve, _reject) => {
+        signalEvaluationComplete = resolve;
+    })
+
     outputIndex = 0;
     try {
         await withTemporaryGlobalScope(async scope => {
@@ -34,15 +49,25 @@ export async function evaluate(commands) {
                 }
             }
         });
-    } catch (error) {
+        if (success != null) {
+            success();
+        }
+        postMessage({
+            kind: "evalComplete",
+        });
+    } catch (err) {
         postMessage({
             kind: "output",
             output: {
                 kind: "error",
-                message: [error.toString()],
+                message: [err.toString()],
             },
             outputIndex,
         });
+        if (error != null) {
+            error();
+        }
     }
+    signalEvaluationComplete();
 }
 

@@ -18,6 +18,6 @@ globalThis.console = {
 addEventListener("message", async event => {
     let message = event.data;
     if (message.action == "eval") {
-        evaluate(message.input);
+        evaluate(message.input, {});
     }
 });

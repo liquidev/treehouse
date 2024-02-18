@@ -1,3 +1,15 @@
+export const internals = {
+    body: document.createElement("body"),
+};
+
+export function body() {
+    return internals.body;
+}
+
+export function addElement(element) {
+    body().appendChild(element);
+}
+
 export class Sketch {
     constructor(width, height) {
         this.canvas = document.createElement("canvas");
@@ -5,6 +17,6 @@ export class Sketch {
         this.canvas.height = height;
         this.ctx = this.canvas.getContext("2d");
 
-        document.body.appendChild(this.canvas);
+        addElement(this.canvas);
     }
 }

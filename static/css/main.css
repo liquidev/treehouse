@@ -537,6 +537,16 @@ img[is="th-emoji"] {
 
 /* Literate programming support */
 
+:root {
+    --error-color: #d94141;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --error-color: #e39393;
+    }
+}
+
 th-literate-program[data-mode="input"] {
     /* Override the cursor with an I-beam, because the editor captures clicks and does not bubble
        them back up to the caller */
@@ -551,7 +561,7 @@ th-literate-program[data-mode="output"] {
     }
 
     & code.error {
-        color: #e39393;
+        color: var(--error-color);
     }
 
     &::after {
@@ -570,6 +580,7 @@ th-literate-program[data-mode="output"] {
 th-literate-program[data-mode="graphics"] {
     padding: 0;
     background: none;
+    border: none;
 
     & iframe {
         border-style: none;
@@ -580,6 +591,28 @@ th-literate-program[data-mode="graphics"] {
     /* The inner iframe is hidden until something requests display. */
     & iframe.hidden {
         display: none;
+    }
+
+    & pre.error {
+        color: var(--error-color);
+        position: relative;
+
+        &:empty {
+            display: none;
+        }
+
+        &::after {
+            content: 'Error';
+
+            padding: 8px;
+
+            position: absolute;
+            right: 0;
+            top: 0;
+
+            color: var(--text-color);
+            opacity: 50%;
+        }
     }
 }
 

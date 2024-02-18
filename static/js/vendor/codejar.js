@@ -306,8 +306,8 @@ export function CodeJar(editor, highlight, opt = {}) {
         }
     }
     function handleSelfClosingCharacters(event) {
-        const open = `([{'"`;
-        const close = `)]}'"`;
+        const open = `([{'"\``;
+        const close = `)]}'"\``;
         if (open.includes(event.key)) {
             preventDefault(event);
             const pos = save();

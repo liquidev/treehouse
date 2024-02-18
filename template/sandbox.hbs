@@ -20,6 +20,7 @@
 
     <script type="module">
         import { evaluate } from "treehouse/components/literate-programming/eval.js";
+        import { internals as sandboxInternals } from "treehouse/sandbox.js";
 
         // I'm aware there's also ResizeObserver but it didn't seem to fire off any events when a
         // canvas was added, rendering it pretty much useless.
@@ -35,11 +36,28 @@
         addEventListener("message", async event => {
             let message = event.data;
             if (message.action == "eval") {
-                document.body.replaceChildren();
-                evaluate(message.input);
+                evaluate(message.input, {
+                    success() {
+                        // A double buffered approach for flickerless code modifications.
+                        document.body.replaceChildren(...sandboxInternals.body.childNodes);
+                        sandboxInternals.body.replaceChildren();
+                        requestAnimationFrame(() => {
+                            postMessage({
+                                kind: "resize",
+                                width: document.body.scrollWidth,
+                                height: document.body.scrollHeight,
+                            });
+                        });
+                    },
+
+                    error() {
+                        sandboxInternals.body.replaceChildren();
+                    },
+                });
             }
         });
 
+        postMessage({ kind: "ready" });
     </script>
 </head>
 

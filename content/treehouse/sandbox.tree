@@ -111,6 +111,27 @@ scripts = ["components/literate-programming.js"]
         - this API wraps a lower-level message-passing API which is used to communicate with the main page, to let it set things like the sandbox `<iframe>`'s size (as well as make it visible).
         see the source code for details.
 
+    % id = "01HPXYH05CWEAKZ406ZNA919TS"
+    - it's also possible to use ordinary DOM elements, *however* instead of `document.body` you should use `treehouse/sandbox.js`'s `body()`.
+
+    there's also sugar for `body().appendChild()` in form of `addElement()`:
+
+    ```javascript dom-output
+    import { addElement } from "treehouse/sandbox.js";
+
+    let slider = document.createElement("input");
+    slider.type = "range";
+    addElement(slider);
+    ```
+
+    <th-literate-program data-mode="graphics" data-program="dom-output"></th-literate-program>
+
+        % id = "01HPXYH05C3VC96N214D8VQGND"
+        - do note however that this isn't used on the site right now due to a lack of CSS in the sandbox, therefore rendering the sandbox's theme unreadable in dark mode.
+
+        % id = "01HPXYH05C75CGRW5GN1K9W8GY"
+        - technically you *can* use `document.body`, but its content will be replaced with `body()`'s once the script finishes running, so in the end it's quite useless
+
 % id = "01HPWJB4Y5H9DKZT2ZA8PWNV99"
 + ### known issues
 

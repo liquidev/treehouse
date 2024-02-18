@@ -41,6 +41,7 @@ enum TableState {
 struct HtmlWriter<'a, I, W> {
     treehouse: &'a Treehouse,
     config: &'a Config,
+    page_id: &'a str,
 
     /// Iterator supplying events.
     iter: I,
@@ -64,10 +65,17 @@ where
     I: Iterator<Item = Event<'a>>,
     W: StrWrite,
 {
-    fn new(treehouse: &'a Treehouse, config: &'a Config, iter: I, writer: W) -> Self {
+    fn new(
+        treehouse: &'a Treehouse,
+        config: &'a Config,
+        page_id: &'a str,
+        iter: I,
+        writer: W,
+    ) -> Self {
         Self {
             treehouse,
             config,
+            page_id,
             iter,
             writer,
             end_newline: true,
@@ -248,6 +256,8 @@ where
                                 }
                             })?;
                             self.write("data-program=\"")?;
+                            escape_href(&mut self.writer, self.page_id)?;
+                            self.write(":")?;
                             escape_html(&mut self.writer, program_name)?;
                             self.write("\" data-language=\"")?;
                             escape_html(&mut self.writer, language)?;
@@ -606,9 +616,16 @@ impl<'a> CodeBlockMode<'a> {
 /// </ul>
 /// "#);
 /// ```
-pub fn push_html<'a, I>(s: &mut String, treehouse: &'a Treehouse, config: &'a Config, iter: I)
-where
+pub fn push_html<'a, I>(
+    s: &mut String,
+    treehouse: &'a Treehouse,
+    config: &'a Config,
+    page_id: &'a str,
+    iter: I,
+) where
     I: Iterator<Item = Event<'a>>,
 {
-    HtmlWriter::new(treehouse, config, iter, s).run().unwrap();
+    HtmlWriter::new(treehouse, config, page_id, iter, s)
+        .run()
+        .unwrap();
 }

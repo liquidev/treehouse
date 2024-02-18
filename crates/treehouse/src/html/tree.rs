@@ -130,7 +130,13 @@ pub fn branch_to_html(
             Some(broken_link_callback),
         );
         s.push_str("<th-bc>");
-        markdown::push_html(s, treehouse, config, markdown_parser);
+        markdown::push_html(
+            s,
+            treehouse,
+            config,
+            treehouse.tree_path(file_id).expect(".tree file expected"),
+            markdown_parser,
+        );
         if let Content::Link(link) = &branch.attributes.content {
             write!(
                 s,
