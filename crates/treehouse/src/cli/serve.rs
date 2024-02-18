@@ -1,14 +1,18 @@
-use std::{path::PathBuf, sync::Arc};
+#[cfg(debug_assertions)]
+mod live_reload;
+
+use std::{net::Ipv4Addr, path::PathBuf, sync::Arc};
 
 use anyhow::Context;
 use axum::{
     extract::{RawQuery, State},
-    response::Html,
+    response::{Html, IntoResponse, Response},
     routing::get,
     Router,
 };
 use log::{error, info};
 use pulldown_cmark::escape::escape_html;
+use tokio::net::TcpListener;
 use tower_http::services::ServeDir;
 
 use crate::state::{Source, Treehouse};
@@ -18,6 +22,7 @@ use super::Paths;
 struct SystemPages {
     four_oh_four: String,
     b_docs: String,
+    sandbox: String,
 }
 
 struct Server {
@@ -30,6 +35,7 @@ pub async fn serve(treehouse: Treehouse, paths: &Paths<'_>, port: u16) -> anyhow
     let app = Router::new()
         .nest_service("/", ServeDir::new(paths.target_dir))
         .route("/b", get(branch))
+        .route("/sandbox", get(sandbox))
         .with_state(Arc::new(Server {
             treehouse,
             target_dir: paths.target_dir.to_owned(),
@@ -38,16 +44,30 @@ pub async fn serve(treehouse: Treehouse, paths: &Paths<'_>, port: u16) -> anyhow
                     .context("cannot read 404 page")?,
                 b_docs: std::fs::read_to_string(paths.target_dir.join("_treehouse/b.html"))
                     .context("cannot read /b documentation page")?,
+                sandbox: std::fs::read_to_string(paths.target_dir.join("static/html/sandbox.html"))
+                    .context("cannot read sandbox page")?,
             },
         }));
 
     #[cfg(debug_assertions)]
-    let app = app.layer(tower_livereload::LiveReloadLayer::new());
+    let app = live_reload::live_reload(app);
 
     info!("serving on port {port}");
-    Ok(axum::Server::bind(&([0, 0, 0, 0], port).into())
-        .serve(app.into_make_service())
-        .await?)
+    let listener = TcpListener::bind((Ipv4Addr::from([0u8, 0, 0, 0]), port)).await?;
+    Ok(axum::serve(listener, app).await?)
+}
+
+async fn sandbox(State(state): State<Arc<Server>>) -> Response {
+    // Small hack to prevent the LiveReloadLayer from injecting itself into the sandbox.
+    // The sandbox is always nested under a different page, so there's no need to do that.
+    let mut response = Html(state.system_pages.sandbox.clone()).into_response();
+    #[cfg(debug_assertions)]
+    {
+        response
+            .extensions_mut()
+            .insert(live_reload::DisableLiveReload);
+    }
+    response
 }
 
 async fn branch(RawQuery(named_id): RawQuery, State(state): State<Arc<Server>>) -> Html<String> {
