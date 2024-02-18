@@ -9,6 +9,8 @@
         body {
             margin: 0;
             overflow: hidden;
+            width: fit-content;
+            height: fit-content;
         }
 
         canvas {
@@ -16,42 +18,36 @@
         }
     </style>
 
-    <script type="importmap">{ "imports": { "treehouse/": "{{ config.site }}/static/js/" } }</script>
+    <script type="importmap">{
+        "imports": {
+            "treehouse/": "{{ config.site }}/static/js/",
+            "tairu/": "{{ config.site }}/static/js/components/tairu/"
+        }
+    }</script>
 
     <script type="module">
-        import { evaluate } from "treehouse/components/literate-programming/eval.js";
+        import { evaluate, domConsole, jsConsole } from "treehouse/components/literate-programming/eval.js";
         import { internals as sandboxInternals } from "treehouse/sandbox.js";
 
-        // I'm aware there's also ResizeObserver but it didn't seem to fire off any events when a
-        // canvas was added, rendering it pretty much useless.
-        let mutationObserver = new MutationObserver(() => {
-            postMessage({
-                kind: "resize",
-                width: document.body.scrollWidth,
-                height: document.body.scrollHeight,
-            });
-        });
-        mutationObserver.observe(document.body, { subtree: true, childList: true });
+        globalThis.console = domConsole;
 
         addEventListener("message", async event => {
             let message = event.data;
             if (message.action == "eval") {
                 evaluate(message.input, {
-                    success() {
-                        // A double buffered approach for flickerless code modifications.
-                        document.body.replaceChildren(...sandboxInternals.body.childNodes);
-                        sandboxInternals.body.replaceChildren();
-                        requestAnimationFrame(() => {
-                            postMessage({
-                                kind: "resize",
-                                width: document.body.scrollWidth,
-                                height: document.body.scrollHeight,
-                            });
-                        });
-                    },
-
                     error() {
                         sandboxInternals.body.replaceChildren();
+                    },
+
+                    newOutput(currentOutputIndex) {
+                        if (currentOutputIndex == window.treehouseSandboxInternals.outputIndex) {
+                            document.body.replaceChildren(...sandboxInternals.body.childNodes);
+                            postMessage({
+                                kind: "resize",
+                                outputIndex: currentOutputIndex,
+                            });
+                        }
+                        sandboxInternals.resetBody();
                     },
                 });
             }

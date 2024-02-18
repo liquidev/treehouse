@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./static/js",
+        "paths": {
+            "treehouse/*": [
+                "./*"
+            ],
+            "tairu/*": [
+                "./components/tairu/*"
+            ]
+        }
+    },
+}

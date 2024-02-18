@@ -1,5 +1,9 @@
 export const internals = {
     body: document.createElement("body"),
+
+    resetBody() {
+        this.body.replaceChildren();
+    }
 };
 
 export function body() {
@@ -18,5 +22,14 @@ export class Sketch {
         this.ctx = this.canvas.getContext("2d");
 
         addElement(this.canvas);
+    }
+
+    animate(draw) {
+        let animationCallback;
+        animationCallback = () => {
+            draw();
+            requestAnimationFrame(animationCallback);
+        };
+        animationCallback();
     }
 }

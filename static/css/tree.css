@@ -218,8 +218,8 @@ th-bc {
     flex-grow: 1;
 
     /* Bit of a hack to make <pre>s in <th-bc> have scrollbars proper. */
-    &:has(pre) {
-        overflow: auto;
+    &:has(pre, th-literate-program) {
+        overflow: hidden;
     }
 }
 

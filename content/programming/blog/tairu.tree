@@ -1,11 +1,6 @@
 %% title = "tairu - an interactive exploration of 2D autotiling techniques"
 scripts = [
     "components/literate-programming.js",
-    "tairu/cardinal-directions.js",
-    "tairu/framework.js",
-    "tairu/tairu.js",
-    "tairu/tilemap-registry.js",
-    "tairu/tilemap.js",
     "vendor/codejar.js",
 ]
 styles = ["tairu.css"]
@@ -20,8 +15,9 @@ styles = ["tairu.css"]
         - TODO: short videos demoing this here
 
 % id = "01HPD4XQPWJBTJ4DWAQE3J87C9"
-- once upon a time I stumbled upon a technique called...\
-**bitwise autotiling**
+- once upon a time I stumbled upon a technique called...
+
+- ### bitwise autotiling
 
     % id = "01HPD4XQPW6VK3FDW5QRCE6HSS"
     + I learned about it way back when I was just a kid building 2D Minecraft clones using [Construct 2](https://www.construct.net/en/construct-2/manuals/construct-2), and I wanted my terrain to look nice as it does in Terraria
@@ -29,37 +25,194 @@ styles = ["tairu.css"]
         % id = "01HPD4XQPWJ1CE9ZVRW98X7HE6"
         - Construct 2 was one of my first programming experiences and the first game engine I truly actually liked :smile:
 
-    % id = "01HPJ8GHDET8ZGNN0AH3FWA8HX"
-    - let's begin with a tilemap. say we have the following grid of tiles: (the examples are interactive, try editing it!)
+    - so to help us learn, I made a little tile editor so that we can experiment with rendering tiles! have a look:
 
-    <canvas
-        is="tairu-editor"
-        data-tilemap-id="bitwiseAutotiling"
-        data-tile-size="40">
-        Your browser does not support &lt;canvas&gt;.
-    </canvas>
+    ```javascript tairu
+    import { Tilemap } from "tairu/tilemap.js";
+    import { TileEditor } from "tairu/editor.js";
 
-    % id = "01HPJ8GHDEC0Z334M04MTNADV9"
-    - for each tile we can assign a bitset of cardinal directions, based on which tiles it should connect to - like so:
+    export const tilemapSquare = Tilemap.parse(" x", [
+        "         ",
+        "   xxx   ",
+        "   xxx   ",
+        "   xxx   ",
+        "         ",
+    ]);
 
-    <canvas
-        is="tairu-editor-cardinal-directions"
-        data-tilemap-id="bitwiseAutotiling"
-        data-tile-size="40">
-        Your browser does not support &lt;canvas&gt;.
-    </canvas>
+    new TileEditor({
+        tilemap: tilemapSquare,
+        tileSize: 40,
+    });
+    ```
+
+    ```output tairu
+    ```
+
+        - `Tilemap` is a class wrapping a flat [`Uint8Array`] with a `width` and a `height`, so that we can index it using (x, y) coordinates.
+
+        ```javascript tairu
+        console.log(tilemapSquare.at(0, 0));
+        console.log(tilemapSquare.at(3, 1));
+        ```
+        ```output tairu
+        ```
+
+        [`Uint8Array`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+
+            - `at` has a `setAt` counterpart which sets tiles instead of getting them.
+
+        - `TileEditor` provides a graphical editor for a `Tilemap` based on a `<canvas>`.
+
+            - this editor is _Certified Battery Efficient™_, so it won't redraw unless it needs to!\
+            we'll need to keep this in mind for later when we try to draw images, which may not be loaded during the initial draw.
+
+    - to kick this off, let's set off a goal. I would like the tiles in our little renderer to connect together, like this:
+
+    ![red rectangle with a black outline, made out of 3x3 tiles][pic:01HPYW5SNTY0Z0ENDE5K3XWMTH]
+
+    - let's break this down into smaller steps. drawing a border around the rectangle will involve:
+
+        - determining *on which tiles* to draw it,
+
+        - determining *where in these tiles* to draw it,
+
+        - and actually drawing it!
+
+    - so let's zoom in a bit and look at the tiles one by one. in particular, let's focus on *these* two tiles:
+
+    ![the same red rectangle, now with a focus on the northern tile at its center][pic:01HPYWPJB1P0GK53BSJFJFRAGR]
+
+    - notice how the two highlighted tiles are *different.* therefore, we can infer we should probably connect together any tiles that are *the same*.
+
+    - knowing that, we can extract the logic to a function:
+
+    ```javascript tairu
+    export function shouldConnect(a, b) {
+        return a == b;
+    }
+    ```
+
+    + now, also note that the border around this particular tile is only drawn on its *northern* edge -
+    therefore we can infer that borders should only be drawn on edges for whom `shouldConnect(thisTile, adjacentTile)` is **`false`** (not `true`!).
+    a tile generally has four edges - east, south, west, north - so we need to perform this check for all of them, and draw our border accordingly.
+
+        - you might be wondering why I'm using this particular order for cardinal directions - why not [north, south, east, west]? or [north, east, south, west]?
+
+            - the reason comes from math - `[cos(0) sin(0)]` is a vector pointing rightwards, not upwards!
+            and I chose clockwise order, because that's how the vector rotates as we increase the angle, in a coordinate space where +Y points downward - such as the `<canvas>` coordinate space.
+
+            - this choice yields some nice orderliness in the code that handles fetching tiles for connections - first you check `+X`, then `+Y`, then `-X`, and then `-Y` -
+            which my pedantic mind really appreciates :ahyes:\
+            as `X` is first alphabetically, so checking `Y` first would feel wrong.
+
+    - to do that, I'm gonna override the tile editor's `drawTilemap` function - as this is where the actual tilemap rendering happens!
+
+    ```javascript tairu
+    import { TileEditor } from "tairu/editor.js";
+
+    export class TileEditorWithBorders extends TileEditor {
+        constructor({ borderWidth, ...options }) {
+            super(options);
+
+            this.borderWidth = borderWidth;
+            this.colorScheme.borderColor = "#000000";
+        }
+
+        drawTilemap() {
+            // Let the base class render out the infill, we'll just handle the borders.
+            super.drawTilemap();
+
+            this.ctx.fillStyle = this.colorScheme.borderColor;
+
+            for (let y = 0; y < this.tilemap.height; ++y) {
+                for (let x = 0; x < this.tilemap.width; ++x) {
+                    let tile = this.tilemap.at(x, y);
+                    // We only want to draw non-empty tiles, so skip tile 0.
+                    if (tile == 0) {
+                        continue;
+                    }
+
+                    // Check which of this tile's neighbors should *not* connect to it.
+                    let disjointWithEast = !shouldConnect(tile, this.tilemap.at(x + 1, y));
+                    let disjointWithSouth = !shouldConnect(tile, this.tilemap.at(x, y + 1));
+                    let disjointWithWest = !shouldConnect(tile, this.tilemap.at(x - 1, y));
+                    let disjointWithNorth = !shouldConnect(tile, this.tilemap.at(x, y - 1));
+
+                    let { borderWidth, tileSize } = this;
+                    let tx = x * tileSize;
+                    let ty = y * tileSize;
+
+                    // For each disjoint neighbor, we want to draw a border between us and them.
+                    if (disjointWithEast) {
+                        this.ctx.fillRect(tx + tileSize - borderWidth, ty, borderWidth, tileSize);
+                    }
+                    if (disjointWithSouth) {
+                        this.ctx.fillRect(tx, ty + tileSize - borderWidth, tileSize, borderWidth);
+                    }
+                    if (disjointWithWest) {
+                        this.ctx.fillRect(tx, ty, borderWidth, tileSize);
+                    }
+                    if (disjointWithNorth) {
+                        this.ctx.fillRect(tx, ty, tileSize, borderWidth);
+                    }
+                }
+            }
+        }
+    }
+    ```
+
+    and here's the result:
+
+    ```javascript tairu
+    new TileEditorWithBorders({
+        tilemap: tilemapSquare,
+        tileSize: 40,
+        borderWidth: 4,
+    });
+    ```
+    ```output tairu
+    ```
+
+    - this looks pretty perfect - maybe sans corners, which I'll conveniently skip for now - because most games don't actually render graphics in a vectorial way like this!
+    instead, the more common way is to use a tileset - a big texture with a bunch of sprites to use for rendering each tile.
+
+        - not only does this have the advantage of allowing for richer graphics, but it is also a lot easier to modify by artists, because you no longer need knowledge of graphics APIs to draw tiles.
 
     % template = true
-      id = "01HPJ8GHDE9QKQ4QFZK1Z1KQD4"
       classes.branch = "tileset-cardinal-directions-demo"
-    + now given a tileset, such as the one below that I drew a while ago, we can assign each tile to a set of cardinal directions.
-    I'll indicate where there's a connection between individual tiles with the letters **N**, **E**, **S**, **W**, standing for the cardinal directions **N**orth, **E**ast, **S**outh, and **W**est.
+    - for example, here's a tileset I drew for the 3rd iteration of my game [Planet Overgamma] - though tweaked a bit because I had never used it before writing this post :hueh:
 
-    <ul class="tileset-demo">
-    <li class="full-image">
-    <img alt="a 16-tile tileset of 8x8 pixel metal" src="{% pic 01HPHVDRV0F0251MD0A2EG66C4 %}">
-    </li>
-    <li class="tileset-pieces">
+    ![heavy metal sheet tileset from Planet Overgamma, made out of 16 tiles. it looks like heavy embossed sheets of metal, resembling steel in its heavyness][pic:01HPHVDRV0F0251MD0A2EG66C4]
+
+    [Planet Overgamma]: https://github.com/liquidev/planet-overgamma
+
+    % classes.branch = "tileset-cardinal-directions-demo"
+    - we can split this tileset up into 16 individual tiles, each one 8 × 8 pixels; people choose various resolutions, I chose a fairly low one to hide my lack of artistic skill.
+
+    <div class="horizontal-tile-strip">
+    <span class="metal x-0 y-0"></span>
+    <span class="metal x-1 y-0"></span>
+    <span class="metal x-2 y-0"></span>
+    <span class="metal x-3 y-0"></span>
+    <span class="metal x-0 y-1"></span>
+    <span class="metal x-1 y-1"></span>
+    <span class="metal x-2 y-1"></span>
+    <span class="metal x-3 y-1"></span>
+    <span class="metal x-0 y-2"></span>
+    <span class="metal x-1 y-2"></span>
+    <span class="metal x-2 y-2"></span>
+    <span class="metal x-3 y-2"></span>
+    <span class="metal x-0 y-3"></span>
+    <span class="metal x-1 y-3"></span>
+    <span class="metal x-2 y-3"></span>
+    <span class="metal x-3 y-3"></span>
+    </div>
+
+    % classes.branch = "tileset-cardinal-directions-demo"
+    - the keen eyed among you have probably noticed that this is very similar to the case we had before with drawing procedural borders -
+    except that instead of determining which borders to draw based on a tile's neighbors, this time we'll determine which *whole tile* to draw based on its neighbors!
+
+    <div class="horizontal-tile-strip">
     <span class="metal x-0 y-0"><span class="east">E</span><span class="south">S</span></span>
     <span class="metal x-1 y-0"><span class="east">E</span><span class="south">S</span><span class="west">W</span></span>
     <span class="metal x-2 y-0"><span class="south">S</span><span class="west">W</span></span>
@@ -76,21 +229,28 @@ styles = ["tairu.css"]
     <span class="metal x-1 y-3"><span class="east">E</span><span class="west">W</span></span>
     <span class="metal x-2 y-3"><span class="west">W</span></span>
     <span class="metal x-3 y-3"></span>
-    </li>
-    </ul>
+    </div>
 
-        % id = "01HPMVT9BM65YD5AXWPT4Z67H5"
-        - (it's frustratingly hard to center individual letters like this in CSS. please forgive me for how crooked these are!)
+    - previously we represented which single border to draw with a single boolean.
+    now we will represent which single tile to draw with *four* booleans, because each tile can connect to four different directions.
 
-    % id = "01HPMVT9BM5V4BP8K80X0C1HJZ"
-    - note that the state of connection for a given cardinal direction can be represented using two values: **connected**, and **not connected**.
-    two values make one bit, so we can pack these four connection states into four bits, and use that as an array index!
+        - four booleans like this can easily be packed into a single integer using some bitwise operations, hence we get ***bitwise autotiling*** - autotiling using bitwise operations!
+
+    - now the clever part of bitwise autotiling is that we can use this packed integer *as an array index* - therefore selecting which tile to draw can be determined using just a single lookup table! neat, huh?
+
+        - but because I'm lazy, and CPU time is valuable, instead of using an array I'll just rearrange the tileset texture a bit to be able to slice it in place using this index.
+
+        - say we arrange our bits like this:
+
+        ```javascript tairu
+        export const E = 0b0001;
+        export const S = 0b0010;
+        export const W = 0b0100;
+        export const N = 0b1000;
+        ```
 
         % classes.branch = "tileset-cardinal-directions-demo"
-          id = "01HPMVT9BM4AXG2Z1D2QBH828G"
-        + for that to work though, we need to rearrange our tilemap somewhat such that we can index into it easily using our integer.
-        assuming we pack our bits as `NWSE` (bit 0 is east, each next bit we go clockwise),
-        therefore the final arrangement is this:
+        - that means we'll need to arrange our tiles like so, where the leftmost tile is at index 0 (`0b0000`) and the rightmost tile is at index 15 (`0b1111`):
 
         <div class="horizontal-tile-strip">
         <span class="metal x-3 y-3"></span>
@@ -111,57 +271,129 @@ styles = ["tairu.css"]
         <span class="metal x-1 y-1"><span class="east">E</span><span class="south">S</span><span class="west">W</span><span class="north">N</span></span>
         </div>
 
-        packing that into a single tilesheet, or rather tile *strip*, we get this image:
+        - packing that into a single tileset, or rather this time, a *tile strip*, we get this image:
 
         ![horizontal tile strip of 16 8x8 pixel metal tiles][pic:01HPMMR6DGKYTPZ9CK0WQWKNX5]
 
-            % id = "01HPQCCV4RB65D5Q4RANJKGC0D"
-            - **hint:** you can actually just use the original image, but use a lookup table from these indices to (x, y) coordinates.
-            this makes creating the assets a lot easier! (at the expense of some CPU time, though it is totally possible to offload tilemap rendering to the GPU - in that case it barely even matters.)
+    - now it's time to actually implement it as code! I'll start by defining a *tile index* function as a general way of looking up tiles in a tileset.
 
-    % id = "01HPMVT9BMMEM4HT4ANZ40992P"
-    - in JavaScript, drawing on a `<canvas>` using bitwise autotiling would look like this:
-    ```javascript
-    for (let y = 0; y < tilemap.height; ++y) {
-        for (let x = 0; x < tilemap.width; ++x) {
-            // Assume `tilemap.at` is a function which returns the type of tile
-            // stored at coordinates (x, y).
-            let tile = tilemap.at(x, y);
+        - I want to make the tile renderer a bit more general, so being able to attach a different tile lookup function to each tileset sounds like a great feature.
 
-            // We need to treat *some* tile as an empty (fully transparent) tile.
-            // In our case that'll be 0.
-            if (tile != 0) {
-                let tileset = tilesets[tile];
+            - just imagine some game where glass connects to metal, but metal doesn't connect to glass - I bet that would look pretty great!
 
-                // Now it's time to represent the tile connections as bits.
-                // For each cardinal direction we produce a different bit value, or 0 if there is
-                // no connection:
-                let connectedWithEast = shouldConnect(tile, tilemap.at(x + 1, y)) ? 0b0001 : 0;
-                let connectedWithSouth = shouldConnect(tile, tilemap.at(x, y + 1)) ? 0b0010 : 0;
-                let connectedWithWest = shouldConnect(tile, tilemap.at(x - 1, y)) ? 0b0100 : 0;
-                let connectedWithNorth = shouldConnect(tile, tilemap.at(x, y - 1)) ? 0b1000 : 0;
-                // Then we OR them together into one integer.
-                let tileIndex = connectedWithNorth
-                    | connectedWithWest
-                    | connectedWithSouth
-                    | connectedWithEast;
+    - …but anyways, here's the basic bitwise magic function:
 
-                // With that, we can draw the correct tile.
-                // Our strip is a single horizontal line, so we can assume
-                let tilesetTileSize = tileset.height;
-                let tilesetX = tileIndex * tilesetTileSize;
-                let tilesetY = 0;
-                ctx.drawImage(
-                    tilesets[tile],
-                    tilesetX, tilesetY, tilesetTileSize, tilesetTileSize,
-                    x * tileSize, y * tileSize, tileSize, tileSize,
-                );
+    ```javascript tairu
+    export function tileIndexInBitwiseTileset(tilemap, x, y) {
+        let tile = tilemap.at(x, y);
+
+        let tileIndex = 0;
+        tileIndex |= shouldConnect(tile, tilemap.at(x + 1, y)) ? E : 0;
+        tileIndex |= shouldConnect(tile, tilemap.at(x, y + 1)) ? S : 0;
+        tileIndex |= shouldConnect(tile, tilemap.at(x - 1, y)) ? W : 0;
+        tileIndex |= shouldConnect(tile, tilemap.at(x, y - 1)) ? N : 0;
+
+        return tileIndex;
+    }
+    ```
+
+    % template = true
+    - we'll define our tilesets by their texture, tile size, and a tile indexing function. so let's create an object that will hold our tileset data:
+
+    ```javascript tairu
+    // You'll probably want to host the assets on your own website rather than
+    // hotlinking to others. It helps longevity!
+    const tilesetImage = new Image();
+    tilesetImage.src = "{% pic 01HPMMR6DGKYTPZ9CK0WQWKNX5 %}";
+
+    export const heavyMetalTileset = {
+        image: tilesetImage,
+        tileSize: 8,
+        tileIndex: tileIndexInBitwiseTileset,
+    };
+    ```
+
+    - with all that, we should now be able to write a tile renderer which can handle textures! so let's try it:
+
+    ```javascript tairu
+    import { TileEditor } from "tairu/editor.js";
+
+    export class TilesetTileEditor extends TileEditor {
+        constructor({ tilesets, ...options }) {
+            super(options);
+            this.tilesets = tilesets;
+
+            // The image may not be loaded once the editor is first drawn, so we need to request a
+            // redraw for each image that gets loaded in.
+            for (let tileset of this.tilesets) {
+                tileset.image.addEventListener("load", () => this.draw());
+            }
+        }
+
+        drawTilemap() {
+            // We're dealing with pixel tiles so we want our images to be pixelated,
+            // not interpolated.
+            this.ctx.imageSmoothingEnabled = false;
+
+            for (let y = 0; y < this.tilemap.height; ++y) {
+                for (let x = 0; x < this.tilemap.width; ++x) {
+                    let tile = this.tilemap.at(x, y);
+                    if (tile == 0) {
+                        continue;
+                    }
+
+                    // Subtract one from the tile because tile 0 is always empty.
+                    // Having to specify a null entry at array index 0 would be pretty annoying.
+                    let tileset = this.tilesets[tile - 1];
+                    if (tileset != null) {
+                        let { tileSize } = this;
+                        let tileIndex = tileset.tileIndex(this.tilemap, x, y);
+                        this.ctx.drawImage(
+                            tileset.image,
+                            tileIndex * tileset.tileSize, 0, tileset.tileSize, tileset.tileSize,
+                            x * tileSize, y * tileSize, tileSize, tileSize,
+                        );
+                    }
+                }
             }
         }
     }
     ```
 
-    TODO this should be literate code
+    - drum roll please...
+
+    ```javascript tairu
+    new TilesetTileEditor({
+        tilemap: tilemapSquare,
+        tileSize: 40,
+        tilesets: [heavyMetalTileset],
+    });
+    ```
+    ```output tairu
+    ```
+
+    - it works! buuuut if you play around with it you'll quickly start noticing some problems:
+
+    ```javascript tairu
+    import { Tilemap } from "tairu/tilemap.js";
+
+    export const tilemapEdgeCase = Tilemap.parse(" x", [
+        "         ",
+        "   xxx   ",
+        "   x x   ",
+        "   xxx   ",
+        "         ",
+    ]);
+    new TilesetTileEditor({
+        tilemap: tilemapEdgeCase,
+        tileSize: 40,
+        tilesets: [heavyMetalTileset],
+    });
+    ```
+    ```output tairu
+    ```
+
+    - where did our nice seamless connections go!?
 
     % template = true
       id = "01HPMVT9BM9CS9375MX4H9WKW8"

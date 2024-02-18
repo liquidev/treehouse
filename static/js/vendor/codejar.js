@@ -23,9 +23,10 @@ export function CodeJar(editor, highlight, opt = {}) {
     editor.setAttribute('contenteditable', 'plaintext-only');
     editor.setAttribute('spellcheck', options.spellcheck ? 'true' : 'false');
     editor.style.outline = 'none';
-    editor.style.overflowWrap = 'break-word';
-    editor.style.overflowY = 'auto';
-    editor.style.whiteSpace = 'pre-wrap';
+    // PATCH(liquidex): I think I know better how I want to handle overflow.
+    // editor.style.overflowWrap = 'break-word';
+    // editor.style.overflowY = 'auto';
+    editor.style.whiteSpace = 'pre';
     const doHighlight = (editor, pos) => {
         highlight(editor, pos);
     };

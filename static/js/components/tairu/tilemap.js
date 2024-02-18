@@ -27,4 +27,16 @@ export class Tilemap {
             this.tiles[this.tileIndex(x, y)] = tile;
         }
     }
+
+    static parse(alphabet, lineArray) {
+        let tilemap = new Tilemap(lineArray[0].length, lineArray.length);
+        for (let y in lineArray) {
+            let line = lineArray[y];
+            for (let x = 0; x < line.length; ++x) {
+                let char = line.charAt(x);
+                tilemap.setAt(x, y, alphabet.indexOf(char));
+            }
+        }
+        return tilemap;
+    }
 }

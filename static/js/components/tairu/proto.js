@@ -1,9 +1,45 @@
-import { defineFrame, Frame } from './framework.js';
-import { TileEditor, canConnect, shouldConnect } from './tairu.js';
+import { TileEditor } from 'tairu/editor.js';
 
-class CardinalDirectionsEditor extends TileEditor {
-    constructor() {
-        super();
+export function alignTextInRectangle(ctx, text, x, y, width, height, hAlign, vAlign) {
+    let measurements = ctx.measureText(text);
+
+    let leftX;
+    switch (hAlign) {
+        case "left":
+            leftX = x;
+            break;
+        case "center":
+            leftX = x + width / 2 - measurements.width / 2;
+            break;
+        case "right":
+            leftX = x + width - measurements.width;
+            break;
+    }
+
+    let textHeight = measurements.fontBoundingBoxAscent;
+    let baselineY;
+    switch (vAlign) {
+        case "top":
+            baselineY = y + textHeight;
+            break;
+        case "center":
+            baselineY = y + height / 2 + textHeight / 2;
+            break;
+        case "bottom":
+            baselineY = y + height;
+            break;
+    }
+
+    return { leftX, baselineY };
+}
+
+export function shouldConnect(a, b) {
+    return a == b;
+}
+
+export class TileEditorWithCardinalDirections extends TileEditor {
+    constructor(options) {
+        super(options);
         this.colorScheme.tiles[1] = "#f96565";
     }
 
@@ -38,4 +74,3 @@ class CardinalDirectionsEditor extends TileEditor {
         }
     }
 }
-defineFrame("tairu-editor-cardinal-directions", CardinalDirectionsEditor);

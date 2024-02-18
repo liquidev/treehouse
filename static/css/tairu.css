@@ -1,28 +1,4 @@
 .tileset-cardinal-directions-demo th-bc {
-    & ul {
-        display: flex;
-        flex-direction: row;
-    }
-
-    & ul.tileset-demo {
-        margin-top: 16px;
-    }
-
-    & ul.tileset-demo::after {
-        display: none !important;
-    }
-
-    & li.full-image {
-        flex-shrink: 0;
-    }
-
-    & li.tileset-pieces {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-    }
-
     & .horizontal-tile-strip {
         display: flex;
         flex-direction: row;

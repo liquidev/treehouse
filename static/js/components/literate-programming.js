@@ -12,10 +12,8 @@ function getLiterateProgram(name) {
             outputCount: 0,
 
             nextOutputIndex() {
-                let index = this.outputCount;
-                ++this.outputCount;
-                return index;
-            }
+                return this.outputCount++;
+            },
         });
     }
     return literatePrograms.get(name);
@@ -28,7 +26,7 @@ function getLiterateProgramWorkerCommands(name) {
         if (frame.mode == "input") {
             commands.push({ kind: "module", source: frame.textContent });
         } else if (frame.mode == "output") {
-            commands.push({ kind: "output", expected: frame.textContent });
+            commands.push({ kind: "output" });
         }
     }
     return commands;
@@ -51,7 +49,7 @@ class InputMode {
             { regex: /"(\\"|[^"])*"/, as: "string" },
             { regex: /`(\\`|[^"])*`/, as: "string" },
             // TODO: RegExp literals?
-            { regex: /[+=/*^%<>!~|&\.-]+/, as: "operator" },
+            { regex: /[+=/*^%<>!~|&\.?:-]+/, as: "operator" },
             { regex: /[,;]/, as: "punct" },
         ],
         keywords: new Map([
@@ -132,54 +130,84 @@ class InputMode {
     }
 }
 
+function messageOutputArrayToString(output) {
+    return output
+        .map(x => {
+            if (typeof x === "object") return JSON.stringify(x);
+            else return x + "";
+        })
+        .join(" ");
+}
+
 class OutputMode {
     constructor(frame) {
-        this.clearResultsOnNextOutput = false;
-
         this.frame = frame;
 
-        this.frame.program.onChanged.push(_ => this.evaluate());
         this.outputIndex = this.frame.program.nextOutputIndex();
 
-        this.evaluate();
-    }
+        this.console = document.createElement("pre");
+        this.console.classList.add("console");
+        this.frame.appendChild(this.console);
+        this.clearConsoleOnNextOutput = false;
 
-    evaluate() {
-        // This is a small bit of debouncing. If we cleared the output right away, the page would
-        // jitter around irritatingly.
-        this.clearResultsOnNextOutput = true;
+        this.error = document.createElement("pre");
+        this.error.classList.add("error");
+        this.frame.appendChild(this.error);
 
-        if (this.worker != null) {
-            this.worker.terminate();
-        }
-        this.worker = new Worker(import.meta.resolve("./literate-programming/worker.js"), {
-            type: "module",
-            name: `evaluate LiterateOutput ${this.frame.programName}`
-        });
+        this.iframe = document.createElement("iframe");
+        this.iframe.classList.add("hidden");
+        this.iframe.src = `${TREEHOUSE_SITE}/sandbox`;
+        this.frame.appendChild(this.iframe);
 
-        this.worker.addEventListener("message", event => {
+        this.iframe.contentWindow.treehouseSandboxInternals = { outputIndex: this.outputIndex };
+
+        this.iframe.contentWindow.addEventListener("message", event => {
             let message = event.data;
-            if (message.kind == "evalComplete") {
-                this.worker.terminate();
+            if (message.kind == "ready") {
+                this.evaluate();
+            } else if (message.kind == "resize" && message.outputIndex == this.outputIndex) {
+                this.resize();
             } else if (message.kind == "output" && message.outputIndex == this.outputIndex) {
-                this.addOutput(message.output);
+                if (message.output.kind == "error") {
+                    this.error.textContent = messageOutputArrayToString(message.output.message);
+                    this.iframe.classList.add("hidden");
+                } else {
+                    this.addOutput(message.output);
+                }
+            } else if (message.kind == "evalComplete") {
+                this.error.textContent = "";
+                this.flushConsoleClear();
             }
         });
 
-        this.worker.postMessage({
+        this.frame.program.onChanged.push(_ => this.evaluate());
+    }
+
+    evaluate() {
+        this.requestConsoleClear();
+        this.iframe.contentWindow.postMessage({
             action: "eval",
             input: getLiterateProgramWorkerCommands(this.frame.programName),
         });
     }
 
-    addOutput(output) {
-        if (this.clearResultsOnNextOutput) {
-            this.clearResultsOnNextOutput = false;
-            this.clearResults();
-        }
+    clearConsole() {
+        this.console.replaceChildren();
+    }
 
-        // Don't show anything if the function didn't return a value.
-        if (output.kind == "result" && output.message[0] === undefined) return;
+    requestConsoleClear() {
+        this.clearConsoleOnNextOutput = true;
+    }
+
+    flushConsoleClear() {
+        if (this.clearConsoleOnNextOutput) {
+            this.clearConsole();
+            this.clearConsoleOnNextOutput = false;
+        }
+    }
+
+    addOutput(output) {
+        this.flushConsoleClear();
 
         let line = document.createElement("code");
 
@@ -194,65 +222,22 @@ class OutputMode {
             })
             .join(" ");
 
-        this.frame.appendChild(line);
+        this.console.appendChild(line);
     }
 
-    clearResults() {
-        this.frame.replaceChildren();
-    }
-
-    static messageOutputArrayToString(output) {
-        return output
-            .map(x => {
-                if (typeof x === "object") return JSON.stringify(x);
-                else return x + "";
-            })
-            .join(" ");
-    }
-}
-
-class GraphicsMode {
-    constructor(frame) {
-        this.frame = frame;
-
-        this.error = document.createElement("pre");
-        this.error.classList.add("error");
-        this.frame.appendChild(this.error);
-
-        this.iframe = document.createElement("iframe");
-        this.iframe.classList.add("hidden");
-        this.iframe.src = import.meta.resolve("../../html/sandbox.html");
-        this.frame.appendChild(this.iframe);
-
-        this.iframe.contentWindow.addEventListener("message", event => {
-            let message = event.data;
-            if (message.kind == "ready") {
-                this.evaluate();
-            }
-            else if (message.kind == "resize") {
-                this.resize(message);
-            } else if (message.kind == "output" && message.output.kind == "error") {
-                this.error.textContent = OutputMode.messageOutputArrayToString(message.output.message);
-                this.iframe.classList.add("hidden");
-            } else if (message.kind == "evalComplete") {
-                this.error.textContent = "";
-            }
-        });
-
-        this.frame.program.onChanged.push(_ => this.evaluate());
-    }
-
-    evaluate() {
-        this.iframe.contentWindow.postMessage({
-            action: "eval",
-            input: getLiterateProgramWorkerCommands(this.frame.programName),
-        });
-    }
-
-    resize(message) {
-        this.iframe.width = message.width;
-        this.iframe.height = message.height;
+    resize() {
+        // iframe cannot be `display: none` to get its scrollWidth/scrollHeight.
         this.iframe.classList.remove("hidden");
+
+        let width = this.iframe.contentDocument.body.scrollWidth;
+        let height = this.iframe.contentDocument.body.scrollHeight;
+
+        if (width == 0 || height == 0) {
+            this.iframe.classList.add("hidden");
+        } else {
+            this.iframe.width = width;
+            this.iframe.height = height;
+        }
     }
 }
 
@@ -266,8 +251,6 @@ class LiterateProgram extends HTMLElement {
             this.modeImpl = new InputMode(this);
         } else if (this.mode == "output") {
             this.modeImpl = new OutputMode(this);
-        } else if (this.mode == "graphics") {
-            this.modeImpl = new GraphicsMode(this);
         }
     }
 

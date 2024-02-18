@@ -255,13 +255,11 @@ th-literate-program {
     .tree summary:hover {
 
         & pre,
-        & th-literate-program {
+        & th-literate-program:not([data-mode="output"]) {
             background-color: var(--shaded-against-background-twice);
         }
     }
 }
-
-
 
 pre>code,
 th-literate-program>code {
@@ -276,7 +274,8 @@ th-literate-program {
 
 /* And don't let code examples fly off and overflow the window */
 
-pre {
+pre,
+th-literate-program {
     min-width: 0;
     width: auto;
     overflow: auto;
@@ -554,30 +553,6 @@ th-literate-program[data-mode="input"] {
 }
 
 th-literate-program[data-mode="output"] {
-    position: relative;
-
-    & code {
-        display: block;
-    }
-
-    & code.error {
-        color: var(--error-color);
-    }
-
-    &::after {
-        content: 'Output';
-
-        padding: 8px;
-
-        position: absolute;
-        right: 0;
-        top: 0;
-
-        opacity: 50%;
-    }
-}
-
-th-literate-program[data-mode="graphics"] {
     padding: 0;
     background: none;
     border: none;
@@ -593,6 +568,10 @@ th-literate-program[data-mode="graphics"] {
         display: none;
     }
 
+    & pre>code {
+        display: block;
+    }
+
     & pre.error {
         color: var(--error-color);
         position: relative;
@@ -603,6 +582,27 @@ th-literate-program[data-mode="graphics"] {
 
         &::after {
             content: 'Error';
+
+            padding: 8px;
+
+            position: absolute;
+            right: 0;
+            top: 0;
+
+            color: var(--text-color);
+            opacity: 50%;
+        }
+    }
+
+    & pre.console {
+        position: relative;
+
+        &:empty {
+            display: none;
+        }
+
+        &::after {
+            content: 'Console';
 
             padding: 8px;
 
