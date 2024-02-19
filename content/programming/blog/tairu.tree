@@ -15,8 +15,9 @@ styles = ["tairu.css"]
         - TODO: short videos demoing this here
 
 % id = "01HPD4XQPWJBTJ4DWAQE3J87C9"
-- once upon a time I stumbled upon a technique called...
+- once upon a time I stumbled upon a technique called…
 
+% id = "01HQ162WWA1KXZPBDWJXSCQA1D"
 - ### bitwise autotiling
 
     % id = "01HPD4XQPW6VK3FDW5QRCE6HSS"
@@ -25,6 +26,7 @@ styles = ["tairu.css"]
         % id = "01HPD4XQPWJ1CE9ZVRW98X7HE6"
         - Construct 2 was one of my first programming experiences and the first game engine I truly actually liked :smile:
 
+    % id = "01HQ162WWAMCPC5M88QAXHX4BT"
     - so to help us learn, I made a little tile editor so that we can experiment with rendering tiles! have a look:
 
     ```javascript tairu
@@ -48,6 +50,7 @@ styles = ["tairu.css"]
     ```output tairu
     ```
 
+        % id = "01HQ162WWAC3FN565QE3JAB87D"
         - `Tilemap` is a class wrapping a flat [`Uint8Array`] with a `width` and a `height`, so that we can index it using (x, y) coordinates.
 
         ```javascript tairu
@@ -59,31 +62,42 @@ styles = ["tairu.css"]
 
         [`Uint8Array`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
 
+            % id = "01HQ162WWA090YW5BR1XW68XJN"
             - `at` has a `setAt` counterpart which sets tiles instead of getting them.
 
+        % id = "01HQ162WWAMD68SY56P7TVT2DJ"
         - `TileEditor` provides a graphical editor for a `Tilemap` based on a `<canvas>`.
 
+            % id = "01HQ162WWABTFQ0J83C4VZYZB5"
             - this editor is _Certified Battery Efficient™_, so it won't redraw unless it needs to!\
             we'll need to keep this in mind for later when we try to draw images, which may not be loaded during the initial draw.
 
+    % id = "01HQ162WWA8Y1AD22MSN71V2E4"
     - to kick this off, let's set off a goal. I would like the tiles in our little renderer to connect together, like this:
 
     ![red rectangle with a black outline, made out of 3x3 tiles][pic:01HPYW5SNTY0Z0ENDE5K3XWMTH]
 
+    % id = "01HQ162WWAZV559ABQD1NVXPMA"
     - let's break this down into smaller steps. drawing a border around the rectangle will involve:
 
+        % id = "01HQ162WWATV30HXGBQVWERP2M"
         - determining *on which tiles* to draw it,
 
+        % id = "01HQ162WWAA0V0SS0D1Y38BDS1"
         - determining *where in these tiles* to draw it,
 
+        % id = "01HQ162WWAGBCBDYF4VH26MX1B"
         - and actually drawing it!
 
+    % id = "01HQ162WWA2PNGVV075HR3WMER"
     - so let's zoom in a bit and look at the tiles one by one. in particular, let's focus on *these* two tiles:
 
     ![the same red rectangle, now with a focus on the northern tile at its center][pic:01HPYWPJB1P0GK53BSJFJFRAGR]
 
+    % id = "01HQ162WWAYDS6CSD3T102NA9X"
     - notice how the two highlighted tiles are *different.* therefore, we can infer we should probably connect together any tiles that are *the same*.
 
+    % id = "01HQ162WWATDD86D4GY7RMT0BZ"
     - knowing that, we can extract the logic to a function:
 
     ```javascript tairu
@@ -92,19 +106,24 @@ styles = ["tairu.css"]
     }
     ```
 
+    % id = "01HQ162WWA9M6801Q0RNRSF09H"
     + now, also note that the border around this particular tile is only drawn on its *northern* edge -
     therefore we can infer that borders should only be drawn on edges for whom `shouldConnect(thisTile, adjacentTile)` is **`false`** (not `true`!).
     a tile generally has four edges - east, south, west, north - so we need to perform this check for all of them, and draw our border accordingly.
 
+        % id = "01HQ162WWAM5YYQCEXH791T0E9"
         - you might be wondering why I'm using this particular order for cardinal directions - why not [north, south, east, west]? or [north, east, south, west]?
 
+            % id = "01HQ162WWABJ696HCJ09WDC0NX"
             - the reason comes from math - `[cos(0) sin(0)]` is a vector pointing rightwards, not upwards!
             and I chose clockwise order, because that's how the vector rotates as we increase the angle, in a coordinate space where +Y points downward - such as the `<canvas>` coordinate space.
 
+            % id = "01HQ162WWABNXV4N2AHZBQC5B7"
             - this choice yields some nice orderliness in the code that handles fetching tiles for connections - first you check `+X`, then `+Y`, then `-X`, and then `-Y` -
             which my pedantic mind really appreciates :ahyes:\
             as `X` is first alphabetically, so checking `Y` first would feel wrong.
 
+    % id = "01HQ162WWA5W8NXSXVZY3BBQ0H"
     - to do that, I'm gonna override the tile editor's `drawTilemap` function - as this is where the actual tilemap rendering happens!
 
     ```javascript tairu
@@ -173,13 +192,16 @@ styles = ["tairu.css"]
     ```output tairu
     ```
 
-    - this looks pretty perfect - maybe sans corners, which I'll conveniently skip for now - because most games don't actually render graphics in a vectorial way like this!
+    % id = "01HQ162WWAAEKW1ECV5G3ZEY47"
+    - this looks pretty perfect - maybe sans corners, which I'll conveniently skip for now, because most games don't actually render graphics in a vectorial way like this!
     instead, the more common way is to use a tileset - a big texture with a bunch of sprites to use for rendering each tile.
 
+        % id = "01HQ162WWACD5CD7GCZE53ZPD7"
         - not only does this have the advantage of allowing for richer graphics, but it is also a lot easier to modify by artists, because you no longer need knowledge of graphics APIs to draw tiles.
 
     % template = true
       classes.branch = "tileset-cardinal-directions-demo"
+      id = "01HQ162WWAADKPDQE69W3QZG0M"
     - for example, here's a tileset I drew for the 3rd iteration of my game [Planet Overgamma] - though tweaked a bit because I had never used it before writing this post :hueh:
 
     ![heavy metal sheet tileset from Planet Overgamma, made out of 16 tiles. it looks like heavy embossed sheets of metal, resembling steel in its heavyness][pic:01HPHVDRV0F0251MD0A2EG66C4]
@@ -187,6 +209,7 @@ styles = ["tairu.css"]
     [Planet Overgamma]: https://github.com/liquidev/planet-overgamma
 
     % classes.branch = "tileset-cardinal-directions-demo"
+      id = "01HQ162WWAS502000K8QZWVBDW"
     - we can split this tileset up into 16 individual tiles, each one 8 × 8 pixels; people choose various resolutions, I chose a fairly low one to hide my lack of artistic skill.
 
     <div class="horizontal-tile-strip">
@@ -209,6 +232,7 @@ styles = ["tairu.css"]
     </div>
 
     % classes.branch = "tileset-cardinal-directions-demo"
+      id = "01HQ162WWANBTYH1JJWCTZYYVN"
     - the keen eyed among you have probably noticed that this is very similar to the case we had before with drawing procedural borders -
     except that instead of determining which borders to draw based on a tile's neighbors, this time we'll determine which *whole tile* to draw based on its neighbors!
 
@@ -231,15 +255,20 @@ styles = ["tairu.css"]
     <span class="metal x-3 y-3"></span>
     </div>
 
+    % id = "01HQ162WWA4Z6KKWFV59BR4WD3"
     - previously we represented which single border to draw with a single boolean.
     now we will represent which single tile to draw with *four* booleans, because each tile can connect to four different directions.
 
+        % id = "01HQ162WWAQ9GZ6JD8KESW4N53"
         - four booleans like this can easily be packed into a single integer using some bitwise operations, hence we get ***bitwise autotiling*** - autotiling using bitwise operations!
 
+    % id = "01HQ162WWAMBM8RXKQTN3D0XR2"
     - now the clever part of bitwise autotiling is that we can use this packed integer *as an array index* - therefore selecting which tile to draw can be determined using just a single lookup table! neat, huh?
 
+        % id = "01HQ162WWA0ZGZ97JZZBFS41TF"
         - but because I'm lazy, and CPU time is valuable, instead of using an array I'll just rearrange the tileset texture a bit to be able to slice it in place using this index.
 
+        % id = "01HQ162WWAQQ99TRBDY5DCSW3Z"
         - say we arrange our bits like this:
 
         ```javascript tairu
@@ -250,6 +279,7 @@ styles = ["tairu.css"]
         ```
 
         % classes.branch = "tileset-cardinal-directions-demo"
+          id = "01HQ162WWABANND0WGT933TBMV"
         - that means we'll need to arrange our tiles like so, where the leftmost tile is at index 0 (`0b0000`) and the rightmost tile is at index 15 (`0b1111`):
 
         <div class="horizontal-tile-strip">
@@ -271,16 +301,21 @@ styles = ["tairu.css"]
         <span class="metal x-1 y-1"><span class="east">E</span><span class="south">S</span><span class="west">W</span><span class="north">N</span></span>
         </div>
 
+        % id = "01HQ162WWAJPW00XA25N0K6KS7"
         - packing that into a single tileset, or rather this time, a *tile strip*, we get this image:
 
         ![horizontal tile strip of 16 8x8 pixel metal tiles][pic:01HPMMR6DGKYTPZ9CK0WQWKNX5]
 
+    % id = "01HQ162WWAT2ZC7T2P9ATD6WG2"
     - now it's time to actually implement it as code! I'll start by defining a *tile index* function as a general way of looking up tiles in a tileset.
 
+        % id = "01HQ162WWA0NRHBB6HP2RERNBK"
         - I want to make the tile renderer a bit more general, so being able to attach a different tile lookup function to each tileset sounds like a great feature.
 
+            % id = "01HQ162WWA9PGSHH5E97RVE1PB"
             - just imagine some game where glass connects to metal, but metal doesn't connect to glass - I bet that would look pretty great!
 
+    % id = "01HQ162WWAYJ4JCG3Z24SJR8S9"
     - …but anyways, here's the basic bitwise magic function:
 
     ```javascript tairu
@@ -298,12 +333,13 @@ styles = ["tairu.css"]
     ```
 
     % template = true
+      id = "01HQ162WWAS813ANMBG1PWDZHC"
     - we'll define our tilesets by their texture, tile size, and a tile indexing function. so let's create an object that will hold our tileset data:
 
     ```javascript tairu
     // You'll probably want to host the assets on your own website rather than
     // hotlinking to others. It helps longevity!
-    const tilesetImage = new Image();
+    let tilesetImage = new Image();
     tilesetImage.src = "{% pic 01HPMMR6DGKYTPZ9CK0WQWKNX5 %}";
 
     export const heavyMetalTileset = {
@@ -313,6 +349,7 @@ styles = ["tairu.css"]
     };
     ```
 
+    % id = "01HQ162WWA0SC2GA7Y3KJE0W5F"
     - with all that, we should now be able to write a tile renderer which can handle textures! so let's try it:
 
     ```javascript tairu
@@ -360,7 +397,8 @@ styles = ["tairu.css"]
     }
     ```
 
-    - drum roll please...
+    % id = "01HQ162WWAS2HYF41MZNJ18BXC"
+    - drum roll please…
 
     ```javascript tairu
     new TilesetTileEditor({
@@ -372,6 +410,7 @@ styles = ["tairu.css"]
     ```output tairu
     ```
 
+    % id = "01HQ162WWA03JAGJYCT0DRZP24"
     - it works! buuuut if you play around with it you'll quickly start noticing some problems:
 
     ```javascript tairu
@@ -393,219 +432,270 @@ styles = ["tairu.css"]
     ```output tairu
     ```
 
+    % id = "01HQ162WWAB0AYSPGB4AEVT03Z"
     - where did our nice seamless connections go!?
 
-    % template = true
-      id = "01HPMVT9BM9CS9375MX4H9WKW8"
-    - and that gives us this result:
+% id = "01HQ162WWA3Q095ZGXDFZ1V2Q1"
+- ### thing is, it was never good in the first place
 
-    <canvas
-        is="tairu-editor"
-        data-tilemap-id="bitwiseAutotiling"
-        data-tile-size="40"
-    >
-        Your browser does not support &lt;canvas&gt;.
-        <img class="resource" src="{% pic 01HPMMR6DGKYTPZ9CK0WQWKNX5 %}" data-tairu-tileset="1">
-    </canvas>
+    % id = "01HQ162WWARSVDRNHZE13ZF6W6"
+    - I'll be blunt: we don't have enough tiles to represent *corners*! like in this case:
 
-    % id = "01HPMVT9BM3WR0BNZFHP2BPZ8A"
-    - but if you play around with it (or have *already* played around with it, and are therefore left with a non-default tilemap)
+    ```javacript tairu
+    import { Tilemap } from "tairu/tilemap.js";
 
-    ...something seems awful about it doesn't it?
+    new TilesetTileEditor({
+        tilemap: Tilemap.parse(" x", [
+            "    ",
+            " xx ",
+            " x  ",
+            "    ",
+        ]),
+        tileSize: 40,
+        tilesets: [heavyMetalTileset],
+    });
+    ```
+    ```output tairu
+    ```
+
+    % id = "01HQ1K39AS4VDW7DVTAGQ03WFM"
+    - have a closer look at the top-left tile:
+
+    ![the above example, showing an L shape rotated 180°, with the top left corner highlighted][pic:01HQ167GJEPTKHAKAVNW3WN1SZ]
+
+        % id = "01HQ1K39AS6Y9XMJTMMQYTWRMC"
+        - it should kind of _"bend"_ to fit in with the tiles to the north and the south, but it doesn't :kamien:
+
+    % id = "01HQ1K39ASQQNF7B881SYJWRC7"
+    - so what if we made the tile look like *this* instead:
+
+    ![mockup showing that previous L-shape but with a real corner][pic:01HQ17GYEZSZCVRBFHP4HXAJV8]
+
+        % id = "01HQ1K39ASMKRMTXFV93FRHZTG"
+        - that sure as heck looks a lot nicer! but there's a problem: that tile, let's zoom in on it…
+
+        ![that bent tile, and just *it* alone][pic:01HQ183RANGH4S7VZSG1ZGH0S5]
+
+            % classes.branch = "tileset-four-to-eight-demo"
+              id = "01HQ1K39ASR81NWMW8Q0MF8QMP"
+            - enhance!
+
+            <ul class="directions-square bend">
+                <li class="east">E</li>
+                <li class="south">S</li>
+            </ul>
+
+            % classes.branch = "tileset-four-to-eight-demo"
+              id = "01HQ1K39ASC5WTR2A2AJN85JK2"
+            - huh. interesting. it connects to the east and the south. so what about this tile -
+            <ul class="directions-square e-s">
+                <li class="east">E</li>
+                <li class="south">S</li>
+            </ul>
+                % id = "01HQ1K39ASXYBH9QJH5Q0C45JZ"
+                - because it *also* connects to the east and the south :thinking:
+
+                % id = "01HQ1K39ASW5PWS52NGA2X3M0P"
+                - seems like we'll need something to disambiguate the two cases - and what better thing to disambiguate with than *more bits*!
+
+    % classes.branch = "tileset-four-to-eight-demo"
+        id = "01HPQCCV4R5N97FJ1GS36HZJZ7"
+    - to represent the corners, we'll turn our four cardinal directions…
+
+    <ul class="directions-square">
+        <li class="east">E</li>
+        <li class="south">S</li>
+        <li class="west">W</li>
+        <li class="north">N</li>
+    </ul>
+
+    into eight *ordinal* directions:
+
+    <ul class="directions-square">
+        <li class="east">E</li>
+        <li class="south-east">SE</li>
+        <li class="south">S</li>
+        <li class="south-west">SW</li>
+        <li class="west">W</li>
+        <li class="north-west">NW</li>
+        <li class="north">N</li>
+        <li class="north-east"><a href="https://github.com/NoiseStudio/NoiseEngine/" title="NoiseEngine????">NE</a></li>
+    </ul>
+
+    % id = "01HQ1K39ASFN94YDY1RWQYS12K"
+    - at this point with the four extra corners we'll need 8 bits to represent our tiles, and that would make…
+
+    ***256 tiles!?***
+
+    nobody in their right mind would actually draw 256 separate tiles, right? ***RIGHT???***
 
         % template = true
-          id = "01HPMVT9BMPA89037VPWPPWX8V"
-        - something's off about the corners. let me give you a fresh example to illustrate what I mean:
+          id = "01HQ1K39AS11M1M4GQQ60NXTY6"
+        - …right! let's stick with the 16 tile version for a moment.
+        if we arrange the tiles in a diagnonal cross like this, notice how the tile in the center would have the bits `SE | SW | NW | NE` set, which upon first glance would suggest us needing a different tile -
+        but it looks correct!
 
-        <canvas
-            is="tairu-editor"
-            data-tilemap-id="bitwiseAutotilingChapter2"
-            data-tile-size="40"
-        >
-            Your browser does not support &lt;canvas&gt;.
-            <img class="resource" src="{% pic 01HPMMR6DGKYTPZ9CK0WQWKNX5 %}" data-tairu-tileset="1">
-        </canvas>
+        ```javascript tairu
+        import { Tilemap } from "tairu/tilemap.js";
 
-        % id = "01HPMVT9BM16EF3TV5J1K19JAM"
-        + see that tile in the bottom left corner of the `L` shape? it's missing a corner.
-        the top-right corner, to be exact, which makes it visually disjoint from the tiles to the north and the east.
+        new TilesetTileEditor({
+            tilemap: Tilemap.parse(" x", [
+                "     ",
+                " x x ",
+                "  x  ",
+                " x x ",
+                "     ",
+            ]),
+            tileSize: 40,
+            tilesets: [heavyMetalTileset],
+        });
+        ```
+        ```output tairu
+        ```
 
-            % id = "01HPMVT9BM5VWJSMDNPK2SRNZV"
-            - (I'm totally not trying to say this implementation is an L so far)
-
-        % id = "01HPMVT9BMWG6QHQ125Z884W8Z"
-        + i'll cut right to the chase here and say it outright - the issue is that we simply don't have enough tiles to represent *corner* cases like this!
-
-            % id = "01HPMVT9BMQK8N1H68YV3J4CFQ"
-            - see what I did there?
-
-    % id = "01HPMVT9BMJTG3KD3K5EJ3BC93"
-    - the solution to that is to introduce more tiles to handle these edge cases.
+        % id = "01HQ1K39AS7CRBZ67N1VVHCVME"
+        - therefore there must be *some* bit combinations that are redundant to others. let's find them!
 
         % classes.branch = "tileset-four-to-eight-demo"
-          id = "01HPQCCV4R5N97FJ1GS36HZJZ7"
-        - to represent the corners, we'll turn our four cardinal directions...
+          id = "01HQ1K39ASZPJ4E23EZ1XJ5J7K"
+        - let's pick one corner first, then generalize to all the other ones. I pick southeast!
 
-        <ul class="directions-square">
-            <li class="east">E</li>
-            <li class="south">S</li>
-            <li class="west">W</li>
-            <li class="north">N</li>
-        </ul>
-
-        into eight *ordinal* directions:
-
-        <ul class="directions-square">
+        <ul class="directions-square e-s">
             <li class="east">E</li>
             <li class="south-east">SE</li>
             <li class="south">S</li>
-            <li class="south-west">SW</li>
-            <li class="west">W</li>
-            <li class="north-west">NW</li>
-            <li class="north">N</li>
-            <li class="north-east"><a href="https://github.com/NoiseStudio/NoiseEngine/" title="NoiseEngine????">NE</a></li>
         </ul>
 
-        % id = "01HPQCCV4R3GNEWZQFWGWH4Z6R"
-        - you might think that at this point we'll need 8 bits to represent our tiles, and that would make...
+            % id = "01HQ1K39ASQTR054W0VWEAV2FS"
+            - in this case, if we remove the tile to the southeast, we get that bent tile from before:
 
-        ***256 tiles!?***
+            <ul class="directions-square bend">
+                <li class="east">E</li>
+                <li class="south">S</li>
+            </ul>
 
-        nobody in their right mind would actually draw 256 separate tiles, right? ***RIGHT???***
+            % id = "01HQ1K39AS6RGE6Z83T8MH1R0M"
+            - what we can learn from this is that for `E | S`, `ES` affects the result!
 
-            % template = true
-              id = "01HPQCCV4RX13VR4DJAP2F9PFA"
-            - ...right! if you experiment with the bit combinations, you'll quickly find out that there is no difference if, relative to a single center tile, we have tiles on the corners:
-
-            <canvas
-                is="tairu-editor"
-                data-tilemap-id="bitwiseAutotilingCorners"
-                data-tile-size="40"
-            >
-                Your browser does not support &lt;canvas&gt;.
-                <img class="resource" src="{% pic 01HPMMR6DGKYTPZ9CK0WQWKNX5 %}" data-tairu-tileset="1">
-            </canvas>
-
-            these should all render the same way, despite technically having some [new neighbors](https://en.wikipedia.org/wiki/Moore_neighborhood).
-
-            % classes.branch = "tileset-four-to-eight-demo"
-              id = "01HPQCCV4RHZ8A7VMT2KM7T27P"
-            - what we can do about this is to ignore corners whenever zero or one of the tiles at their cardinal directions is connected -
-            for example, in the case of `E | SE | S`:
+            % id = "01HQ1K39ASVSAQ6F8ANEZE1WQ4"
+            - but if we add any other corner, nothing changes. heck, let's add all of them:
 
             <ul class="directions-square e-s">
                 <li class="east">E</li>
                 <li class="south-east">SE</li>
                 <li class="south">S</li>
+                <li class="south-west">SW</li>
+                <li class="north-west">NW</li>
+                <li class="north-east">NE</li>
             </ul>
 
-            we can completely ignore what happens in the northeast, northwest, and southwest, because the tile's cardinal directions do not fully contain any of these direction pairs.
+                % id = "01HQ1K39AST8RQTVSCDV7FSH62"
+                - this combination is definitely redundant!
 
-            % id = "01HPQCCV4R557T2SN7ES7Z4EJ7"
-            - we can verify this logic with a bit of code; with a bit of luck, we should be able to narrow down our tileset into something a lot more manageable.
+            % id = "01HQ1K39AS8VHKHANJFKA4PQJ5"
+            - so it seems like for any two cardinal directions such as `E` and `S`, the ordinal direction that's a combination of the two -
+            in this case `ES` - only matters if both the cardinal direction bits are set!
 
-                % id = "01HPSY4Y19NQ6DZN10BP1KQEZN"
-                + we'll start off by defining a bunch of variables to represent our ordinal directions:
+        % id = "01HPQCCV4R557T2SN7ES7Z4EJ7"
+        - we can verify this logic with a bit of code; with a bit of luck, we should be able to narrow down our tileset into something a lot more manageable.
 
-                ```javascript ordinal-directions
-                export const E = 0b0000_0001;
-                export const SE = 0b0000_0010;
-                export const S = 0b0000_0100;
-                export const SW = 0b0000_1000;
-                export const W = 0b0001_0000;
-                export const NW = 0b0010_0000;
-                export const N = 0b0100_0000;
-                export const NE = 0b1000_0000;
-                export const ALL = E | SE | S | SW | W | NW | N | NE;
-                ```
+            % id = "01HPSY4Y19NQ6DZN10BP1KQEZN"
+            + we'll start off by redefining our bits to be ordinal directions instead. I still want to keep the [nice orderliness][branch:01HQ162WWAM5YYQCEXH791T0E9] that comes with
+            arranging the bits clockwise starting from east, so if we want that we can't just extend the indices with an extra four bits at the top.
 
-                as I've already said, we represent each direction using a single bit.
+            ```javascript tairu
+            export const E = 0b0000_0001;
+            export const SE = 0b0000_0010;
+            export const S = 0b0000_0100;
+            export const SW = 0b0000_1000;
+            export const W = 0b0001_0000;
+            export const NW = 0b0010_0000;
+            export const N = 0b0100_0000;
+            export const NE = 0b1000_0000;
+            ```
 
-                    % id = "01HPSY4Y19AW70YX8PPA7AS4DH"
-                    - I'm using JavaScript by the way, because it's the native programming language of your web browser. read on to see why.
+            % id = "01HPSY4Y19HPNXC54VP6TFFHXN"
+            - I don't know about you, but I find the usual C-style way of checking whether a bit is set extremely hard to read, so let's take care of that:
 
-                % id = "01HPSY4Y19HPNXC54VP6TFFHXN"
-                - now I don't know about you, but I find the usual C-style way of checking whether a bit is set extremely hard to read, so let's take care of that:
+            ```javascript tairu
+            export function isSet(integer, bit) {
+                return (integer & bit) == bit;
+            }
+            ```
 
-                ```javascript ordinal-directions
-                export function isSet(integer, bit) {
-                    return (integer & bit) == bit;
+            % id = "01HPSY4Y1984H2FX6QY6K2KHKF"
+            - now we can write a function that will remove the aforementioned redundancies.
+            the logic is quite simple - for southeast, we only allow it to be set if both south and east are also set, and so on and so forth.
+
+            ```javascript tairu
+            // t is an existing tile index; variable name is short for brevity
+            export function removeRedundancies(t) {
+                if (isSet(t, SE) && (!isSet(t, S) || !isSet(t, E))) {
+                    t &= ~SE;
                 }
-                ```
-
-                % id = "01HPSY4Y1984H2FX6QY6K2KHKF"
-                - now we can write a function that will remove the aforementioned redundancies.
-                the logic is quite simple - for southeast, we only allow it to be set if both south and east are also set, and so on and so forth.
-
-                ```javascript ordinal-directions
-                // t is a tile index; variable name is short for brevity
-                export function removeRedundancies(t) {
-                    if (isSet(t, SE) && (!isSet(t, S) || !isSet(t, E))) {
-                        t &= ~SE;
-                    }
-                    if (isSet(t, SW) && (!isSet(t, S) || !isSet(t, W))) {
-                        t &= ~SW;
-                    }
-                    if (isSet(t, NW) && (!isSet(t, N) || !isSet(t, W))) {
-                        t &= ~NW;
-                    }
-                    if (isSet(t, NE) && (!isSet(t, N) || !isSet(t, E))) {
-                        t &= ~NE;
-                    }
-                    return t;
+                if (isSet(t, SW) && (!isSet(t, S) || !isSet(t, W))) {
+                    t &= ~SW;
                 }
-                ```
-
-                % id = "01HPSY4Y19HWQQ9XBW1DDGW68T"
-                - with that, we can find a set of all unique non-redundant combinations:
-
-                ```javascript ordinal-directions
-                export function ordinalDirections() {
-                    let unique = new Set();
-                    for (let i = 0; i <= ALL; ++i) {
-                        unique.add(removeRedundancies(i));
-                    }
-                    return Array.from(unique).sort((a, b) => a - b);
+                if (isSet(t, NW) && (!isSet(t, N) || !isSet(t, W))) {
+                    t &= ~NW;
                 }
-                ```
+                if (isSet(t, NE) && (!isSet(t, N) || !isSet(t, E))) {
+                    t &= ~NE;
+                }
+                return t;
+            }
+            ```
 
-                    % id = "01HPSY4Y19KG8DC4SYXR1DJJ5F"
-                    - by the way, I find it quite funny how JavaScript's [`Array.prototype.sort`] defaults to ASCII ordering *for all types.*
-                    even numbers! ain't that silly?
+            % id = "01HPSY4Y19HWQQ9XBW1DDGW68T"
+            - with that, we can find a set of all unique non-redundant combinations:
 
-                    [`Array.prototype.sort`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+            ```javascript tairu
+            export function ordinalDirections() {
+                let unique = new Set();
+                for (let i = 0; i <= 0b1111_1111; ++i) {
+                    unique.add(removeRedundancies(i));
+                }
+                return Array.from(unique).sort((a, b) => a - b);
+            }
+            ```
 
-                % id = "01HPSY4Y19V62YKTGK3TTKEB38"
-                - and now it's time to _Let It Cook™_:
+                % id = "01HPSY4Y19KG8DC4SYXR1DJJ5F"
+                - by the way, I find it quite funny how JavaScript's [`Array.prototype.sort`] defaults to ASCII ordering *for all types.*
+                even numbers! ain't that silly?
 
-                ```javascript ordinal-directions
-                let dirs = ordinalDirections();
-                console.log(dirs.length);
-                ```
+                [`Array.prototype.sort`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 
-                ```output ordinal-directions
-                47
-                ```
+            % id = "01HPSY4Y19V62YKTGK3TTKEB38"
+            - and with all the ingredients in the pot, we now _Let It Cook™_:
 
-                    % id = "01HPSY4Y194DYYDGSAT83MPQFR"
-                    - forty seven! that's how many unique tiles we actually need.
+            ```javascript tairu
+            let dirs = ordinalDirections();
+            console.log(dirs.length);
+            ```
 
-                    % id = "01HPSY4Y19C303Z595KNVXYYVS"
-                    - you may find pixel art tutorials saying you need forty *eight* and not forty *seven*, but that is not quite correct -
-                    the forty eighth tile is actually just the empty tile! saying it's part of the tileset is quite misleading IMO.
+            ```output tairu
+            47
+            ```
 
-                    % id = "01HPSY4Y19TM2K2WN06HHEM3D0"
-                    - phew... the nesting's getting quite unwieldy, let's wrap up this tangent and return back to doing some bitwise autotiling!
+                % id = "01HPSY4Y194DYYDGSAT83MPQFR"
+                - forty seven! that's how many unique tiles we actually need.
 
-        % id = "01HPSY4Y192FZ37K3KXZM90K9J"
-        - so in reality we actually only need 47 tiles and not 256 - that's a whole lot less, that's 81.640625% less tiles we have to draw!
+                % id = "01HPSY4Y19C303Z595KNVXYYVS"
+                - you may find pixel art tutorials saying you need forty *eight* and not forty *seven*, but that is not quite correct -
+                the forty eighth tile is actually just the empty tile! saying it's part of the tileset is quite misleading IMO.
 
-            % id = "01HPSY4Y19HEBWBTNMDMM0AZSC"
-            - and it's even possible to autogenerate most of them given just a few smaller 4x4 pieces - but for now, let's not go down that path.\
-            maybe another time.
+                % id = "01HPSY4Y19TM2K2WN06HHEM3D0"
+                - phew… the nesting's getting quite unwieldy, let's wrap up this tangent and return back to doing some bitwise autotiling!
 
-        % id = "01HPWJB4Y047YGYAP6XQXJ3576"
-        - so we only need to draw 47 tiles, but to actually display them in a game we still need to pack them into an image.
+    % id = "01HPSY4Y192FZ37K3KXZM90K9J"
+    - so in reality we actually only need 47 tiles and not 256 - that's a whole lot less, that's 81.640625% less tiles we have to draw!
+
+        % id = "01HPSY4Y19HEBWBTNMDMM0AZSC"
+        - and it's even possible to autogenerate most of them given just a few smaller 4x4 pieces - but for now, let's not go down that path.\
+        maybe another time.
+
+    % id = "01HPWJB4Y047YGYAP6XQXJ3576"
+    - so we only need to draw 47 tiles, but to actually display them in a game we still need to pack them into an image.
 
         % id = "01HPWJB4Y0QX6YR6TQKZ7T1C2E"
         - we *could* use a similar approach to the 16 tile version, but that would leave us with lots of wasted space!
@@ -613,208 +703,282 @@ styles = ["tairu.css"]
             % id = "01HPWJB4Y0HKGSDABB56CNFP9H"
             - think that with this redundancy elimination approach most of the tiles will never even be looked up by the renderer, because the bit combinations will be collapsed into a more canonical form before the lookup.
 
-        % id = "01HPWJB4Y0705RWPFB89V23M1P"
-        - we could also use the approach I mentioned briefly [here][branch:01HPQCCV4RB65D5Q4RANJKGC0D], which involves introducing a lookup table - which sounds reasonable, so let's do it!
+        % id = "01HQ1K39ASM53P1E74HKRZ1T24"
+        - so instead of wasting space, we can compress the tiles into a compact strip, and use a lookup table from sparse tile indices to dense tile *positions* within the strip.
 
-        % id = "01HPWJB4Y0F9JGXQDAAVC3ERG1"
-        - I don't want to write the lookup table by hand, so let's generate it! I'll reuse the redundancy elimination code from before to make this easier.
+    % id = "01HPWJB4Y0F9JGXQDAAVC3ERG1"
+    - I don't want to write the lookup table by hand, so let's generate it!
 
-            % id = "01HPWJB4Y0HTV32T4WMKCKWTVA"
-            - we'll start by obtaining our ordinal directions array again:
+        % id = "01HPWJB4Y0HTV32T4WMKCKWTVA"
+        - we'll start by obtaining our ordinal directions array again:
 
-            ```javascript ordinal-directions
-            export let xToConnectionBitSet = ordinalDirections();
-            ```
+        ```javascript tairu
+        export let xToConnectionBitSet = ordinalDirections();
+        ```
 
-            % id = "01HPWJB4Y03WYYZ3VTW27GP7Z3"
-            - then we'll turn that array upside down... in other words, invert the index-value relationship, so that we can look up which X position in the tile strip to use for a specific connection combination.
+        % id = "01HPWJB4Y03WYYZ3VTW27GP7Z3"
+        - then we'll turn that array upside down… in other words, invert the index-value relationship, so that we can look up which X position in the tile strip to use for a specific connection combination.
 
-            remember that our array has only 256 values, so it should be pretty cheap to represent using a `Uint8Array`:
+        remember that our array has only 256 values, so it should be pretty cheap to represent using a [`Uint8Array`]:
 
-            ```javascript ordinal-directions
-            export let connectionBitSetToX = new Uint8Array(256);
-            for (let i = 0; i < xToConnectionBitSet.length; ++i) {
-                connectionBitSetToX[xToConnectionBitSet[i]] = i;
+        ```javascript tairu
+        export let connectionBitSetToX = new Uint8Array(256);
+        for (let i = 0; i < xToConnectionBitSet.length; ++i) {
+            connectionBitSetToX[xToConnectionBitSet[i]] = i;
+        }
+        ```
+
+        [`Uint8Array`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+
+        % id = "01HPWJB4Y0CWQB9EZG6C91A0H0"
+        - and there we go! we now have a mapping from our bitset to positions within the tile strip. try to play around with the code example to see which bitsets correspond to which position!
+
+        ```javascript tairu
+        console.log(connectionBitSetToX[E | SE | S]);
+        ```
+        ```output tairu
+        4
+        ```
+
+        % id = "01HPWJB4Y09P9Q3NGN59XWX2X9"
+        + for my own (and your) convenience, here's a complete list of *all* the possible combinations in order.
+
+            % id = "01HPWJB4Y01VJFMHYEC1WZ353W"
+            - ```javascript tairu
+            function toString(bitset) {
+                if (bitset == 0) return "0";
+
+                let directions = [];
+                if (isSet(bitset, E)) directions.push("E");
+                if (isSet(bitset, SE)) directions.push("SE");
+                if (isSet(bitset, S)) directions.push("S");
+                if (isSet(bitset, SW)) directions.push("SW");
+                if (isSet(bitset, W)) directions.push("W");
+                if (isSet(bitset, NW)) directions.push("NW");
+                if (isSet(bitset, N)) directions.push("N");
+                if (isSet(bitset, NE)) directions.push("NE");
+                return directions.join(" | ");
+            }
+
+            for (let x in xToConnectionBitSet) {
+                console.log(`${x} => ${toString(xToConnectionBitSet[x])}`);
             }
             ```
-
-            % id = "01HPWJB4Y0CWQB9EZG6C91A0H0"
-            - and there we go! we now have a mapping from our bitset to positions within the tile strip. try to play around with the code example to see which bitsets correspond to which position!
-
-            ```javascript ordinal-directions
-            console.log(connectionBitSetToX[E | SE | S]);
+            ```output tairu
+            0 => 0
+            1 => E
+            2 => S
+            3 => E | S
+            4 => E | SE | S
+            5 => W
+            6 => E | W
+            7 => S | W
+            8 => E | S | W
+            9 => E | SE | S | W
+            10 => S | SW | W
+            11 => E | S | SW | W
+            12 => E | SE | S | SW | W
+            13 => N
+            14 => E | N
+            15 => S | N
+            16 => E | S | N
+            17 => E | SE | S | N
+            18 => W | N
+            19 => E | W | N
+            20 => S | W | N
+            21 => E | S | W | N
+            22 => E | SE | S | W | N
+            23 => S | SW | W | N
+            24 => E | S | SW | W | N
+            25 => E | SE | S | SW | W | N
+            26 => W | NW | N
+            27 => E | W | NW | N
+            28 => S | W | NW | N
+            29 => E | S | W | NW | N
+            30 => E | SE | S | W | NW | N
+            31 => S | SW | W | NW | N
+            32 => E | S | SW | W | NW | N
+            33 => E | SE | S | SW | W | NW | N
+            34 => E | N | NE
+            35 => E | S | N | NE
+            36 => E | SE | S | N | NE
+            37 => E | W | N | NE
+            38 => E | S | W | N | NE
+            39 => E | SE | S | W | N | NE
+            40 => E | S | SW | W | N | NE
+            41 => E | SE | S | SW | W | N | NE
+            42 => E | W | NW | N | NE
+            43 => E | S | W | NW | N | NE
+            44 => E | SE | S | W | NW | N | NE
+            45 => E | S | SW | W | NW | N | NE
+            46 => E | SE | S | SW | W | NW | N | NE
             ```
-            ```output ordinal-directions
-            4
-            ```
 
-            % id = "01HPWJB4Y09P9Q3NGN59XWX2X9"
-            + for my own (and your) convenience, here's a complete list of *all* the possible combinations in order.
+    % id = "01HPWJB4Y0NMP35M9138DV3P8W"
+    - with the lookup table generated, we are now able to prepare a tile strip like before - except now it's even more tedious work arranging the pieces together :ralsei_dead:
 
-                % id = "01HPWJB4Y01VJFMHYEC1WZ353W"
-                - ```javascript ordinal-directions
-                function toString(bitset) {
-                    if (bitset == 0) return "0";
+    anyways I spent like 20 minutes doing that by hand, and now we have a neat tile strip just like before, except way longer:
 
-                    let directions = [];
-                    if (isSet(bitset, E)) directions.push("E");
-                    if (isSet(bitset, SE)) directions.push("SE");
-                    if (isSet(bitset, S)) directions.push("S");
-                    if (isSet(bitset, SW)) directions.push("SW");
-                    if (isSet(bitset, W)) directions.push("W");
-                    if (isSet(bitset, NW)) directions.push("NW");
-                    if (isSet(bitset, N)) directions.push("N");
-                    if (isSet(bitset, NE)) directions.push("NE");
-                    return directions.join(" | ");
-                }
+    ![horizontal tile strip of 47 8x8 pixel metal tiles][pic:01HPW47SHMSVAH7C0JR9HWXWCM]
 
-                for (let x in xToConnectionBitSet) {
-                    console.log(`${x} => ${toString(xToConnectionBitSet[x])}`);
-                }
-                ```
-                ```output ordinal-directions
-                0 => 0
-                1 => E
-                2 => S
-                3 => E | S
-                4 => E | SE | S
-                5 => W
-                6 => E | W
-                7 => S | W
-                8 => E | S | W
-                9 => E | SE | S | W
-                10 => S | SW | W
-                11 => E | S | SW | W
-                12 => E | SE | S | SW | W
-                13 => N
-                14 => E | N
-                15 => S | N
-                16 => E | S | N
-                17 => E | SE | S | N
-                18 => W | N
-                19 => E | W | N
-                20 => S | W | N
-                21 => E | S | W | N
-                22 => E | SE | S | W | N
-                23 => S | SW | W | N
-                24 => E | S | SW | W | N
-                25 => E | SE | S | SW | W | N
-                26 => W | NW | N
-                27 => E | W | NW | N
-                28 => S | W | NW | N
-                29 => E | S | W | NW | N
-                30 => E | SE | S | W | NW | N
-                31 => S | SW | W | NW | N
-                32 => E | S | SW | W | NW | N
-                33 => E | SE | S | SW | W | NW | N
-                34 => E | N | NE
-                35 => E | S | N | NE
-                36 => E | SE | S | N | NE
-                37 => E | W | N | NE
-                38 => E | S | W | N | NE
-                39 => E | SE | S | W | N | NE
-                40 => E | S | SW | W | N | NE
-                41 => E | SE | S | SW | W | N | NE
-                42 => E | W | NW | N | NE
-                43 => E | S | W | NW | N | NE
-                44 => E | SE | S | W | NW | N | NE
-                45 => E | S | SW | W | NW | N | NE
-                46 => E | SE | S | SW | W | NW | N | NE
-                ```
+    % id = "01HPWJB4Y0J3DHQV5F9GD3VNQ8"
+    - now let's hook it up to our tileset renderer!
 
-        % id = "01HPWJB4Y0NMP35M9138DV3P8W"
-        - with the lookup table generated, we are now able to prepare a tile strip like before - except now it's even more tedious work arranging the pieces together :ralsei_dead:
+    % id = "01HQ1M84GS09M7PMXFYHDPRTMT"
+    - since we already prepared the bulk of the framework before, it should be as simple as writing a new `tileIndex` function:
 
-        anyways I spent like 20 minutes doing that by hand, and now we have a neat tile strip just like before, except way longer:
+    ```javascript tairu
+    export function tileIndexInBitwiseTileset47(tilemap, x, y) {
+        let tile = tilemap.at(x, y);
 
-        ![horizontal tile strip of 47 8x8 pixel metal tiles][pic:01HPW47SHMSVAH7C0JR9HWXWCM]
+        let tileBitset = 0;
+        tileBitset |= shouldConnect(tile, tilemap.at(x + 1, y)) ? E : 0;
+        tileBitset |= shouldConnect(tile, tilemap.at(x + 1, y + 1)) ? SE : 0;
+        tileBitset |= shouldConnect(tile, tilemap.at(x, y + 1)) ? S : 0;
+        tileBitset |= shouldConnect(tile, tilemap.at(x - 1, y + 1)) ? SW : 0;
+        tileBitset |= shouldConnect(tile, tilemap.at(x - 1, y)) ? W : 0;
+        tileBitset |= shouldConnect(tile, tilemap.at(x - 1, y - 1)) ? NW : 0;
+        tileBitset |= shouldConnect(tile, tilemap.at(x, y - 1)) ? N : 0;
+        tileBitset |= shouldConnect(tile, tilemap.at(x + 1, y - 1)) ? NE : 0;
 
-        % id = "01HPWJB4Y0J3DHQV5F9GD3VNQ8"
-        - now let's hook it up to our tileset renderer! TODO literate program.
+        return connectionBitSetToX[removeRedundancies(tileBitset)];
+    }
+    ```
 
-        % template = true
-          id = "01HPWJB4Y00ARHBGDF2HTQQ4SD"
-        - with the capability to render with 47-tile tilesets, our examples suddenly look a whole lot better!
+    % template = true
+      id = "01HQ1M84GS4C99VQZC4150CMDS"
+    - now we can write a new tileset descriptor that uses this indexing function and the larger tile strip:
 
-        <canvas
-            is="tairu-editor"
-            data-tilemap-id="bitwiseAutotiling47"
-            data-tile-size="40"
-        >
-            Your browser does not support &lt;canvas&gt;.
-            <img class="resource" src="{% pic 01HPW47SHMSVAH7C0JR9HWXWCM %}" data-tairu-tileset-47="1">
-        </canvas>
+    ```javascript tairu
+    // Once again, use your own link here!
+    let tilesetImage = new Image();
+    tilesetImage.src = "{% pic 01HPW47SHMSVAH7C0JR9HWXWCM %}";
 
-% id = "01HPD4XQPWT9N8X9BD9GKWD78F"
-- bitwise autotiling is a really cool technique that I've used in plenty of games in the past.
+    export const heavyMetalTileset47 = {
+        image: tilesetImage,
+        tileSize: 8,
+        tileIndex: tileIndexInBitwiseTileset47,
+    };
+    ```
 
-    % id = "01HPD4XQPW5FQY8M04S6JEBDHQ"
-    - as I mentioned before, [I've known it since my Construct 2 days][branch:01HPD4XQPW6VK3FDW5QRCE6HSS], but when it comes to any released games [Planet Overgamma] would probably be the first to utilize it properly.
+    % id = "01HQ1M84GS9CC8VR1BVDC15W50"
+    - and Drum Roll 2: Return of the Snare please…
 
-    TODO video of some Planet Overgamma gameplay showing the autotiling in action
+    ```javascript tairu
+    import { Tilemap } from "tairu/tilemap.js";
 
-    [Planet Overgamma]: https://liquidev.itch.io/planet-overgamma-classic
+    new TilesetTileEditor({
+        tilemap: Tilemap.parse(" x", [
+            "      x  ",
+            "   x x   ",
+            "   xxx   ",
+            "    xx   ",
+            "  x      ",
+        ]),
+        tileSize: 40,
+        tilesets: [heavyMetalTileset47],
+    });
+    ```
+    ```output tairu
+    ```
 
-        % id = "01HPJ8GHDEN4XRPT1AJ1BTNTFJ"
-        - this accursed game has been haunting me for years since; there have been many iterations.
-        the autotiling source code of the one in the video can be found [here][autotiling source code].
+    % id = "01HQ1M84GSCXTPGVPXY840WCQ6"
+    - it works perfectly!
 
-        [autotiling source code]: https://github.com/liquidev/planet-overgamma/blob/classic/jam/map.lua#L209
+    % id = "01HQ1M84GSVBG9T94ZN9XTXX58"
+    - but honestly, this is a bit *boring* if we're gonna build a game with procedural worlds.
 
-% id = "01HPD4XQPWPN6HNA6M6EH507C6"
-+ but one day I found a really cool project called [Tilekit](https://rxi.itch.io/tilekit)
+        % id = "01HQ1M84GSH0KTFFZET6GZZ4V2"
+        - heck, it's even boring for a level designer to have to lay out all the tiles manually -
+        introducing variations and what not, such that the world doesn't look too bland… there has to be a better way!
 
-    % id = "01HPD4XQPW11EQTBDQSGXW3S52"
-    + (of course it's really cool, after all [rxi](https://github.com/rxi) made it)
+            % id = "01HQ1M84GSE1N5WG88DGJZH0F8"
+            - and a better way… there is! but I'll get to that once my nap is over. <!--
 
-        % id = "01HPD4XQPWYHS327BV586SB085"
-        - for context rxi is the genius behind the Lua-powered, simple, and modular text editor [lite](https://github.com/rxi/lite) that I was using for quite a while
+% id = "01HQ1M84GS0KJ9NA6GPS62RC95"
+- for now, have a big editor to play around with. it's a lot of fun arranging the tiles in various shapes!
 
-            % id = "01HPD4XQPWJ9QAQ5MF2J5JBB8M"
-            - after a while I switched to a fork - [Lite XL](https://github.com/lite-xl/lite-xl), which had better font rendering and more features
+```javascript tairu
+import { Tilemap } from "tairu/tilemap.js";
 
-            % id = "01HPD4XQPWB11TZSX5VAAJ6TCD"
-            - I stopped using it because VS Code was just more feature packed and usable; no need to reinvent the wheel, rust-analyzer *just works.*
+new TilesetTileEditor({
+    tilemap: new Tilemap(25, 16),
+    tileSize: 40,
+    tilesets: [heavyMetalTileset47],
+});
+```
+```output tairu
+```
 
-                % id = "01HPD4XQPW3G7BXTBBTD05MB8V"
-                - the LSP plugin for Lite XL had some issues around autocompletions not filling in properly :pensive:
+:nap:
 
-                it's likely a lot better now, but back then I decided this is too much for my nerves.
-                while tinkering with your editor is something really cool, in my experience it's only cool up to a point.
+% disabled = true
+  id = "01HQ1M84GS3WKE2X6QV2SNQX46"
+- TODO: next chapter! if you're reading this, you're in on it soon. that's quite sad, but YOU CAN STILL TURN BACK! I advise you to do that immediately.
 
-% id = "01HPD4XQPWV1BAPA27SNDFR93B"
-- the cool thing with Tilekit is that it's *more* than just your average bitwise autotiling - of course it *can* do basic autotiling, but it can also do so much more
+You have been warned.
 
-    % id = "01HPD4XQPWM1JSAPXVT6NBHKYY"
-      classes.branch_children = "branch-quote"
-    - if I had to describe it, it's basically something of a *shader langauge for tilesets.* this makes it really powerful, as you can do little programs like
 
-        % id = "01HPD4XQPWE7ZVR0SS67DHTGHQ"
-        - autotile using this base tileset
 
-        % id = "01HPD4XQPW2BFZYQQ920SYHM9M"
-        - if the tile above is empty AND with a 50% chance
 
-            % id = "01HPD4XQPWJB7V67TS1M3HFCYE"
-            - then grass
 
-        % id = "01HPD4XQPWF7K85Z0CEK4WDDBZ"
-        - if the tile above is solid AND with a 10% chance
 
-            % id = "01HPD4XQPW5J3N6MVT9Z2W00S9"
-            - then vines
 
-        % id = "01HPD4XQPWGCMCEAR5Z9EETSGP"
-        - if the tile above is vines AND with a 50% chance
 
-            % id = "01HPD4XQPWP847T0EAM0FJ88T4"
-            - then vines
+    % id = "01HPD4XQPWPN6HNA6M6EH507C6"
+    + but one day I found a really cool project called [Tilekit](https://rxi.itch.io/tilekit)
 
-    % id = "01HPSY4Y19FA2HGYE4F3Y9NJ57"
-    - well... it's even simpler than that in terms of graphical presentation, but we'll get to that.
+        % id = "01HPD4XQPW11EQTBDQSGXW3S52"
+        + (of course it's really cool, after all [rxi](https://github.com/rxi) made it)
 
-    % id = "01HPD4XQPWK58Z63X6962STADR"
-    - I mean, after all - bitwise autotiling is basically a clever solution to an `if` complexity problem, so why not extend that with more logic and rules and stuff to let you build more complex maps?
+            % id = "01HPD4XQPWYHS327BV586SB085"
+            - for context rxi is the genius behind the Lua-powered, simple, and modular text editor [lite](https://github.com/rxi/lite) that I was using for quite a while
 
-        % id = "01HPJ8GHDFRA2SPNHKJYD0SYPP"
-        - of course Tilekit's solution is a lot more simple, streamlined, and user-friendly, but you get the gist.
+                % id = "01HPD4XQPWJ9QAQ5MF2J5JBB8M"
+                - after a while I switched to a fork - [Lite XL](https://github.com/lite-xl/lite-xl), which had better font rendering and more features
+
+                % id = "01HPD4XQPWB11TZSX5VAAJ6TCD"
+                - I stopped using it because VS Code was just more feature packed and usable; no need to reinvent the wheel, rust-analyzer *just works.*
+
+                    % id = "01HPD4XQPW3G7BXTBBTD05MB8V"
+                    - the LSP plugin for Lite XL had some issues around autocompletions not filling in properly :pensive:
+
+                    it's likely a lot better now, but back then I decided this is too much for my nerves.
+                    while tinkering with your editor is something really cool, in my experience it's only cool up to a point.
+
+    % id = "01HPD4XQPWV1BAPA27SNDFR93B"
+    - the cool thing with Tilekit is that it's *more* than just your average bitwise autotiling - of course it *can* do basic autotiling, but it can also do so much more
+
+        % id = "01HPD4XQPWM1JSAPXVT6NBHKYY"
+          classes.branch_children = "branch-quote"
+        - if I had to describe it, it's basically something of a *shader langauge for tilesets.* this makes it really powerful, as you can do little programs like
+
+            % id = "01HPD4XQPWE7ZVR0SS67DHTGHQ"
+            - autotile using this base tileset
+
+            % id = "01HPD4XQPW2BFZYQQ920SYHM9M"
+            - if the tile above is empty AND with a 50% chance
+
+                % id = "01HPD4XQPWJB7V67TS1M3HFCYE"
+                - then grass
+
+            % id = "01HPD4XQPWF7K85Z0CEK4WDDBZ"
+            - if the tile above is solid AND with a 10% chance
+
+                % id = "01HPD4XQPW5J3N6MVT9Z2W00S9"
+                - then vines
+
+            % id = "01HPD4XQPWGCMCEAR5Z9EETSGP"
+            - if the tile above is vines AND with a 50% chance
+
+                % id = "01HPD4XQPWP847T0EAM0FJ88T4"
+                - then vines
+
+        % id = "01HPSY4Y19FA2HGYE4F3Y9NJ57"
+        - well… it's even simpler than that in terms of graphical presentation, but we'll get to that.
+
+        % id = "01HPD4XQPWK58Z63X6962STADR"
+        - I mean, after all - bitwise autotiling is basically a clever solution to an `if` complexity problem, so why not extend that with more logic and rules and stuff to let you build more complex maps?
+
+            % id = "01HPJ8GHDFRA2SPNHKJYD0SYPP"
+            - of course Tilekit's solution is a lot more simple, streamlined, and user-friendly, but you get the gist.

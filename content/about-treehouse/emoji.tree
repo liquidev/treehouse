@@ -1,3 +1,5 @@
+%% title = "Graphical Indicators of Emotion, more commonly known as \"emoticons\" or under the brand name \"Emoji\""
+
 % id = "01H8W7VEVNQ0XR4RDYRGMKS0E9"
 - the emojis here are grouped by game, topic, or other thing for easier navigation
 
@@ -67,12 +69,35 @@
         % id = "01H8W7VEVPSHDWDH58HFKBMGD6"
         - but I don't wanna replace it because it's just too good
 
+    % id = "emoji/nap"
+    - :nap: - <sub>z</sub>zZ
+
+% id = "01HQ162WWF60BD1F4K26E7ZZEV"
 - ### random places
 
     % id = "emoji/ahyes"
     - :ahyes: - ah, yes
 
+        % id = "01HQ162WWFYWW92J0DKRWNZYDY"
         - smuggest expression for the smuggest of moments, and some tea with it.
+
+    % id = "emoji/kamien"
+    - :kamien: - stone cold
+
+        % id = "01HQ1K39AYJ2KEFFDAM6A8M8ET"
+        - Polish for _rock_ (stone, not the music genre)
+
+        % id = "01HQ1K39AY808NPR08YPBAR1ZF"
+        + an expression of magnificence in primitivity
+
+            % id = "01HQ1K39AYKA86GRF12PFDN96N"
+            + or magnificence in stupidity
+
+                % id = "01HQ1K39AYPE9FCD1FR93H60RR"
+                + or being dead fucking serious about not liking something that's either of the two above (non-exclusive OR)
+
+        % id = "01HQ1K39AYM2FS3R4Y9175V7XS"
+        - all credit goes to Apple for designing this beauty
 
 % id = "01HA4HJKQ7FKV8JJ70Q2CY9R86"
 - ### [Noto Color Emoji](https://github.com/googlefonts/noto-emoji/)

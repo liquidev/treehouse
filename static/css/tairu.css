@@ -135,6 +135,20 @@
 
         position: relative;
 
+        &.bend {
+            background-image: url('../pic/01HQ183RANGH4S7VZSG1ZGH0S5-the-tile+width72+pixel.png');
+            background-size: 100%;
+            background-position: 0 0;
+            background-repeat: no-repeat;
+        }
+
+        &.notabend {
+            background-image: url('../pic/01HQ18E39K5F9Q5P41XAEVSEWK-the-also-tile.png');
+            background-size: 100%;
+            background-position: 0 0;
+            background-repeat: no-repeat;
+        }
+
         li {
             padding: 2px 4px;
             position: absolute;
