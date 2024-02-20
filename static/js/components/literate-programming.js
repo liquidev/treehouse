@@ -19,16 +19,19 @@ function getLiterateProgram(name) {
     return literatePrograms.get(name);
 }
 
-function getLiterateProgramWorkerCommands(name) {
+function getLiterateProgramWorkerCommands(name, count) {
     let commands = [];
     let literateProgram = getLiterateProgram(name);
-    for (let frame of literateProgram.frames) {
+
+    for (let i = 0; i < count; ++i) {
+        let frame = literateProgram.frames[i];
         if (frame.mode == "input") {
             commands.push({ kind: "module", source: frame.textContent });
         } else if (frame.mode == "output") {
             commands.push({ kind: "output" });
         }
     }
+
     return commands;
 }
 
@@ -180,6 +183,8 @@ class OutputMode {
             }
         });
 
+        this.frame.placeholderImage.classList.add("loading");
+
         this.frame.program.onChanged.push(_ => this.evaluate());
     }
 
@@ -187,7 +192,7 @@ class OutputMode {
         this.requestConsoleClear();
         this.iframe.contentWindow.postMessage({
             action: "eval",
-            input: getLiterateProgramWorkerCommands(this.frame.programName),
+            input: getLiterateProgramWorkerCommands(this.frame.programName, this.frame.frameIndex + 1),
         });
     }
 
@@ -229,6 +234,15 @@ class OutputMode {
         // iframe cannot be `display: none` to get its scrollWidth/scrollHeight.
         this.iframe.classList.remove("hidden");
 
+        if (this.frame.placeholderImage != null) {
+            // Fade the iframe in after it becomes visible, and remove the image.
+            setTimeout(() => this.iframe.classList.add("loaded"), 0);
+            this.frame.removeChild(this.frame.placeholderImage);
+        } else {
+            // If there is no image, don't do the fade in.
+            this.iframe.classList.add("loaded");
+        }
+
         let width = this.iframe.contentDocument.body.scrollWidth;
         let height = this.iframe.contentDocument.body.scrollHeight;
 
@@ -244,7 +258,10 @@ class OutputMode {
 class LiterateProgram extends HTMLElement {
     connectedCallback() {
         this.programName = this.getAttribute("data-program");
+        this.frameIndex = this.program.frames.length;
         this.program.frames.push(this);
+
+        this.placeholderImage = this.getElementsByClassName("placeholder")[0];
 
         this.mode = this.getAttribute("data-mode");
         if (this.mode == "input") {

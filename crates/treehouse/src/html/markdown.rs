@@ -30,7 +30,7 @@ use pulldown_cmark::escape::{escape_href, escape_html, StrWrite};
 use pulldown_cmark::{Alignment, CodeBlockKind, Event, LinkType, Tag};
 use pulldown_cmark::{CowStr, Event::*};
 
-use crate::config::Config;
+use crate::config::{Config, ConfigDerivedData, PicSize};
 use crate::state::Treehouse;
 
 enum TableState {
@@ -41,6 +41,7 @@ enum TableState {
 struct HtmlWriter<'a, I, W> {
     treehouse: &'a Treehouse,
     config: &'a Config,
+    config_derived_data: &'a mut ConfigDerivedData,
     page_id: &'a str,
 
     /// Iterator supplying events.
@@ -68,6 +69,7 @@ where
     fn new(
         treehouse: &'a Treehouse,
         config: &'a Config,
+        config_derived_data: &'a mut ConfigDerivedData,
         page_id: &'a str,
         iter: I,
         writer: W,
@@ -75,7 +77,9 @@ where
         Self {
             treehouse,
             config,
+            config_derived_data,
             page_id,
+
             iter,
             writer,
             end_newline: true,
@@ -247,11 +251,11 @@ where
                             kind,
                             program_name,
                         } => {
-                            self.write(match kind {
+                            self.write(match &kind {
                                 LiterateCodeKind::Input => {
                                     "<th-literate-program data-mode=\"input\" "
                                 }
-                                LiterateCodeKind::Output => {
+                                LiterateCodeKind::Output { .. } => {
                                     "<th-literate-program data-mode=\"output\" "
                                 }
                             })?;
@@ -261,7 +265,30 @@ where
                             escape_html(&mut self.writer, program_name)?;
                             self.write("\" data-language=\"")?;
                             escape_html(&mut self.writer, language)?;
-                            self.write("\" role=\"code\">")
+                            self.write("\" role=\"code\">")?;
+
+                            if let LiterateCodeKind::Output { placeholder_pic_id } = kind {
+                                if !placeholder_pic_id.is_empty() {
+                                    self.write(
+                                        "<img class=\"placeholder\" loading=\"lazy\" src=\"",
+                                    )?;
+                                    escape_html(
+                                        &mut self.writer,
+                                        &self.config.pic_url(placeholder_pic_id),
+                                    )?;
+                                    self.write("\"")?;
+                                    if let Some(PicSize { width, height }) = self
+                                        .config_derived_data
+                                        .pic_size(self.config, placeholder_pic_id)
+                                    {
+                                        self.write(&format!(
+                                            " width=\"{width}\" height=\"{height}\""
+                                        ))?;
+                                    }
+                                    self.write(">")?;
+                                }
+                            }
+                            Ok(())
                         }
                     },
                     CodeBlockKind::Indented => self.write("<pre><code>"),
@@ -556,9 +583,9 @@ where
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum LiterateCodeKind {
+enum LiterateCodeKind<'a> {
     Input,
-    Output,
+    Output { placeholder_pic_id: &'a str },
 }
 
 enum CodeBlockMode<'a> {
@@ -568,7 +595,7 @@ enum CodeBlockMode<'a> {
     },
     LiterateProgram {
         language: &'a str,
-        kind: LiterateCodeKind,
+        kind: LiterateCodeKind<'a>,
         program_name: &'a str,
     },
 }
@@ -578,14 +605,16 @@ impl<'a> CodeBlockMode<'a> {
         if language.is_empty() {
             CodeBlockMode::PlainText
         } else if let Some((language, program_name)) = language.split_once(' ') {
+            let (program_name, placeholder_pic_id) =
+                program_name.split_once(' ').unwrap_or((program_name, ""));
             CodeBlockMode::LiterateProgram {
                 language,
                 kind: if language == "output" {
-                    LiterateCodeKind::Output
+                    LiterateCodeKind::Output { placeholder_pic_id }
                 } else {
                     LiterateCodeKind::Input
                 },
-                program_name,
+                program_name: program_name.split(' ').next().unwrap(),
             }
         } else {
             CodeBlockMode::SyntaxHighlightOnly { language }
@@ -624,12 +653,13 @@ pub fn push_html<'a, I>(
     s: &mut String,
     treehouse: &'a Treehouse,
     config: &'a Config,
+    config_derived_data: &'a mut ConfigDerivedData,
     page_id: &'a str,
     iter: I,
 ) where
     I: Iterator<Item = Event<'a>>,
 {
-    HtmlWriter::new(treehouse, config, page_id, iter, s)
+    HtmlWriter::new(treehouse, config, config_derived_data, page_id, iter, s)
         .run()
         .unwrap();
 }

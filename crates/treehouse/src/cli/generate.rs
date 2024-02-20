@@ -18,7 +18,7 @@ use walkdir::WalkDir;
 
 use crate::{
     cli::parse::parse_tree_with_diagnostics,
-    config::Config,
+    config::{Config, ConfigDerivedData},
     html::{
         breadcrumbs::breadcrumbs_to_html,
         navmap::{build_navigation_map, NavigationMap},
@@ -175,6 +175,7 @@ impl Generator {
         parsed_trees: impl IntoIterator<Item = ParsedTree>,
     ) -> anyhow::Result<()> {
         let mut handlebars = Handlebars::new();
+        let mut config_derived_data = ConfigDerivedData::default();
 
         let mut template_file_ids = HashMap::new();
         for entry in WalkDir::new(paths.template_dir) {
@@ -232,6 +233,7 @@ impl Generator {
                 &mut tree,
                 treehouse,
                 config,
+                &mut config_derived_data,
                 parsed_tree.file_id,
                 &roots.branches,
             );

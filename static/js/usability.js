@@ -7,3 +7,12 @@ document.addEventListener("click", event => {
         event.preventDefault();
     }
 })
+
+// Certain words don't make sense if scripts are disabled.
+class YesScript extends HTMLElement {
+    connectedCallback() {
+        this.classList.add("yes-indeed");
+    }
+}
+
+customElements.define("th-yesscript", YesScript);

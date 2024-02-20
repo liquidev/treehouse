@@ -556,10 +556,21 @@ th-literate-program[data-mode="output"] {
     border: none;
     border-radius: 0;
 
-    & iframe {
+    & iframe,
+    & img.placeholder {
         border-style: none;
         border-radius: 4px;
         display: block;
+        transition: opacity var(--transition-duration);
+    }
+
+    & iframe,
+    & img.placeholder.loading {
+        opacity: 50%;
+    }
+
+    & iframe.loaded {
+        opacity: 100%;
     }
 
     /* The inner iframe is hidden until something requests display. */

@@ -1,4 +1,4 @@
-use std::{collections::HashMap, ffi::OsStr, path::Path};
+use std::{collections::HashMap, ffi::OsStr, fs::File, io::BufReader, path::Path};
 
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
@@ -106,5 +106,38 @@ impl Config {
             self.site,
             self.pics.get(id).map(|x| &**x).unwrap_or("404.png")
         )
+    }
+}
+
+/// Data derived from the config.
+#[derive(Debug, Clone, Default)]
+pub struct ConfigDerivedData {
+    pub pic_sizes: HashMap<String, Option<PicSize>>,
+}
+
+/// Picture size. This is useful for emitting <img> elements with a specific size to eliminate layout shifting.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PicSize {
+    pub width: u32,
+    pub height: u32,
+}
+
+impl ConfigDerivedData {
+    fn read_pic_size(config: &Config, pic_id: &str) -> Option<PicSize> {
+        let pic_filename = config.pics.get(pic_id)?;
+        let (width, height) = image::io::Reader::new(BufReader::new(
+            File::open(format!("static/pic/{pic_filename}")).ok()?,
+        ))
+        .into_dimensions()
+        .ok()?;
+        Some(PicSize { width, height })
+    }
+
+    pub fn pic_size(&mut self, config: &Config, pic_id: &str) -> Option<PicSize> {
+        if !self.pic_sizes.contains_key(pic_id) {
+            self.pic_sizes
+                .insert(pic_id.to_owned(), Self::read_pic_size(config, pic_id));
+        }
+        self.pic_sizes.get(pic_id).copied().flatten()
     }
 }

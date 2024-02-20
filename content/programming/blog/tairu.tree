@@ -29,6 +29,13 @@ styles = ["post/tairu.css"]
     % id = "01HQ162WWAMCPC5M88QAXHX4BT"
     - so to help us learn, I made a little tile editor so that we can experiment with rendering tiles! have a look:
 
+    <noscript>(…though you will need to enable JavaScript to try it out.
+    seriously, pinky promise I won't ever track you!
+    inspect the source code if you wanna.
+    if not, you will have to deal with static pictures.
+    but just keep in mind this was supposed to be an <strong><em>interactive</em></strong> exploration of autotiling techniques.
+    cheers!)</noscript>
+
     ```javascript tairu
     import { Tilemap } from "tairu/tilemap.js";
     import { TileEditor } from "tairu/editor.js";
@@ -47,7 +54,7 @@ styles = ["post/tairu.css"]
     });
     ```
 
-    ```output tairu
+    ```output tairu 01HQ47ZX7520PJNPJ75M793R5G
     ```
 
         % id = "01HQ162WWAC3FN565QE3JAB87D"
@@ -58,6 +65,8 @@ styles = ["post/tairu.css"]
         console.log(tilemapSquare.at(3, 1));
         ```
         ```output tairu
+        0
+        1
         ```
 
         [`Uint8Array`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
@@ -189,7 +198,7 @@ styles = ["post/tairu.css"]
         borderWidth: 4,
     });
     ```
-    ```output tairu
+    ```output tairu 01HQ49TJZFMK719KSE16SG3F7B
     ```
 
     % id = "01HQ162WWAAEKW1ECV5G3ZEY47"
@@ -407,7 +416,7 @@ styles = ["post/tairu.css"]
         tilesets: [heavyMetalTileset],
     });
     ```
-    ```output tairu
+    ```output tairu 01HQ49X8Z57FNMN3E79FYF8CMG
     ```
 
     % id = "01HQ162WWA03JAGJYCT0DRZP24"
@@ -429,7 +438,7 @@ styles = ["post/tairu.css"]
         tilesets: [heavyMetalTileset],
     });
     ```
-    ```output tairu
+    ```output tairu 01HQ49YDPQXYSAT5N6P241DG3C
     ```
 
     % id = "01HQ162WWAB0AYSPGB4AEVT03Z"
@@ -455,7 +464,7 @@ styles = ["post/tairu.css"]
         tilesets: [heavyMetalTileset],
     });
     ```
-    ```output tairu
+    ```output tairu 01HQ49Z8JWR75D85DGHCB34K8E
     ```
 
     % id = "01HQ1K39AS4VDW7DVTAGQ03WFM"
@@ -550,7 +559,7 @@ styles = ["post/tairu.css"]
             tilesets: [heavyMetalTileset],
         });
         ```
-        ```output tairu
+        ```output tairu 01HQ4A01MPE6JT5ZZFEN9S635W
         ```
 
         % id = "01HQ1K39AS7CRBZ67N1VVHCVME"
@@ -879,7 +888,7 @@ styles = ["post/tairu.css"]
         tilesets: [heavyMetalTileset47],
     });
     ```
-    ```output tairu
+    ```output tairu 01HQ4A11RRXEQ850598GFBJN0B
     ```
 
     % id = "01HQ1M84GSCXTPGVPXY840WCQ6"
@@ -907,7 +916,7 @@ new TilesetTileEditor({
     tilesets: [heavyMetalTileset47],
 });
 ```
-```output tairu
+```output tairu 01HQ4A45WNAEJGCT2WDMQJHK14
 ```
 
 :nap: <!--

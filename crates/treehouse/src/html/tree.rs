@@ -4,7 +4,7 @@ use pulldown_cmark::{BrokenLink, LinkType};
 use treehouse_format::pull::BranchKind;
 
 use crate::{
-    config::Config,
+    config::{Config, ConfigDerivedData},
     html::EscapeAttribute,
     state::{FileId, Treehouse},
     tree::{
@@ -19,6 +19,7 @@ pub fn branch_to_html(
     s: &mut String,
     treehouse: &mut Treehouse,
     config: &Config,
+    config_derived_data: &mut ConfigDerivedData,
     file_id: FileId,
     branch_id: SemaBranchId,
 ) {
@@ -145,6 +146,7 @@ pub fn branch_to_html(
             s,
             treehouse,
             config,
+            config_derived_data,
             treehouse.tree_path(file_id).expect(".tree file expected"),
             markdown_parser,
         );
@@ -197,7 +199,7 @@ pub fn branch_to_html(
                 let num_children = branch.children.len();
                 for i in 0..num_children {
                     let child_id = treehouse.tree.branch(branch_id).children[i];
-                    branch_to_html(s, treehouse, config, file_id, child_id);
+                    branch_to_html(s, treehouse, config, config_derived_data, file_id, child_id);
                 }
                 s.push_str("</ul>");
             }
@@ -213,12 +215,13 @@ pub fn branches_to_html(
     s: &mut String,
     treehouse: &mut Treehouse,
     config: &Config,
+    config_derived_data: &mut ConfigDerivedData,
     file_id: FileId,
     branches: &[SemaBranchId],
 ) {
     s.push_str("<ul>");
     for &child in branches {
-        branch_to_html(s, treehouse, config, file_id, child);
+        branch_to_html(s, treehouse, config, config_derived_data, file_id, child);
     }
     s.push_str("</ul>");
 }
