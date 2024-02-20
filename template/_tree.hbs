@@ -9,6 +9,19 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="preload" href="{{ config.site }}/static/font/Recursive_VF_1.085.woff2" as="font" type="font/woff2"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
+    <link rel="stylesheet" href="{{ config.site }}/static/css/tree.css">
+
+    <script>const TREEHOUSE_SITE = `{{ config.site }}`;</script>
+    <script type="module" src="{{ config.site }}/navmap.js"></script>
+    <script type="module" src="{{ config.site }}/static/js/ulid.js"></script>
+    <script type="module" src="{{ config.site }}/static/js/usability.js"></script>
+    <script type="module" src="{{ config.site }}/static/js/tree.js"></script>
+    <script type="module" src="{{ config.site }}/static/js/emoji.js"></script>
+    <script type="module" src="{{ config.site }}/static/js/thanks-webkit.js"></script>
+
     <meta property="og:site_name" content="{{ config.user.title }}">
     <meta property="og:title" content="{{ page.title }}">
     {{!--
@@ -22,17 +35,6 @@
     <meta property="og:image" content="{{ page.thumbnail.url }}">
     <meta property="og:image:alt" content="{{ page.thumbnail.alt }}">
     {{/if}}
-
-    <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
-    <link rel="stylesheet" href="{{ config.site }}/static/css/tree.css">
-
-    <script>const TREEHOUSE_SITE = `{{ config.site }}`;</script>
-    <script type="module" src="{{ config.site }}/navmap.js"></script>
-    <script type="module" src="{{ config.site }}/static/js/ulid.js"></script>
-    <script type="module" src="{{ config.site }}/static/js/usability.js"></script>
-    <script type="module" src="{{ config.site }}/static/js/tree.js"></script>
-    <script type="module" src="{{ config.site }}/static/js/emoji.js"></script>
-    <script type="module" src="{{ config.site }}/static/js/thanks-webkit.js"></script>
 </head>
 
 <body>
@@ -102,6 +104,8 @@
 
         {{{ page.tree }}}
     </main>
+
+    <th-emoji-tooltips></th-emoji-tooltips>
 
     {{#if (ne page.tree_path 'treehouse')}}
     <footer>
