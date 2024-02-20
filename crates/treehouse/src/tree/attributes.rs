@@ -64,6 +64,11 @@ pub struct Attributes {
     /// Enable `mini_template` templating in this branch.
     #[serde(default)]
     pub template: bool,
+
+    /// Publishing stage; if `Draft`, the branch is invisible unless treehouse is compiled in
+    /// debug mode.
+    #[serde(default)]
+    pub stage: Stage,
 }
 
 /// Controls for block content presentation.
@@ -99,4 +104,15 @@ pub struct Classes {
     /// Classes to append to the branch's <ul> element containing its children.
     #[serde(default)]
     pub branch_children: String,
+}
+
+/// Publish stage of a branch.
+///
+/// Draft branches are not included in release builds of treehouse. In debug builds, they are also
+/// marked with an extra "draft" before the content.
+#[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize)]
+pub enum Stage {
+    #[default]
+    Public,
+    Draft,
 }

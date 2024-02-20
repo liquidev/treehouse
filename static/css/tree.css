@@ -243,6 +243,24 @@ th-bc {
     }
 }
 
+/* Display a [draft] pill for branches that are drafts. */
+.tree li.draft {
+
+    &>details>summary>th-bc::before,
+    &>div>th-bc::before {
+        content: 'draft';
+
+        display: block;
+        width: min-content;
+
+        background-color: #058ef0;
+        color: #ffffff;
+        padding: 4px 12px;
+        margin-bottom: 4px;
+        border-radius: 100px;
+    }
+}
+
 /* bb - button bar */
 th-bb {
     height: 100%;

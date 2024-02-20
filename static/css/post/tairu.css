@@ -20,12 +20,11 @@
         width: 56px;
         height: 56px;
         margin: 8px;
-        background-image: url('../pic/01HPHVDRV0F0251MD0A2EG66C4-tilemap-heavy-metal-16+pixel+width160.png');
+        background-image: url('../../pic/01HPHVDRV0F0251MD0A2EG66C4-tilemap-heavy-metal-16+pixel+width160.png');
         background-size: 400%;
         image-rendering: pixelated;
         position: relative;
     }
-
 
     & .east,
     & .south,
@@ -128,7 +127,7 @@
         width: 72px;
         height: 72px;
 
-        background-image: url('../pic/01HPHVDRV0F0251MD0A2EG66C4-tilemap-heavy-metal-16+pixel+width160.png');
+        background-image: url('../../pic/01HPHVDRV0F0251MD0A2EG66C4-tilemap-heavy-metal-16+pixel+width160.png');
         background-size: 400%;
         background-position: 100% 100%;
         image-rendering: pixelated;
@@ -136,14 +135,14 @@
         position: relative;
 
         &.bend {
-            background-image: url('../pic/01HQ183RANGH4S7VZSG1ZGH0S5-the-tile+width72+pixel.png');
+            background-image: url('../../pic/01HQ183RANGH4S7VZSG1ZGH0S5-the-tile+width72+pixel.png');
             background-size: 100%;
             background-position: 0 0;
             background-repeat: no-repeat;
         }
 
         &.notabend {
-            background-image: url('../pic/01HQ18E39K5F9Q5P41XAEVSEWK-the-also-tile.png');
+            background-image: url('../../pic/01HQ18E39K5F9Q5P41XAEVSEWK-the-also-tile.png');
             background-size: 100%;
             background-position: 0 0;
             background-repeat: no-repeat;

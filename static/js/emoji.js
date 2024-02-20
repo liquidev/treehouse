@@ -46,18 +46,22 @@ class EmojiTooltip extends HTMLElement {
 customElements.define("th-emoji-tooltip", EmojiTooltip);
 
 let emojiTooltips = null;
-addEventListener("wheel", event => emojiTooltips.closeTooltips(event));
 
 class EmojiTooltips extends HTMLElement {
     constructor() {
         super();
         this.tooltips = new Set();
         this.abortController = new AbortController();
-
     }
 
     connectedCallback() {
         emojiTooltips = this;
+
+        addEventListener(
+            "wheel",
+            event => emojiTooltips.closeTooltips(event),
+            { signal: this.abortController.signal },
+        );
     }
 
     disconnectedCallback() {

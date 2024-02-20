@@ -7,7 +7,10 @@ use crate::{
     config::Config,
     html::EscapeAttribute,
     state::{FileId, Treehouse},
-    tree::{attributes::Content, mini_template, SemaBranchId},
+    tree::{
+        attributes::{Content, Stage},
+        mini_template, SemaBranchId,
+    },
 };
 
 use super::{markdown, EscapeHtml};
@@ -22,6 +25,10 @@ pub fn branch_to_html(
     let source = treehouse.source(file_id);
     let branch = treehouse.tree.branch(branch_id);
 
+    if !cfg!(debug_assertions) && branch.attributes.stage == Stage::Draft {
+        return;
+    }
+
     let has_children =
         !branch.children.is_empty() || matches!(branch.attributes.content, Content::Link(_));
 
@@ -30,6 +37,10 @@ pub fn branch_to_html(
     if !branch.attributes.classes.branch.is_empty() {
         class.push(' ');
         class.push_str(&branch.attributes.classes.branch);
+    }
+
+    if branch.attributes.stage == Stage::Draft {
+        class.push_str(" draft");
     }
 
     let component = if let Content::Link(_) = branch.attributes.content {

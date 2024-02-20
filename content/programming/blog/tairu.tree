@@ -3,7 +3,7 @@ scripts = [
     "components/literate-programming.js",
     "vendor/codejar.js",
 ]
-styles = ["tairu.css"]
+styles = ["post/tairu.css"]
 
 % id = "01HPD4XQPWM8ECT2QM6AT9YRWB"
 - I remember since my early days doing programming, I've been interested in how games like Terraria handle automatically tiling their terrain.
@@ -893,7 +893,7 @@ styles = ["tairu.css"]
         introducing variations and what not, such that the world doesn't look too bland… there has to be a better way!
 
             % id = "01HQ1M84GSE1N5WG88DGJZH0F8"
-            - and a better way… there is! but I'll get to that once my nap is over. <!--
+            - and a better way… there is! but I'll get to that once my nap is over.
 
 % id = "01HQ1M84GS0KJ9NA6GPS62RC95"
 - for now, have a big editor to play around with. it's a lot of fun arranging the tiles in various shapes!
@@ -910,9 +910,9 @@ new TilesetTileEditor({
 ```output tairu
 ```
 
-:nap:
+:nap: <!--
 
-% disabled = true
+% stage = "Draft"
   id = "01HQ1M84GS3WKE2X6QV2SNQX46"
 - TODO: next chapter! if you're reading this, you're in on it soon. that's quite sad, but YOU CAN STILL TURN BACK! I advise you to do that immediately.
 
