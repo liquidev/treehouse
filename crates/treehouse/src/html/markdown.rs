@@ -492,8 +492,10 @@ where
                                 .copied();
                             if let Some(branch) = branch_id.map(|id| self.treehouse.tree.branch(id))
                             {
-                                self.writer.write_str("<a href=\"#")?;
-                                escape_html(&mut self.writer, &branch.html_id)?;
+                                self.writer.write_str("<a href=\"")?;
+                                escape_html(&mut self.writer, &self.config.site)?;
+                                self.writer.write_str("/b?")?;
+                                escape_html(&mut self.writer, &branch.attributes.id)?;
                                 self.writer.write_str("\">")?;
                             }
                             self.writer.write_str("<img is=\"th-emoji\" title=\":")?;
@@ -502,6 +504,8 @@ where
                             escape_html(&mut self.writer, &self.config.site)?;
                             self.writer.write_str("/static/emoji/")?;
                             escape_html(&mut self.writer, filename)?;
+                            self.writer.write_str("\" alt=\"")?;
+                            escape_html(&mut self.writer, name)?;
                             self.writer.write_str("\">")?;
                             if branch_id.is_some() {
                                 self.writer.write_str("</a>")?;

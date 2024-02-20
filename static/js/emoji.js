@@ -1,29 +1,118 @@
 // Emoji zoom-in functionality.
 
-class Emoji extends HTMLImageElement {
-    constructor() {
+class EmojiTooltip extends HTMLElement {
+    constructor(emoji, { onClosed }) {
         super();
 
-        this.wrapper = document.createElement("span");
-        this.wrapper.className = "emoji-wrapper";
-        this.replaceWith(this.wrapper);
-        this.wrapper.appendChild(this);
+        this.emoji = emoji;
+        this.onClosed = onClosed;
+    }
 
-        this.enlarged = new Image();
-        this.enlarged.src = this.src;
+    connectedCallback() {
+        this.role = "tooltip";
 
-        this.titleElement = document.createElement("p");
-        this.titleElement.innerText = this.title;
+        this.image = new Image();
+        this.image.src = this.emoji.src;
 
-        this.tooltip = document.createElement("div");
-        this.tooltip.className = "emoji-tooltip";
-        this.tooltip.appendChild(this.enlarged);
-        this.tooltip.appendChild(this.titleElement);
+        this.description = document.createElement("p");
+        this.description.textContent = `${this.emoji.emojiName}`;
 
-        this.wrapper.appendChild(this.tooltip);
+        let emojiBoundingBox = this.emoji.getBoundingClientRect();
+        this.style.left = `${emojiBoundingBox.left + emojiBoundingBox.width / 2}px`;
+        this.style.top = `calc(${emojiBoundingBox.top}px + 1.5em)`;
 
-        this.alt = this.title;
+        this.fullyOpaque = false;
+        this.addEventListener("transitionend", event => {
+            if (event.propertyName == "opacity") {
+                this.fullyOpaque = !this.fullyOpaque;
+                if (!this.fullyOpaque) {
+                    this.onClosed();
+                }
+            }
+        });
+        // Timeout is zero because we just want to execute this later, to be definitely sure
+        // the transition plays out.
+        setTimeout(() => this.classList.add("transitioned-in"), 0);
+
+        this.appendChild(this.image);
+        this.appendChild(this.description);
+    }
+
+    close() {
+        this.classList.remove("transitioned-in");
+    }
+}
+
+customElements.define("th-emoji-tooltip", EmojiTooltip);
+
+let emojiTooltips = null;
+addEventListener("wheel", event => emojiTooltips.closeTooltips(event));
+
+class EmojiTooltips extends HTMLElement {
+    constructor() {
+        super();
+        this.tooltips = new Set();
+        this.abortController = new AbortController();
+
+    }
+
+    connectedCallback() {
+        emojiTooltips = this;
+    }
+
+    disconnectedCallback() {
+        this.abortController.abort();
+    }
+
+    openTooltip(emoji) {
+        let tooltip = new EmojiTooltip(emoji, {
+            onClosed: () => {
+                this.removeChild(tooltip);
+                this.tooltips.delete(tooltip);
+            },
+        });
+
+        this.appendChild(tooltip);
+        this.tooltips.add(tooltip);
+
+        return tooltip;
+    }
+
+    closeTooltip(tooltip) {
+        tooltip.close();
+    }
+
+    closeTooltips() {
+        for (let tooltip of this.tooltips) {
+            console.log("close", this);
+
+            tooltip.close();
+        }
+    }
+}
+
+customElements.define("th-emoji-tooltips", EmojiTooltips);
+
+class Emoji extends HTMLImageElement {
+    connectedCallback() {
+        this.emojiName = this.title;
+
+        // title makes the browser add a tooltip. We replace browser tooltips with our own,
+        // so remove the title.
         this.title = "";
+
+        this.addEventListener("mouseenter", () => this.openTooltip());
+        this.addEventListener("mouseleave", () => this.closeTooltip());
+        this.addEventListener("scroll", () => this.closeTooltip());
+    }
+
+    openTooltip() {
+        this.tooltip = emojiTooltips.openTooltip(this);
+    }
+
+    closeTooltip() {
+        emojiTooltips.closeTooltip(this.tooltip);
+        this.tooltip = null;
     }
 }
 

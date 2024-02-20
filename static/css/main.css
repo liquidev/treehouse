@@ -459,19 +459,12 @@ img[is="th-emoji"] {
 
 /* And also style emoji tooltips. */
 
-.emoji-wrapper {
-    --transition-duration: 0.2s;
-
-    position: relative;
-}
-
-.emoji-tooltip {
+th-emoji-tooltip {
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    position: absolute;
-    left: 50%;
+    position: fixed;
     transform: translateX(-50%) translateY(-10%) scale(0.8);
     width: max-content;
     z-index: 100;
@@ -490,24 +483,24 @@ img[is="th-emoji"] {
     pointer-events: none;
 }
 
-.emoji-wrapper:hover .emoji-tooltip {
+th-emoji-tooltip.transitioned-in {
     opacity: 100%;
     filter: blur(0px);
     transform: translateX(-50%) scale(1.0);
 }
 
-.emoji-tooltip img {
+th-emoji-tooltip img {
     display: block;
     max-width: 64px;
     max-height: 64px;
 }
 
-.emoji-tooltip p {
+th-emoji-tooltip p {
     --recursive-wght: 550;
     color: var(--text-color);
-    font-size: 0.75em;
+    font-size: 0.9em;
     margin: 0;
-    padding-top: 4px;
+    padding-top: 6px;
     line-height: 1;
 }
 
