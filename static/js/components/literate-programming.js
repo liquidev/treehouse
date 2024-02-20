@@ -183,7 +183,9 @@ class OutputMode {
             }
         });
 
-        this.frame.placeholderImage.classList.add("loading");
+        if (this.frame.placeholderImage != null) {
+            this.frame.placeholderImage.classList.add("loading");
+        }
 
         this.frame.program.onChanged.push(_ => this.evaluate());
     }
