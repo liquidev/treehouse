@@ -1,5 +1,5 @@
 // Detect if we can have crucial functionality (ie. custom elements call constructors).
-// This doesn't seem to happen in Epiphany, and possibly also other Webkit-based browsers.
+// This doesn't seem to happen in Epiphany, and also other Webkit-based browsers.
 let works = false;
 class WebkitMoment extends HTMLLIElement {
     constructor() {

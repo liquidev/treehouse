@@ -1,0 +1,11 @@
+%% template = "_new.hbs"
+   title = "a curated feed of updates to the house"
+   styles = ["new.css"]
+   feed = "news"
+
+% id = "01HQ6G30PTVT5H0Z04VVRHEZQF"
+- ever wondered how Terraria renders its worlds? or how editors like Tiled manage to make painting tiles so easy?
+
+### tairu - an interactive exploration of 2D autotiling techniques
+
+[read][page:programming/blog/tairu]

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html lang="en-US" prefix="og: https://ogp.me/ns#">
+
+<head>
+    {{> components/_head.hbs }}
+</head>
+
+<body>
+    {{#> components/_nav.hbs }}
+
+    {{!-- For /index, include a "new" link that goes to the curated news feed page. --}}
+    {{#if (eq page.tree_path "index")}}
+    <a href="{{ config.site }}/treehouse/new.html" is="th-new">new</a>
+    {{/if}}
+
+    {{/ components/_nav.hbs }}
+
+    {{> components/_noscript.hbs }}
+    {{> components/_webkit.hbs }}
+
+    <section>
+        <p>welcome!</p>
+        <p>since you clicked here, you must be curious as to what's been going on since your last visit to the house. so
+            here's a recap just for you - enjoy!</p>
+    </section>
+
+    <hr>
+
+    {{> components/_tree.hbs }}
+
+    <hr>
+
+    <section>
+        <p>note that this page does not include any updates that were made to the website itself - for that, you can
+            visit <a href="{{ config.site }}/treehouse/changelog.html">the changelog</a>.
+        </p>
+    </section>
+
+    <section is="th-settings">
+        <details>
+            <summary>
+                settings
+            </summary>
+            <section>
+                <p>if you find the newsfeed annoying, you can customize some aspects of it.</p>
+                <p>
+                    <input type="checkbox" is="th-setting-checkbox" id="showNewPostIndicator">
+                    <label for="showNewPostIndicator">show the <span class="badge red">1</span> badge on the homepage
+                        for
+                        new posts you haven't read yet</label>
+                </p>
+                <p>
+                    <button id="mark-all-as-unread"
+                        title="Mostly useful for debugging purposes, but it's there if you really wanna do it.">
+                        mark all as unread</button>
+                </p>
+            </section>
+        </details>
+    </section>
+
+    {{!-- For all pages except the one linked from the footer, include the footer icon. --}}
+    {{#if (ne page.tree_path "treehouse")}}
+    {{> components/_footer.hbs }}
+    {{/if}}
+
+    <script type="module" defer>
+        import { initNewsPage, markAllAsUnread } from "{{ config.site }}/static/js/news.js";
+        initNewsPage();
+        document.getElementById("mark-all-as-unread").addEventListener("click", () => {
+            markAllAsUnread();
+            alert("congration! you done it");
+        });
+    </script>
+</body>
+
+</html>

@@ -184,6 +184,7 @@ class OutputMode {
         });
 
         if (this.frame.placeholderImage != null) {
+            this.frame.placeholderImage.classList.add("js");
             this.frame.placeholderImage.classList.add("loading");
         }
 

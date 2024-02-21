@@ -3,6 +3,11 @@ use serde::{Deserialize, Serialize};
 /// Top-level `%%` root attributes.
 #[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct RootAttributes {
+    /// Template to use for generating the page.
+    /// Defaults to `_tree.hbs`.
+    #[serde(default)]
+    pub template: Option<String>,
+
     /// Title of the generated .html page.
     ///
     /// The page's tree path is used if empty.
@@ -26,6 +31,11 @@ pub struct RootAttributes {
     /// These are relative to the /static/css directory.
     #[serde(default)]
     pub styles: Vec<String>,
+
+    /// When specified, branches coming from this root will be added to a _feed_ with the given name.
+    /// Feeds can be read by Handlebars templates to generate content based on them.
+    #[serde(default)]
+    pub feed: Option<String>,
 }
 
 /// A picture reference.

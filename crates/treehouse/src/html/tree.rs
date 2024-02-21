@@ -114,15 +114,22 @@ pub fn branch_to_html(
                             .map(|&branch_id| {
                                 (
                                     format!(
-                                        "/b?{}",
+                                        "{}/b?{}",
+                                        config.site,
                                         treehouse.tree.branch(branch_id).attributes.id
                                     )
                                     .into(),
                                     "".into(),
                                 )
                             }),
+                        "page" => {
+                            Some((format!("{}/{}.html", config.site, linked).into(), "".into()))
+                        }
                         "pic" => config.pics.get(linked).map(|filename| {
-                            (format!("/static/pic/{}", &filename).into(), "".into())
+                            (
+                                format!("{}/static/pic/{}", config.site, &filename).into(),
+                                "".into(),
+                            )
                         }),
                         _ => None,
                     })

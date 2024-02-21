@@ -1,0 +1,103 @@
+/* Give the intro and outro some breathing room. */
+section {
+    padding: 1em 2em;
+}
+
+/* Style all links in the last paragraph as big buttons. */
+.tree th-bc>p:last-child {
+    --transition-duration: 0.2s;
+
+    margin-top: 12px;
+    margin-bottom: 4px;
+
+    &>a {
+        padding: 0.5em 1.5em;
+
+        color: var(--text-color);
+        background-color: transparent;
+        border: 1px solid var(--border-1);
+        border-radius: 2em;
+        text-decoration: none;
+
+        transition:
+            color var(--transition-duration),
+            background-color var(--transition-duration),
+            border-color var(--transition-duration);
+
+        &:hover,
+        &:focus {
+            color: white;
+            background-color: #058ef0;
+            border-color: white;
+        }
+    }
+}
+
+section[is="th-settings"] {
+    & h3 {
+        display: inline;
+    }
+
+    & details>summary {
+        --recursive-wght: 700;
+
+        list-style: none;
+        cursor: pointer;
+
+        opacity: 50%;
+        transition: opacity var(--transition-duration);
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &::before {
+            --recursive-casl: 0.0;
+            --recursive-mono: 1.0;
+            --recursive-slnt: 0.0;
+
+            content: '+';
+            margin-right: 0.3em;
+
+            opacity: 50%;
+        }
+
+        &:hover {
+            opacity: 100%;
+        }
+    }
+
+    & details[open]>summary {
+        opacity: 100%;
+
+        &::before {
+            content: '-';
+        }
+    }
+
+    & p {
+        margin-bottom: 8px;
+    }
+
+    & button {
+        border: 1px solid var(--border-1);
+        border-radius: 999px;
+        padding: 4px 12px;
+        background: none;
+        color: var(--text-color);
+        font-size: 1rem;
+
+        cursor: pointer;
+
+        transition:
+            color var(--transition-duration),
+            background-color var(--transition-duration),
+            border-color var(--transition-duration);
+
+        &:hover {
+            color: white;
+            background-color: #058ef0;
+            border-color: white;
+        }
+    }
+}

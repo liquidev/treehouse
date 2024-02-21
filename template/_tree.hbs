@@ -3,161 +3,31 @@
 <html lang="en-US" prefix="og: https://ogp.me/ns#">
 
 <head>
-    <meta charset="UTF-8">
-
-    <title>{{#if (ne page.title config.user.title)}}{{ page.title }} · {{/if}}{{ config.user.title }}</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="preload" href="{{ config.site }}/static/font/Recursive_VF_1.085.woff2" as="font" type="font/woff2"
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
-    <link rel="stylesheet" href="{{ config.site }}/static/css/tree.css">
-
-    <script>const TREEHOUSE_SITE = `{{ config.site }}`;</script>
-    <script type="module" src="{{ config.site }}/navmap.js"></script>
-    <script type="module" src="{{ config.site }}/static/js/ulid.js"></script>
-    <script type="module" src="{{ config.site }}/static/js/usability.js"></script>
-    <script type="module" src="{{ config.site }}/static/js/tree.js"></script>
-    <script type="module" src="{{ config.site }}/static/js/emoji.js"></script>
-    <script type="module" src="{{ config.site }}/static/js/thanks-webkit.js"></script>
-
-    <meta property="og:site_name" content="{{ config.user.title }}">
-    <meta property="og:title" content="{{ page.title }}">
-    {{!--
-    This is a bit of a hack to quickly insert metadata into generated pages without going through Handlebars, which
-    would involve registering, parsing, and generating a page from a template.
-    Yes it would be more flexible that way, but it doesn't need to be.
-    It just needs to be a string replacement.
-    --}}
-    <!-- treehouse-ca37057a-cff5-45b3-8415-3b02dbf6c799-per-branch-metadata -->
-    {{#if page.thumbnail}}
-    <meta property="og:image" content="{{ page.thumbnail.url }}">
-    <meta property="og:image:alt" content="{{ page.thumbnail.alt }}">
-    {{/if}}
+    {{> components/_head.hbs }}
 </head>
 
 <body>
-    <nav>
-        <a href="{{ config.site }}/" title="Back to homepage">
-            <svg class="logo" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                    d="M8 3H7H6V4V5H4V6H6V9V10H7H10V12H11V10H12H13V9V8V7H12H11H10V8V9H7V6H8H9V5V4V3H8ZM12 9H11V8H12V9ZM7 5V4H8V5H7ZM3 5H2V6H3V5ZM10 13H11V14H10V13Z"
-                    fill="currentColor" />
-            </svg>
-        </a>
+    {{#> components/_nav.hbs }}
 
-        <div class="nav-page">
-            {{#if page.breadcrumbs}}
-            <ol class="breadcrumbs">
-                {{{ page.breadcrumbs }}}
-            </ol>
-            {{/if}}
+    {{!-- For /index, include a "new" link that goes to the curated news feed page. --}}
+    {{#if (eq page.tree_path "index")}}
+    <a href="{{ config.site }}/treehouse/new.html" is="th-new">new</a>
+    {{/if}}
 
-            {{#if (and (ne page.title config.user.title) (ne page.title page.tree_path))}}
-            <h1 class="page-title">{{ page.title }}</h1>
-            {{/if}}
-        </div>
-    </nav>
+    {{/ components/_nav.hbs }}
 
-    <noscript>
-        <div class="noscript" role="note">
-            <p>hey! looks like you have <strong>JavaScript disabled.</strong><br>
-                I respect that decision, but you may find the experience of browsing the treehouse… not great.<br>
-                for example, links to branches may not work properly. I cannot do anything about this; it's due to how
-                the <code>&lt;details&gt;</code> element works.<br>
-                (a <code>&lt;details&gt;</code> will not expand itself automatically to reveal the linked element to
-                you.)<br>
-                I did my best to at least keep the site readable in this state, but you can only do so much with plain
-                HTML and CSS.</p>
+    {{> components/_noscript.hbs }}
+    {{> components/_webkit.hbs }}
 
-            <p><strong>Pinky promise this website does not contain any malicious code such as trackers or cryptocurrency
-                    miners.</strong><br>
-                if you don't believe me, you're free to inspect the source yourself! all the scripts are written
-                lovingly in vanilla JS (not minified!) by yours truly ❤️</p>
-            <small>and if this box is annoying, feel free to block it with uBlock Origin or something. I have no
-                way of remembering you closed it, and don't wanna add a database to this website. simplicity
-                rules!</small>
-        </div>
-    </noscript>
+    {{!--
+    NOTE: ~ because components/_tree.hbss must not include any extra indentation, because it may
+    contain pre elements which shouldn't be indented.
+    --}}
+    {{~> components/_tree.hbs }}
 
-    <div id="webkit-makes-me-go-insane" class="noscript" role="note">
-        <p>hey! looks like you're using a weird or otherwise quirky web browser. this basically means, the website will
-            not work for you correctly. I might fix it in the future but I have very limited time to work on this
-            website and so don't have an estimate on when that might happen.</p>
-        <p>in the meantime I suggest switching to <a href="https://firefox.com">something more modern.</a></p>
-        <p>sorry for the inconvenience!</p>
-    </div>
-
-    <main class="tree">
-        {{!-- Append page styles and scripts into the main content, such that they can be inlined
-        into linked branches when those are loaded in. Putting them in the page's head would make
-        extracting them way more painful than it needs to be. --}}
-
-        {{#each page.styles}}
-        <link rel="stylesheet" href="{{ ../config.site }}/static/css/{{ this }}">
-        {{/each}}
-
-        {{#each page.scripts}}
-        <script type="module" src="{{ ../config.site }}/static/js/{{ this }}"></script>
-        {{/each}}
-
-        {{{ page.tree }}}
-    </main>
-
-    <th-emoji-tooltips></th-emoji-tooltips>
-
-    {{#if (ne page.tree_path 'treehouse')}}
-    <footer>
-        <a href="{{ config.site }}/treehouse.html">
-            <svg id="footer-icon" width="32" height="32" viewBox="0 0 32 32" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <g id="all">
-                    <mask id="mask">
-                        <rect width="32" height="32" fill="black" />
-
-                        <clipPath id="treehouse">
-                            <path fill-rule="evenodd" clip-rule="evenodd" fill="white" transform="translate(0 12)"
-                                d="M2.95266 3.95816C2.74074 1.83892 4.40494 0 6.53475 0C8.68036 0 10.3496 1.86501 10.1127 3.9975L10.0568 4.5L10.352 4.37352C11.7717 3.76506 13.316 4.92718 13.1244 6.45988L13.0568 7C14.1537 6.56127 15.3084 7.4907 15.1142 8.65595L15.0449 9.07153C14.7633 10.7614 13.3012 12 11.588 12H4.05892C2.0541 12 0.358966 10.5159 0.0940032 8.52866L0.0241185 8.00452C-0.210422 6.24546 1.30006 4.74903 3.05685 5L2.95266 3.95816ZM4.55685 7H2.55685V8H4.55685V7ZM4.55685 9H2.55685V10H4.55685V9ZM5.55685 7H7.55685V8H5.55685V7ZM7.55685 9H5.55685V10H7.55685V9ZM5.55685 13H7.55685L8.05685 16L9.55685 13H10.5569L9.49201 16.5495C9.21835 17.4617 9.39407 18.4496 9.96549 19.2115L10.5569 20H7.55685V18H6.55685V20H4.55685L5.35542 18.9352C5.80652 18.3338 6.01534 17.5848 5.94053 16.8367L5.55685 13Z" />
-                        </clipPath>
-
-                        <clipPath id="rectangleClip">
-                            <rect id="rectangle1" width="16" height="16" />
-                        </clipPath>
-
-                        <clipPath id="rectangleTreehouseClip" clip-path="url(#treehouse)">
-                            <rect id="rectangle2" width="16" height="16" />
-                        </clipPath>
-
-                        <g transform="translate(3 0)">
-                            <rect width="32" height="32" fill="white" clip-path="url(#treehouse)" />
-                            <rect width="32" height="32" fill="white" clip-path="url(#rectangleClip)" />
-                            <rect width="32" height="32" fill="black" clip-path="url(#rectangleTreehouseClip)" />
-                        </g>
-                    </mask>
-
-                    <rect width="32" height="32" fill="currentColor" mask="url(#mask)" />
-                </g>
-
-                <style>
-                    #rectangle1,
-                    #rectangle2 {
-                        transform: translate(16px, 12px) rotate(15deg) translate(-8px, -8px);
-                        rx: 0px;
-                        transition: all 1s;
-                    }
-
-                    #all:hover #rectangle1,
-                    #all:hover #rectangle2 {
-                        transform: translate(22px, 24px) rotate(360deg) translate(-2px, -2px);
-                        width: 4px;
-                        height: 4px;
-                        rx: 4px;
-                    }
-                </style>
-            </svg>
-        </a>
-    </footer>
+    {{!-- For all pages except the one linked from the footer, include the footer icon. --}}
+    {{#if (ne page.tree_path "treehouse")}}
+    {{> components/_footer.hbs }}
     {{/if}}
 </body>
 

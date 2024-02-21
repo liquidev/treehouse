@@ -369,6 +369,16 @@ th {
     --recursive-casl: 0.5;
 }
 
+/* Horizontal rules */
+
+hr {
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--border-1);
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
 /* Style the noscript box a little more prettily. */
 
 .noscript {
@@ -413,6 +423,7 @@ nav {
 
 nav .nav-page {
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
 }
 
@@ -435,8 +446,49 @@ h1.page-title {
     font-size: 1.25rem;
 }
 
-/* Style the footer */
+/* Style the `new` link on the homepage */
+a[is="th-new"] {
+    flex-shrink: 0;
+    color: var(--text-color);
+    opacity: 50%;
 
+    &.has-news {
+        opacity: 100%;
+        text-decoration: none;
+
+        & .new-text {
+            text-decoration: underline;
+        }
+    }
+
+    & .badge {
+        margin-left: 8px;
+        text-decoration: none;
+    }
+}
+
+/* Style new badges */
+span.badge {
+    --recursive-wght: 800;
+    --recursive-slnt: 0;
+    --recursive-mono: 1.0;
+    --recursive-casl: 0;
+
+    border-radius: 999px;
+    padding: 2px 6px;
+    font-size: 0.9em;
+
+    &.red {
+        color: white;
+        background-color: #d01243;
+    }
+
+    &.before-content {
+        margin-right: 6px;
+    }
+}
+
+/* Style the footer */
 footer {
     margin-top: 4rem;
     text-align: right;
@@ -561,6 +613,9 @@ th-literate-program[data-mode="output"] {
         border-style: none;
         border-radius: 4px;
         display: block;
+    }
+
+    & img.placeholder.js {
         transition: opacity var(--transition-duration);
     }
 
@@ -708,4 +763,12 @@ th-literate-program[data-mode="output"] {
             text-decoration-color: var(--syntax-keyword1);
         }
     }
+}
+
+/* Style settings sections */
+
+section[is="th-settings"] {
+    /* Don't display settings when JavaScript is disabled.
+       JS overrides this value on the element itself. */
+    display: none;
 }

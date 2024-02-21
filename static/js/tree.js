@@ -17,12 +17,11 @@ function branchIsOpen(branchID) {
     return branchState[branchID];
 }
 
-class Branch extends HTMLLIElement {
+export class Branch extends HTMLLIElement {
     static branchesByNamedID = new Map();
+    static onAdded = [];
 
-    constructor() {
-        super();
-
+    connectedCallback() {
         this.isLeaf = this.classList.contains("leaf");
 
         this.details = this.childNodes[0];
@@ -48,15 +47,19 @@ class Branch extends HTMLLIElement {
             });
         }
 
-        let namedID = this.id.split(':')[1];
-        Branch.branchesByNamedID.set(namedID, this);
+        this.namedID = this.id.split(':')[1];
+        Branch.branchesByNamedID.set(this.namedID, this);
 
-        if (ulid.isCanonicalUlid(namedID)) {
-            let timestamp = ulid.getTimestamp(namedID);
+        if (ulid.isCanonicalUlid(this.namedID)) {
+            let timestamp = ulid.getTimestamp(this.namedID);
             let date = document.createElement("span");
             date.classList.add("branch-date");
             date.innerText = timestamp.toLocaleDateString();
             this.buttonBar.insertBefore(date, this.buttonBar.firstChild);
+        }
+
+        for (let callback of Branch.onAdded) {
+            callback(this);
         }
     }
 }
@@ -68,8 +71,8 @@ customElements.define("th-b", Branch, { extends: "li" });
 class LinkedBranch extends Branch {
     static byLink = new Map();
 
-    constructor() {
-        super();
+    connectedCallback() {
+        super.connectedCallback();
 
         this.linkedTree = this.getAttribute("data-th-link");
         LinkedBranch.byLink.set(this.linkedTree, this);

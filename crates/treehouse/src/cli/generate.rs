@@ -43,6 +43,40 @@ struct ParsedTree {
     target_path: PathBuf,
 }
 
+#[derive(Serialize)]
+struct Feed {
+    branches: Vec<String>,
+}
+
+#[derive(Serialize)]
+pub struct Page {
+    pub title: String,
+    pub thumbnail: Option<Thumbnail>,
+    pub scripts: Vec<String>,
+    pub styles: Vec<String>,
+    pub breadcrumbs: String,
+    pub tree_path: Option<String>,
+    pub tree: String,
+}
+
+#[derive(Serialize)]
+pub struct Thumbnail {
+    pub url: String,
+    pub alt: Option<String>,
+}
+
+#[derive(Serialize)]
+struct StaticTemplateData<'a> {
+    config: &'a Config,
+}
+
+#[derive(Serialize)]
+pub struct PageTemplateData<'a> {
+    pub config: &'a Config,
+    pub page: Page,
+    pub feeds: &'a HashMap<String, Feed>,
+}
+
 impl Generator {
     fn add_directory_rec(&mut self, directory: &Path) -> anyhow::Result<()> {
         for entry in WalkDir::new(directory) {
@@ -172,14 +206,14 @@ impl Generator {
         config: &Config,
         paths: &Paths<'_>,
         navigation_map: &NavigationMap,
-        parsed_trees: impl IntoIterator<Item = ParsedTree>,
+        parsed_trees: Vec<ParsedTree>,
     ) -> anyhow::Result<()> {
         let mut handlebars = Handlebars::new();
         let mut config_derived_data = ConfigDerivedData::default();
 
         let mut template_file_ids = HashMap::new();
         for entry in WalkDir::new(paths.template_dir) {
-            let entry = entry?;
+            let entry = entry.context("cannot read directory entry")?;
             let path = entry.path();
             if !entry.file_type().is_dir() && path.extension() == Some(OsStr::new("hbs")) {
                 let relative_path = path
@@ -194,12 +228,8 @@ impl Generator {
 
         std::fs::create_dir_all(paths.template_target_dir)?;
         for (name, &file_id) in &template_file_ids {
-            if !name.starts_with('_') {
-                #[derive(Serialize)]
-                struct StaticTemplateData<'a> {
-                    config: &'a Config,
-                }
-
+            let filename = name.rsplit_once('/').unwrap_or(("", name)).1;
+            if !filename.starts_with('_') {
                 let templated_html = match handlebars.render(name, &StaticTemplateData { config }) {
                     Ok(html) => html,
                     Err(error) => {
@@ -217,6 +247,24 @@ impl Generator {
                     paths.template_target_dir.join(name).with_extension("html"),
                     templated_html,
                 )?;
+            }
+        }
+
+        let mut feeds = HashMap::new();
+
+        for parsed_tree in &parsed_trees {
+            let roots = &treehouse.roots[&parsed_tree.tree_path];
+
+            if let Some(feed_name) = &roots.attributes.feed {
+                let mut feed = Feed {
+                    branches: Vec::new(),
+                };
+                for &root in &roots.branches {
+                    let branch = treehouse.tree.branch(root);
+                    feed.branches.push(branch.attributes.id.clone());
+                }
+                dbg!(&feed.branches);
+                feeds.insert(feed_name.to_owned(), feed);
             }
         }
 
@@ -238,28 +286,6 @@ impl Generator {
                 &roots.branches,
             );
 
-            #[derive(Serialize)]
-            pub struct Page {
-                pub title: String,
-                pub thumbnail: Option<Thumbnail>,
-                pub scripts: Vec<String>,
-                pub styles: Vec<String>,
-                pub breadcrumbs: String,
-                pub tree_path: Option<String>,
-                pub tree: String,
-            }
-
-            #[derive(Serialize)]
-            pub struct Thumbnail {
-                pub url: String,
-                pub alt: Option<String>,
-            }
-
-            #[derive(Serialize)]
-            pub struct PageTemplateData<'a> {
-                pub config: &'a Config,
-                pub page: Page,
-            }
             let template_data = PageTemplateData {
                 config,
                 page: Page {
@@ -280,16 +306,22 @@ impl Generator {
                         .map(|s| s.to_owned()),
                     tree,
                 },
+                feeds: &feeds,
             };
+            let template_name = roots
+                .attributes
+                .template
+                .clone()
+                .unwrap_or_else(|| "_tree.hbs".into());
 
             treehouse.roots.insert(parsed_tree.tree_path, roots);
 
-            let templated_html = match handlebars.render("_tree.hbs", &template_data) {
+            let templated_html = match handlebars.render(&template_name, &template_data) {
                 Ok(html) => html,
                 Err(error) => {
                     Self::wrangle_handlebars_error_into_diagnostic(
                         treehouse,
-                        template_file_ids["_tree.hbs"],
+                        template_file_ids[&template_name],
                         error.line_no,
                         error.column_no,
                         error.desc,
