@@ -200,6 +200,7 @@ class OutputMode {
     }
 
     clearConsole() {
+        this.frame.removeChild(this.frame.placeholderConsole);
         this.console.replaceChildren();
     }
 
@@ -264,7 +265,8 @@ class LiterateProgram extends HTMLElement {
         this.frameIndex = this.program.frames.length;
         this.program.frames.push(this);
 
-        this.placeholderImage = this.getElementsByClassName("placeholder")[0];
+        this.placeholderImage = this.getElementsByClassName("placeholder-image")[0];
+        this.placeholderConsole = this.getElementsByClassName("placeholder-console")[0];
 
         this.mode = this.getAttribute("data-mode");
         if (this.mode == "input") {

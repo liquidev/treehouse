@@ -270,7 +270,7 @@ where
                             if let LiterateCodeKind::Output { placeholder_pic_id } = kind {
                                 if !placeholder_pic_id.is_empty() {
                                     self.write(
-                                        "<img class=\"placeholder\" loading=\"lazy\" src=\"",
+                                        "<img class=\"placeholder-image\" loading=\"lazy\" src=\"",
                                     )?;
                                     escape_html(
                                         &mut self.writer,
@@ -288,6 +288,8 @@ where
                                     self.write(">")?;
                                 }
                             }
+
+                            self.write("<pre class=\"placeholder-console\">")?;
                             Ok(())
                         }
                     },
@@ -409,7 +411,7 @@ where
             Tag::CodeBlock(kind) => {
                 self.write(match kind {
                     CodeBlockKind::Fenced(language) => match CodeBlockMode::parse(&language) {
-                        CodeBlockMode::LiterateProgram { .. } => "</th-literate-program>",
+                        CodeBlockMode::LiterateProgram { .. } => "</pre></th-literate-program>",
                         _ => "</code></pre>",
                     },
                     _ => "</code></pre>\n",

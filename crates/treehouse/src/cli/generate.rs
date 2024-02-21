@@ -71,7 +71,7 @@ struct StaticTemplateData<'a> {
 }
 
 #[derive(Serialize)]
-pub struct PageTemplateData<'a> {
+struct PageTemplateData<'a> {
     pub config: &'a Config,
     pub page: Page,
     pub feeds: &'a HashMap<String, Feed>,

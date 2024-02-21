@@ -609,18 +609,18 @@ th-literate-program[data-mode="output"] {
     border-radius: 0;
 
     & iframe,
-    & img.placeholder {
+    & img.placeholder-image {
         border-style: none;
         border-radius: 4px;
         display: block;
     }
 
-    & img.placeholder.js {
+    & img.placeholder-image.js {
         transition: opacity var(--transition-duration);
     }
 
     & iframe,
-    & img.placeholder.loading {
+    & img.placeholder-image.loading {
         opacity: 50%;
     }
 
@@ -659,8 +659,11 @@ th-literate-program[data-mode="output"] {
         }
     }
 
-    & pre.console {
+    & pre.console,
+    & pre.placeholder-console {
         position: relative;
+        margin-top: 0;
+        margin-bottom: 0;
 
         &:empty {
             display: none;
