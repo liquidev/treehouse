@@ -200,7 +200,10 @@ class OutputMode {
     }
 
     clearConsole() {
-        this.frame.removeChild(this.frame.placeholderConsole);
+        if (this.frame.placeholderConsole != null) {
+            this.frame.removeChild(this.frame.placeholderConsole);
+            this.frame.placeholderConsole = null;
+        }
         this.console.replaceChildren();
     }
 
@@ -242,6 +245,7 @@ class OutputMode {
             // Fade the iframe in after it becomes visible, and remove the image.
             setTimeout(() => this.iframe.classList.add("loaded"), 0);
             this.frame.removeChild(this.frame.placeholderImage);
+            this.frame.placeholderImage = null;
         } else {
             // If there is no image, don't do the fade in.
             this.iframe.classList.add("loaded");
