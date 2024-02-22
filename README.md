@@ -14,22 +14,19 @@ You have been warned.
 
 ## Building
 
-To serve the website on `http://localhost:8080`:
+The following commands require [`just`](https://github.com/casey/just).
+Running a development server requires [`cargo-watch`](https://github.com/watchexec/cargo-watch).
+
+To serve the website on `http://localhost:8080` for development:
 
 ```sh
-cargo run -p treehouse serve
+just
 ```
 
-This will start a server on port 8080. You can change the port by using `--port`, but note that you'll also have to override the website address. The treehouse hardcodes all URLs to point to its own address and therefore needs a base URL, provided with `$TREEHOUSE_SITE` or more permanently by setting `site` inside `treehouse.toml`:
+This will start a server on port 8080. You can change the port by using the variable `port`:
 
 ```sh
-TREEHOUSE_SITE="http://localhost:8081" cargo run -p treehouse serve --port 8081
-```
-
-If you're developing, you may wanna use [`cargo-watch`](https://crates.io/crates/cargo-watch):
-
-```sh
-cargo watch -- cargo run -p treehouse serve
+just port=8081
 ```
 
 The website will reload itself automatically if you change any file in the repository.
