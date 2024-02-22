@@ -86,6 +86,13 @@
     --tree-indent-guide-highlighted: var(--border-1);
 }
 
+@media (hover: none) {
+    .tree {
+        --tree-indent-guide-dim: var(--border-1);
+        --tree-indent-guide-highlighted: var(--border-1);
+    }
+}
+
 /* Use an indent level appropriate for the viewport. */
 .tree ul {
     --tree-responsive-indent-width: clamp(8px, 2vw, var(--tree-indent-width));
@@ -101,6 +108,7 @@
 .tree details:has(.branch-container:hover)>ul {
     border-left-color: var(--tree-indent-guide-highlighted);
 }
+
 
 /* Top level should not have an indent or a border. */
 .tree>ul {
@@ -287,6 +295,14 @@ th-bb {
 @media (hover: none) {
     .tree th-bb {
         opacity: 100%;
+
+        /* Replace margin with button size to make it easier to click. */
+        margin: 0px;
+
+        & a.icon {
+            width: 32px;
+            height: 32px;
+        }
     }
 }
 
