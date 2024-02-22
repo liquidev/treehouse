@@ -29,6 +29,10 @@
           content.link = "programming"
         + ## programming
 
+        % id = "design"
+          content.link = "design"
+        + ## design
+
         % id = "music"
           content.link = "music"
         + ## music

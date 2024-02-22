@@ -452,6 +452,8 @@ a[is="th-new"] {
     color: var(--text-color);
     opacity: 50%;
 
+    margin-right: 16px;
+
     &.has-news {
         opacity: 100%;
         text-decoration: none;
@@ -481,6 +483,11 @@ span.badge {
     &.red {
         color: white;
         background-color: #d01243;
+    }
+
+    &.blue {
+        color: white;
+        background-color: #058ef0;
     }
 
     &.before-content {

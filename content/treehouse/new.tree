@@ -4,8 +4,17 @@
    feed = "news"
 
 % id = "01HQ6G30PTVT5H0Z04VVRHEZQF"
-- ever wondered how Terraria renders its worlds? or how editors like Tiled manage to make painting tiles so easy?
+- <span class="badge blue">featured</span> ever wondered how Terraria renders its worlds? or how editors like Tiled manage to make painting tiles so easy?
 
 ### tairu - an interactive exploration of 2D autotiling techniques
 
 [read][page:programming/blog/tairu]
+
+% id = "01HQ8KV8T8GRCVFDJ3EP6QE163"
+- I started a branch on user interface and user experience design, because I was working with mintty at work and had some thoughts about it.
+
+"why does mintty always feel so *out of place* compared to `cmd.exe`?"
+
+### liquidex's treehouse: design
+
+[read: *on digital textures*][page:design/digital-textures] [go to branch][page:design]

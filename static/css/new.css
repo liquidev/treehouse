@@ -7,10 +7,12 @@ section {
 .tree th-bc>p:last-child {
     --transition-duration: 0.2s;
 
-    margin-top: 12px;
+    margin-top: 8px;
     margin-bottom: 4px;
 
     &>a {
+        display: inline-block;
+
         padding: 0.5em 1.5em;
 
         color: var(--text-color);
@@ -30,6 +32,35 @@ section {
             background-color: #058ef0;
             border-color: white;
         }
+    }
+}
+
+.tree li>div:first-child,
+.tree li>details>summary:first-child {
+    --margin: 2.5em;
+
+    border: none;
+    margin-left: var(--tree-indent-width);
+    width: calc(100% - var(--tree-indent-width));
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
+}
+
+.tree th-bp {
+    display: none;
+}
+
+.tree th-bb {
+    opacity: 100%;
+
+    & .branch-date {
+        display: block !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .tree .branch-container {
+        flex-direction: column-reverse;
     }
 }
 

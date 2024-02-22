@@ -1,0 +1,48 @@
+%% title = "on digital textures"
+
+% id = "01HQ8JHZ5NP1K7PHW4MJQS65ND"
+- this is not about textures in the graphics programming sort of way. this is about textures in the *you can feel it under your fingers* way
+
+% id = "01HQ8JHZ5NM6CNJ1PCGCWC6DQV"
+- I don't know if it's just some weird synaesthesia thing or not, but one interesting observation I've noticed is that various cursors seem to give off different *textures*.
+like you hover over something and you can digitally feel it under your fingers
+
+% id = "01HQ8JHZ5NEHACKDTHJSJNB3QD"
+- these textures just generally cause different pieces of software to give off different *vibes*;
+for example, based on texture alone it is possible to determine whether something runs on web technologies.
+
+    % id = "01HQ8JHZ5N68ZG29CSAKYW3CYE"
+    - you can probably tell this blog is a website just by *feeling* how it behaves.
+
+        % id = "01HQ8JHZ5NZAVMCYFGS94W6Z8N"
+        - the cursors, where <span style="cursor: pointer; text-decoration: dotted underline;">pointer</span> is used for elements that are clickable,
+        and a text cursor is used for text.
+
+        <style>
+        .digital-textures-pointer-cursor * { cursor: default }
+        </style>
+
+            % classes.branch = "digital-textures-pointer-cursor"
+              id = "01HQ8JHZ5NYDJD0YKVX55AR3ZQ"
+            - <span style="cursor: default;">
+            when you have an interactive element and it _doesn't_ have a <span style="cursor: pointer; text-decoration: dotted underline;">pointer</span> cursor on it, it feels almost <em>wrong.</em>
+            eerie in a way. out of place.<br>
+            like have you noticed this branch is kind of really fucking weird with the default cursor?
+            </span>
+
+                % id = "01HQ8JHZ5NT1P5R3EM9GEKZ3DK"
+                - <span style="cursor: default; user-select: none;">and this one is *even* weirder, with unselectable text! (sorry for this. I'm trying to make a point.)</span>
+
+        % id = "01HQ8JHZ5N21GM1FWEXAKPWDPA"
+        - the fact you can press <kbd>Ctrl</kbd> + <kbd>A</kbd> and it selects all text also gives off a texture typical of websites.
+
+        % id = "01HQ8JHZ5NMA2HT3M075G9AV1A"
+        - the common usage of [hyperlinks][def:word/hyperlink] over buttons is also typical of websites.
+
+% id = "01HQ8JHZ5N2WA7G6QN7YCE8PN0"
+- Git for Windows asks whether you want to use stock Windows `cmd.exe` or mintty.
+for as long as I can remember, mintty always felt *wrong* to me. like the experience was not *Windowsy.*
+simply because the terminal window is so tiny, the cursor is an I-beam, and the default font used is <span style="font-family: 'Lucida Console', RecVar;">Lucida Console</span> rather than <span style="font-family: 'Consolas', RecVar;">Consolas</span>.
+
+    % id = "01HQ8JHZ5NHEW18R8JQWQCAB6Y"
+    - synaesthetically, it feels to me as if `cmd.exe` is smooth, and mintty is rough. like with `cmd.exe` you're touching matte plastic, an LCD display, and with mintty you're touching a piece of paper or tree bark.

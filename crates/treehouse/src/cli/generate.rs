@@ -219,7 +219,8 @@ impl Generator {
                 let relative_path = path
                     .strip_prefix(paths.template_dir)?
                     .to_string_lossy()
-                    .into_owned();
+                    .into_owned()
+                    .replace('\\', "/");
                 let file_id =
                     Self::register_template(&mut handlebars, treehouse, &relative_path, path)?;
                 template_file_ids.insert(relative_path, file_id);
@@ -263,7 +264,6 @@ impl Generator {
                     let branch = treehouse.tree.branch(root);
                     feed.branches.push(branch.attributes.id.clone());
                 }
-                dbg!(&feed.branches);
                 feeds.insert(feed_name.to_owned(), feed);
             }
         }

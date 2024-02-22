@@ -1,0 +1,25 @@
+%% title = "thoughts on user interfaces and user experiences"
+
+% id = "01HQ8KV8RW077VSHHZ7CXPBDA8"
++ despite not being a UX designer, I care deeply about user experience. it's become somewhat of a hobby of mine, applying UX design to basically everything.
+
+this branch is about that.
+
+    % id = "01HQ8KV8RW35QJSN5WM95DBXRZ"
+    - have you noticed all the small details that make the treehouse feel like a *polished experience*?
+
+        % id = "01HQ8KV8RWDCWQRK4EB2R0ZA1N"
+        - like when you hover over emoji, there's a tooltip - but did you notice the tooltip disappears when you scroll?
+
+            % id = "01HQ8KV8RW00VPW0Z84ZQBMVTP"
+            - that ain't default behavior. :hat_smug:
+
+        % id = "01HQ8KV8RWCGV2GYN04PKED7V4"
+        - or the fact that you can select text in a branch that can be expanded, and the branch won't collapse when you release your mouse button?
+
+            % id = "01HQ8KV8RWS99XKPBKCTZ3NEJM"
+            - that ain't default behavior. :hat_smug:
+
+% content.link = "design/digital-textures"
+  id = "01HQ8JHZ5QTZXQW3M26CXPFQDF"
++ on digital textures
