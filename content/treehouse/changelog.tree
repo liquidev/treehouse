@@ -1,5 +1,17 @@
 %% title = "what's going on inside the house? (a changelog)"
 
+% id = "01HQ94FDZK5SSXPSHQG9BCKA0T"
+- **revision 5:** added [news page][page:treehouse/new]!
+
+    % id = "01HQ94FDZKHSYR11K6A5CTAB4Q"
+    - this page will show you all the updates that have been happening since your last visit
+
+    % id = "01HQ94FDZKXFRMCH5NXXAB146E"
+    + it will also lightly nag you whenever there are new posts with a <span class="badge red">1</span> badge
+
+        % id = "01HQ94FDZK5TJDM3CMNKQKES6Z"
+        - if that's too annoying for you, it's easy to disable - scroll down on the [news page][page:treehouse/new] and there's a (collapsed by default) settings section for the page
+
 % id = "01HP5AKRNJRG1W71MDJ8QY4YFW"
 - **revision 4:** there's now a thing in the footer
 
