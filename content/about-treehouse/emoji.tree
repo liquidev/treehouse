@@ -9,8 +9,10 @@
 % id = "01H8W7VEVNTVQ1E2Z9YWT2PQPX"
 - ### A Hat in Time
 
+    % id = "01HQ99RTH1D8WQ9N2W34JKT2SG"
     - all of the following are stolen from the Hat in Time Discord
 
+        % id = "01HQ99RTH1YZ4NFN42MEKKCJ4K"
         - some of them are from pieces of art from the community. if you are not credited for your art here, [please reach out][branch:hello]!
 
     % id = "emoji/hueh"
@@ -113,7 +115,7 @@
 - ### [Noto Color Emoji](https://github.com/googlefonts/noto-emoji/)
 
     % id = "01HA4HJKQ77H0X87VZ4AYWTSFG"
-    - most Unicode emojis on this website use an old version of Noto Color Emoji, aka [blob emoji](https://en.wikipedia.org/wiki/Blob_emoji).
+    - ~~most~~ some Unicode emojis on this website use an old version of Noto Color Emoji, aka [blob emoji](https://en.wikipedia.org/wiki/Blob_emoji).
 
         % id = "01HA4HJKQ7A9F5P200PDDVNBQD"
         - commit `914c9ecb`
@@ -124,9 +126,21 @@
             % id = "01HA4HJKQ7BSVABSDFZ69H9DSW"
             - really wish Google had kept them around for longer, I hate the modern Noto emojis. they're so corporate and soulless. the blobs were so nice, why did you take them away? :cry:
 
+% id = "01HQ99RTH2FQ92SB7T2EKDEFHJ"
+- ### [Blobmoji](https://github.com/C1710/blobmoji)
+
+    % id = "01HQ99RTH26VWXF93CHNNRN3ZV"
+    - well, what's that I see :monocle: - someone resurrected blob emojis!
+
+        % id = "01HQ99RTH2ZCSBCR3TAB2JV9QK"
+        - so I imported a couple (20) of them into the treehouse
+
 % id = "01H8W7VEVP9FHW7QKZFXDRPRGD"
-- ### [Twemoji](https://github.com/twitter/twemoji)
++ ### ~~[Twemoji](https://github.com/twitter/twemoji)~~
 
     % id = "01HA4HJKQ7JFAQBMFMD55EESFD"
-    - sometimes used as placeholders for blobs I couldn't find in the original Noto emojis. someday I might design my own placeholders.
+    - ~~sometimes used as placeholders for blobs I couldn't find in the original Noto emojis. someday I might design my own placeholders.~~
+
+        % id = "01HQ99RTH2YB5BZV7WDMQC4BT3"
+        - update: no longer the case because I now use [blobmoji][branch:01HQ99RTH2FQ92SB7T2EKDEFHJ]
 
