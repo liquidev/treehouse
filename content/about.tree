@@ -1,3 +1,5 @@
+%% title = "who that! (about me)"
+
 % id = "01H89P3CH836K8WKQ9BPR6RE3C"
 - hello! I am liquidex
 
@@ -99,7 +101,7 @@
                 - they're pretty great you should check them out <!-- (also check out [my games corner][branch:games]? :pleading_face:) -->
 
         % id = "01H89P3CH8AJATQ5DJBBFXJ1NH"
-        - or music <!-- [music][branch:music] -->
+        - or [music][page:music]
 
             % id = "01H89P3CH8XQ59YZD3RFRYQ2BM"
             - various genres from electronic through jazz and even rock
@@ -130,8 +132,8 @@
                     + I really like artists who merge them with elements of electronic music
 
                         % id = "01H89P3CH8G5CFPME3Z88GNDD8"
-                        - while the music corner is under construction I can recommend [Elaenia by Floating Points](https://floatingpoints.bandcamp.com/album/elaenia)
-                          as a good example of that
+                        - ~~while the music corner is under construction I can recommend [Elaenia by Floating Points](https://floatingpoints.bandcamp.com/album/elaenia)
+                          as a good example of that~~ the music corner is no longer under construction. go [check it out][page:music]!
 
     % id = "hello"
     - feel free to come up to me and say hi!
