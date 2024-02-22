@@ -88,8 +88,6 @@ class EmojiTooltips extends HTMLElement {
 
     closeTooltips() {
         for (let tooltip of this.tooltips) {
-            console.log("close", this);
-
             tooltip.close();
         }
     }
