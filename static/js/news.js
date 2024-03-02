@@ -1,8 +1,8 @@
 // news.js because new.js makes the TypeScript language server flip out.
 // Likely because `new` is a keyword, but also, what the fuck.
 
-import { getSettingValue } from "./settings.js";
-import { Branch } from "./tree.js";
+import { getSettingValue } from "treehouse/settings.js";
+import { Branch } from "treehouse/tree.js";
 
 const seenStatesKey = "treehouse.news.seenBranches";
 const seenStates = new Set(JSON.parse(localStorage.getItem(seenStatesKey)) || []);

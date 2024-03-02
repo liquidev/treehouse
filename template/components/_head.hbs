@@ -9,6 +9,12 @@
 <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
 <link rel="stylesheet" href="{{ config.site }}/static/css/tree.css">
 
+<script type="importmap">{
+    "imports": {
+        "treehouse/": "{{ config.site }}/static/js/"
+    }
+}</script>
+
 <script>
     const TREEHOUSE_SITE = `{{ config.site }}`;
     const TREEHOUSE_NEWS_COUNT = {{ len feeds.news.branches }};

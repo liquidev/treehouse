@@ -1,5 +1,5 @@
-import { CodeJar } from "../vendor/codejar.js";
-import { compileSyntax, highlight } from "./literate-programming/highlight.js";
+import { CodeJar } from "treehouse/vendor/codejar.js";
+import { compileSyntax, highlight } from "treehouse/components/literate-programming/highlight.js";
 
 let literatePrograms = new Map();
 

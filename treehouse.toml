@@ -1,4 +1,9 @@
-site = "http://localhost:8080"
+# This string is prepended before each link address.
+# Replace this with a different root path if you need to host the site in a subdirectory (eg. "/treehouse").
+# Note this does not affect the behavior of `serve`, as the treehouse is always served under /.
+# Therefore this is most useful for reverse proxies.
+# This variable can also be set using the TREEHOUSE_SITE environment variable.
+site = ""
 
 [user]
 title = "liquidex's treehouse"

@@ -122,9 +122,7 @@ pub fn branch_to_html(
                                     "".into(),
                                 )
                             }),
-                        "page" => {
-                            Some((format!("{}/{}.html", config.site, linked).into(), "".into()))
-                        }
+                        "page" => Some((config.page_url(linked).into(), "".into())),
                         "pic" => config.pics.get(linked).map(|filename| {
                             (
                                 format!("{}/static/pic/{}", config.site, &filename).into(),
@@ -160,7 +158,7 @@ pub fn branch_to_html(
         if let Content::Link(link) = &branch.attributes.content {
             write!(
                 s,
-                "<noscript><a class=\"navigate icon-go\" href=\"{}/{}.html\">Go to linked tree: <code>{}</code></a></noscript>",
+                "<noscript><a class=\"navigate icon-go\" href=\"{}/{}\">Go to linked tree: <code>{}</code></a></noscript>",
                 EscapeAttribute(&config.site),
                 EscapeAttribute(link),
                 EscapeHtml(link),
@@ -174,7 +172,7 @@ pub fn branch_to_html(
             if let Content::Link(link) = &branch.attributes.content {
                 write!(
                     s,
-                    "<a class=\"icon icon-go\" href=\"{}/{}.html\" title=\"linked tree\"></a>",
+                    "<a class=\"icon icon-go\" href=\"{}/{}\" title=\"linked tree\"></a>",
                     EscapeAttribute(&config.site),
                     EscapeAttribute(link),
                 )

@@ -100,6 +100,10 @@ impl Config {
         Ok(())
     }
 
+    pub fn page_url(&self, page: &str) -> String {
+        format!("{}/{}", self.site, page)
+    }
+
     pub fn pic_url(&self, id: &str) -> String {
         format!(
             "{}/static/pic/{}",

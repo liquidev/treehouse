@@ -1,7 +1,7 @@
 // This is definitely not a three.js ripoff.
 
 import { navigationMap } from "/navmap.js";
-import * as ulid from './ulid.js';
+import * as ulid from "treehouse/ulid.js";
 
 /* Branch persistence */
 

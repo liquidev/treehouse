@@ -1,11 +1,12 @@
 #[cfg(debug_assertions)]
 mod live_reload;
 
-use std::{net::Ipv4Addr, path::PathBuf, sync::Arc};
+use std::{borrow::Cow, net::Ipv4Addr, path::PathBuf, sync::Arc};
 
 use anyhow::Context;
 use axum::{
-    extract::{RawQuery, State},
+    extract::{Path, RawQuery, State},
+    http::{header::CONTENT_TYPE, HeaderValue, StatusCode},
     response::{Html, IntoResponse, Response},
     routing::get,
     Router,
@@ -13,16 +14,18 @@ use axum::{
 use log::{error, info};
 use pulldown_cmark::escape::escape_html;
 use tokio::net::TcpListener;
-use tower_http::services::ServeDir;
 
 use crate::state::{Source, Treehouse};
 
 use super::Paths;
 
 struct SystemPages {
+    index: String,
     four_oh_four: String,
     b_docs: String,
     sandbox: String,
+
+    navmap: String,
 }
 
 struct Server {
@@ -33,19 +36,27 @@ struct Server {
 
 pub async fn serve(treehouse: Treehouse, paths: &Paths<'_>, port: u16) -> anyhow::Result<()> {
     let app = Router::new()
-        .nest_service("/", ServeDir::new(paths.target_dir))
+        .route("/", get(index))
+        .route("/*page", get(page))
         .route("/b", get(branch))
+        .route("/navmap.js", get(navmap))
         .route("/sandbox", get(sandbox))
+        .route("/static/*file", get(static_file))
+        .fallback(get(four_oh_four))
         .with_state(Arc::new(Server {
             treehouse,
             target_dir: paths.target_dir.to_owned(),
             system_pages: SystemPages {
+                index: std::fs::read_to_string(paths.target_dir.join("index.html"))
+                    .context("cannot read index page")?,
                 four_oh_four: std::fs::read_to_string(paths.target_dir.join("_treehouse/404.html"))
                     .context("cannot read 404 page")?,
                 b_docs: std::fs::read_to_string(paths.target_dir.join("_treehouse/b.html"))
                     .context("cannot read /b documentation page")?,
                 sandbox: std::fs::read_to_string(paths.target_dir.join("static/html/sandbox.html"))
                     .context("cannot read sandbox page")?,
+                navmap: std::fs::read_to_string(paths.target_dir.join("navmap.js"))
+                    .context("cannot read navigation map")?,
             },
         }));
 
@@ -55,6 +66,65 @@ pub async fn serve(treehouse: Treehouse, paths: &Paths<'_>, port: u16) -> anyhow
     info!("serving on port {port}");
     let listener = TcpListener::bind((Ipv4Addr::from([0u8, 0, 0, 0]), port)).await?;
     Ok(axum::serve(listener, app).await?)
+}
+
+fn get_content_type(path: &str) -> Option<&'static str> {
+    match () {
+        _ if path.ends_with(".html") => Some("text/html"),
+        _ if path.ends_with(".js") => Some("text/javascript"),
+        _ if path.ends_with(".woff2") => Some("font/woff2"),
+        _ => None,
+    }
+}
+
+async fn index(State(state): State<Arc<Server>>) -> Response {
+    Html(state.system_pages.index.clone()).into_response()
+}
+
+async fn navmap(State(state): State<Arc<Server>>) -> Response {
+    let mut response = state.system_pages.navmap.clone().into_response();
+    response
+        .headers_mut()
+        .insert(CONTENT_TYPE, HeaderValue::from_static("text/javascript"));
+    response
+}
+
+async fn four_oh_four(State(state): State<Arc<Server>>) -> Response {
+    (
+        StatusCode::NOT_FOUND,
+        Html(state.system_pages.four_oh_four.clone()),
+    )
+        .into_response()
+}
+
+async fn static_file(Path(path): Path<String>, State(state): State<Arc<Server>>) -> Response {
+    if let Ok(file) = tokio::fs::read(state.target_dir.join("static").join(&path)).await {
+        let mut response = file.into_response();
+        if let Some(content_type) = get_content_type(&path) {
+            response
+                .headers_mut()
+                .insert(CONTENT_TYPE, HeaderValue::from_static(content_type));
+        } else {
+            response.headers_mut().remove(CONTENT_TYPE);
+        }
+        response
+    } else {
+        four_oh_four(State(state)).await
+    }
+}
+
+async fn page(Path(path): Path<String>, State(state): State<Arc<Server>>) -> Response {
+    let path = if !path.ends_with(".html") {
+        Cow::Owned(path + ".html")
+    } else {
+        Cow::Borrowed(&path)
+    };
+
+    if let Ok(file) = tokio::fs::read(state.target_dir.join(&*path)).await {
+        ([(CONTENT_TYPE, "text/html")], file).into_response()
+    } else {
+        four_oh_four(State(state)).await
+    }
 }
 
 async fn sandbox(State(state): State<Arc<Server>>) -> Response {

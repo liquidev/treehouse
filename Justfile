@@ -1,5 +1,4 @@
 port := "8080"
-export TREEHOUSE_SITE := "http://localhost:" + port
 
 serve:
     cargo watch -- cargo run -- serve --port {{port}}
