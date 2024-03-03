@@ -1,5 +1,28 @@
 %% title = "what's going on inside the house? (a changelog)"
 
+% id = "01HR300JYTSEE1K1DH5R8QZ4K6"
+- **revision 6:** it now works on Webkit
+
+    % id = "01HR300JYTQA11TYPSX59Y4V2S"
+    + this was a hefty refactor, but I introduced a replacement for the standard `is=""` attribute that works on Webkit.
+
+        % id = "01HR300JYTX1J1SQW39SQM2A4X"
+        + seriously, fuck you, Apple.
+        wish the people who work there and oppose industry standards would stop sitting there with a finger up their ass and accept that reality is not always what you want it to be.
+
+            % id = "01HR300JYTPHPKD0VCDGWT01HE"
+            - even as I'm writing this, I'm trembling over how half my website is probably gonna break after this refactor, due to me having it written in pure JavaScript rather than TypeScript, but eh, fuck it.
+
+            *reality is not always what you want it to be.*
+
+            % id = "01HR30AHZMS63DA3W3293HZ6WN"
+            - just know that I'm writing this not because I think the standards are good, but because one vendor not following them just results in extra work on our part - the developers' part -
+            doing more work than is actually really necessary to accomplish a certain task.
+
+            % id = "01HR30AHZME866NBYNXZ15CR09"
+            - using the browser's built-in capabilities is *good.*
+            you're just making me (and hundreds of thousands of other developers) write a shitty, slow version of what the browser could do by default, had it been following Web standards.
+
 % id = "01HQ94FDZK5SSXPSHQG9BCKA0T"
 - **revision 5:** added [news page][page:treehouse/new]!
 
