@@ -15,7 +15,7 @@
         {{/if}}
 
         {{#if (and (ne page.title config.user.title) (ne page.title page.tree_path))}}
-        <h1 class="page-title">{{ page.title }}</h1>
+        <h1 class="page-title"><a href="{{ config.site }}/{{ page.tree_path }}">{{ page.title }}</a></h1>
         {{/if}}
     </div>
 
