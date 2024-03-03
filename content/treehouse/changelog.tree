@@ -23,10 +23,13 @@
             - using the browser's built-in capabilities is *good.*
             you're just making me (and hundreds of thousands of other developers) write a shitty, slow version of what the browser could do by default, had it been following Web standards.
 
+    % id = "01HR30XM8432QV9NHA26FJQX18"
     - also, the links are now a bit prettier! everybody likes pretty links, right?
 
+        % id = "01HR30XM84P5NGJ83PAJ11PEMG"
         + page links no longer need to have the .html at the end. I'm still in progress of porting the website over to the new format, so you may see some spots where there's a .html extension.
 
+            % id = "01HR30XM84M1A1CQF9CS92H340"
             - buut if you really wanna, you can strip it off when sending the link to other people.
 
 % id = "01HQ94FDZK5SSXPSHQG9BCKA0T"
