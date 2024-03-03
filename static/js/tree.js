@@ -168,7 +168,7 @@ function expandDetailsRecursively(element) {
 }
 
 function navigateToPage(page) {
-    window.location.pathname = `${page}.html`
+    window.location.pathname = `${page}`
 }
 
 async function navigateToBranch(fragment) {

@@ -24,7 +24,7 @@ pub fn breadcrumbs_to_html(
                         .unwrap_or_else(|| Cow::Owned(format!("/{element}")));
                     write!(
                         s,
-                        "<a href=\"{site}/{element}.html\">{short_element}</a>",
+                        "<a href=\"{site}/{element}\">{short_element}</a>",
                         site = EscapeAttribute(&config.site),
                         element = EscapeAttribute(element)
                     )

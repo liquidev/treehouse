@@ -11,7 +11,7 @@
 
     {{!-- For /index, include a "new" link that goes to the curated news feed page. --}}
     {{#if (eq page.tree_path "index")}}
-    <a href="{{ config.site }}/treehouse/new.html" data-cast="new">new</a>
+    <a href="{{ config.site }}/treehouse/new" data-cast="new">new</a>
     {{/if}}
 
     {{/ components/_nav.hbs }}
@@ -28,7 +28,7 @@
 
     <section>
         <p>note that this page does not include any updates that were made to the website itself - for that, you can
-            visit <a href="{{ config.site }}/treehouse/changelog.html">the changelog</a>.
+            visit <a href="{{ config.site }}/treehouse/changelog">the changelog</a>.
         </p>
     </section>
 
