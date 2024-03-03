@@ -1,10 +1,13 @@
 // Emoji zoom-in functionality.
 
+import { addSpell } from "treehouse/spells.js";
+
 class EmojiTooltip extends HTMLElement {
-    constructor(emoji, { onClosed }) {
+    constructor(emoji, element, { onClosed }) {
         super();
 
         this.emoji = emoji;
+        this.emojiElement = element;
         this.onClosed = onClosed;
     }
 
@@ -12,12 +15,12 @@ class EmojiTooltip extends HTMLElement {
         this.role = "tooltip";
 
         this.image = new Image();
-        this.image.src = this.emoji.src;
+        this.image.src = this.emojiElement.src;
 
         this.description = document.createElement("p");
         this.description.textContent = `${this.emoji.emojiName}`;
 
-        let emojiBoundingBox = this.emoji.getBoundingClientRect();
+        let emojiBoundingBox = this.emojiElement.getBoundingClientRect();
         this.style.left = `${emojiBoundingBox.left + emojiBoundingBox.width / 2}px`;
         this.style.top = `calc(${emojiBoundingBox.top}px + 1.5em)`;
 
@@ -68,8 +71,8 @@ class EmojiTooltips extends HTMLElement {
         this.abortController.abort();
     }
 
-    openTooltip(emoji) {
-        let tooltip = new EmojiTooltip(emoji, {
+    openTooltip(emoji, element) {
+        let tooltip = new EmojiTooltip(emoji, element, {
             onClosed: () => {
                 this.removeChild(tooltip);
                 this.tooltips.delete(tooltip);
@@ -95,21 +98,21 @@ class EmojiTooltips extends HTMLElement {
 
 customElements.define("th-emoji-tooltips", EmojiTooltips);
 
-class Emoji extends HTMLImageElement {
-    connectedCallback() {
-        this.emojiName = this.title;
+class Emoji {
+    constructor(element) {
+        this.emojiName = element.title;
 
         // title makes the browser add a tooltip. We replace browser tooltips with our own,
         // so remove the title.
-        this.title = "";
+        element.title = "";
 
-        this.addEventListener("mouseenter", () => this.openTooltip());
-        this.addEventListener("mouseleave", () => this.closeTooltip());
-        this.addEventListener("scroll", () => this.closeTooltip());
+        element.addEventListener("mouseenter", () => this.openTooltip(element));
+        element.addEventListener("mouseleave", () => this.closeTooltip());
+        element.addEventListener("scroll", () => this.closeTooltip());
     }
 
-    openTooltip() {
-        this.tooltip = emojiTooltips.openTooltip(this);
+    openTooltip(element) {
+        this.tooltip = emojiTooltips.openTooltip(this, element);
     }
 
     closeTooltip() {
@@ -118,4 +121,4 @@ class Emoji extends HTMLImageElement {
     }
 }
 
-customElements.define("th-emoji", Emoji, { extends: "img" });
+addSpell("emoji", Emoji);

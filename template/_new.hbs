@@ -11,13 +11,12 @@
 
     {{!-- For /index, include a "new" link that goes to the curated news feed page. --}}
     {{#if (eq page.tree_path "index")}}
-    <a href="{{ config.site }}/treehouse/new.html" is="th-new">new</a>
+    <a href="{{ config.site }}/treehouse/new.html" data-cast="new">new</a>
     {{/if}}
 
     {{/ components/_nav.hbs }}
 
     {{> components/_noscript.hbs }}
-    {{> components/_webkit.hbs }}
 
     <section>
         <p>welcome!</p>
@@ -33,7 +32,7 @@
         </p>
     </section>
 
-    <section is="th-settings">
+    <section class="settings" data-cast="js">
         <details>
             <summary>
                 settings
@@ -41,7 +40,7 @@
             <section>
                 <p>if you find the newsfeed annoying, you can customize some aspects of it.</p>
                 <p>
-                    <input type="checkbox" is="th-setting-checkbox" id="showNewPostIndicator">
+                    <input type="checkbox" data-cast="setting-checkbox" id="showNewPostIndicator">
                     <label for="showNewPostIndicator">show the <span class="badge red">1</span> badge on the homepage
                         for
                         new posts you haven't read yet</label>

@@ -8,6 +8,7 @@
             "tairu/*": [
                 "./components/tairu/*"
             ]
-        }
+        },
+        "target": "ES2020",
     },
 }

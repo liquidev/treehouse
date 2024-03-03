@@ -1,3 +1,5 @@
+import { addSpell } from "treehouse/spells.js";
+
 const settingsKey = "treehouse.settings";
 const settings = JSON.parse(localStorage.getItem(settingsKey)) || {};
 
@@ -13,23 +15,15 @@ export function getSettingValue(setting) {
     return settings[setting] ?? defaultSettingValues[setting];
 }
 
-class SettingCheckbox extends HTMLInputElement {
-    connectedCallback() {
-        this.checked = getSettingValue(this.id);
+class SettingCheckbox {
+    constructor(element) {
+        element.checked = getSettingValue(element.id);
 
-        this.addEventListener("change", () => {
-            settings[this.id] = this.checked;
+        element.addEventListener("change", () => {
+            settings[element.id] = element.checked;
             saveSettings();
         });
     }
 }
 
-customElements.define("th-setting-checkbox", SettingCheckbox, { extends: "input" });
-
-class Settings extends HTMLElement {
-    connectedCallback() {
-        this.style.display = "block";
-    }
-}
-
-customElements.define("th-settings", Settings, { extends: "section" });
+addSpell("setting-checkbox", SettingCheckbox);

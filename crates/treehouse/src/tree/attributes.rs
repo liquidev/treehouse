@@ -107,7 +107,7 @@ pub enum Content {
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize)]
 pub struct Classes {
-    /// Classes to append to the branch itself (<li is="th-b">).
+    /// Classes to append to the branch itself (<li data-cast="b">).
     #[serde(default)]
     pub branch: String,
 

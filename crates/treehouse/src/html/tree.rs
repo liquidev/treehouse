@@ -45,9 +45,9 @@ pub fn branch_to_html(
     }
 
     let component = if let Content::Link(_) = branch.attributes.content {
-        "th-b-linked"
+        "b-linked"
     } else {
-        "th-b"
+        "b"
     };
 
     let linked_branch = if let Content::Link(link) = &branch.attributes.content {
@@ -64,7 +64,7 @@ pub fn branch_to_html(
 
     write!(
         s,
-        "<li is=\"{component}\" class=\"{class}\" id=\"{}\"{linked_branch}{do_not_persist}>",
+        "<li data-cast=\"{component}\" class=\"{class}\" id=\"{}\"{linked_branch}{do_not_persist}>",
         EscapeAttribute(&branch.html_id)
     )
     .unwrap();

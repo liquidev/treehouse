@@ -11,13 +11,12 @@
 
     {{!-- For /index, include a "new" link that goes to the curated news feed page. --}}
     {{#if (eq page.tree_path "index")}}
-    <a href="{{ config.site }}/treehouse/new.html" is="th-new">new</a>
+    <a href="{{ config.site }}/treehouse/new.html" data-cast="new">new</a>
     {{/if}}
 
     {{/ components/_nav.hbs }}
 
     {{> components/_noscript.hbs }}
-    {{> components/_webkit.hbs }}
 
     {{!--
     NOTE: ~ because components/_tree.hbss must not include any extra indentation, because it may

@@ -64,7 +64,7 @@ section {
     }
 }
 
-section[is="th-settings"] {
+section.settings {
     & h3 {
         display: inline;
     }

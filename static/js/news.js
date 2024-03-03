@@ -1,6 +1,7 @@
 // news.js because new.js makes the TypeScript language server flip out.
 // Likely because `new` is a keyword, but also, what the fuck.
 
+import { addSpell, spell } from "treehouse/spells.js";
 import { getSettingValue } from "treehouse/settings.js";
 import { Branch } from "treehouse/tree.js";
 
@@ -15,15 +16,17 @@ function saveSeenStates() {
 }
 
 function markAsRead(branch) {
-    if (!seenStates.has(branch.namedID) && seenCount > 0) {
+    let branchData = spell(branch, Branch);
+
+    if (!seenStates.has(branchData.namedID) && seenCount > 0) {
         let badge = document.createElement("span");
         badge.classList.add("badge", "red", "before-content");
         badge.textContent = "new";
 
-        branch.branchContent.firstChild.insertBefore(badge, branch.branchContent.firstChild.firstChild);
+        branchData.branchContent.firstChild.insertBefore(badge, branchData.branchContent.firstChild.firstChild);
     }
 
-    seenStates.add(branch.namedID);
+    seenStates.add(branchData.namedID);
 }
 
 export function initNewsPage() {
@@ -43,8 +46,8 @@ export function markAllAsUnread() {
     localStorage.removeItem(seenStatesKey);
 }
 
-class New extends HTMLAnchorElement {
-    connectedCallback() {
+addSpell("new", class New {
+    constructor(element) {
         // Do not show the badge to people who have never seen any news.
         // It's just annoying in that case.
         // In case you do not wish to see the badge anymore, go to the news page and uncheck the
@@ -54,17 +57,15 @@ class New extends HTMLAnchorElement {
         if (userSawNews && userWantsToSeeNews && unseenCount > 0) {
             this.newText = document.createElement("span");
             this.newText.classList.add("new-text");
-            this.newText.textContent = this.textContent;
-            this.textContent = "";
-            this.appendChild(this.newText);
+            this.newText.textContent = element.textContent;
+            element.textContent = "";
+            element.appendChild(this.newText);
 
             this.badge = document.createElement("span");
             this.badge.classList.add("badge", "red");
             this.badge.textContent = unseenCount.toString();
-            this.appendChild(this.badge);
-            this.classList.add("has-news");
+            element.appendChild(this.badge);
+            element.classList.add("has-news");
         }
     }
-}
-
-customElements.define("th-new", New, { extends: "a" });
+});

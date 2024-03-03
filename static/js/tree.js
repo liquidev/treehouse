@@ -1,5 +1,6 @@
 // This is definitely not a three.js ripoff.
 
+import { addSpell } from "treehouse/spells.js";
 import { navigationMap } from "/navmap.js";
 import * as ulid from "treehouse/ulid.js";
 
@@ -17,18 +18,20 @@ function branchIsOpen(branchID) {
     return branchState[branchID];
 }
 
-export class Branch extends HTMLLIElement {
+export class Branch {
     static branchesByNamedID = new Map();
     static onAdded = [];
 
-    connectedCallback() {
-        this.isLeaf = this.classList.contains("leaf");
+    constructor(element) {
+        this.element = element;
 
-        this.details = this.childNodes[0];
+        this.isLeaf = element.classList.contains("leaf");
+
+        this.details = element.childNodes[0];
         this.innerUL = this.details.childNodes[1];
 
         if (this.isLeaf) {
-            this.contentContainer = this.childNodes[0];
+            this.contentContainer = element.childNodes[0];
         } else {
             this.contentContainer = this.details.childNodes[0];
         }
@@ -36,19 +39,19 @@ export class Branch extends HTMLLIElement {
         this.branchContent = this.contentContainer.childNodes[1];
         this.buttonBar = this.contentContainer.childNodes[2];
 
-        let doPersist = !this.hasAttribute("data-th-do-not-persist");
-        let isOpen = branchIsOpen(this.id);
+        let doPersist = !element.hasAttribute("data-th-do-not-persist");
+        let isOpen = branchIsOpen(element.id);
         if (doPersist && isOpen !== undefined) {
             this.details.open = isOpen;
         }
         if (!this.isLeaf) {
             this.details.addEventListener("toggle", _ => {
-                saveBranchIsOpen(this.id, this.details.open);
+                saveBranchIsOpen(element.id, this.details.open);
             });
         }
 
-        this.namedID = this.id.split(':')[1];
-        Branch.branchesByNamedID.set(this.namedID, this);
+        this.namedID = element.id.split(':')[1];
+        Branch.branchesByNamedID.set(this.namedID, element);
 
         if (ulid.isCanonicalUlid(this.namedID)) {
             let timestamp = ulid.getTimestamp(this.namedID);
@@ -59,22 +62,22 @@ export class Branch extends HTMLLIElement {
         }
 
         for (let callback of Branch.onAdded) {
-            callback(this);
+            callback(element, this);
         }
     }
 }
 
-customElements.define("th-b", Branch, { extends: "li" });
+addSpell("b", Branch);
 
 /* Linked branches */
 
 class LinkedBranch extends Branch {
     static byLink = new Map();
 
-    connectedCallback() {
-        super.connectedCallback();
+    constructor(element) {
+        super(element);
 
-        this.linkedTree = this.getAttribute("data-th-link");
+        this.linkedTree = element.getAttribute("data-th-link");
         LinkedBranch.byLink.set(this.linkedTree, this);
 
         this.loadingText = document.createElement("p");
@@ -115,11 +118,10 @@ class LinkedBranch extends Branch {
             let styles = main.getElementsByTagName("link");
             let scripts = main.getElementsByTagName("script");
 
-
             this.loadingText.remove();
             this.innerUL.innerHTML = ul.innerHTML;
 
-            this.append(...styles);
+            this.element.append(...styles);
             for (let script of scripts) {
                 // No need to await for the import because we don't use the resulting module.
                 // Just fire and forger 💀
@@ -139,7 +141,7 @@ class LinkedBranch extends Branch {
     }
 }
 
-customElements.define("th-b-linked", LinkedBranch, { extends: "li" });
+addSpell("b-linked", LinkedBranch);
 
 /* Fragment navigation */
 

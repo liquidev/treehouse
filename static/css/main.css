@@ -447,7 +447,7 @@ h1.page-title {
 }
 
 /* Style the `new` link on the homepage */
-a[is="th-new"] {
+a[data-cast~="new"] {
     flex-shrink: 0;
     color: var(--text-color);
     opacity: 50%;
@@ -509,7 +509,7 @@ footer {
 
 /* Style emojis to be readable */
 
-img[is="th-emoji"] {
+img[data-cast~="emoji"] {
     max-width: 1.5em;
     max-height: 1.5em;
     vertical-align: bottom;
@@ -777,7 +777,7 @@ th-literate-program[data-mode="output"] {
 
 /* Style settings sections */
 
-section[is="th-settings"] {
+section[data-cast~="settings"] {
     /* Don't display settings when JavaScript is disabled.
        JS overrides this value on the element itself. */
     display: none;
