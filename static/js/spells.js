@@ -70,6 +70,9 @@ let mutationObserver = new MutationObserver(records => {
         // NOTE: Added nodes may contain children which also need to be processed.
         // Collect those that have [data-cast] on them and apply spells to them.
         for (let addedNode of record.addedNodes) {
+            if (addedNode.getAttribute("data-cast") != null) {
+                mutatedNodes.add(addedNode);
+            }
             addedNode.querySelectorAll("[data-cast]").forEach(element => mutatedNodes.add(element));
         }
         applySpells(mutatedNodes);
