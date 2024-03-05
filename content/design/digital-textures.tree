@@ -25,7 +25,7 @@ for example, based on texture alone it is possible to determine whether somethin
             % classes.branch = "digital-textures-pointer-cursor"
               id = "01HQ8JHZ5NYDJD0YKVX55AR3ZQ"
             - <span style="cursor: default;">
-            when you have an interactive element and it _doesn't_ have a <span style="cursor: pointer; text-decoration: dotted underline;">pointer</span> cursor on it, it feels almost <em>wrong.</em>
+            when you have an interactive element and it <em>doesn't</em> have a <span style="cursor: pointer; text-decoration: dotted underline;">pointer</span> cursor on it, it feels almost <em>wrong.</em>
             eerie in a way. out of place.<br>
             like have you noticed this branch is kind of really fucking weird with the default cursor?
             </span>
