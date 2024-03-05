@@ -22,16 +22,16 @@ for example, based on texture alone it is possible to determine whether somethin
         .digital-textures-pointer-cursor * { cursor: default }
         </style>
 
-            % classes.branch = "digital-textures-pointer-cursor"
-              id = "01HQ8JHZ5NYDJD0YKVX55AR3ZQ"
-            - <span style="cursor: default;">
-            when you have an interactive element and it <em>doesn't</em> have a <span style="cursor: pointer; text-decoration: dotted underline;">pointer</span> cursor on it, it feels almost <em>wrong.</em>
-            eerie in a way. out of place.<br>
-            like have you noticed this branch is kind of really fucking weird with the default cursor?
-            </span>
+        % classes.branch = "digital-textures-pointer-cursor"
+            id = "01HQ8JHZ5NYDJD0YKVX55AR3ZQ"
+        - <span style="cursor: default;">
+        when you have an interactive element and it <em>doesn't</em> have a <span style="cursor: pointer; text-decoration: dotted underline;">pointer</span> cursor on it, it feels almost <em>wrong.</em>
+        eerie in a way. out of place.<br>
+        like have you noticed this branch is kind of really fucking weird with the default cursor?
+        </span>
 
-                % id = "01HQ8JHZ5NT1P5R3EM9GEKZ3DK"
-                - <span style="cursor: default; user-select: none;">and this one is *even* weirder, with unselectable text! (sorry for this. I'm trying to make a point.)</span>
+            % id = "01HQ8JHZ5NT1P5R3EM9GEKZ3DK"
+            - <span style="cursor: default; user-select: none;">and this one is *even* weirder, with unselectable text! (sorry for this. I'm trying to make a point.)</span>
 
         % id = "01HQ8JHZ5N21GM1FWEXAKPWDPA"
         - the fact you can press <kbd>Ctrl</kbd> + <kbd>A</kbd> and it selects all text also gives off a texture typical of websites.
