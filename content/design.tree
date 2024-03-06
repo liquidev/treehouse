@@ -20,6 +20,10 @@ this branch is about that.
             % id = "01HQ8KV8RWS99XKPBKCTZ3NEJM"
             - that ain't default behavior. :hat_smug:
 
+% content.link = "design/sidebars"
+  id = "01HR9ZTS6T2ZBWGMJP8376NGX1"
++ sidebars
+
 % content.link = "design/digital-textures"
   id = "01HQ8JHZ5QTZXQW3M26CXPFQDF"
 + on digital textures

@@ -1,0 +1,59 @@
+%% title = "maybe don't use sidebars on your website"
+
+% id = "01HR9ZTS6PHTK6VRBF7S0M6MZ7"
+- imagine if this page had a distracting bunch of text to the right of regular content. or even worse, advertisements.
+
+    % id = "01HR9ZTS6P67VGVY6S460Q49HV"
+    - fortunately I'm not cruel enough to do that (*and* also I'm lazy *and* also I'm at work at the moment so I haven't got time to do something wicked like that.)
+
+    % id = "01HR9ZTS6P7AB97D6T177XMNKW"
+    - these are sidebars in a nutshell. distracting, annoying, detracting from what you actually have to say.
+
+        % id = "01HR9ZTS6PF06M7FD73VY9SN8R"
+        - > enjoying this article? why not check out these 10 other articles while you're at it, even though you barely even read 30% of this one!
+
+% id = "01HR9ZTS6PQ751GYMKN25YA4EC"
+- try to arrange your content in reading order instead. don't distract one's eyes, guide them to the place you want them to be.
+
+    % id = "01HR9ZTS6PGX3KEDJ7E8M794DE"
+    - instead of displaying recommended or related articles in a sidebar, try to display them in a non-distracting way at the bottom of the page.
+
+        % classes.branch_children = "branch-quote"
+          id = "01HR9ZTS6PRPS2BJN8V1EPHTWA"
+        - seriously, there's no need for anything more complicated than this:
+
+            % id = "01HR9ZTS6PF3JRPQE4TS5DM09B"
+            - If my blog piqued your interest, feel free to also check out these articles:
+
+                % id = "01HR9ZTS6P1JJ2103E4QHATH3G"
+                - [*on digital textures*][page:design/digital-textures], where I explore synaesthetic feelings in user interfaces
+
+                % id = "01HR9ZTS6P73HSTZK6CP1RWQWG"
+                - *[...so on and so forth.]*
+
+        % id = "01HR9ZTS6PBFR78Y54HGGKXMF6"
+        - note how I haven't even used pictures! I care about what you have to say, not what pretty pictures you managed to snap on your last field trip.
+
+        % id = "01HR9ZTS6PHPAZSQ4YMH7XWBA9"
+        + I personally don't even do that; the treehouse is unique enough in its structure is that it's a never-ending fractal of text, and you can keep on clicking and expanding parts you'd like to read.
+        that isn't gonna work on conventional blogs though.
+
+            % id = "01HR9ZTS6PKYGVTFF0F78XVXH2"
+            - (I'm not saying this structure is any better than a conventional blog though.
+            it has its own set of challenges you need to take into account while writing, like *when to split*, and *when to nest*.
+            arguably, I still haven't learned how to write the treehouse well, but I think I'm getting better at it; compare [about][page:about] to this page and you'll see what I mean.)
+
+% id = "01HR9ZTS6P484GD6Y9QR4TEGWD"
+- I'm glad most individuals' blogs are foregoing sidebars, but unfortunately I still regularly see them on various news sites and older blogs
+
+    % id = "01HR9ZTS6PCAWGEJNYXETFVDFT"
+    - if you're designing a modern blog, consider structuring your page *vertically* rather than *horizontally*.
+    limit distractions you show on the sides of the screen.
+    they *really* are quite annoying when you're just trying to focus on the body.
+
+        % id = "01HR9ZTS6PKZVXQE0VFVTNNQ6F"
+        - not to mention mobile devices, which do not have the horizontal real estate to fit your sidebars!
+        for those you have to arrange your website vertically anyways, so what's the point?
+
+% id = "01HR9ZTS6P0H48X9990BRXFRS4"
+- to summarize: don't use sidebars. arrange sites vertically. limit distractions.
