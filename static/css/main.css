@@ -3,6 +3,10 @@
 :root {
     /* naturally */
     --liquidex-brand-blue: #058ef0;
+    /* but also: */
+    --liquidex-brand-red: #eb134a;
+    --liquidex-brand-yellow: #ffc31f;
+    --liquidex-brand-green: #06ca4a;
 
     --text-color-light: #55423e;
     --link-color-light: #004ec8;
@@ -107,7 +111,7 @@ kbd {
     --recursive-mono: 0.0;
     --recursive-casl: 1.0;
     --recursive-wght: 400;
-    --recursive-slnt: -2.0;
+    --recursive-slnt: 0.0;
     --recursive-crsv: 0.5;
 
     --recursive-simplified-f: "ss03";

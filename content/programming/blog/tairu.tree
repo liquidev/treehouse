@@ -3,7 +3,7 @@ scripts = [
     "components/literate-programming.js",
     "vendor/codejar.js",
 ]
-styles = ["post/tairu.css"]
+styles = ["page/tairu.css"]
 
 % id = "01HPD4XQPWM8ECT2QM6AT9YRWB"
 - I remember since my early days doing programming, I've been interested in how games like Terraria handle automatically tiling their terrain.

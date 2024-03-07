@@ -27,6 +27,7 @@
 :root {
     --tree-indent-width: 28px;
     --transition-duration: 0.15s;
+    --button-bar-icon-size: 24px;
 }
 
 /*** Breadcrumbs ***/
@@ -293,6 +294,10 @@ th-bb {
 
 /* For media without hover functionality, th-bb should always be visible. */
 @media (hover: none) {
+    :root {
+        --button-bar-icon-size: 32px;
+    }
+
     .tree th-bb {
         opacity: 100%;
 
@@ -326,8 +331,8 @@ th-bb .branch-date {
         background-position: 50% 50%;
         opacity: 35%;
 
-        width: 24px;
-        height: 24px;
+        width: var(--button-bar-icon-size);
+        height: var(--button-bar-icon-size);
     }
 
     & .icon-permalink {

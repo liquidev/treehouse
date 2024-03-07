@@ -1,0 +1,52 @@
+.index\:hobby-corners {
+    &>li {
+        margin: 8px 0px;
+
+        &>details {
+            border-top: 4px solid var(--section-color);
+        }
+
+        &>details>summary {
+            position: relative;
+            overflow: clip;
+            box-sizing: border-box;
+
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+
+            &>th-bb>.icon {
+                opacity: 100%;
+            }
+
+            & .background-icon {
+                position: absolute;
+                right: calc(var(--button-bar-icon-size) * 2);
+                bottom: 0;
+                color: var(--text-color);
+                opacity: 40%;
+
+                width: 96px;
+                height: auto;
+
+                pointer-events: none;
+            }
+        }
+    }
+
+}
+
+#index\:programming {
+    --section-color: var(--liquidex-brand-red);
+}
+
+#index\:design {
+    --section-color: var(--liquidex-brand-yellow);
+}
+
+#index\:music {
+    --section-color: var(--liquidex-brand-green);
+}
+
+#index\:games {
+    --section-color: var(--liquidex-brand-blue);
+}

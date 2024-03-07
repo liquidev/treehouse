@@ -363,7 +363,7 @@
                             - not everyone runs Windows or macOS, so just assuming the reader has Comic Sans installed isn't ideal.
 
             % id = "01H8V55APD2BPGQXEK7JARYJ9H"
-            - in particular the variant on my website is 100% casual (`CASL`), and -2.0 slanted (`slnt`).
+            - ~~in particular the variant on my website is 100% casual (`CASL`), and -2.0 slanted (`slnt`).~~
 
                 % id = "01H8V55APDXZJE3HHH5AQ8ZQHF"
                 + that little bit of slant makes it look just a little more like handwriting.
@@ -382,3 +382,5 @@
 
                         % id = "01H8V55APDB8PC2BF5P9TVYJ35"
                         - not to mention I'd have to handwrite a lot of text, and *then* either use OCR or type it all out again for accessibility. yeah, no thanks methinks.
+
+                - UPDATE: not slanted anymore. `slnt` is 0.
