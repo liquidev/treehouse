@@ -8,3 +8,6 @@ fix:
 
 ulid:
     cargo run -- ulid
+
+deploy:
+    bash admin/deploy.bash
