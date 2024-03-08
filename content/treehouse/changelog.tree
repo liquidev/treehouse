@@ -1,7 +1,9 @@
 %% title = "what's going on inside the house? (a changelog)"
 
+% id = "01HRF1YCJ61Y4XAM94XNMRV3R7"
 - **revision 7:** the main page is now a lot more colorful :rainbow:
 
+    % id = "01HRF1YCJ6S5YBSFC13QPWKF3X"
     - <style>
     span.treehouse\/changelog\:liquidex-brand-color {
         display: inline-block;
@@ -21,6 +23,7 @@
     <span class="treehouse/changelog:liquidex-brand-color red"></span><span class="treehouse/changelog:liquidex-brand-color yellow"></span><span class="treehouse/changelog:liquidex-brand-color green"></span><span class="treehouse/changelog:liquidex-brand-color blue"></span>
     assigned to it
 
+        % id = "01HRF1YCJ602RS1C4E7W7DVHZB"
         - there may be more colors in the future, given that there are probably gonna be more categories :smile:\
         and I'd like the other non-hobby categories to get their own colors too, but the four that are currently here are good enough for now.
 
