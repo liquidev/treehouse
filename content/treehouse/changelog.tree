@@ -1,5 +1,29 @@
 %% title = "what's going on inside the house? (a changelog)"
 
+- **revision 7:** the main page is now a lot more colorful :rainbow:
+
+    - <style>
+    span.treehouse\/changelog\:liquidex-brand-color {
+        display: inline-block;
+        width: 0.8em;
+        height: 0.8em;
+        border-radius: 100000px;
+
+        margin: 0px 2px;
+
+        &.red { background-color: var(--liquidex-brand-red); }
+        &.yellow { background-color: var(--liquidex-brand-yellow); }
+        &.green { background-color: var(--liquidex-brand-green); }
+        &.blue { background-color: var(--liquidex-brand-blue); }
+    }
+    </style>
+    each major content category now has an icon and a *liquidex brand color™*
+    <span class="treehouse/changelog:liquidex-brand-color red"></span><span class="treehouse/changelog:liquidex-brand-color yellow"></span><span class="treehouse/changelog:liquidex-brand-color green"></span><span class="treehouse/changelog:liquidex-brand-color blue"></span>
+    assigned to it
+
+        - there may be more colors in the future, given that there are probably gonna be more categories :smile:\
+        and I'd like the other non-hobby categories to get their own colors too, but the four that are currently here are good enough for now.
+
 % id = "01HR300JYTSEE1K1DH5R8QZ4K6"
 - **revision 6:** it now works on Webkit
 
