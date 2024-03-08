@@ -15,6 +15,7 @@
       id = "01HPD4XQQ5WM0APCAX014HM43V"
     + tairu - an interactive exploration of 2D autotiling techniques
 
+% id = "01HRG2RJCNKT9JJJVQ8WVRC9CA"
 - ### languages
 
     % content.link = "programming/languages/cxx"
@@ -25,6 +26,7 @@
       id = "programming/languages/lua"
     + ### Lua
 
+% id = "01HRG2RJCN8J42NK0KWD3SBSJA"
 - ### technologies
 
     % content.link = "programming/technologies/unreal-engine"

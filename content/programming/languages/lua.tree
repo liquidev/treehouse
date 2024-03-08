@@ -1,33 +1,54 @@
+% id = "01HRG2RJC1BATZJSGSSSF1XNFZ"
 - TODO: this page could really use an interactive Lua interpreter. can we have that?
 
+% id = "01HRG2RJC1J57MFVA0QFXP8WWW"
 - Lua is a really cool language! did you know that?
 
-+ lots of people complain about it being really weird for various reasons, but these are generally superficial
+% id = "01HRG2RJC1N1J4FTZ4M4MW72VZ"
+- lots of people complain about it being really weird for various reasons, but these are generally superficial
 
-    - usually it's cosmetic stuff, so these aren't any arguments of technical merit, but...
+    % id = "01HRG2RJC1637T8NPCWH90E5W0"
+    - usually it's cosmetic stuff, so these aren't any arguments of technical merit, but…
 
+    % id = "01HRG2RJC10G9GEGM5JCX32FE4"
     - stuff like indexing from 1 instead of 0, which is _just a design choice_ and does not impact your programming that much
 
+        % id = "01HRG2RJC1MTW370DDEXQ0AN72"
         - in fact, one could argue that regular programmers are weird for counting from zero :thinking:
 
+        % id = "01HRG2RJC1DH3WE4VGQCMEDN15"
+        - the biggest impact this has is on rendering code, where you have to subtract 1 to position things relative to the origin - which is at `(0, 0)` (or `(0, 0, 0)` in 3D.)
+
+    % id = "01HRG2RJC1VJ5FDDM8X9ECB3HR"
     - or using `~=` instead of `!=`, which is _just a syntax choice_, and you only have to get used to it once
 
+    % id = "01HRG2RJC160QD16204NDAYTSW"
     - or using `do`..`end` style blocks instead of `{`..`}`, which again is _just a syntax choice_ and does not impact programming that much
 
+        % id = "01HRG2RJC1D377M98MDT9BX8EQ"
         - it's a tad bit more line noise, but not that terrible. I [did design a language using `do`..`end` blocks][def:mica/repo] and it really doesn't look that bad
 
+    % id = "01HRG3MJ0KRVRWEMRKX8TQFZAK"
+    - TODO: this section could use some links to actual complaints or statistics or something. anecdotal evidence is not evidence.
+
+% id = "01HRG2RJC1RTAJJ1MX2JZAMBW8"
 - but I think Lua is a pretty damn genius programming language.
 
+    % id = "01HRG2RJC11KMM8AVCSSQ96H26"
     - the use of tables as The One Data Structure for Literally Everything strikes me as a 200 IQ choice I could never come up with myself
 
+        % id = "01HRG2RJC1SJSFQSR1X3TT638F"
         - partly because it's so fucking bold I can literally not imagine myself designing a language with a strong distinction between hash tables and arrays, and even tuples and records!
-        but the authors of had the restraint to just have One. and that One is **tables.**
+        but the designers of Lua had the restraint to just have One.
 
+        % id = "01HRG2RJC13YK030EPGMKM9H8H"
         - tables are extremely powerful in what they can do, because they're more than just a way of structuring data - they also allow for interfacing with the language *syntax* through operator overloading
 
+            % id = "01HRG2RJC1PDZFB2WBW7D827KF"
             + in fact object oriented programming in Lua is typically done by overloading the `[]` indexing operator.
 
-                - the way it works is that `a.b` is just syntax sugar for `a["b"]`, which means you overload `[]` to _fall back to another table_ - and that way you can achieve [prototype-based inheritance](https://en.wikipedia.org/wiki/Prototype-based_programming)!
+                % id = "01HRG2RJC1HK3SG51X6DJFCD0B"
+                - the way it works is that [`a.b` is just syntax sugar for `a["b"]`][branch:01HRG2RJC2PA5KE0DH0RRFGW9E], which means you overload `[]` to _fall back to another table_ - and that way you can achieve [prototype-based inheritance](https://en.wikipedia.org/wiki/Prototype-based_programming)!
 
                 ```lua
                 local fallback = { b = 2 }
@@ -39,25 +60,133 @@
                 assert(base.b == 2)
                 ```
 
-    - TODO: even more on restraint (standard library)
+    % id = "01HRG2RJC23XH1053A69MQJD4N"
+    - I'll be honest that I don't like the standard library of Lua from a usability standpoint, but maybe it *doesn't need to be bigger*.
+    it's similar to the principles of [Go](https://go.dev/), where the language encourages using dumb constructs rather than super clever code with lots of abstraction.
 
-    - TODO: restrained sugar: function calls `require "abc"`, `do_stuff { with_a_table = 1 }`
+        % id = "01HRG2RJC2P3832KTQMANBHGE6"
+        - though unlike Go, Lua has the goal of being *small* because it needs to be *embeddable*, especially given it's used in very constrained environments in the real world. (microcontrollers!)
 
+            % id = "01HRG2RJC2S3V38FM6DB0481WK"
+            - therefore there are technical, not just ideological reasons to keep the library small.
+
+        % id = "01HRG2RJC2KPZXH90Z6B92ZNB6"
+        - and I really like that from an embedder's standpoint, it's possible to completely disable certain standard library modules for sandboxing!
+
+    % id = "01HRG2RJC2W4MK96FMWRTS8QCJ"
+    - Lua also knows *very* well how much syntax sugar to have to make writing code pleasant, but not to overdose it so much as to give you instant diabetes.
+
+        % id = "01HRG2RJC28DT0TZT47WPABD65"
+        + as an example, there's function call syntax: you can pass it a string or table *literal*, which is just enough to enable some really nice DSLs without making the grammar too complex.
+
+            % id = "01HRG2RJC2CVKS9CFVQ9HJSBH4"
+            - once upon a time I dreamed up a DSL for building GUIs using this sugar.
+
+            ```lua
+            render {
+                width = 800, height = 600,
+                title = "Hello, world!",
+
+                vertical_box {
+                    header1 "Hello, world!",
+                    header2 "This is an example GUI.",
+                }
+            }
+            ```
+
+                % id = "01HRG2RJC2T7BF6XS3T7Q8AXW2"
+                - ***JUST LOOK AT HOW CLEAN IT IS!*** with no need to [invent magic syntax](https://www.typescriptlang.org/docs/handbook/jsx.html) or anything!
+
+                % id = "01HRG2RJC2D69JYCWQXSF2FQNY"
+                - the only missing thing then would be list comprehensions to be able to transform data into GUI elements, but even that can be ironed over using function literals:
+
+                ```lua
+                render {
+                    width = 800, height = 600,
+                    title = "Hello, world!",
+
+                    vertical_box {
+                        header1 "Hello, world!",
+                        paragraph "This is an example GUI. Here's a horizontal list of numbers:",
+
+                        horizontal_box {
+                            function (t)
+                                for i = 1, 10 do
+                                    t[i] = paragraph(tostring(i))
+                                end
+                            end,
+                        }
+                    }
+                }
+                ```
+
+                interpret this code however you want, but *damn* it looks clean. again with no magic syntax!
+
+        % id = "01HRG2RJC2PA5KE0DH0RRFGW9E"
+        - there is also the incredibly useful sugar for indexing tables by string literals: instead of `table["x"]` you can write down `table.x`
+
+            % id = "01HRG2RJC2WDXCPW12JDD4749R"
+            + and there is also the incredibly useful method call sugar `table:func()`, which gets transformed to `table.func(table)`;
+            and function definitions like `function table:func() end` are sugar for `function table.func(self) end`. ain't that neat and simple, yet super useful?
+
+                % id = "01HRG2RJC23955SMQXHWEA202J"
+                - if you don't get the usefulness: this is needed because object oriented methods in Lua are implemented using regular functions; there is no magic `this` or `self` parameter.
+                the parameter is explicit, there is just sugar for passing it into functions and declaring functions with it.
+
+% id = "01HRG2RJC2FF05JWQ6KHS4Y5WF"
 - I really wish Lua had at least *a* form of static typing though, since knowing about errors you make early is _really_ helpful during development.
 
-    - it regularly happened to me that a type error I made only occured at *some point* later during runtime; and then you have to track down a reproduction case and make a fix at the source. not fun.
+    % id = "01HRG2RJC2JP3HRTVMAQ22HDVE"
+    + it regularly happened to me that a type error I made only occured at *some point* later during runtime; and then you have to track down a reproduction case and make a fix at the source. not fun.
 
+        % id = "01HRG3MJ0KGZ8T4KHMV6KZXDK4"
+        - there's also the ugly case I had with a division by zero in the last rewrite of [Planet Overgamma][def:planet_overgamma/repo], which caused a NaN to propagate through physics and into rendering, causing a crash.
+
+            % id = "01HRG3MJ0KKMR7MDXST9PCYF6Q"
+            - this is precisely where [my hate for NaN propagation][branch:01HPEMVAH9JZWYPVN53GVFQNQY] was born.
+
+    % id = "01HRG2RJC224TNYEWGRBCTJA0S"
+    - there's [Teal](https://github.com/teal-language/tl) but last time I checked it didn't have support for inheritance, which is heavily used by [LÖVE](https://love2d.org/), which is my go-to Lua graphics framework.
+
+    % id = "01HRG2RJC2JS0JXFM23SWHKTFN"
+    - you can also compile [TypeScript to Lua](https://typescripttolua.github.io/), which is insanely silly, but has the advantage of using a language that's more familiar to a very wide group of people.
+    I wouldn't use it though because TypeScript and Lua are very different languages, and I'm afraid certain transforms would be unobvious - which would make interfacing with existing Lua code harder.
+    I think I prefer the bolt-a-type-system-onto-Lua approach of Teal in that regard.
+
+% id = "01HRG2RJC29C751N6A90G8RENK"
 - and it's really a bummer that Lua is not that strict!
 
+    % id = "01HRG2RJC2EGS11ERP93BY5BVK"
     - global variables by default are a pretty bad design choice in my opinion. having any form of uncontrolled globals hurts local reasoning and makes it harder to tell whatever your code is going to do.
 
-        - but fortunately it is possible to freeze your global variables by setting a metatable on `_G`, which is a table that represents the global scope.
+        % id = "01HRG2RJC2VMCBATX88ZE7SYA0"
+        - but fortunately it is possible to freeze your global variables by overloading the indexing operators of `_G` - the table that represents the global scope.
 
-            - TODO: example
+        ```lua
+        setmetatable(_G, {
+            __index = function (t, k)
+                -- Only tell the programmer about undeclared variables. We still want access to
+                -- builtins like `require`.
+                if t[k] == nil then
+                    -- The error message is purposefully generic because this will probably happen
+                    -- the most when misspelling variables.
+                    error("variable '"..k.."' was not declared in this scope")
+                end
+                return rawget(t, k)
+            end
+            __newindex = function (t, k, v)
+                -- Assigning to global variables usually happens due to typos with local variables,
+                -- so again - the error message is intentionally generic.
+                error("variable '"..k.."' was not declared in this scope")
+            end
+        })
+        ```
 
-- there are also some bits of syntax that haven't aged very well.
+% id = "01HRG2RJC229JBT8YQFE3P1V8C"
+- there are also some bits of syntax that arguably haven't aged very well.
 
-    - as much as people complain about cosmetics [TODO: link], I think there's a particular design choice that has aged very poorly in the face of modern, functional programming - function literals.
+    % id = "01HRG2RJC2N52T5X32YKPWP317"
+    - as much as people [complain about cosmetics][branch:01HRG2RJC1VJ5FDDM8X9ECB3HR], I think there's a particular design choice that has aged very poorly in the face of modern, functional programming - function literals.
 
     these tend to be quite verbose in Lua which hurts readability in functional code:
 
@@ -71,4 +200,5 @@
     let u = t.map(v => v + 2)
     ```
 
+        % id = "01HRG2RJC2CS2MA98TTHK7MBQ9"
         - the lack of a pipelining operator `|>` is also an annoyance, albeit most modern imperative languages don't have it either.
