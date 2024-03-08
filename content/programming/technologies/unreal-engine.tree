@@ -7,13 +7,13 @@
         % id = "01H8YGXP0ZWG6X3PB6GWSGKAT0"
         - both the fun and the good, and that which ruins my mood
 
-% id = "programming/unreal-engine/blueprint"
-  content.link = "programming/unreal-engine/blueprint"
+% id = "programming/technologies/unreal-engine/blueprint"
+  content.link = "programming/technologies/unreal-engine/blueprint"
 + ### thoughts on Blueprint
 
 % id = "01HP1FESY5WVJG4X80AZ4ZBX5D"
 - ### random but cool things
 
-    % content.link = "programming/unreal-engine/fixes"
+    % content.link = "programming/technologies/unreal-engine/fixes"
       id = "01HP1FESY5ZS6YTZXA8QTT5V1Z"
     + data validation quick fixes

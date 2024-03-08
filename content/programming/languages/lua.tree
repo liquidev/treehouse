@@ -1,0 +1,74 @@
+- TODO: this page could really use an interactive Lua interpreter. can we have that?
+
+- Lua is a really cool language! did you know that?
+
++ lots of people complain about it being really weird for various reasons, but these are generally superficial
+
+    - usually it's cosmetic stuff, so these aren't any arguments of technical merit, but...
+
+    - stuff like indexing from 1 instead of 0, which is _just a design choice_ and does not impact your programming that much
+
+        - in fact, one could argue that regular programmers are weird for counting from zero :thinking:
+
+    - or using `~=` instead of `!=`, which is _just a syntax choice_, and you only have to get used to it once
+
+    - or using `do`..`end` style blocks instead of `{`..`}`, which again is _just a syntax choice_ and does not impact programming that much
+
+        - it's a tad bit more line noise, but not that terrible. I [did design a language using `do`..`end` blocks][def:mica/repo] and it really doesn't look that bad
+
+- but I think Lua is a pretty damn genius programming language.
+
+    - the use of tables as The One Data Structure for Literally Everything strikes me as a 200 IQ choice I could never come up with myself
+
+        - partly because it's so fucking bold I can literally not imagine myself designing a language with a strong distinction between hash tables and arrays, and even tuples and records!
+        but the authors of had the restraint to just have One. and that One is **tables.**
+
+        - tables are extremely powerful in what they can do, because they're more than just a way of structuring data - they also allow for interfacing with the language *syntax* through operator overloading
+
+            + in fact object oriented programming in Lua is typically done by overloading the `[]` indexing operator.
+
+                - the way it works is that `a.b` is just syntax sugar for `a["b"]`, which means you overload `[]` to _fall back to another table_ - and that way you can achieve [prototype-based inheritance](https://en.wikipedia.org/wiki/Prototype-based_programming)!
+
+                ```lua
+                local fallback = { b = 2 }
+                local base = { a = 1 }
+
+                -- The __index field can be both a function *and* a table.
+                -- { __index = the_table } is a shorthand for { __index = function (t, k) return the_table[k] end }
+                setmetatable(base, { __index = fallback })
+                assert(base.b == 2)
+                ```
+
+    - TODO: even more on restraint (standard library)
+
+    - TODO: restrained sugar: function calls `require "abc"`, `do_stuff { with_a_table = 1 }`
+
+- I really wish Lua had at least *a* form of static typing though, since knowing about errors you make early is _really_ helpful during development.
+
+    - it regularly happened to me that a type error I made only occured at *some point* later during runtime; and then you have to track down a reproduction case and make a fix at the source. not fun.
+
+- and it's really a bummer that Lua is not that strict!
+
+    - global variables by default are a pretty bad design choice in my opinion. having any form of uncontrolled globals hurts local reasoning and makes it harder to tell whatever your code is going to do.
+
+        - but fortunately it is possible to freeze your global variables by setting a metatable on `_G`, which is a table that represents the global scope.
+
+            - TODO: example
+
+- there are also some bits of syntax that haven't aged very well.
+
+    - as much as people complain about cosmetics [TODO: link], I think there's a particular design choice that has aged very poorly in the face of modern, functional programming - function literals.
+
+    these tend to be quite verbose in Lua which hurts readability in functional code:
+
+    ```lua
+    local u = map(t, function (v) return v + 2 end)
+    ```
+
+    compare that to JavaScript's arrow functions `=>`, which I think are a prime example of good syntax sugar that encourages more function-oriented programming:
+
+    ```javascript
+    let u = t.map(v => v + 2)
+    ```
+
+        - the lack of a pipelining operator `|>` is also an annoyance, albeit most modern imperative languages don't have it either.

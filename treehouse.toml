@@ -23,6 +23,7 @@ description = "a place on the Internet I like to call home"
 "dispatchers/repo" = "https://github.com/liquidev/dispatchers"
 "abit/repo" = "https://github.com/abyteintime/abit"
 "rokugo/repo" = "https://github.com/rokugo-lang/rokugo"
+"mica/repo" = "https://github.com/mica-lang/mica"
 
 # Blog posts I like to reference
 "article/function_coloring" = "https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/"
@@ -35,6 +36,10 @@ description = "a place on the Internet I like to call home"
 "person/ezioleq" = "https://ezioleq.com"
 "person/firstbober" = "https://firstbober.com"
 "person/vixenka" = "https://github.com/Vixenka"
+
+[redirects.page]
+"programming/cxx" = "programming/languages/cxx"
+"programming/unreal-engine" = "programming/technologies/unreal-engine"
 
 [emoji]
 

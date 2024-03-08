@@ -42,8 +42,8 @@ async fn fallible_main() -> anyhow::Result<()> {
             generate: _,
             serve: serve_args,
         } => {
-            let treehouse = regenerate_or_report_error(&paths)?;
-            serve(treehouse, &paths, serve_args.port).await?;
+            let (config, treehouse) = regenerate_or_report_error(&paths)?;
+            serve(config, treehouse, &paths, serve_args.port).await?;
         }
 
         Command::Fix(fix_args) => fix_file_cli(fix_args)?,

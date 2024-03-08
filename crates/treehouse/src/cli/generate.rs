@@ -343,7 +343,7 @@ impl Generator {
     }
 }
 
-pub fn generate(paths: &Paths<'_>) -> anyhow::Result<Treehouse> {
+pub fn generate(paths: &Paths<'_>) -> anyhow::Result<(Config, Treehouse)> {
     let start = Instant::now();
 
     info!("loading config");
@@ -386,13 +386,13 @@ pub fn generate(paths: &Paths<'_>) -> anyhow::Result<Treehouse> {
     info!("generation done in {duration:?}");
 
     if !treehouse.has_errors() {
-        Ok(treehouse)
+        Ok((config, treehouse))
     } else {
         bail!("generation errors occurred; diagnostics were emitted with detailed descriptions");
     }
 }
 
-pub fn regenerate_or_report_error(paths: &Paths<'_>) -> anyhow::Result<Treehouse> {
+pub fn regenerate_or_report_error(paths: &Paths<'_>) -> anyhow::Result<(Config, Treehouse)> {
     info!("regenerating site content");
 
     let result = generate(paths);

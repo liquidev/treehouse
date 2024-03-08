@@ -17,6 +17,26 @@ pub struct Config {
     /// Links exported to Markdown for use with reference syntax `[text][def:key]`.
     pub defs: HashMap<String, String>,
 
+    /// Redirects for moving pages around. These are used solely by the treehouse server.
+    ///
+    /// Note that redirects are only resolved _non-recursively_ by the server. For a configuration
+    /// like:
+    ///
+    /// ```toml
+    /// page.redirects.foo = "bar"
+    /// page.redirects.bar = "baz"
+    /// ```
+    ///
+    /// the user will be redirected from `foo` to `bar`, then from `bar` to `baz`. This isn't
+    /// optimal for UX and causes unnecessary latency. Therefore you should always make redirects
+    /// point to the newest version of the page.
+    ///
+    /// ```toml
+    /// page.redirects.foo = "baz"
+    /// page.redirects.bar = "baz"
+    /// ```
+    pub redirects: Redirects,
+
     /// Overrides for emoji filenames. Useful for setting up aliases.
     ///
     /// On top of this, emojis are autodiscovered by walking the `static/emoji` directory.
@@ -28,6 +48,13 @@ pub struct Config {
     /// On top of this, pics are autodiscovered by walking the `static/pic` directory.
     /// Only the part before the first dash is treated as the pic's id.
     pub pics: HashMap<String, String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Redirects {
+    /// Page redirects. When a user navigates to a page, if they navigate to `url`, they will
+    /// be redirected to `page[url]`.
+    pub page: HashMap<String, String>,
 }
 
 impl Config {

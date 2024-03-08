@@ -1,12 +1,15 @@
 #[cfg(debug_assertions)]
 mod live_reload;
 
-use std::{borrow::Cow, net::Ipv4Addr, path::PathBuf, sync::Arc};
+use std::{net::Ipv4Addr, path::PathBuf, sync::Arc};
 
 use anyhow::Context;
 use axum::{
     extract::{Path, RawQuery, State},
-    http::{header::CONTENT_TYPE, HeaderValue, StatusCode},
+    http::{
+        header::{CONTENT_TYPE, LOCATION},
+        HeaderValue, StatusCode,
+    },
     response::{Html, IntoResponse, Response},
     routing::get,
     Router,
@@ -15,7 +18,10 @@ use log::{error, info};
 use pulldown_cmark::escape::escape_html;
 use tokio::net::TcpListener;
 
-use crate::state::{Source, Treehouse};
+use crate::{
+    config::Config,
+    state::{Source, Treehouse},
+};
 
 use super::Paths;
 
@@ -29,12 +35,18 @@ struct SystemPages {
 }
 
 struct Server {
+    config: Config,
     treehouse: Treehouse,
     target_dir: PathBuf,
     system_pages: SystemPages,
 }
 
-pub async fn serve(treehouse: Treehouse, paths: &Paths<'_>, port: u16) -> anyhow::Result<()> {
+pub async fn serve(
+    config: Config,
+    treehouse: Treehouse,
+    paths: &Paths<'_>,
+    port: u16,
+) -> anyhow::Result<()> {
     let app = Router::new()
         .route("/", get(index))
         .route("/*page", get(page))
@@ -44,6 +56,7 @@ pub async fn serve(treehouse: Treehouse, paths: &Paths<'_>, port: u16) -> anyhow
         .route("/static/*file", get(static_file))
         .fallback(get(four_oh_four))
         .with_state(Arc::new(Server {
+            config,
             treehouse,
             target_dir: paths.target_dir.to_owned(),
             system_pages: SystemPages {
@@ -114,13 +127,17 @@ async fn static_file(Path(path): Path<String>, State(state): State<Arc<Server>>)
 }
 
 async fn page(Path(path): Path<String>, State(state): State<Arc<Server>>) -> Response {
-    let path = if !path.ends_with(".html") {
-        Cow::Owned(path + ".html")
-    } else {
-        Cow::Borrowed(&path)
-    };
+    let bare_path = path.strip_suffix(".html").unwrap_or(&path);
+    if let Some(redirected_path) = state.config.redirects.page.get(bare_path) {
+        return (
+            StatusCode::MOVED_PERMANENTLY,
+            [(LOCATION, format!("{}/{redirected_path}", state.config.site))],
+        )
+            .into_response();
+    }
 
-    if let Ok(file) = tokio::fs::read(state.target_dir.join(&*path)).await {
+    let html_path = format!("{bare_path}.html");
+    if let Ok(file) = tokio::fs::read(state.target_dir.join(&*html_path)).await {
         ([(CONTENT_TYPE, "text/html")], file).into_response()
     } else {
         four_oh_four(State(state)).await
