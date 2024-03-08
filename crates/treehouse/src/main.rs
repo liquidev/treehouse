@@ -11,6 +11,7 @@ use log::{error, info, warn};
 
 mod cli;
 mod config;
+mod fun;
 mod html;
 mod paths;
 mod state;

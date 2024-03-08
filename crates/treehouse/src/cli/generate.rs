@@ -19,6 +19,7 @@ use walkdir::WalkDir;
 use crate::{
     cli::parse::parse_tree_with_diagnostics,
     config::{Config, ConfigDerivedData},
+    fun::seasons::Season,
     html::{
         breadcrumbs::breadcrumbs_to_html,
         navmap::{build_navigation_map, NavigationMap},
@@ -68,13 +69,15 @@ pub struct Thumbnail {
 #[derive(Serialize)]
 struct StaticTemplateData<'a> {
     config: &'a Config,
+    season: Option<Season>,
 }
 
 #[derive(Serialize)]
 struct PageTemplateData<'a> {
-    pub config: &'a Config,
-    pub page: Page,
-    pub feeds: &'a HashMap<String, Feed>,
+    config: &'a Config,
+    page: Page,
+    feeds: &'a HashMap<String, Feed>,
+    season: Option<Season>,
 }
 
 impl Generator {
@@ -231,7 +234,13 @@ impl Generator {
         for (name, &file_id) in &template_file_ids {
             let filename = name.rsplit_once('/').unwrap_or(("", name)).1;
             if !filename.starts_with('_') {
-                let templated_html = match handlebars.render(name, &StaticTemplateData { config }) {
+                let templated_html = match handlebars.render(
+                    name,
+                    &StaticTemplateData {
+                        config,
+                        season: Season::current(),
+                    },
+                ) {
                     Ok(html) => html,
                     Err(error) => {
                         Self::wrangle_handlebars_error_into_diagnostic(
@@ -307,6 +316,7 @@ impl Generator {
                     tree,
                 },
                 feeds: &feeds,
+                season: Season::current(),
             };
             let template_name = roots
                 .attributes
