@@ -1,8 +1,14 @@
 use std::{collections::HashMap, ffi::OsStr, fs::File, io::BufReader, path::Path};
 
 use anyhow::Context;
+use log::debug;
 use serde::{Deserialize, Serialize};
 use walkdir::WalkDir;
+
+use crate::html::highlight::{
+    compiled::{compile_syntax, CompiledSyntax},
+    Syntax,
+};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Config {
@@ -48,6 +54,13 @@ pub struct Config {
     /// On top of this, pics are autodiscovered by walking the `static/pic` directory.
     /// Only the part before the first dash is treated as the pic's id.
     pub pics: HashMap<String, String>,
+
+    /// Syntax definitions.
+    ///
+    /// These are not part of the config file, but are loaded as part of site configuration from
+    /// `static/syntax`.
+    #[serde(skip)]
+    pub syntaxes: HashMap<String, CompiledSyntax>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -137,6 +150,30 @@ impl Config {
             self.site,
             self.pics.get(id).map(|x| &**x).unwrap_or("404.png")
         )
+    }
+
+    /// Loads all syntax definition files.
+    pub fn load_syntaxes(&mut self, dir: &Path) -> anyhow::Result<()> {
+        for entry in WalkDir::new(dir) {
+            let entry = entry?;
+            if entry.path().extension() == Some(OsStr::new("json")) {
+                let name = entry
+                    .path()
+                    .file_stem()
+                    .expect("syntax file name should have a stem")
+                    .to_string_lossy();
+                debug!("loading syntax {name:?}");
+
+                let syntax: Syntax = serde_json::from_reader(BufReader::new(
+                    File::open(entry.path()).context("could not open syntax file")?,
+                ))
+                .context("could not deserialize syntax file")?;
+                let compiled = compile_syntax(&syntax);
+                self.syntaxes.insert(name.into_owned(), compiled);
+            }
+        }
+
+        Ok(())
     }
 }
 

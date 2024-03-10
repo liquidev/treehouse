@@ -23,6 +23,7 @@
 
 //! HTML renderer that takes an iterator of events as input.
 
+use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::io;
 
@@ -31,11 +32,18 @@ use pulldown_cmark::{Alignment, CodeBlockKind, Event, LinkType, Tag};
 use pulldown_cmark::{CowStr, Event::*};
 
 use crate::config::{Config, ConfigDerivedData, PicSize};
+use crate::html::highlight::highlight;
 use crate::state::Treehouse;
 
 enum TableState {
     Head,
     Body,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum CodeBlockState<'a> {
+    NotInCodeBlock,
+    InCodeBlock(Option<CowStr<'a>>),
 }
 
 struct HtmlWriter<'a, I, W> {
@@ -58,7 +66,7 @@ struct HtmlWriter<'a, I, W> {
     table_cell_index: usize,
     numbers: HashMap<CowStr<'a>, usize>,
 
-    in_code_block: bool,
+    code_block_state: CodeBlockState<'a>,
 }
 
 impl<'a, I, W> HtmlWriter<'a, I, W>
@@ -87,7 +95,7 @@ where
             table_alignments: vec![],
             table_cell_index: 0,
             numbers: HashMap::new(),
-            in_code_block: false,
+            code_block_state: CodeBlockState::NotInCodeBlock,
         }
     }
 
@@ -234,65 +242,71 @@ where
                 }
             }
             Tag::CodeBlock(info) => {
-                self.in_code_block = true;
+                self.code_block_state = CodeBlockState::InCodeBlock(None);
                 if !self.end_newline {
                     self.write_newline()?;
                 }
                 match info {
-                    CodeBlockKind::Fenced(language) => match CodeBlockMode::parse(&language) {
-                        CodeBlockMode::PlainText => self.write("<pre><code>"),
-                        CodeBlockMode::SyntaxHighlightOnly { language } => {
-                            self.write("<pre><code class=\"language-")?;
-                            escape_html(&mut self.writer, language)?;
-                            self.write("\">")
-                        }
-                        CodeBlockMode::LiterateProgram {
-                            language,
-                            kind,
-                            program_name,
-                        } => {
-                            self.write(match &kind {
-                                LiterateCodeKind::Input => {
-                                    "<th-literate-program data-mode=\"input\" "
+                    CodeBlockKind::Fenced(language) => {
+                        self.code_block_state = CodeBlockState::InCodeBlock(Some(language.clone()));
+                        match CodeBlockMode::parse(&language) {
+                            CodeBlockMode::PlainText => self.write("<pre><code>"),
+                            CodeBlockMode::SyntaxHighlightOnly { language } => {
+                                self.write("<pre><code class=\"language-")?;
+                                escape_html(&mut self.writer, language)?;
+                                if self.config.syntaxes.contains_key(language) {
+                                    self.write(" th-syntax-highlighting")?;
                                 }
-                                LiterateCodeKind::Output { .. } => {
-                                    "<th-literate-program data-mode=\"output\" "
-                                }
-                            })?;
-                            self.write("data-program=\"")?;
-                            escape_href(&mut self.writer, self.page_id)?;
-                            self.write(":")?;
-                            escape_html(&mut self.writer, program_name)?;
-                            self.write("\" data-language=\"")?;
-                            escape_html(&mut self.writer, language)?;
-                            self.write("\" role=\"code\">")?;
-
-                            if let LiterateCodeKind::Output { placeholder_pic_id } = kind {
-                                if !placeholder_pic_id.is_empty() {
-                                    self.write(
-                                        "<img class=\"placeholder-image\" loading=\"lazy\" src=\"",
-                                    )?;
-                                    escape_html(
-                                        &mut self.writer,
-                                        &self.config.pic_url(placeholder_pic_id),
-                                    )?;
-                                    self.write("\"")?;
-                                    if let Some(PicSize { width, height }) = self
-                                        .config_derived_data
-                                        .pic_size(self.config, placeholder_pic_id)
-                                    {
-                                        self.write(&format!(
-                                            " width=\"{width}\" height=\"{height}\""
-                                        ))?;
-                                    }
-                                    self.write(">")?;
-                                }
+                                self.write("\">")
                             }
+                            CodeBlockMode::LiterateProgram {
+                                language,
+                                kind,
+                                program_name,
+                            } => {
+                                self.write(match &kind {
+                                    LiterateCodeKind::Input => {
+                                        "<th-literate-program data-mode=\"input\" "
+                                    }
+                                    LiterateCodeKind::Output { .. } => {
+                                        "<th-literate-program data-mode=\"output\" "
+                                    }
+                                })?;
+                                self.write("data-program=\"")?;
+                                escape_href(&mut self.writer, self.page_id)?;
+                                self.write(":")?;
+                                escape_html(&mut self.writer, program_name)?;
+                                self.write("\" data-language=\"")?;
+                                escape_html(&mut self.writer, language)?;
+                                self.write("\" role=\"code\">")?;
 
-                            self.write("<pre class=\"placeholder-console\">")?;
-                            Ok(())
+                                if let LiterateCodeKind::Output { placeholder_pic_id } = kind {
+                                    if !placeholder_pic_id.is_empty() {
+                                        self.write(
+                                                            "<img class=\"placeholder-image\" loading=\"lazy\" src=\"",
+                                                        )?;
+                                        escape_html(
+                                            &mut self.writer,
+                                            &self.config.pic_url(placeholder_pic_id),
+                                        )?;
+                                        self.write("\"")?;
+                                        if let Some(PicSize { width, height }) = self
+                                            .config_derived_data
+                                            .pic_size(self.config, placeholder_pic_id)
+                                        {
+                                            self.write(&format!(
+                                                " width=\"{width}\" height=\"{height}\""
+                                            ))?;
+                                        }
+                                        self.write(">")?;
+                                    }
+                                }
+
+                                self.write("<pre class=\"placeholder-console\">")?;
+                                Ok(())
+                            }
                         }
-                    },
+                    }
                     CodeBlockKind::Indented => self.write("<pre><code>"),
                 }
             }
@@ -416,7 +430,7 @@ where
                     },
                     _ => "</code></pre>\n",
                 })?;
-                self.in_code_block = false;
+                self.code_block_state = CodeBlockState::NotInCodeBlock;
             }
             Tag::List(Some(_)) => {
                 self.write("</ol>\n")?;
@@ -505,8 +519,20 @@ where
             }
         }
 
-        if self.in_code_block {
-            escape_html(&mut self.writer, text)?;
+        if let CodeBlockState::InCodeBlock(language) = &self.code_block_state {
+            let code_block_mode = language
+                .as_ref()
+                .map(|language| CodeBlockMode::parse(language));
+            let highlighting_language = code_block_mode
+                .as_ref()
+                .and_then(|mode| mode.highlighting_language());
+            let syntax =
+                highlighting_language.and_then(|language| self.config.syntaxes.get(language));
+            if let Some(syntax) = syntax {
+                highlight(&mut self.writer, syntax, text)?;
+            } else {
+                escape_html(&mut self.writer, text)?;
+            }
         } else {
             let mut parser = EmojiParser { text, position: 0 };
             while let Some(token) = parser.next_token() {
@@ -621,6 +647,16 @@ impl<'a> CodeBlockMode<'a> {
             }
         } else {
             CodeBlockMode::SyntaxHighlightOnly { language }
+        }
+    }
+
+    fn highlighting_language(&self) -> Option<&str> {
+        if let CodeBlockMode::LiterateProgram { language, .. }
+        | CodeBlockMode::SyntaxHighlightOnly { language } = self
+        {
+            Some(language)
+        } else {
+            None
         }
     }
 }

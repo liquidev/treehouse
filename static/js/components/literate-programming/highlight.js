@@ -1,6 +1,8 @@
 // This tokenizer is highly inspired by the one found in rxi's lite.
 // I highly recommend checking it out!
 // https://github.com/rxi/lite/blob/master/data/core/tokenizer.lua
+// There's also a mirror of it in the static generator, to enable highlighting of code blocks which
+// are *not* JavaScript-powered.
 
 export function compileSyntax(def) {
     for (let pattern of def.patterns) {
@@ -32,7 +34,7 @@ function tokenize(text, syntax) {
             let match;
             pattern.regex.lastIndex = i;
             if ((match = pattern.regex.exec(text)) != null) {
-                pushToken(tokens, pattern.as, match[0]); // TODO
+                pushToken(tokens, pattern.is, match[0]); // TODO
                 i = pattern.regex.lastIndex;
                 hadMatch = true;
                 break;
