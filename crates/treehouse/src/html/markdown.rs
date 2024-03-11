@@ -23,7 +23,6 @@
 
 //! HTML renderer that takes an iterator of events as input.
 
-use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::io;
 
