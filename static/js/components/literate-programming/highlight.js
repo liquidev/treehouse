@@ -6,12 +6,15 @@
 
 export function compileSyntax(def) {
     for (let pattern of def.patterns) {
-        // Remove g (global) flag as it would interfere with the lexis process. We only want to match
-        // the first token at the cursor.
-        let flags = pattern.regex.flags.replace("g", "");
-        // Add d (indices) and y (sticky) flags so that we can tell where the matches start and end.
-        pattern.regex = new RegExp(pattern.regex, "y" + flags);
+        let flags = "dy";
+        if (pattern.flags != null) {
+            if ("dotMatchesNewline" in pattern.flags) {
+                flags += "s";
+            }
+        }
+        pattern.regex = new RegExp(pattern.regex, flags);
     }
+    def.keywords = new Map(Object.entries(def.keywords));
     return def;
 }
 
@@ -34,7 +37,18 @@ function tokenize(text, syntax) {
             let match;
             pattern.regex.lastIndex = i;
             if ((match = pattern.regex.exec(text)) != null) {
-                pushToken(tokens, pattern.is, match[0]); // TODO
+                if (typeof pattern.is == "object") {
+                    let lastMatchEnd = i;
+                    for (let i = 1; i < match.indices.length; ++i) {
+                        let [start, end] = match.indices[i];
+                        if (match.indices[i] != null) {
+                            pushToken(tokens, pattern.is.default, text.substring(lastMatchEnd, start));
+                            pushToken(tokens, pattern.is.captures[i], text.substring(start, end));
+                        }
+                    }
+                } else {
+                    pushToken(tokens, pattern.is, match[0]);
+                }
                 i = pattern.regex.lastIndex;
                 hadMatch = true;
                 break;

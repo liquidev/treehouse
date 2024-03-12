@@ -17,9 +17,9 @@
         { "regex": "0[xX][0-9a-fA-F_]+n?", "is": "literal" },
         { "regex": "[0-9_]+n", "is": "literal" },
         { "regex": "[0-9_]+(\\.[0-9_]*([eE][-+]?[0-9_]+)?)?", "is": "literal" },
-        { "regex": "'(\\'|[^'])*'", "is": "string" },
-        { "regex": "\"(\\\"|[^\"])*\"", "is": "string" },
-        { "regex": "`(\\`|[^`])*`", "is": "string" },
+        { "regex": "'(\\\\'|[^'])*'", "is": "string" },
+        { "regex": "\"(\\\\\"|[^\"])*\"", "is": "string" },
+        { "regex": "`(\\\\`|[^`])*`", "is": "string" },
         { "regex": "[+=/*^%<>!~|&\\.?:-]+", "is": "operator" },
         { "regex": "[,;]", "is": "punct" }
     ],
