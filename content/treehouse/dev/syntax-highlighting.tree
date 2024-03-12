@@ -5,32 +5,49 @@
     - really there's not much more to it, but I use it for debugging + with it you can get a general feel for how I highlight things in the treehouse
 
 - `javascript`
-```javascript
-// t is an existing tile index; variable name is short for brevity
-export function removeRedundancies(t) {
-    if (isSet(t, SE) && (!isSet(t, S) || !isSet(t, E))) {
-        t &= ~SE;
-    }
-    if (isSet(t, SW) && (!isSet(t, S) || !isSet(t, W))) {
-        t &= ~SW;
-    }
-    if (isSet(t, NW) && (!isSet(t, N) || !isSet(t, W))) {
-        t &= ~NW;
-    }
-    if (isSet(t, NE) && (!isSet(t, N) || !isSet(t, E))) {
-        t &= ~NE;
-    }
-    return t;
-}
 
-/* This is
-   a multiline comment. */
+    - patterns:
+    ```javascript
+    // This is a single-line comment.
+    /* This is
+    a multiline comment. */
 
-ident Class CONSTANT funciton()
-0b1010 0o01234567 0x0123456789ABCDEF
-01234567
-1.41e-3
-'string' /**/ "string" /**/ `string`
-+ - * / == != <= >= ! ~ || && . ? :
-, ;
-```
+    ident Class CONSTANT funciton()
+    0b1010 0o01234567 0x0123456789ABCDEF
+    01234567
+    1.0 1.41e-3 1.42E+4 1.43e1
+    'string' "string" `string`
+    + - * / == != <= >= ! ~ || && . ? :
+    , ;
+    ```
+
+    - keywords:
+    ```javascript
+    as async await break case catch class const continue debugger default delete do else export
+    extends finally for from function get if import in instanceof let new of return set static
+    switch throw try typeof var void while with yield
+
+    super this
+
+    false true undefined null
+    ```
+
+    - sample code:
+    ```javascript
+    // t is an existing tile index; variable name is short for brevity
+    export function removeRedundancies(t) {
+        if (isSet(t, SE) && (!isSet(t, S) || !isSet(t, E))) {
+            t &= ~SE;
+        }
+        if (isSet(t, SW) && (!isSet(t, S) || !isSet(t, W))) {
+            t &= ~SW;
+        }
+        if (isSet(t, NW) && (!isSet(t, N) || !isSet(t, W))) {
+            t &= ~NW;
+        }
+        if (isSet(t, NE) && (!isSet(t, N) || !isSet(t, E))) {
+            t &= ~NE;
+        }
+        return t;
+    }
+    ```
