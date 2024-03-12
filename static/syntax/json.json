@@ -1,0 +1,17 @@
+{
+    "patterns": [
+        { "regex": "[a-zA-Z_][a-zA-Z0-9_]*", "is": "error" },
+        { "regex": "[0-9_]+(\\.[0-9_]*([eE][-+]?[0-9_]+)?)?", "is": "literal" },
+        {
+            "regex": "\"(\\\\\"|[^\"])*\"(:)",
+            "is": { "default": "keyword2", "captures": ["keyword2", "punct"] }
+        },
+        { "regex": "\"(\\\\\"|[^\"])*\"", "is": "string" },
+        { "regex": "[,]", "is": "punct" }
+    ],
+    "keywords": {
+        "null": { "into": "literal" },
+        "true": { "into": "literal" },
+        "false": { "into": "literal" }
+    }
+}

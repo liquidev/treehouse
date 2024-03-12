@@ -1,12 +1,16 @@
 %% title = "syntax highlighting gallery"
 
+% id = "01HRT0DG7VSMZCX4PPCKE3ZCKN"
 - this is a page demonstrating syntaxes supported by the treehouse
 
+    % id = "01HRT0DG7VF31P185J898QQH85"
     - really there's not much more to it, but I use it for debugging + with it you can get a general feel for how I highlight things in the treehouse
 
+% id = "01HRT0DG7VN5TH971H7W8AT8YY"
 - `javascript`
 
-    - patterns:
+    % id = "01HRT0DG7V9PAY44NMYVMF7B63"
+    - patterns
     ```javascript
     // This is a single-line comment.
     /* This is
@@ -21,7 +25,8 @@
     , ;
     ```
 
-    - keywords:
+    % id = "01HRT0DG7VM2MV9YA5D694WA8Y"
+    - keywords
     ```javascript
     as async await break case catch class const continue debugger default delete do else export
     extends finally for from function get if import in instanceof let new of return set static
@@ -32,7 +37,8 @@
     false true undefined null
     ```
 
-    - sample code:
+    % id = "01HRT0DG7VA7MA87JR7MGQW294"
+    - sample code
     ```javascript
     // t is an existing tile index; variable name is short for brevity
     export function removeRedundancies(t) {
@@ -51,3 +57,37 @@
         return t;
     }
     ```
+
+    % id = "01HRT0DG7V51ENS54V2QFEAAF0"
+    + edge cases
+
+        % id = "01HRT0DG7VHX3VJ861W5VF0FNP"
+        - ```javascript
+        "cause i don't need"
+        many_words "many words"
+
+        'how can we connect this way'
+        when_i_dont_understand 'the words you say'
+        ```
+        ```javascript
+        hello "string\"escape" world
+        ```
+
+        this one is tricky because it requires a whopping five backslashes in the JSON syntax definition, and I initially had the pattern defined as:
+        ```json
+        { "regex": "\"(\\\"|[^\"])*\"", "is": "string" }
+        ```
+        which produced the following regex:
+        ```regex
+        "(\"|[^"])*"
+        ```
+        escaping the `"` in the process, therefore producing the following regex:
+        ```regex
+        "("|[^"])*"
+        ```
+        which can be reduced to:
+        ```regex
+        "([^])*"
+        ```
+
+        note that `[^]` is not the same as `.`, because the latter omits newlines.

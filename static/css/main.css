@@ -776,6 +776,10 @@ th-literate-program[data-mode="output"] {
         color: var(--syntax-punct);
     }
 
+    &.error {
+        color: var(--error-color);
+        text-decoration: wavy underline;
+    }
 }
 
 .th-syntax-highlighting {
