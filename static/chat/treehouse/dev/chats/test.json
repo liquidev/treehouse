@@ -1,0 +1,42 @@
+{
+    "nodes": {
+        "init": {
+            "kind": "say",
+            "content": "hello! nice to meet you.",
+            "then": "question1"
+        },
+        "question1": {
+            "kind": "ask",
+            "questions": [
+                { "content": "Who are you?", "then": "whoAreYou" },
+                { "content": "What is this?", "then": "whatIsThis" }
+            ]
+        },
+        "whoAreYou": {
+            "kind": "say",
+            "content": "I'm liquidex. y'know, the guy running this place.",
+            "then": "question1"
+        },
+        "whatIsThis": {
+            "kind": "say",
+            "content": "this is a test of the treehouse dialogue system. basically, I made myself a little framework for writing conversations between characters, and this is a test page for it.",
+            "then": "whatIsThisQuestion"
+        },
+        "whatIsThisQuestion": {
+            "kind": "ask",
+            "questions": [
+                { "content": "Right.", "then": "question1" },
+                {
+                    "content": "\"Dialogues\", seriously? What, are you British?",
+                    "then": "british"
+                }
+            ]
+        },
+        "british": {
+            "kind": "say",
+            "content": "no, but I think British is pretty damn funny.",
+            "then": "question1"
+        },
+        "end": { "kind": "end" }
+    }
+}

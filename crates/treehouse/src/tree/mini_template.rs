@@ -8,7 +8,7 @@ use std::ops::Range;
 
 use pulldown_cmark::escape::escape_html;
 
-use crate::{config::Config, state::Treehouse};
+use crate::{cli::Paths, config::Config, state::Treehouse};
 
 struct Lexer<'a> {
     input: &'a str,
@@ -149,7 +149,7 @@ impl<'a> Renderer<'a> {
         self.output.push_str(&self.lexer.input[token.range.clone()]);
     }
 
-    fn render(&mut self, config: &Config, treehouse: &Treehouse) {
+    fn render(&mut self, config: &Config, treehouse: &Treehouse, paths: &Paths<'_>) {
         let kind_of = |token: &Token| token.kind;
 
         while let Some(token) = self.lexer.next() {
@@ -166,6 +166,7 @@ impl<'a> Renderer<'a> {
                         match Self::render_template(
                             config,
                             treehouse,
+                            paths,
                             self.lexer.input[inside.as_ref().unwrap().range.clone()].trim(),
                         ) {
                             Ok(s) => match escaping {
@@ -192,22 +193,24 @@ impl<'a> Renderer<'a> {
     fn render_template(
         config: &Config,
         _treehouse: &Treehouse,
+        paths: &Paths<'_>,
         template: &str,
     ) -> Result<String, InvalidTemplate> {
         let (function, arguments) = template.split_once(' ').unwrap_or((template, ""));
         match function {
             "pic" => Ok(config.pic_url(arguments)),
-            "c++" => Ok("<script>alert(1)</script>".into()),
+            "include_static" => std::fs::read_to_string(paths.static_dir.join(arguments))
+                .map_err(|_| InvalidTemplate),
             _ => Err(InvalidTemplate),
         }
     }
 }
 
-pub fn render(config: &Config, treehouse: &Treehouse, input: &str) -> String {
+pub fn render(config: &Config, treehouse: &Treehouse, paths: &Paths<'_>, input: &str) -> String {
     let mut renderer = Renderer {
         lexer: Lexer::new(input),
         output: String::new(),
     };
-    renderer.render(config, treehouse);
+    renderer.render(config, treehouse, paths);
     renderer.output
 }

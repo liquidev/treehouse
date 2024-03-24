@@ -1,9 +1,10 @@
-use std::fmt::Write;
+use std::{borrow::Cow, fmt::Write};
 
 use pulldown_cmark::{BrokenLink, LinkType};
 use treehouse_format::pull::BranchKind;
 
 use crate::{
+    cli::Paths,
     config::{Config, ConfigDerivedData},
     html::EscapeAttribute,
     state::{FileId, Treehouse},
@@ -20,6 +21,7 @@ pub fn branch_to_html(
     treehouse: &mut Treehouse,
     config: &Config,
     config_derived_data: &mut ConfigDerivedData,
+    paths: &Paths<'_>,
     file_id: FileId,
     branch_id: SemaBranchId,
 ) {
@@ -49,6 +51,11 @@ pub fn branch_to_html(
     } else {
         "b"
     };
+    let component = if !branch.attributes.cast.is_empty() {
+        Cow::Owned(format!("{component} {}", branch.attributes.cast))
+    } else {
+        Cow::Borrowed(component)
+    };
 
     let linked_branch = if let Content::Link(link) = &branch.attributes.content {
         format!(" data-th-link=\"{}\"", EscapeHtml(link))
@@ -62,9 +69,19 @@ pub fn branch_to_html(
         ""
     };
 
+    let mut data_attributes = String::new();
+    for (key, value) in &branch.attributes.data {
+        write!(
+            data_attributes,
+            " data-{key}=\"{}\"",
+            EscapeAttribute(value)
+        )
+        .unwrap();
+    }
+
     write!(
         s,
-        "<li data-cast=\"{component}\" class=\"{class}\" id=\"{}\"{linked_branch}{do_not_persist}>",
+        "<li data-cast=\"{component}\" class=\"{class}\" id=\"{}\"{linked_branch}{do_not_persist}{data_attributes}>",
         EscapeAttribute(&branch.html_id)
     )
     .unwrap();
@@ -136,7 +153,7 @@ pub fn branch_to_html(
             }
         };
         if branch.attributes.template {
-            final_markdown = mini_template::render(config, treehouse, &final_markdown);
+            final_markdown = mini_template::render(config, treehouse, paths, &final_markdown);
         }
         let markdown_parser = pulldown_cmark::Parser::new_with_broken_link_callback(
             &final_markdown,
@@ -204,7 +221,15 @@ pub fn branch_to_html(
                 let num_children = branch.children.len();
                 for i in 0..num_children {
                     let child_id = treehouse.tree.branch(branch_id).children[i];
-                    branch_to_html(s, treehouse, config, config_derived_data, file_id, child_id);
+                    branch_to_html(
+                        s,
+                        treehouse,
+                        config,
+                        config_derived_data,
+                        paths,
+                        file_id,
+                        child_id,
+                    );
                 }
                 s.push_str("</ul>");
             }
@@ -221,12 +246,21 @@ pub fn branches_to_html(
     treehouse: &mut Treehouse,
     config: &Config,
     config_derived_data: &mut ConfigDerivedData,
+    paths: &Paths<'_>,
     file_id: FileId,
     branches: &[SemaBranchId],
 ) {
     s.push_str("<ul>");
     for &child in branches {
-        branch_to_html(s, treehouse, config, config_derived_data, file_id, child);
+        branch_to_html(
+            s,
+            treehouse,
+            config,
+            config_derived_data,
+            paths,
+            file_id,
+            child,
+        );
     }
     s.push_str("</ul>");
 }
