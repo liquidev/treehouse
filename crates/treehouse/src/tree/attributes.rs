@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 
 /// Top-level `%%` root attributes.
@@ -79,6 +81,14 @@ pub struct Attributes {
     /// debug mode.
     #[serde(default)]
     pub stage: Stage,
+
+    /// List of extra spells to cast on the branch.
+    #[serde(default)]
+    pub cast: String,
+
+    /// List of extra `data` attributes to add to the block.
+    #[serde(default)]
+    pub data: HashMap<String, String>,
 }
 
 /// Controls for block content presentation.

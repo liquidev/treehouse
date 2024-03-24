@@ -101,7 +101,8 @@ body::selection {
 body,
 pre,
 code,
-kbd {
+kbd,
+button {
     font-family: 'RecVar', sans-serif;
     font-size: 14px;
     line-height: 1.5;

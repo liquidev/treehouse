@@ -1,0 +1,11 @@
+%% title = "testing ground for (chit)chats"
+   scripts = ["components/chat.js"]
+   styles = ["components/chat.css"]
+
+% id = "01HSR695VNDXRGPC3XCHS3A61V"
+- this is a test page for the treehouse's chat system.
+
+% cast = "chat js"
+  id = "01HSR695VNDYS0GDB527B9NPJS"
+  template = true
+- {% include_static chat/treehouse/dev/chats/test.json %}
