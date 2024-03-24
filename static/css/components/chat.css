@@ -33,6 +33,8 @@ th-chat-asked {
         border: none;
         background: none;
         color: var(--text-color);
+        user-select: auto;
+
         padding: 0.5em 0;
         margin-right: 2rem;
 
