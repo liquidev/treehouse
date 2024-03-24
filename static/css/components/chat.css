@@ -14,7 +14,9 @@ th-chat {
 }
 
 th-chat-said {
-    display: block;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
     border: 1px solid var(--border-1);
     padding: 12px 16px;
@@ -22,6 +24,15 @@ th-chat-said {
     border-radius: 8px;
 
     max-width: 60%;
+
+    &>.picture {
+        padding-right: 16px;
+        align-self: baseline;
+    }
+
+    &>.text-container {
+        display: inline-block;
+    }
 }
 
 th-chat-asked {

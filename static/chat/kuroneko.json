@@ -1,0 +1,322 @@
+{
+    "nodes": {
+        "init": {
+            "kind": "say",
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "…",
+            "then": "initQuestion"
+        },
+        "initQuestion": {
+            "kind": "ask",
+            "questions": [{ "content": "Kitty?", "then": "kitty" }]
+        },
+        "kitty": {
+            "kind": "say",
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "I'm no ordinary cat.",
+            "then": "introductions"
+        },
+        "introductions": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "…woah! You speak!",
+                    "then": "introductions.youSpeak"
+                },
+                { "content": "Certainly.", "then": "introductions.certainly" }
+            ]
+        },
+        "introductions.youSpeak": {
+            "kind": "say",
+            "character": "coco",
+            "content": "Yeah. No clue what's so surprising about that. I mean, I've spoken for as long as I remember! But you're not the first person I've met that was surprised that a tiny thing like me could speak.",
+            "then": "introductions.youSpeak2"
+        },
+        "introductions.youSpeak2": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "Who was the other?",
+                    "then": "introductions.youSpeak.theOther"
+                },
+                {
+                    "content": "I mean, obviously.",
+                    "then": "introductions.youSpeak.anyways"
+                }
+            ]
+        },
+        "introductions.youSpeak.theOther": {
+            "kind": "say",
+            "character": "coco",
+            "content": "My owner. I've never seen someone this freaked out in my life!",
+            "then": "introductions.youSpeak.theOther2"
+        },
+        "introductions.youSpeak.theOther2": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "I'm not surprised at all.",
+                    "then": "introductions.youSpeak.anyways"
+                },
+                {
+                    "content": "What about me?",
+                    "then": "introductions.youSpeak.theOther.whatAboutMe"
+                },
+                {
+                    "content": "Who's your owner?",
+                    "then": "introductions.youSpeak.theOther.owner"
+                }
+            ]
+        },
+        "introductions.youSpeak.theOther.whatAboutMe": {
+            "kind": "say",
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "You're a brave soul. Us cats can feel that. Nothing about your reaction came off as being scared.",
+            "then": "introductions.youSpeak.theOther.whatAboutMe2"
+        },
+        "introductions.youSpeak.theOther.whatAboutMe2": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "Glad to hear that.",
+                    "then": "introductions.youSpeak.anyways"
+                }
+            ]
+        },
+        "introductions.youSpeak.theOther.owner": {
+            "kind": "say",
+            "character": "coco",
+            "content": "I'd ask her to introduce herself, but she hasn't been around lately. I believe she's out on a trip or something. No clue what the trip's about or when she'll be back.",
+            "then": "introductions.youSpeak.theOther.owner2"
+        },
+        "introductions.youSpeak.theOther.owner2": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "\"She?\" You mean, your owner isn't liquidex?",
+                    "then": "introductions.youSpeak.theOther.owner3"
+                },
+                {
+                    "content": "I see.",
+                    "then": "introductions.youSpeak.anyways"
+                }
+            ]
+        },
+        "introductions.youSpeak.theOther.owner3": {
+            "kind": "say",
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "No.",
+            "then": "introductions.youSpeak.theOther.owner4"
+        },
+        "introductions.youSpeak.theOther.owner4": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "I see.",
+                    "then": "introductions.youSpeak.anyways"
+                }
+            ]
+        },
+        "introductions.youSpeak.anyways": {
+            "kind": "say",
+            "character": "coco",
+            "content": "Anyways. Is there anything in particular you're looking for?",
+            "then": "introductions.whatAreYouLookingFor"
+        },
+        "introductions.certainly": {
+            "kind": "say",
+            "character": "coco",
+            "content": "Interesting to see you keeping your composure after meeting a speaking cat.",
+            "then": "introductions.certainly2"
+        },
+        "introductions.certainly2": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "I see no reason to be upset. I've seen weirder things.",
+                    "then": "introductions.certainly3"
+                }
+            ]
+        },
+        "introductions.certainly3": {
+            "kind": "say",
+            "character": "coco",
+            "content": "Well anyways, while my owner is out, why don't we have a little chat?",
+            "then": "introductions.whatAreYouLookingFor"
+        },
+        "introductions.whatAreYouLookingFor": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "Tell me more about yourself.",
+                    "then": "aboutYourself"
+                },
+                {
+                    "content": "Tell me more about this place.",
+                    "then": "aboutPlace"
+                }
+            ]
+        },
+        "aboutYourself": {
+            "kind": "say",
+            "character": "coco",
+            "content": "I'm Coco, a black cat that lives in the treehouse. I like scritches and treats. One day I climbed into the treehouse and got lost. Fortunately my fine owner lady found me and took good care of me! Nowadays I live a happy life with the treefolk.",
+            "then": "aboutYourself2"
+        },
+        "aboutYourself2": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "(scritch Coco)",
+                    "then": "aboutYourself2.scritch"
+                },
+                {
+                    "content": "Are you friends with the treefolk?",
+                    "then": "aboutYourself2.friends"
+                },
+                {
+                    "content": "You said earlier you're no ordinary cat. What did you mean?",
+                    "then": "aboutYourself2.extraordinary"
+                },
+                {
+                    "content": "That's all I wanted to know about you, thanks.",
+                    "then": "introductions.whatAreYouLookingFor"
+                }
+            ]
+        },
+        "aboutYourself2.scritch": {
+            "kind": "say",
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "<em>*purrs*</em>",
+            "then": "aboutYourself2"
+        },
+        "aboutYourself2.friends": {
+            "kind": "say",
+            "character": "coco",
+            "content": "I'm just here for the warmth, food, and scritches. The people here could just as easily be someone else. This is just a nice place to live, so I'm not complaining.",
+            "then": "aboutYourself2"
+        },
+        "aboutYourself2.extraordinary": {
+            "kind": "say",
+            "character": "coco",
+            "content": "I speak. Is there anything more to say?",
+            "then": "aboutYourself2.extraordinary2"
+        },
+        "aboutYourself2.extraordinary2": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "Well, that's the obvious part. Is there anything else?",
+                    "then": "aboutYourself2.extraordinary3"
+                }
+            ]
+        },
+        "aboutYourself2.extraordinary3": {
+            "kind": "say",
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "…Maybe.",
+            "then": "aboutYourself2"
+        },
+        "aboutPlace": {
+            "kind": "say",
+            "character": "coco",
+            "content": "This is the back porch of the house. What do you think?",
+            "then": "aboutPlace.definition"
+        },
+        "aboutPlace.definition": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "It's empty.",
+                    "then": "aboutPlace.definition.empty"
+                },
+                {
+                    "content": "It's wild.",
+                    "then": "aboutPlace.definition.wild"
+                },
+                {
+                    "content": "It's odd.",
+                    "then": "aboutPlace.definition.odd"
+                },
+                {
+                    "content": "It's even.",
+                    "then": "aboutPlace.definition.even"
+                },
+                {
+                    "content": "What even are these answers?",
+                    "then": "aboutPlace.definition.what"
+                }
+            ]
+        },
+        "aboutPlace.definition.empty": {
+            "kind": "set",
+            "fact": "kuroneko/empty",
+            "then": "aboutPlace.definition.thankYou"
+        },
+        "aboutPlace.definition.wild": {
+            "kind": "set",
+            "fact": "kuroneko/wild",
+            "then": "aboutPlace.definition.thankYou"
+        },
+        "aboutPlace.definition.odd": {
+            "kind": "set",
+            "fact": "kuroneko/odd",
+            "then": "aboutPlace.definition.thankYou"
+        },
+        "aboutPlace.definition.even": {
+            "kind": "set",
+            "fact": "kuroneko/even",
+            "then": "aboutPlace.definition.thankYou"
+        },
+        "aboutPlace.definition.what": {
+            "kind": "set",
+            "fact": "kuroneko/what",
+            "then": "aboutPlace.definition.thankYou2"
+        },
+        "aboutPlace.definition.thankYou": {
+            "kind": "say",
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Yeah, I think I agree.",
+            "then": "aboutPlace.thatsIt"
+        },
+        "aboutPlace.definition.thankYou2": {
+            "kind": "say",
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "I just asked you what you think about how the back porch looks. That's all.",
+            "then": "aboutPlace.theWhat"
+        },
+        "aboutPlace.thatsIt": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "That's it? You're not gonna tell me anything else?",
+                    "then": "aboutPlace.end"
+                }
+            ]
+        },
+        "aboutPlace.theWhat": {
+            "kind": "ask",
+            "questions": [
+                {
+                    "content": "Seriously though, where in the world did that come from.",
+                    "then": "aboutPlace.end"
+                }
+            ]
+        },
+        "aboutPlace.end": {
+            "kind": "say",
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "…",
+            "then": "introductions.whatAreYouLookingFor"
+        }
+    }
+}

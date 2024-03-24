@@ -1,10 +1,17 @@
 import { addSpell, spell } from "treehouse/spells.js";
 import { Branch } from "treehouse/tree.js";
 
+const characters = {
+    coco: {
+        name: "Coco",
+    },
+}
+
 const persistenceKey = "treehouse.chats";
 let persistentState = JSON.parse(localStorage.getItem(persistenceKey)) || {};
 
 persistentState.log ??= {};
+persistentState.facts ??= {};
 savePersistentState();
 
 function savePersistentState() {
@@ -38,14 +45,25 @@ class Chat extends HTMLElement {
 customElements.define("th-chat", Chat);
 
 class Said extends HTMLElement {
-    constructor({ content }) {
+    constructor({ content, character, expression }) {
         super();
         this.content = content;
+        this.character = character;
+        this.expression = expression ?? "neutral";
     }
 
     connectedCallback() {
-        this.innerHTML = this.content;
-        this.dispatchEvent(new Event(".animationsComplete"));
+        this.picture = new Image(64, 64);
+        this.picture.src = `${TREEHOUSE_SITE}/static/character/${this.character}/${this.expression}.svg`;
+        this.picture.classList.add("picture");
+        this.appendChild(this.picture);
+
+        this.textContainer = document.createElement("span");
+        this.textContainer.innerHTML = this.content;
+        this.textContainer.classList.add("text-container");
+        this.appendChild(this.textContainer);
+
+        this.dispatchEvent(new Event(".textFullyVisible"));
     }
 }
 
@@ -100,8 +118,8 @@ class ChatState {
     }
 
     say(_, node) {
-        let said = new Said({ content: node.content });
-        said.addEventListener(".animationsComplete", _ => this.exec(node.then));
+        let said = new Said({ content: node.content, character: node.character, expression: node.expression });
+        said.addEventListener(".textFullyVisible", _ => this.exec(node.then));
         this.container.appendChild(said);
     }
 
@@ -125,6 +143,11 @@ class ChatState {
             questions[i] = asked;
         }
         return questions;
+    }
+
+    set(_, node) {
+        persistentState.facts[node.fact] = true;
+        this.exec(node.then);
     }
 
     end() {}
