@@ -344,6 +344,13 @@ a:visited {
     color: var(--link-color-visited);
 }
 
+/* Allow for some secret links */
+
+a.secret {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
 /* Make blockquotes a bit prettier */
 
 blockquote {
