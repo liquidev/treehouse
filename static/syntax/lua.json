@@ -1,0 +1,74 @@
+{
+    "patterns": [
+        {
+            "regex": "--\\[\\[.*?\\]\\]",
+            "flags": ["dotMatchesNewline"],
+            "is": "comment"
+        },
+        { "regex": "--.*", "is": "comment" },
+        { "regex": "'(\\\\'|[^'])*'", "is": "string" },
+        { "regex": "\"(\\\\\"|[^\"])*\"", "is": "string" },
+        {
+            "regex": "\\[\\[.+?\\]\\]",
+            "flags": ["dotMatchesNewline"],
+            "is": "string"
+        },
+        {
+            "regex": "0[xX][0-9a-fA-F]+(\\.[0-9a-fA-F]*)?([pP][-+]?[0-9]+)?",
+            "is": "literal"
+        },
+        { "regex": "0[xX]\\.[0-9a-fA-F]+([pP][-+]?[0-9]+)?", "is": "literal" },
+        { "regex": "[0-9_]+(\\.[0-9_]*([eE][-+]?[0-9_]+)?)?", "is": "literal" },
+        {
+            "regex": "<([a-zA-Z_][a-zA-Z0-9_]*)>",
+            "is": {
+                "default": "punct",
+                "captures": ["error error-attribute"]
+            }
+        },
+        { "regex": "\\.\\.\\.", "is": "punct" },
+        { "regex": "[+=/*^%#<>~.-]+", "is": "operator" },
+        {
+            "regex": "([a-zA-Z_][a-zA-Z0-9_]*)\\(",
+            "is": {
+                "default": "default",
+                "captures": ["function"]
+            }
+        },
+        { "regex": "[a-zA-Z_][a-zA-Z0-9_]*", "is": "identifier" }
+    ],
+    "keywords": {
+        "if": { "into": "keyword1" },
+        "then": { "into": "keyword1" },
+        "else": { "into": "keyword1" },
+        "elseif": { "into": "keyword1" },
+        "end": { "into": "keyword1" },
+        "do": { "into": "keyword1" },
+        "function": { "into": "keyword1" },
+        "repeat": { "into": "keyword1" },
+        "until": { "into": "keyword1" },
+        "while": { "into": "keyword1" },
+        "for": { "into": "keyword1" },
+        "break": { "into": "keyword1" },
+        "return": { "into": "keyword1" },
+        "local": { "into": "keyword1" },
+        "in": { "into": "keyword1" },
+        "not": { "into": "keyword1" },
+        "and": { "into": "keyword1" },
+        "or": { "into": "keyword1" },
+        "goto": { "into": "keyword1" },
+        "self": { "into": "keyword2" },
+        "true": { "into": "literal" },
+        "false": { "into": "literal" },
+        "nil": { "into": "literal" },
+
+        "close": {
+            "into": "keyword1",
+            "onlyReplaces": "error error-attribute"
+        },
+        "const": {
+            "into": "keyword1",
+            "onlyReplaces": "error error-attribute"
+        }
+    }
+}

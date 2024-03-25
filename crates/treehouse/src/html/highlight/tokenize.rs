@@ -51,6 +51,11 @@ impl CompiledSyntax {
                                 );
                                 last_match_end = capture.range().end;
                             }
+                            push_token(
+                                &mut tokens,
+                                types.default,
+                                i + last_match_end..i + whole_match.range().end,
+                            );
                             i += whole_match.range().end;
                             had_match = true;
                             break;

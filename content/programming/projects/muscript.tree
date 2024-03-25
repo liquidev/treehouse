@@ -261,7 +261,7 @@
                     - I don't know if I'll ever optimize this to be even more efficient than it
                     already is, but source ranges are mostly irrelevant to the high level task of
                     matching tokens, so maybe arranging the storage like
-                    ```rs
+                    ```rust
                     struct Tokens {
                         kinds: Vec<TokenKind>,
                         source_ranges: Vec<Range<usize>>,

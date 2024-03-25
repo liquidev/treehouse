@@ -132,3 +132,64 @@
         }
     }
     ```
+
+- `lua`
+
+    - patterns
+    ```lua
+    -- single-line comment
+    --[[
+        multi-line comment
+        NOTE: comments with [==[ ]==] are not supported due to a lack of backreference support
+              in Rust regex
+    ]]
+
+    'string' "string" [[multiline
+    string]]
+    0xABCD 0xA.B 0xAp+3 0xCE.DE5p-2
+    123 1.0 1.41e-3 1.42E+4 1.43e1
+    <bye_egg>
+    ...
+    + - * / % ^ == ~= <= >= #
+    funciton() ident
+    ```
+
+    - keywords
+    ```lua
+    if then else elseif end do function repeat until while for break return local in not and or goto
+    self
+    true false nil
+    <close> <const>
+    ```
+
+    - sample
+    ```lua
+    -- Ticks the scheduler: executes every active fiber, removes inactive fibers,
+    -- and ignores sleeping fibers.
+    --
+    -- Extra arguments passed to this function are passed to all running fibers.
+    function Scheduler:tick(...)
+        local time = timer.getTime()
+        local i = 1
+        while i <= #self.fibers do
+            local fiber = self.fibers[i]
+            local coro = fiber.coro
+            if time >= fiber.wakeAt then
+                local ok, result = coroutine.resume(coro, ...)
+                if not ok then
+                    error("scheduler for '"..self.name.."': "..
+                        "ticking '"..fiber.name.."' failed with an error\n"..result)
+                else
+                    if coroutine.status(coro) == "dead" then
+                        self.fibers[i] = self.fibers[#self.fibers]
+                        self.fibers[#self.fibers] = nil
+                        i = i - 1
+                    elseif result ~= nil and result > 0 then
+                        fiber.wakeAt = time + result
+                    end
+                end
+            end
+            i = i + 1
+        end
+    end
+    ```
