@@ -14,15 +14,11 @@ export class NodeSet extends NodeBase {
 
         this.fact = this.appendChild(document.createElement("p"));
         this.fact.classList.add("fact");
-        this.fact.textContent = this.modelNode.fact;
         this.fact.contentEditable = true;
+        this.bindInput(this.fact, lens.field(this.modelNode, "fact"));
 
         this.outputPin = this.appendChild(
-            new Pin(
-                this.modelNode,
-                "output",
-                lens.field(this.modelNode, "then")
-            )
+            new Pin(this.modelNode, "output", lens.field(this.modelNode, "then"))
         );
         this.addOutputPin(this.outputPin);
     }

@@ -1,5 +1,3 @@
-import { createEvent } from "treehouse/common/event.js";
-
 export class NodeBase extends HTMLElement {
     #inputPin = null;
     #outputPins = [];
@@ -74,13 +72,13 @@ export class NodeBase extends HTMLElement {
         this.updateTransform();
     }
 
+    sendModelUpdate() {
+        this.dispatchEvent(new Event(".modelUpdate"));
+    }
+
     updateTransform() {
         let [x, y] = this.modelNode.position;
         this.style.transform = `translate(${x}px, ${y}px)`;
-    }
-
-    sendModelUpdate() {
-        this.dispatchEvent(new Event(".modelUpdate"));
     }
 
     move(deltaX, deltaY) {
@@ -88,6 +86,14 @@ export class NodeBase extends HTMLElement {
         this.modelNode.position[1] += deltaY;
         this.updateTransform();
         this.sendModelUpdate();
+    }
+
+    bindInput(element, lens) {
+        element.textContent = lens.get();
+        element.addEventListener("input", () => {
+            lens.set(element.textContent);
+            this.sendModelUpdate();
+        });
     }
 }
 

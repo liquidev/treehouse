@@ -22,13 +22,10 @@
             "then": "introductions"
         },
         "introductions": {
-            "position": [703, 454],
+            "position": [677, 449],
             "kind": "ask",
             "questions": [
-                {
-                    "content": "…woah! You speak!",
-                    "then": "introductions.youSpeak"
-                },
+                { "content": "…woah! You speak!", "then": "introductions.youSpeak" },
                 { "content": "Certainly.", "then": "introductions.certainly" }
             ]
         },
@@ -43,18 +40,12 @@
             "position": [1180, 480],
             "kind": "ask",
             "questions": [
-                {
-                    "content": "Who was the other?",
-                    "then": "introductions.youSpeak.theOther"
-                },
-                {
-                    "content": "I mean, obviously.",
-                    "then": "introductions.youSpeak.anyways"
-                }
+                { "content": "Who was the other?", "then": "introductions.youSpeak.theOther" },
+                { "content": "I mean, obviously.", "then": "introductions.youSpeak.anyways" }
             ]
         },
         "introductions.youSpeak.theOther": {
-            "position": [1376, 503],
+            "position": [1395, 378],
             "kind": "say",
             "character": "coco",
             "content": "My owner. I've never seen someone this freaked out in my life!",
@@ -72,14 +63,11 @@
                     "content": "What about me?",
                     "then": "introductions.youSpeak.theOther.whatAboutMe"
                 },
-                {
-                    "content": "Who's your owner?",
-                    "then": "introductions.youSpeak.theOther.owner"
-                }
+                { "content": "Who's your owner?", "then": "introductions.youSpeak.theOther.owner" }
             ]
         },
         "introductions.youSpeak.theOther.whatAboutMe": {
-            "position": [1885, 574],
+            "position": [1953, 573],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -87,13 +75,10 @@
             "then": "introductions.youSpeak.theOther.whatAboutMe2"
         },
         "introductions.youSpeak.theOther.whatAboutMe2": {
-            "position": [2186.6690475583096, 600.8284271247462],
+            "position": [2296.6690475583096, 589.8284271247462],
             "kind": "ask",
             "questions": [
-                {
-                    "content": "Glad to hear that.",
-                    "then": "introductions.youSpeak.anyways"
-                }
+                { "content": "Glad to hear that.", "then": "introductions.youSpeak.anyways" }
             ]
         },
         "introductions.youSpeak.theOther.owner": {
@@ -104,21 +89,18 @@
             "then": "introductions.youSpeak.theOther.owner2"
         },
         "introductions.youSpeak.theOther.owner2": {
-            "position": [2183.885717177938, 724.5226892457612],
+            "position": [2229.885717177938, 675.5226892457612],
             "kind": "ask",
             "questions": [
                 {
                     "content": "\"She?\" You mean, your owner isn't liquidex?",
                     "then": "introductions.youSpeak.theOther.owner3"
                 },
-                {
-                    "content": "I see.",
-                    "then": "introductions.youSpeak.anyways"
-                }
+                { "content": "I see.", "then": "introductions.youSpeak.anyways" }
             ]
         },
         "introductions.youSpeak.theOther.owner3": {
-            "position": [2465.112051906709, 764.4997211355819],
+            "position": [2536.112051906709, 764.4997211355819],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -126,17 +108,12 @@
             "then": "introductions.youSpeak.theOther.owner4"
         },
         "introductions.youSpeak.theOther.owner4": {
-            "position": [2597.2039243474323, 774.2044820762686],
+            "position": [2682.2039243474323, 774.2044820762686],
             "kind": "ask",
-            "questions": [
-                {
-                    "content": "I see.",
-                    "then": "introductions.youSpeak.anyways"
-                }
-            ]
+            "questions": [{ "content": "I see.", "then": "introductions.youSpeak.anyways" }]
         },
         "introductions.youSpeak.anyways": {
-            "position": [2754, 532],
+            "position": [2873, 504],
             "kind": "say",
             "character": "coco",
             "content": "Anyways. Is there anything in particular you're looking for?",
@@ -167,17 +144,11 @@
             "then": "introductions.whatAreYouLookingFor"
         },
         "introductions.whatAreYouLookingFor": {
-            "position": [3205, 872],
+            "position": [3141.3603896932163, 869.1715728752538],
             "kind": "ask",
             "questions": [
-                {
-                    "content": "Tell me more about yourself.",
-                    "then": "aboutYourself"
-                },
-                {
-                    "content": "Tell me more about this place.",
-                    "then": "aboutPlace"
-                }
+                { "content": "Tell me more about yourself.", "then": "aboutYourself" },
+                { "content": "Tell me more about this place.", "then": "aboutPlace" }
             ]
         },
         "aboutYourself": {
@@ -191,10 +162,7 @@
             "position": [3730, 1018],
             "kind": "ask",
             "questions": [
-                {
-                    "content": "(scritch Coco)",
-                    "then": "aboutYourself2.scritch"
-                },
+                { "content": "(scritch Coco)", "then": "aboutYourself2.scritch" },
                 {
                     "content": "Are you friends with the treefolk?",
                     "then": "aboutYourself2.friends"
@@ -210,7 +178,7 @@
             ]
         },
         "aboutYourself2.scritch": {
-            "position": [4001, 949],
+            "position": [4042.012193308817, 950.4142135623731],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -218,7 +186,7 @@
             "then": "aboutYourself2"
         },
         "aboutYourself2.friends": {
-            "position": [4000, 1061],
+            "position": [4021.213203435594, 1062.414213562373],
             "kind": "say",
             "character": "coco",
             "content": "I'm just here for the warmth, food, and scritches. The people here could just as easily be someone else. This is just a nice place to live, so I'm not complaining.",
@@ -260,23 +228,11 @@
             "position": [3726, 1471],
             "kind": "ask",
             "questions": [
-                {
-                    "content": "It's empty.",
-                    "then": "aboutPlace.definition.empty"
-                },
-                {
-                    "content": "It's wild.",
-                    "then": "aboutPlace.definition.wild"
-                },
+                { "content": "It's empty.", "then": "aboutPlace.definition.empty" },
+                { "content": "It's wild.", "then": "aboutPlace.definition.wild" },
                 { "content": "It's odd.", "then": "aboutPlace.definition.odd" },
-                {
-                    "content": "It's even.",
-                    "then": "aboutPlace.definition.even"
-                },
-                {
-                    "content": "What even are these answers?",
-                    "then": "aboutPlace.definition.what"
-                }
+                { "content": "It's even.", "then": "aboutPlace.definition.even" },
+                { "content": "What even are these answers?", "then": "aboutPlace.definition.what" }
             ]
         },
         "aboutPlace.definition.empty": {
@@ -326,7 +282,7 @@
             "then": "aboutPlace.theWhat"
         },
         "aboutPlace.thatsIt": {
-            "position": [4445, 1547],
+            "position": [4470.455844122718, 1551.2426406871193],
             "kind": "ask",
             "questions": [
                 {

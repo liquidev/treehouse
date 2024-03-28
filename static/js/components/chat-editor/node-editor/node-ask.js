@@ -6,32 +6,53 @@ export class NodeAsk extends NodeBase {
     connectedCallback() {
         super.connectedCallback();
 
+        this.updateFromModel();
+    }
+
+    updateFromModel() {
+        this.replaceChildren();
+
         this.setInputPin(this.appendChild(new Pin(this.modelNode, "input")));
 
         this.questions = this.appendChild(document.createElement("div"));
         this.questions.classList.add("questions");
-        for (let question of this.modelNode.questions) {
-            let questionContainer = this.questions.appendChild(
-                document.createElement("div")
-            );
+
+        this.add = this.questions.appendChild(document.createElement("div"));
+        this.add.classList.add("icon-button", "add");
+        this.add.addEventListener("click", () => {
+            this.modelNode.questions.push(NodeAsk.newQuestion());
+            this.sendModelUpdate();
+            this.updateFromModel();
+        });
+
+        for (let i = 0; i < this.modelNode.questions.length; ++i) {
+            let question = this.modelNode.questions[i];
+
+            let questionContainer = this.questions.appendChild(document.createElement("div"));
             questionContainer.classList.add("question");
 
-            let questionContent = questionContainer.appendChild(
-                document.createElement("p")
-            );
-            questionContent.textContent = question.content;
+            let remove = questionContainer.appendChild(document.createElement("div"));
+            remove.classList.add("icon-button", "remove");
+            remove.addEventListener("click", () => {
+                this.modelNode.questions.splice(i, 1);
+                this.sendModelUpdate();
+                this.updateFromModel();
+            });
+
+            let questionContent = questionContainer.appendChild(document.createElement("p"));
             questionContent.contentEditable = true;
+            this.bindInput(questionContent, lens.field(question, "content"));
 
             this.addOutputPin(
                 questionContainer.appendChild(
-                    new Pin(
-                        this.modelNode,
-                        "output",
-                        lens.field(question, "then")
-                    )
+                    new Pin(this.modelNode, "output", lens.field(question, "then"))
                 )
             );
         }
+    }
+
+    static newQuestion() {
+        return { content: "[type question here]", then: null };
     }
 }
 

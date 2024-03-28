@@ -8,6 +8,7 @@ export class Pin extends HTMLElement {
 
     connectedCallback() {
         this.classList.add(this.direction);
+        this.classList.add("icon-button");
 
         this.addEventListener("mousedown", (event) => {
             if (event.button == 0) {

@@ -39,7 +39,8 @@ th-chat-node-editor {
 
     font-size: 12px;
 
-    &>svg, &>.nodes {
+    &>svg,
+    &>.nodes {
         display: block;
         position: absolute;
         left: 0;
@@ -52,19 +53,7 @@ th-chat-node-editor {
 }
 
 th-chat-editor-node-pin {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    width: 24px;
-    height: 24px;
-
-    --recursive-wght: 600;
-    font-size: 14px;
-
-    flex-shrink: 0;
-
-    &:hover, &.connecting {
+    &.connecting {
         background-color: var(--shaded-background);
     }
 
@@ -94,6 +83,26 @@ th-chat-editor-node-pin {
     &:hover {
         background-color: var(--shaded-background);
     }
+
+    & .icon-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: 24px;
+        height: 24px;
+
+        --recursive-wght: 600;
+        font-size: 14px;
+
+        flex-shrink: 0;
+
+        pointer-events: all;
+
+        &:hover {
+            background-color: var(--shaded-background);
+        }
+    }
 }
 
 th-chat-editor-node-say.th-chat-editor-node {
@@ -102,6 +111,8 @@ th-chat-editor-node-say.th-chat-editor-node {
     &>.details {
         display: flex;
         flex-direction: column;
+
+        pointer-events: none;
 
         &>.character {
             --recursive-wght: 700;
@@ -113,18 +124,29 @@ th-chat-editor-node-say.th-chat-editor-node {
             user-select: auto;
             margin: 0 8px;
             margin-bottom: 4px;
+            pointer-events: all;
         }
     }
 }
 
 th-chat-editor-node-ask.th-chat-editor-node {
-    flex-direction: column;
+    flex-direction: row;
 
     &>.questions {
         display: flex;
         flex-direction: column;
+        justify-content: right;
+        align-items: stretch;
 
-        margin-left: 24px;
+        pointer-events: none;
+
+        &>.add {
+            margin-left: auto;
+
+            &::before {
+                content: '+';
+            }
+        }
 
         &>.question {
             display: flex;
@@ -133,10 +155,23 @@ th-chat-editor-node-ask.th-chat-editor-node {
             justify-content: right;
             text-align: right;
 
+            &>* {
+                pointer-events: all;
+            }
+
+            &>.remove {
+                &::before {
+                    content: '-';
+                }
+            }
+
             &>p {
-                margin: 3px 8px;
+                margin: 3px 0;
+                padding: 0 4px;
+                margin-left: auto;
             }
         }
+
     }
 }
 
@@ -149,6 +184,7 @@ th-chat-editor-node-set.th-chat-editor-node {
 
     &>.label {
         white-space: pre;
+        pointer-events: none;
     }
 }
 

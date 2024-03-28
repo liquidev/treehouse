@@ -17,15 +17,11 @@ export class NodeSay extends NodeBase {
 
         this.content = this.details.appendChild(document.createElement("p"));
         this.content.classList.add("content");
-        this.content.textContent = this.modelNode.content;
         this.content.contentEditable = true;
+        this.bindInput(this.content, lens.field(this.modelNode, "content"));
 
         this.outputPin = this.appendChild(
-            new Pin(
-                this.modelNode,
-                "output",
-                lens.field(this.modelNode, "then")
-            )
+            new Pin(this.modelNode, "output", lens.field(this.modelNode, "then"))
         );
         this.addOutputPin(this.outputPin);
     }
