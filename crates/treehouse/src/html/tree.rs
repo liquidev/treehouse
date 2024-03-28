@@ -9,7 +9,7 @@ use crate::{
     html::EscapeAttribute,
     state::{FileId, Treehouse},
     tree::{
-        attributes::{Content, Stage},
+        attributes::{Content, Process, Stage},
         mini_template, SemaBranchId,
     },
 };
@@ -99,7 +99,7 @@ pub fn branch_to_html(
         s.push_str("<th-bp></th-bp>");
 
         let raw_block_content = &source.input()[branch.content.clone()];
-        let mut final_markdown = String::with_capacity(raw_block_content.len());
+        let mut processed_content = String::with_capacity(raw_block_content.len());
         for line in raw_block_content.lines() {
             // Bit of a jank way to remove at most branch.indent_level spaces from the front.
             let mut space_count = 0;
@@ -111,67 +111,78 @@ pub fn branch_to_html(
                 }
             }
 
-            final_markdown.push_str(&line[space_count..]);
-            final_markdown.push('\n');
+            processed_content.push_str(&line[space_count..]);
+            processed_content.push('\n');
         }
 
-        let broken_link_callback = &mut |broken_link: BrokenLink<'_>| {
-            if let LinkType::Reference | LinkType::Shortcut = broken_link.link_type {
-                broken_link
-                    .reference
-                    .split_once(':')
-                    .and_then(|(kind, linked)| match kind {
-                        "def" => config
-                            .defs
-                            .get(linked)
-                            .map(|link| (link.clone().into(), "".into())),
-                        "branch" => treehouse
-                            .branches_by_named_id
-                            .get(linked)
-                            .map(|&branch_id| {
-                                (
-                                    format!(
-                                        "{}/b?{}",
-                                        config.site,
-                                        treehouse.tree.branch(branch_id).attributes.id
-                                    )
-                                    .into(),
-                                    "".into(),
-                                )
-                            }),
-                        "page" => Some((config.page_url(linked).into(), "".into())),
-                        "pic" => config.pics.get(linked).map(|filename| {
-                            (
-                                format!("{}/static/pic/{}", config.site, &filename).into(),
-                                "".into(),
-                            )
-                        }),
-                        _ => None,
-                    })
-            } else {
-                None
+        for process in &branch.attributes.process {
+            match process {
+                Process::Markdown => {
+                    let broken_link_callback = &mut |broken_link: BrokenLink<'_>| {
+                        if let LinkType::Reference | LinkType::Shortcut = broken_link.link_type {
+                            broken_link
+                                .reference
+                                .split_once(':')
+                                .and_then(|(kind, linked)| match kind {
+                                    "def" => config
+                                        .defs
+                                        .get(linked)
+                                        .map(|link| (link.clone().into(), "".into())),
+                                    "branch" => treehouse.branches_by_named_id.get(linked).map(
+                                        |&branch_id| {
+                                            (
+                                                format!(
+                                                    "{}/b?{}",
+                                                    config.site,
+                                                    treehouse.tree.branch(branch_id).attributes.id
+                                                )
+                                                .into(),
+                                                "".into(),
+                                            )
+                                        },
+                                    ),
+                                    "page" => Some((config.page_url(linked).into(), "".into())),
+                                    "pic" => config.pics.get(linked).map(|filename| {
+                                        (
+                                            format!("{}/static/pic/{}", config.site, &filename)
+                                                .into(),
+                                            "".into(),
+                                        )
+                                    }),
+                                    _ => None,
+                                })
+                        } else {
+                            None
+                        }
+                    };
+                    let markdown_parser = pulldown_cmark::Parser::new_with_broken_link_callback(
+                        &processed_content,
+                        {
+                            use pulldown_cmark::Options;
+                            Options::ENABLE_STRIKETHROUGH | Options::ENABLE_TABLES
+                        },
+                        Some(broken_link_callback),
+                    );
+                    let mut rendered = String::new();
+                    markdown::push_html(
+                        &mut rendered,
+                        treehouse,
+                        config,
+                        config_derived_data,
+                        treehouse.tree_path(file_id).expect(".tree file expected"),
+                        markdown_parser,
+                    );
+                    processed_content = rendered;
+                }
+                Process::Template => {
+                    processed_content =
+                        mini_template::render(config, treehouse, paths, &processed_content);
+                }
             }
-        };
-        if branch.attributes.template {
-            final_markdown = mini_template::render(config, treehouse, paths, &final_markdown);
         }
-        let markdown_parser = pulldown_cmark::Parser::new_with_broken_link_callback(
-            &final_markdown,
-            {
-                use pulldown_cmark::Options;
-                Options::ENABLE_STRIKETHROUGH | Options::ENABLE_TABLES
-            },
-            Some(broken_link_callback),
-        );
+
         s.push_str("<th-bc>");
-        markdown::push_html(
-            s,
-            treehouse,
-            config,
-            config_derived_data,
-            treehouse.tree_path(file_id).expect(".tree file expected"),
-            markdown_parser,
-        );
+        s.push_str(&processed_content);
         if let Content::Link(link) = &branch.attributes.content {
             write!(
                 s,

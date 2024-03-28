@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>treehouse chat editor</title>
+
+    <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
+    <link rel="stylesheet" href="{{ config.site }}/static/css/components/chat-editor.css">
+
+    <script type="importmap">{
+        "imports": {
+            "treehouse/": "{{ config.site }}/static/js/"
+        }
+    }</script>
+
+    <script type="module" src="{{ config.site }}/static/js/components/chat-editor/main.js"></script>
+</head>
+
+<body>
+
+    <th-chat-editor id="main-editor"></th-chat-editor>
+
+    <script type="module">
+        let filename = window.location.hash.substring(1);
+        let model = JSON.parse(await(await fetch(filename)).text());
+        let editor = document.getElementById("main-editor");
+        editor.useModel(model);
+        editor.updateFromModel();
+    </script>
+
+</body>
+
+</html>

@@ -74,8 +74,8 @@ pub struct Attributes {
     pub classes: Classes,
 
     /// Enable `mini_template` templating in this branch.
-    #[serde(default)]
-    pub template: bool,
+    #[serde(default = "default_process")]
+    pub process: Vec<Process>,
 
     /// Publishing stage; if `Draft`, the branch is invisible unless treehouse is compiled in
     /// debug mode.
@@ -135,4 +135,17 @@ pub enum Stage {
     #[default]
     Public,
     Draft,
+}
+
+/// Processing step.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub enum Process {
+    /// Render markdown to HTML.
+    Markdown,
+    /// Expand templates.
+    Template,
+}
+
+fn default_process() -> Vec<Process> {
+    vec![Process::Markdown]
 }

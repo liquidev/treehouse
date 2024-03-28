@@ -208,7 +208,7 @@ styles = ["page/tairu.css"]
         % id = "01HQ162WWACD5CD7GCZE53ZPD7"
         - not only does this have the advantage of allowing for richer graphics, but it is also a lot easier to modify by artists, because you no longer need knowledge of graphics APIs to draw tiles.
 
-    % template = true
+    % process = ["Markdown", "Template"]
       classes.branch = "tileset-cardinal-directions-demo"
       id = "01HQ162WWAADKPDQE69W3QZG0M"
     - for example, here's a tileset I drew for the 3rd iteration of my game [Planet Overgamma] - though tweaked a bit because I had never used it before writing this post :hueh:
@@ -341,7 +341,7 @@ styles = ["page/tairu.css"]
     }
     ```
 
-    % template = true
+    % process = ["Markdown", "Template"]
       id = "01HQ162WWAS813ANMBG1PWDZHC"
     - we'll define our tilesets by their texture, tile size, and a tile indexing function. so let's create an object that will hold our tileset data:
 
@@ -538,7 +538,7 @@ styles = ["page/tairu.css"]
 
     nobody in their right mind would actually draw 256 separate tiles, right? ***RIGHT???***
 
-        % template = true
+        % process = ["Markdown", "Template"]
           id = "01HQ1K39AS11M1M4GQQ60NXTY6"
         - …right! let's stick with the 16 tile version for a moment.
         if we arrange the tiles in a diagnonal cross like this, notice how the tile in the center would have the bits `SE | SW | NW | NE` set, which upon first glance would suggest us needing a different tile -
@@ -854,7 +854,7 @@ styles = ["page/tairu.css"]
     }
     ```
 
-    % template = true
+    % process = ["Markdown", "Template"]
       id = "01HQ1M84GS4C99VQZC4150CMDS"
     - now we can write a new tileset descriptor that uses this indexing function and the larger tile strip:
 
