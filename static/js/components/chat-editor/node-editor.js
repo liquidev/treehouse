@@ -55,6 +55,23 @@ export class NodeEditor extends HTMLElement {
                 event.preventDefault();
                 this.isPanning = true;
             }
+            if (event.button == 2) {
+                let bounds = this.getBoundingClientRect();
+                let worldPosition = new DOMPoint(
+                    event.clientX - bounds.x,
+                    event.clientY - bounds.y
+                );
+                worldPosition = this.transformMatrixInverted.transformPoint(worldPosition);
+
+                let menu = contextMenus.open(new AddNode(event));
+                menu.addEventListener(".addNode", (event) => {
+                    let name = nodes.generateUniqueName();
+                    event.modelNode.position = [worldPosition.x, worldPosition.y];
+                    this.model.nodes[name] = event.modelNode;
+                    this.nodesDiv.appendChild(this.createNode(name));
+                    this.sendModelUpdate();
+                });
+            }
         });
 
         this.addEventListener("wheel", (event) => {
@@ -101,19 +118,6 @@ export class NodeEditor extends HTMLElement {
 
         this.addEventListener("contextmenu", (event) => {
             event.preventDefault();
-
-            let bounds = this.getBoundingClientRect();
-            let worldPosition = new DOMPoint(event.clientX - bounds.x, event.clientY - bounds.y);
-            worldPosition = this.transformMatrixInverted.transformPoint(worldPosition);
-
-            let menu = contextMenus.open(new AddNode(event));
-            menu.addEventListener(".addNode", (event) => {
-                let name = nodes.generateUniqueName();
-                event.modelNode.position = [worldPosition.x, worldPosition.y];
-                this.model.nodes[name] = event.modelNode;
-                this.nodesDiv.appendChild(this.createNode(name));
-                this.sendModelUpdate();
-            });
         });
 
         document.addEventListener("keydown", (event) => {
