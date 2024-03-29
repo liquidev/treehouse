@@ -10,6 +10,8 @@ export class NodeAsk extends NodeBase {
     }
 
     updateFromModel() {
+        super.updateFromModel();
+
         this.replaceChildren();
 
         this.setInputPin(this.appendChild(new Pin(this.modelNode, "input")));
@@ -20,9 +22,9 @@ export class NodeAsk extends NodeBase {
         this.add = this.questions.appendChild(document.createElement("div"));
         this.add.classList.add("icon-button", "add");
         this.add.addEventListener("click", () => {
-            this.modelNode.questions.push(NodeAsk.newQuestion());
-            this.sendModelUpdate();
+            this.modelNode.questions.push(this.newQuestion());
             this.updateFromModel();
+            this.sendModelUpdate();
         });
 
         for (let i = 0; i < this.modelNode.questions.length; ++i) {
@@ -35,8 +37,8 @@ export class NodeAsk extends NodeBase {
             remove.classList.add("icon-button", "remove");
             remove.addEventListener("click", () => {
                 this.modelNode.questions.splice(i, 1);
-                this.sendModelUpdate();
                 this.updateFromModel();
+                this.sendModelUpdate();
             });
 
             let questionContent = questionContainer.appendChild(document.createElement("p"));
@@ -51,8 +53,8 @@ export class NodeAsk extends NodeBase {
         }
     }
 
-    static newQuestion() {
-        return { content: "[type question here]", then: null };
+    newQuestion() {
+        return { content: `Question ${this.modelNode.questions.length + 1}`, then: null };
     }
 }
 

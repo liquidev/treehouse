@@ -1,6 +1,9 @@
 export class Pin extends HTMLElement {
+    static #id = 0;
+
     constructor(name, direction, value) {
         super();
+        this.id = Pin.#id++;
         this.name = name;
         this.direction = direction;
         this.value = value;

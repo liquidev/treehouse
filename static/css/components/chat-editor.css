@@ -73,8 +73,6 @@ th-chat-editor-node-pin {
     border: 1px solid var(--border-1);
     border-radius: 8px;
 
-    overflow: hidden;
-
     &.selected {
         border: 2px solid var(--liquidex-brand-yellow);
         margin: -1px;
@@ -138,11 +136,13 @@ th-chat-editor-node-ask.th-chat-editor-node {
         justify-content: right;
         align-items: stretch;
 
+        /* min-height is a bit bigger than the `+` button so as to allow dragging the node even
+           when it has no questions */
+        min-height: 32px;
+
         pointer-events: none;
 
         &>.add {
-            margin-left: auto;
-
             &::before {
                 content: '+';
             }
@@ -185,6 +185,73 @@ th-chat-editor-node-set.th-chat-editor-node {
     &>.label {
         white-space: pre;
         pointer-events: none;
+    }
+}
+
+th-context-menus {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+
+    &>div {
+        position: relative;
+
+        width: 100%;
+        height: 100%;
+
+        &>* {
+            pointer-events: all;
+        }
+    }
+}
+
+.th-context-menu {
+    position: absolute;
+
+    border: 1px var(--border-1) solid;
+    background-color: var(--background-color);
+    border-radius: 8px;
+
+    overflow: hidden;
+}
+
+th-chat-editor-add-node.th-context-menu {
+    font-size: 12px;
+
+    display: flex;
+    flex-direction: column;
+
+    cursor: default;
+
+    &>.title {
+        text-align: center;
+
+        --recursive-wght: 700;
+
+        padding: 4px 8px;
+    }
+
+    &>.option {
+        display: flex;
+        flex-direction: row;
+
+        padding: 4px 8px;
+
+        &>.name {
+            margin-right: 8px;
+
+            --recursive-wght: 700;
+            --recursive-mono: 1.0;
+        }
+
+        &:hover {
+            background-color: var(--shaded-background);
+        }
     }
 }
 

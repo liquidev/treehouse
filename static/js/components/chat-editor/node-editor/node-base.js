@@ -76,6 +76,11 @@ export class NodeBase extends HTMLElement {
         this.dispatchEvent(new Event(".modelUpdate"));
     }
 
+    updateFromModel() {
+        this.#inputPin = null;
+        this.#outputPins.splice(0);
+    }
+
     updateTransform() {
         let [x, y] = this.modelNode.position;
         this.style.transform = `translate(${x}px, ${y}px)`;

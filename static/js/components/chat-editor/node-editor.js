@@ -1,6 +1,7 @@
-import { nodeTypes } from "./node-editor/nodes.js";
-import { Pin } from "./node-editor/pin.js";
+import * as nodes from "./node-editor/nodes.js";
 import { NodeBase } from "./node-editor/node-base.js";
+import { contextMenus } from "./context-menu.js";
+import { AddNode } from "./node-editor/add-node.js";
 
 const identityMatrix = new DOMMatrixReadOnly();
 
@@ -17,6 +18,8 @@ export class NodeEditor extends HTMLElement {
     panning = { x: 0.0, y: 0.0 };
     isPanning = false;
     zoomLevel = 0.0;
+
+    isShiftDown = false;
 
     selectedNodes = new Set();
     isDraggingSelected = false;
@@ -36,10 +39,6 @@ export class NodeEditor extends HTMLElement {
 
         this.nodesDiv = this.appendChild(document.createElement("div"));
         this.nodesDiv.classList.add("nodes");
-
-        this.addEventListener("contextmenu", (event) => {
-            event.preventDefault();
-        });
 
         this.addEventListener("mousedown", (event) => {
             let targetIsThis = event.target == this.nodesDiv || event.target == this.svg;
@@ -86,7 +85,8 @@ export class NodeEditor extends HTMLElement {
 
         window.addEventListener("mousemove", (event) => {
             if (this.isDraggingSelected) {
-                for (let node of this.selectedNodes) {
+                for (let name of this.selectedNodes) {
+                    let node = this.nodes.get(name);
                     let zoom = this.zoom;
                     node.move(event.movementX / zoom, event.movementY / zoom);
                 }
@@ -96,6 +96,42 @@ export class NodeEditor extends HTMLElement {
             }
             if (this.ongoingConnection != null) {
                 this.updateOngoingConnection();
+            }
+        });
+
+        this.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+
+            let bounds = this.getBoundingClientRect();
+            let worldPosition = new DOMPoint(event.clientX - bounds.x, event.clientY - bounds.y);
+            worldPosition = this.transformMatrixInverted.transformPoint(worldPosition);
+
+            let menu = contextMenus.open(new AddNode(event));
+            menu.addEventListener(".addNode", (event) => {
+                let name = nodes.generateUniqueName();
+                event.modelNode.position = [worldPosition.x, worldPosition.y];
+                console.log(event);
+                this.model.nodes[name] = event.modelNode;
+                console.log(this.model);
+                this.nodesDiv.appendChild(this.createNode(name));
+                this.sendModelUpdate();
+            });
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.target == document.body) {
+                if (event.key == "Shift") {
+                    this.isShiftDown = true;
+                }
+                if (event.code == "KeyX" || event.code == "Delete") {
+                    this.deleteSelectedNodes();
+                }
+            }
+        });
+
+        document.addEventListener("keyup", (event) => {
+            if (event.key == "Control") {
+                this.isCtrlDown = false;
             }
         });
 
@@ -146,13 +182,10 @@ export class NodeEditor extends HTMLElement {
         this.transformMatrixInverted.setMatrixValue(this.transformMatrix);
         this.transformMatrixInverted.invertSelf();
 
-        this.svgGroup.style.transform = `
-            translate(${width / 2}px, ${height / 2}px)
-            scale(${this.zoom})
-            translate(${this.panning.x}px, ${this.panning.y}px)
-            translate(${-width / 2}px, ${-height / 2}px)
-        `;
+        this.svgGroup.style.transform = this.transformMatrix;
 
+        // NOTE: this.nodesDiv uses a different transform matrix because it's already
+        // sized appropriately.
         this.nodesDiv.style.transform = `
             scale(${this.zoom})
             translate(${this.panning.x}px, ${this.panning.y}px)
@@ -160,6 +193,7 @@ export class NodeEditor extends HTMLElement {
     }
 
     rebuildNodes() {
+        this.nodes.clear();
         this.nodesDiv.replaceChildren();
 
         for (let name in this.model.nodes) {
@@ -171,22 +205,26 @@ export class NodeEditor extends HTMLElement {
         for (let node of this.nodesDiv.childNodes) {
             node.classList.remove("selected");
         }
-        for (let node of this.selectedNodes) {
+        for (let name of this.selectedNodes) {
+            let node = this.nodes.get(name);
             node.classList.add("selected");
         }
     }
 
     createNode(name) {
-        let node = new nodeTypes[this.model.nodes[name].kind](this.model, name);
+        let node = new nodes.types[this.model.nodes[name].kind](this.model, name);
 
         node.addEventListener(".modelUpdate", () => {
             this.sendModelUpdate();
+            this.rebuildDependenciesForNode(name);
             this.rebuildConnectionsForNodeOneDeep(name);
         });
 
         node.addEventListener(".select", () => {
-            this.selectedNodes.clear();
-            this.selectedNodes.add(node);
+            if (!this.isShiftDown && !this.selectedNodes.has(name)) {
+                this.selectedNodes.clear();
+            }
+            this.selectedNodes.add(name);
             this.updateNodeSelectionState();
 
             this.isDraggingSelected = true;
@@ -217,6 +255,54 @@ export class NodeEditor extends HTMLElement {
         this.nodes.set(name, node);
 
         return node;
+    }
+
+    deleteNode(name) {
+        let node = this.nodes.get(name);
+        this.nodes.delete(name);
+        node.parentNode.removeChild(node);
+
+        let connectionGroup = this.connectionGroups.get(name);
+        if (connectionGroup != null) {
+            for (let line of connectionGroup.childNodes) {
+                console.log(line);
+                poolPath(line);
+            }
+            connectionGroup.parentNode.removeChild(connectionGroup);
+            this.connectionGroups.delete(name);
+        }
+
+        let dependencies = this.dependencies.get(name);
+        if (dependencies != null) {
+            for (let dependency of dependencies) {
+                for (let pin of node.outputPins) {
+                    if (pin.value.get() == name) {
+                        pin.value.set(null);
+                    }
+                }
+                this.rebuildConnectionsForSingleNode(dependency);
+            }
+        }
+
+        for (let pin of node.outputPins) {
+            let connectedToName = pin.value.get();
+            let dependencies = this.dependencies.get(connectedToName);
+            if (dependencies != null) {
+                dependencies.delete(name);
+            }
+        }
+        this.dependencies.delete(name);
+
+        delete this.model.nodes[name];
+
+        this.sendModelUpdate();
+    }
+
+    deleteSelectedNodes() {
+        for (let name of this.selectedNodes) {
+            this.deleteNode(name);
+        }
+        this.selectedNodes.clear();
     }
 
     rebuildAllDependencies() {
@@ -310,7 +396,12 @@ export class NodeEditor extends HTMLElement {
                 toY += inputPin.connectionX;
                 toY += inputPin.connectionY;
 
-                svgGroup.appendChild(createNodeGraphConnectionLine(fromX, fromY, toX, toY));
+                let line = createNodeGraphConnectionLine(fromX, fromY, toX, toY);
+                line.setAttribute(
+                    "data-debug",
+                    `from:${name}.${outputPin.id} to:${connectedToName}`
+                );
+                svgGroup.appendChild(line);
             }
         }
     }
