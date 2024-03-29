@@ -57,6 +57,11 @@ th-chat-editor-node-pin {
         background-color: var(--shaded-background);
     }
 
+    &.dangling {
+        background-color: var(--liquidex-brand-red);
+        color: white;
+    }
+
     &::before {
         content: '→';
     }
@@ -72,6 +77,8 @@ th-chat-editor-node-pin {
     max-width: 256px;
     border: 1px solid var(--border-1);
     border-radius: 8px;
+
+    overflow: hidden;
 
     &.selected {
         border: 2px solid var(--liquidex-brand-yellow);

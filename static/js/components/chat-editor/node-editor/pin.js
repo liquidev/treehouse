@@ -1,3 +1,5 @@
+import * as lens from "treehouse/common/lens.js";
+
 export class Pin extends HTMLElement {
     static #id = 0;
 
@@ -7,6 +9,13 @@ export class Pin extends HTMLElement {
         this.name = name;
         this.direction = direction;
         this.value = value;
+
+        if (this.direction == "output") {
+            this.#highlightNull(this.value.get());
+            this.value = lens.listen(this.value, (l, newValue) => {
+                this.#highlightNull(newValue);
+            });
+        }
     }
 
     connectedCallback() {
@@ -32,6 +41,14 @@ export class Pin extends HTMLElement {
 
     endConnecting() {
         this.classList.remove("connecting");
+    }
+
+    #highlightNull(newValue) {
+        if (newValue == null) {
+            this.classList.add("dangling");
+        } else {
+            this.classList.remove("dangling");
+        }
     }
 
     get connectionX() {

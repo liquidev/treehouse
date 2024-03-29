@@ -1,0 +1,12 @@
+{
+    "nodes": {
+        "v1.87ps7I-1K2DbYKI6": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Title T",
+            "then": null,
+            "kind": "say",
+            "position": [853, 372]
+        }
+    }
+}

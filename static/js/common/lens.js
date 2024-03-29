@@ -17,3 +17,16 @@ export function field(object, key) {
         },
     };
 }
+
+export function listen(lens, callback) {
+    return {
+        get() {
+            return lens.get();
+        },
+
+        set(value) {
+            callback(lens, value);
+            lens.set(value);
+        },
+    };
+}
