@@ -1,11 +1,13 @@
 import { NodeAsk } from "./node-ask.js";
 import { NodeSay } from "./node-say.js";
 import { NodeSet } from "./node-set.js";
+import { NodeEnd } from "./node-end.js";
 
 export const types = {
     say: NodeSay,
     ask: NodeAsk,
     set: NodeSet,
+    end: NodeEnd,
 };
 
 const nameCharset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";

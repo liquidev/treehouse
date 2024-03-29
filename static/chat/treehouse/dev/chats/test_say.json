@@ -4,9 +4,10 @@
             "character": "coco",
             "expression": "neutral",
             "content": "Title T",
-            "then": null,
+            "then": "v1.C2Nb-jBG7owSB2gJ",
             "kind": "say",
-            "position": [853, 372]
-        }
+            "position": [331, 500]
+        },
+        "v1.C2Nb-jBG7owSB2gJ": { "kind": "end", "position": [538, 399] }
     }
 }

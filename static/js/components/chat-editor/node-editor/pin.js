@@ -46,6 +46,7 @@ export class Pin extends HTMLElement {
     #highlightNull(newValue) {
         if (newValue == null) {
             this.classList.add("dangling");
+            this.title = "Unconnected output pin. The chat runtime will crash upon executing it.";
         } else {
             this.classList.remove("dangling");
         }

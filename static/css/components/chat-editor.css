@@ -53,13 +53,14 @@ th-chat-node-editor {
 }
 
 th-chat-editor-node-pin {
-    &.connecting {
-        background-color: var(--shaded-background);
-    }
 
     &.dangling {
         background-color: var(--liquidex-brand-red);
         color: white;
+    }
+
+    &.connecting {
+        background-color: var(--shaded-background);
     }
 
     &::before {
@@ -191,6 +192,25 @@ th-chat-editor-node-set.th-chat-editor-node {
 
     &>.label {
         white-space: pre;
+        pointer-events: none;
+
+        margin-left: 4px;
+    }
+
+    &>.fact {
+        margin-right: 4px;
+    }
+}
+
+th-chat-editor-node-end.th-chat-editor-node {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    --recursive-wght: 700;
+
+    &>.label {
+        margin-right: 8px;
         pointer-events: none;
     }
 }

@@ -110,9 +110,7 @@ export class NodeEditor extends HTMLElement {
             menu.addEventListener(".addNode", (event) => {
                 let name = nodes.generateUniqueName();
                 event.modelNode.position = [worldPosition.x, worldPosition.y];
-                console.log(event);
                 this.model.nodes[name] = event.modelNode;
-                console.log(this.model);
                 this.nodesDiv.appendChild(this.createNode(name));
                 this.sendModelUpdate();
             });
@@ -265,7 +263,6 @@ export class NodeEditor extends HTMLElement {
         let connectionGroup = this.connectionGroups.get(name);
         if (connectionGroup != null) {
             for (let line of connectionGroup.childNodes) {
-                console.log(line);
                 poolPath(line);
             }
             connectionGroup.parentNode.removeChild(connectionGroup);

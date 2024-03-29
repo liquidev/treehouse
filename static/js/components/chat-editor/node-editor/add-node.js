@@ -5,6 +5,7 @@ export class AddNode extends ContextMenu {
         { name: "say", description: "Make a character say something" },
         { name: "ask", description: "Give the player a dialog choice" },
         { name: "set", description: "Store a bit of information for later" },
+        { name: "end", description: "End the conversation" },
     ];
 
     static templates = {
@@ -25,6 +26,7 @@ export class AddNode extends ContextMenu {
         set: {
             fact: "example/fact",
         },
+        end: {},
     };
 
     connectedCallback() {
