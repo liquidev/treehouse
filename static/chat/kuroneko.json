@@ -159,7 +159,7 @@
             "then": "aboutYourself2"
         },
         "aboutYourself2": {
-            "position": [3730, 1018],
+            "position": [3886.97533918036, 1025.1352426900164],
             "kind": "ask",
             "questions": [
                 { "content": "(scritch Coco)", "then": "aboutYourself2.scritch" },
@@ -173,34 +173,34 @@
                 },
                 {
                     "content": "That's all I wanted to know about you, thanks.",
-                    "then": "introductions.whatAreYouLookingFor"
+                    "then": "v1.i6IwB-frd2vis_74"
                 }
             ]
         },
         "aboutYourself2.scritch": {
-            "position": [4042.012193308817, 950.4142135623731],
+            "position": [4221.582467674217, 925.4408641473156],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
             "content": "<em>*purrs*</em>",
-            "then": "aboutYourself2"
+            "then": "v1.qCm2wQvSNmkTksTY"
         },
         "aboutYourself2.friends": {
-            "position": [4021.213203435594, 1062.414213562373],
+            "position": [4200.783477800995, 1037.4408641473149],
             "kind": "say",
             "character": "coco",
             "content": "I'm just here for the warmth, food, and scritches. The people here could just as easily be someone else. This is just a nice place to live, so I'm not complaining.",
-            "then": "aboutYourself2"
+            "then": "v1.qCm2wQvSNmkTksTY"
         },
         "aboutYourself2.extraordinary": {
-            "position": [3997, 1281],
+            "position": [4153.975339180357, 1288.1352426900166],
             "kind": "say",
             "character": "coco",
             "content": "I speak. Is there anything more to say?",
             "then": "aboutYourself2.extraordinary2"
         },
         "aboutYourself2.extraordinary2": {
-            "position": [4293, 1195],
+            "position": [4470.107345787878, 1296.2106202315606],
             "kind": "ask",
             "questions": [
                 {
@@ -210,12 +210,12 @@
             ]
         },
         "aboutYourself2.extraordinary3": {
-            "position": [4586, 1203],
+            "position": [4779.9252740929505, 1307.5742058925755],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
             "content": "…Maybe.",
-            "then": "aboutYourself2"
+            "then": "v1.qCm2wQvSNmkTksTY"
         },
         "aboutPlace": {
             "position": [3452, 1447],
@@ -307,7 +307,32 @@
             "character": "coco",
             "expression": "eyes_closed",
             "content": "…",
-            "then": "introductions.whatAreYouLookingFor"
+            "then": "v1.i6IwB-frd2vis_74"
+        },
+        "v1.qCm2wQvSNmkTksTY": {
+            "then": "aboutYourself2",
+            "kind": "reroute",
+            "position": [4957.675775329901, 1117.374415103508]
+        },
+        "v1.i6IwB-frd2vis_74": {
+            "then": "v1.SaE4OOZteE3OAUwW",
+            "kind": "reroute",
+            "position": [5102.276460763493, 1428.9064843393523]
+        },
+        "v1.SaE4OOZteE3OAUwW": {
+            "then": "introductions.whatAreYouLookingFor",
+            "kind": "reroute",
+            "position": [4815.25048828125, 2002.486083984375]
+        },
+        "v1.OdLSay_6qwb4kT1O": {
+            "content": "back to questions about Coco",
+            "kind": "comment",
+            "position": [4991.493398124236, 1063.5522460967761]
+        },
+        "v1.2b7DL3JPFTElvVHE": {
+            "content": "back to main question loop",
+            "kind": "comment",
+            "position": [5136.769023769541, 1368.8106845820746]
         }
     }
 }

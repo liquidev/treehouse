@@ -114,7 +114,9 @@ export class NodeBase extends HTMLElement {
 
     #updatePinRects() {
         this.#pinRectCache.clear();
-        this.#updatePinRect(this.inputPin);
+        if (this.#inputPin != null) {
+            this.#updatePinRect(this.inputPin);
+        }
         for (let pin of this.outputPins) {
             this.#updatePinRect(pin);
         }

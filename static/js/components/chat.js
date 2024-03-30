@@ -5,7 +5,7 @@ const characters = {
     coco: {
         name: "Coco",
     },
-}
+};
 
 const persistenceKey = "treehouse.chats";
 let persistentState = JSON.parse(localStorage.getItem(persistenceKey)) || {};
@@ -73,7 +73,7 @@ class Said extends HTMLElement {
         if (this.doAnimate) {
             this.style.animation = "th-chat-appear var(--transition-duration) forwards ease-out";
             let beginLetterAnimation = this.#animateLetters();
-            this.addEventListener("animationend", async event => {
+            this.addEventListener("animationend", async (event) => {
                 if (event.animationName == "th-chat-appear") {
                     await beginLetterAnimation();
                     this.dispatchEvent(new Event(".textFullyVisible"));
@@ -137,7 +137,7 @@ class Said extends HTMLElement {
 }
 
 function wait(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 customElements.define("th-chat-said", Said);
@@ -155,7 +155,7 @@ class Asked extends HTMLElement {
     connectedCallback() {
         this.button = document.createElement("button");
         this.button.innerHTML = this.content;
-        this.button.addEventListener("click", _ => {
+        this.button.addEventListener("click", (_) => {
             this.dispatchEvent(new Event(".click"));
         });
         if (this.alreadyAsked) {
@@ -165,7 +165,9 @@ class Asked extends HTMLElement {
 
         if (this.doAnimate) {
             this.style.opacity = "0%";
-            this.style.animation = `th-chat-appear var(--transition-duration) ${this.animationDelay * 0.1}s forwards ease-out`;
+            this.style.animation = `th-chat-appear var(--transition-duration) ${
+                this.animationDelay * 0.1
+            }s forwards ease-out`;
         }
     }
 
@@ -183,7 +185,7 @@ class ChatState {
         this.log = [];
         this.results = {};
         this.wereAsked = new Set();
-        this.onInteract = _ => {};
+        this.onInteract = (_) => {};
 
         this.animate = true;
     }
@@ -211,7 +213,7 @@ class ChatState {
             expression: node.expression,
             animate: this.animate,
         });
-        said.addEventListener(".textFullyVisible", _ => this.exec(node.then));
+        said.addEventListener(".textFullyVisible", (_) => this.exec(node.then));
         this.container.appendChild(said);
         this.#scrollIntoView(said);
     }
@@ -229,7 +231,7 @@ class ChatState {
                 animate: this.animate,
                 animationDelay: i,
             });
-            asked.addEventListener(".click", _ => {
+            asked.addEventListener(".click", (_) => {
                 this.interact({
                     kind: "ask.choose",
                     name,
@@ -250,6 +252,10 @@ class ChatState {
         this.exec(node.then);
     }
 
+    reroute(_, node) {
+        this.exec(node.then);
+    }
+
     end() {}
 
     // Persistent restorable interactions
@@ -261,23 +267,24 @@ class ChatState {
         this.onInteract();
 
         switch (interaction.kind) {
-            case "ask.choose": {
-                if (this.wereAsked.has(interaction.key)) {
-                    this.log.pop();
-                }
-                this.wereAsked.add(interaction.key);
+            case "ask.choose":
+                {
+                    if (this.wereAsked.has(interaction.key)) {
+                        this.log.pop();
+                    }
+                    this.wereAsked.add(interaction.key);
 
-                let questions = this.results[interaction.name];
-                let question = node.questions[interaction.option];
-                let asked = questions[interaction.option];
-                asked.interactionFinished();
-                this.exec(question.then);
-                for (let q of questions) {
-                    if (q != asked) {
-                        q.parentNode.removeChild(q);
+                    let questions = this.results[interaction.name];
+                    let question = node.questions[interaction.option];
+                    let asked = questions[interaction.option];
+                    asked.interactionFinished();
+                    this.exec(question.then);
+                    for (let q of questions) {
+                        if (q != asked) {
+                            q.parentNode.removeChild(q);
+                        }
                     }
                 }
-            }
                 break;
         }
     }
@@ -294,8 +301,11 @@ class ChatState {
     }
 }
 
-addSpell("chat", class {
-    constructor(branch) {
-        branch.replaceWith(new Chat(branch));
+addSpell(
+    "chat",
+    class {
+        constructor(branch) {
+            branch.replaceWith(new Chat(branch));
+        }
     }
-});
+);

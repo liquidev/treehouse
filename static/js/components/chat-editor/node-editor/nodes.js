@@ -2,12 +2,16 @@ import { NodeAsk } from "./node-ask.js";
 import { NodeSay } from "./node-say.js";
 import { NodeSet } from "./node-set.js";
 import { NodeEnd } from "./node-end.js";
+import { NodeReroute } from "./node-reroute.js";
+import { NodeComment } from "./node-comment.js";
 
 export const types = {
     say: NodeSay,
     ask: NodeAsk,
     set: NodeSet,
     end: NodeEnd,
+    reroute: NodeReroute,
+    comment: NodeComment,
 };
 
 const nameCharset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";

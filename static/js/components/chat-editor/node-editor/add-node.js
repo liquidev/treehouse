@@ -2,6 +2,8 @@ import { ContextMenu } from "../context-menu.js";
 
 export class AddNode extends ContextMenu {
     static options = [
+        { name: "reroute", description: "Organize cables" },
+        { name: "comment", description: "Developer's remark" },
         { name: "say", description: "Make a character say something" },
         { name: "ask", description: "Give the player a dialog choice" },
         { name: "set", description: "Store a bit of information for later" },
@@ -9,6 +11,8 @@ export class AddNode extends ContextMenu {
     ];
 
     static templates = {
+        reroute: { then: null },
+        comment: { content: "Title T" },
         say: {
             character: "coco",
             expression: "neutral",

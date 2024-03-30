@@ -229,8 +229,27 @@ th-chat-editor-node-end.th-chat-editor-node {
     --recursive-wght: 700;
 
     &>.label {
-        margin-right: 8px;
+        margin: 0 8px;
         pointer-events: none;
+    }
+}
+
+th-chat-editor-node-reroute.th-chat-editor-node {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    &>.handle {
+        margin: 0 8px;
+        opacity: 50%;
+        pointer-events: none;
+    }
+}
+
+th-chat-editor-node-comment.th-chat-editor-node {
+    &>.comment {
+        margin: 12px 8px;
+        padding: 0 2px;
     }
 }
 
