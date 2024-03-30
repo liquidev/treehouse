@@ -14,14 +14,24 @@ function savePersistentState() {
 }
 
 class Chat extends HTMLElement {
-    constructor(branch) {
+    constructor(id, model) {
         super();
-        this.branch = branch;
+        this.id = id;
+        this.model = model;
     }
 
     connectedCallback() {
-        this.id = spell(this.branch, Branch).namedID;
-        this.model = JSON.parse(spell(this.branch, Branch).branchContent.textContent);
+        let startNode = null;
+        for (let name in this.model.nodes) {
+            if (this.model.nodes[name].kind == "start") {
+                startNode = name;
+                break;
+            }
+        }
+        if (startNode == null) {
+            this.append("Chat has no start node. Did you forget to add one in?");
+            return;
+        }
 
         this.state = new ChatState(this, this.model);
         this.state.onInteract = () => {
@@ -29,7 +39,7 @@ class Chat extends HTMLElement {
             savePersistentState();
         };
         this.state.animate = false;
-        this.state.exec("init");
+        this.state.exec(startNode);
         this.state.animate = true;
 
         let log = persistentState.log[this.id];
@@ -201,6 +211,10 @@ class ChatState {
 
     // Implementations of nodes
 
+    start(_, node) {
+        this.exec(node.then);
+    }
+
     say(_, node) {
         let said = new Said({
             content: node.content,
@@ -300,7 +314,9 @@ addSpell(
     "chat",
     class {
         constructor(branch) {
-            branch.replaceWith(new Chat(branch));
+            let id = spell(branch, Branch).namedID;
+            let model = JSON.parse(spell(branch, Branch).branchContent.textContent);
+            branch.replaceWith(new Chat(id, model));
         }
     }
 );

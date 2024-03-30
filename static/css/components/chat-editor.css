@@ -89,7 +89,7 @@ th-chat-editor-node-pin {
 
 .th-chat-editor-node {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     position: absolute;
 
     width: fit-content;
@@ -131,8 +131,6 @@ th-chat-editor-node-pin {
 }
 
 th-chat-editor-node-say.th-chat-editor-node {
-    flex-direction: row;
-
     max-width: 384px;
 
     &>.details {
@@ -207,8 +205,6 @@ th-chat-editor-node-say-character-picker.th-context-menu {
 }
 
 th-chat-editor-node-ask.th-chat-editor-node {
-    flex-direction: row;
-
     &>.questions {
         display: flex;
         flex-direction: column;
@@ -261,7 +257,6 @@ th-chat-editor-node-ask.th-chat-editor-node {
 }
 
 th-chat-editor-node-set.th-chat-editor-node {
-    flex-direction: row;
     align-items: center;
     justify-content: center;
 
@@ -279,8 +274,19 @@ th-chat-editor-node-set.th-chat-editor-node {
     }
 }
 
+th-chat-editor-node-start.th-chat-editor-node {
+    align-items: center;
+    justify-content: center;
+
+    --recursive-wght: 700;
+
+    &>.label {
+        margin: 0 8px;
+        pointer-events: none;
+    }
+}
+
 th-chat-editor-node-end.th-chat-editor-node {
-    flex-direction: row;
     align-items: center;
     justify-content: center;
 
@@ -293,7 +299,6 @@ th-chat-editor-node-end.th-chat-editor-node {
 }
 
 th-chat-editor-node-reroute.th-chat-editor-node {
-    flex-direction: row;
     align-items: center;
     justify-content: center;
 

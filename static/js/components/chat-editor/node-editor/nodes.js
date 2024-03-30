@@ -4,11 +4,13 @@ import { NodeSet } from "./node-set.js";
 import { NodeEnd } from "./node-end.js";
 import { NodeReroute } from "./node-reroute.js";
 import { NodeComment } from "./node-comment.js";
+import { NodeStart } from "./node-start.js";
 
 export const types = {
     say: NodeSay,
     ask: NodeAsk,
     set: NodeSet,
+    start: NodeStart,
     end: NodeEnd,
     reroute: NodeReroute,
     comment: NodeComment,

@@ -19,6 +19,7 @@ export class NodeEditor extends HTMLElement {
     isPanning = false;
     zoomLevel = 0.0;
 
+    isCtrlDown = false;
     isShiftDown = false;
 
     selectedNodes = new Set();
@@ -140,6 +141,13 @@ export class NodeEditor extends HTMLElement {
                 if (event.key == "Shift") {
                     this.isShiftDown = true;
                 }
+                if (event.key == "Control") {
+                    this.isCtrlDown = true;
+                }
+                if (this.isCtrlDown && event.code == "KeyA") {
+                    event.preventDefault();
+                    this.selectAllNodes();
+                }
                 if (event.code == "KeyX" || event.code == "Delete") {
                     this.deleteSelectedNodes();
                 }
@@ -149,6 +157,9 @@ export class NodeEditor extends HTMLElement {
         document.addEventListener("keyup", (event) => {
             if (event.key == "Shift") {
                 this.isShiftDown = false;
+            }
+            if (event.key == "Control") {
+                this.isCtrlDown = false;
             }
         });
 
@@ -541,6 +552,11 @@ export class NodeEditor extends HTMLElement {
         this.selectionAnchor = null;
         this.rubberbandSelectedNodes.forEach((v) => this.selectedNodes.add(v));
         this.rubberbandSelectedNodes.clear();
+        this.updateNodeSelectionState();
+    }
+
+    selectAllNodes() {
+        this.nodes.forEach((_, name) => this.selectedNodes.add(name));
         this.updateNodeSelectionState();
     }
 }
