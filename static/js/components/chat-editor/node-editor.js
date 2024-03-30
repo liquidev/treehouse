@@ -1,7 +1,7 @@
 import * as nodes from "./node-editor/nodes.js";
-import { NodeBase } from "./node-editor/node-base.js";
 import { contextMenus } from "./context-menu.js";
 import { AddNode } from "./node-editor/add-node.js";
+import { getPositionRelativeToAncestor } from "./node-editor/layout.js";
 
 const identityMatrix = new DOMMatrixReadOnly();
 
@@ -24,6 +24,9 @@ export class NodeEditor extends HTMLElement {
     selectedNodes = new Set();
     isDraggingSelected = false;
 
+    selectionAnchor = null;
+    rubberbandSelectedNodes = new Set();
+
     ongoingConnection = null;
     ongoingConnectionLine = null;
     hoveredPin = null;
@@ -37,19 +40,27 @@ export class NodeEditor extends HTMLElement {
         this.svg = this.appendChild(createSvg("svg"));
         this.svgGroup = this.svg.appendChild(createSvg("g"));
 
-        this.nodesDiv = this.appendChild(document.createElement("div"));
+        this.canvasDiv = this.appendChild(document.createElement("div"));
+        this.canvasDiv.classList.add("canvas");
+
+        this.nodesDiv = this.canvasDiv.appendChild(document.createElement("div"));
         this.nodesDiv.classList.add("nodes");
 
+        this.selectionRubberband = this.canvasDiv.appendChild(document.createElement("div"));
+        this.selectionRubberband.classList.add("selection-rubberband");
+
         this.addEventListener("mousedown", (event) => {
-            let targetIsThis = event.target == this.nodesDiv || event.target == this.svg;
+            let targetIsThis =
+                event.target == this.canvasDiv ||
+                event.target == this.nodesDiv ||
+                event.target == this.svg;
             if (targetIsThis && event.button == 0) {
                 event.preventDefault();
 
                 document.activeElement.blur();
                 this.focus();
 
-                this.selectedNodes.clear();
-                this.updateNodeSelectionState();
+                this.beginRubberbandSelection();
             }
             if (event.button == 1) {
                 event.preventDefault();
@@ -85,6 +96,7 @@ export class NodeEditor extends HTMLElement {
                 if (this.ongoingConnection != null) {
                     this.dropPin();
                 }
+                this.endRubberbandSelection();
             }
             if (event.button == 1) {
                 this.isPanning = false;
@@ -114,6 +126,9 @@ export class NodeEditor extends HTMLElement {
             if (this.ongoingConnection != null) {
                 this.updateOngoingConnection();
             }
+            if (this.selectionAnchor != null) {
+                this.updateRubberbandSelection();
+            }
         });
 
         this.addEventListener("contextmenu", (event) => {
@@ -132,14 +147,19 @@ export class NodeEditor extends HTMLElement {
         });
 
         document.addEventListener("keyup", (event) => {
-            if (event.key == "Control") {
-                this.isCtrlDown = false;
+            if (event.key == "Shift") {
+                this.isShiftDown = false;
             }
         });
 
         // Need to rebuild connections once fonts get all loaded in, since that may change the
         // size of nodes.
-        document.fonts.addEventListener("loadingdone", () => this.rebuildAllConnections());
+        document.fonts.addEventListener("loadingdone", () => {
+            for (let [_, node] of this.nodes) {
+                node.updateRenderingCache();
+            }
+            this.rebuildAllConnections();
+        });
 
         this.rebuildNodes();
         this.updateTransform();
@@ -188,7 +208,7 @@ export class NodeEditor extends HTMLElement {
 
         // NOTE: this.nodesDiv uses a different transform matrix because it's already
         // sized appropriately.
-        this.nodesDiv.style.transform = `
+        this.canvasDiv.style.transform = `
             scale(${this.zoom})
             translate(${this.panning.x}px, ${this.panning.y}px)
         `;
@@ -208,6 +228,10 @@ export class NodeEditor extends HTMLElement {
             node.classList.remove("selected");
         }
         for (let name of this.selectedNodes) {
+            let node = this.nodes.get(name);
+            node.classList.add("selected");
+        }
+        for (let name of this.rubberbandSelectedNodes) {
             let node = this.nodes.get(name);
             node.classList.add("selected");
         }
@@ -385,17 +409,26 @@ export class NodeEditor extends HTMLElement {
             let connectedToName = outputPin.value.get();
             let connectedToNode = this.nodes.get(connectedToName);
             if (connectedToNode != null) {
-                let [fromX, fromY] = getPositionRelativeToAncestor(this.nodesDiv, outputPin);
-                fromX += outputPin.connectionX;
-                fromY += outputPin.connectionY;
+                let outputPinRect = node.getPinRect(outputPin);
+                let fromX =
+                    node.modelNode.position[0] +
+                    outputPinRect.x +
+                    outputPin.getConnectionX(outputPinRect);
+                let fromY =
+                    node.modelNode.position[1] +
+                    outputPinRect.y +
+                    outputPin.getConnectionY(outputPinRect);
 
                 let inputPin = connectedToNode.inputPin;
-                let [toX, toY] = getPositionRelativeToAncestor(
-                    this.nodesDiv,
-                    connectedToNode.inputPin
-                );
-                toY += inputPin.connectionX;
-                toY += inputPin.connectionY;
+                let inputPinRect = connectedToNode.getPinRect(inputPin);
+                let toX =
+                    connectedToNode.modelNode.position[0] +
+                    inputPinRect.x +
+                    inputPin.getConnectionX(inputPinRect);
+                let toY =
+                    connectedToNode.modelNode.position[1] +
+                    inputPinRect.y +
+                    inputPin.getConnectionY(inputPinRect);
 
                 let line = createNodeGraphConnectionLine(fromX, fromY, toX, toY);
                 line.setAttribute(
@@ -413,8 +446,8 @@ export class NodeEditor extends HTMLElement {
 
             let outputPin = this.ongoingConnection.pin;
             let [fromX, fromY] = getPositionRelativeToAncestor(this.nodesDiv, outputPin);
-            fromX += outputPin.connectionX;
-            fromY += outputPin.connectionY;
+            // fromX += outputPin.connectionX;
+            // fromY += outputPin.connectionY;
             let toX = this.mouseX;
             let toY = this.mouseY;
 
@@ -466,34 +499,49 @@ export class NodeEditor extends HTMLElement {
         this.ongoingConnection = null;
         this.updateOngoingConnection();
     }
+
+    beginRubberbandSelection() {
+        this.selectionAnchor = { x: this.mouseX, y: this.mouseY };
+        this.selectionRubberband.classList.add("selecting");
+        if (!this.isShiftDown) {
+            this.selectedNodes.clear();
+        }
+        this.updateRubberbandSelection();
+    }
+
+    updateRubberbandSelection() {
+        let x = Math.min(this.selectionAnchor.x, this.mouseX);
+        let y = Math.min(this.selectionAnchor.y, this.mouseY);
+        let width = Math.abs(this.mouseX - this.selectionAnchor.x);
+        let height = Math.abs(this.mouseY - this.selectionAnchor.y);
+        this.selectionRubberband.style.transform = `translate(${x}px, ${y}px)`;
+        this.selectionRubberband.style.width = `${width}px`;
+        this.selectionRubberband.style.height = `${height}px`;
+
+        let selectionRect = this.selectionRubberband.getBoundingClientRect();
+        this.rubberbandSelectedNodes.clear();
+        for (let [name, node] of this.nodes) {
+            let nodeRect = node.getBoundingClientRect();
+            if (rectsIntersect(selectionRect, nodeRect)) {
+                this.rubberbandSelectedNodes.add(name);
+            }
+        }
+        this.updateNodeSelectionState();
+    }
+
+    endRubberbandSelection() {
+        this.selectionRubberband.classList.remove("selecting");
+        this.selectionAnchor = null;
+        this.rubberbandSelectedNodes.forEach((v) => this.selectedNodes.add(v));
+        this.rubberbandSelectedNodes.clear();
+        this.updateNodeSelectionState();
+    }
 }
 
 customElements.define("th-chat-node-editor", NodeEditor);
 
 function createSvg(element) {
     return document.createElementNS("http://www.w3.org/2000/svg", element);
-}
-
-function getPosition(node) {
-    if (node instanceof NodeBase) {
-        return node.modelNode.position;
-    } else {
-        return [node.offsetLeft, node.offsetTop];
-    }
-}
-
-function getPositionRelativeToAncestor(ancestor, element) {
-    let x = 0;
-    let y = 0;
-    while (element != ancestor && element != null) {
-        let [elementX, elementY] = getPosition(element);
-        x += elementX;
-        y += elementY;
-        element = element.offsetParent;
-    }
-    if (x != x) x = 0;
-    if (y != y) y = 0;
-    return [x, y];
 }
 
 let pathPool = [];
@@ -537,4 +585,13 @@ function createNodeGraphConnectionLine(fromX, fromY, toX, toY) {
     line.setAttribute("stroke", "var(--border-2)");
     line.setAttribute("fill", "none");
     return line;
+}
+
+function rectsIntersect(a, b) {
+    return (
+        a.x <= b.x + b.width &&
+        b.x <= a.x + a.width &&
+        a.y <= b.y + b.height &&
+        b.y <= a.y + a.height
+    );
 }

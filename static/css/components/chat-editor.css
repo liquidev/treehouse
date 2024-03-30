@@ -40,7 +40,7 @@ th-chat-node-editor {
     font-size: 12px;
 
     &>svg,
-    &>.nodes {
+    &>.canvas>.nodes {
         display: block;
         position: absolute;
         left: 0;
@@ -49,6 +49,25 @@ th-chat-node-editor {
         height: 100%;
         margin: 0;
         padding: 0;
+    }
+
+    &>.canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    &>.canvas>.selection-rubberband {
+        border: 1px solid var(--border-1);
+        background-color: var(--shaded-background);
+        opacity: 0%;
+
+        pointer-events: none;
+
+        transition: opacity 0.2s;
+
+        &.selecting {
+            opacity: 100%;
+        }
     }
 }
 

@@ -52,16 +52,16 @@ export class Pin extends HTMLElement {
         }
     }
 
-    get connectionX() {
+    getConnectionX(cachedRect) {
         if (this.direction == "output") {
-            return this.offsetWidth;
+            return cachedRect.width;
         } else {
             return 0;
         }
     }
 
-    get connectionY() {
-        return this.offsetHeight / 2;
+    getConnectionY(cachedRect) {
+        return cachedRect.height / 2;
     }
 }
 

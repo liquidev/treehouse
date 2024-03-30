@@ -1,6 +1,10 @@
+import { getPositionRelativeToAncestor } from "./layout.js";
+
 export class NodeBase extends HTMLElement {
     #inputPin = null;
     #outputPins = [];
+
+    #pinRectCache = new Map();
 
     constructor(model, nodeName) {
         super();
@@ -41,6 +45,8 @@ export class NodeBase extends HTMLElement {
         pin.addEventListener("mouseleave", () => {
             this.dispatchEvent(Object.assign(new Event(".pinEndHover"), { pin }));
         });
+
+        this.#updatePinRect(pin);
     }
 
     get inputPin() {
@@ -72,8 +78,13 @@ export class NodeBase extends HTMLElement {
         this.updateTransform();
     }
 
-    sendModelUpdate() {
+    #sendModelUpdateEvent() {
         this.dispatchEvent(new Event(".modelUpdate"));
+    }
+
+    sendModelUpdate() {
+        this.#updatePinRects();
+        this.#sendModelUpdateEvent();
     }
 
     updateFromModel() {
@@ -90,7 +101,7 @@ export class NodeBase extends HTMLElement {
         this.modelNode.position[0] += deltaX;
         this.modelNode.position[1] += deltaY;
         this.updateTransform();
-        this.sendModelUpdate();
+        this.#sendModelUpdateEvent();
     }
 
     bindInput(element, lens) {
@@ -99,6 +110,29 @@ export class NodeBase extends HTMLElement {
             lens.set(element.textContent);
             this.sendModelUpdate();
         });
+    }
+
+    #updatePinRects() {
+        this.#pinRectCache.clear();
+        this.#updatePinRect(this.inputPin);
+        for (let pin of this.outputPins) {
+            this.#updatePinRect(pin);
+        }
+    }
+
+    #updatePinRect(pin) {
+        let [x, y] = getPositionRelativeToAncestor(this, pin);
+        let width = pin.offsetWidth;
+        let height = pin.offsetHeight;
+        this.#pinRectCache.set(pin, { x, y, width, height });
+    }
+
+    getPinRect(pin) {
+        return this.#pinRectCache.get(pin);
+    }
+
+    updateRenderingCache() {
+        this.#updatePinRects();
     }
 }
 
