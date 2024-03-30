@@ -22,7 +22,7 @@
             "then": "introductions"
         },
         "introductions": {
-            "position": [677, 449],
+            "position": [764, 425],
             "kind": "ask",
             "questions": [
                 { "content": "…woah! You speak!", "then": "introductions.youSpeak" },
@@ -30,14 +30,15 @@
             ]
         },
         "introductions.youSpeak": {
-            "position": [900, 479],
+            "position": [1006.4340367927438, 477.40539644249856],
             "kind": "say",
             "character": "coco",
             "content": "Yeah. No clue what's so surprising about that. I mean, I've spoken for as long as I remember! But you're not the first person I've met that was surprised that a tiny thing like me could speak.",
-            "then": "introductions.youSpeak2"
+            "then": "introductions.youSpeak2",
+            "expression": "neutral"
         },
         "introductions.youSpeak2": {
-            "position": [1180, 480],
+            "position": [1441.0309617430992, 490.108260477523],
             "kind": "ask",
             "questions": [
                 { "content": "Who was the other?", "then": "introductions.youSpeak.theOther" },
@@ -45,14 +46,15 @@
             ]
         },
         "introductions.youSpeak.theOther": {
-            "position": [1395, 378],
+            "position": [1696.4640036531891, 451.136237572667],
             "kind": "say",
             "character": "coco",
             "content": "My owner. I've never seen someone this freaked out in my life!",
-            "then": "introductions.youSpeak.theOther2"
+            "then": "introductions.youSpeak.theOther2",
+            "expression": "neutral"
         },
         "introductions.youSpeak.theOther2": {
-            "position": [1676, 526],
+            "position": [2164.1695207086245, 513.5133252924711],
             "kind": "ask",
             "questions": [
                 {
@@ -67,7 +69,7 @@
             ]
         },
         "introductions.youSpeak.theOther.whatAboutMe": {
-            "position": [1953, 573],
+            "position": [2443.5479349386305, 568.8377750974903],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -75,21 +77,22 @@
             "then": "introductions.youSpeak.theOther.whatAboutMe2"
         },
         "introductions.youSpeak.theOther.whatAboutMe2": {
-            "position": [2296.6690475583096, 589.8284271247462],
+            "position": [2887.11038015717, 576.1525453022143],
             "kind": "ask",
             "questions": [
                 { "content": "Glad to hear that.", "then": "introductions.youSpeak.anyways" }
             ]
         },
         "introductions.youSpeak.theOther.owner": {
-            "position": [1889, 698],
+            "position": [2379.547934938631, 693.8377750974903],
             "kind": "say",
             "character": "coco",
             "content": "I'd ask her to introduce herself, but she hasn't been around lately. I believe she's out on a trip or something. No clue what the trip's about or when she'll be back.",
-            "then": "introductions.youSpeak.theOther.owner2"
+            "then": "introductions.youSpeak.theOther.owner2",
+            "expression": "neutral"
         },
         "introductions.youSpeak.theOther.owner2": {
-            "position": [2229.885717177938, 675.5226892457612],
+            "position": [2821.516256891797, 673.7388785732569],
             "kind": "ask",
             "questions": [
                 {
@@ -100,7 +103,7 @@
             ]
         },
         "introductions.youSpeak.theOther.owner3": {
-            "position": [2536.112051906709, 764.4997211355819],
+            "position": [3136.0670414255874, 754.3914606580585],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -108,26 +111,28 @@
             "then": "introductions.youSpeak.theOther.owner4"
         },
         "introductions.youSpeak.theOther.owner4": {
-            "position": [2682.2039243474323, 774.2044820762686],
+            "position": [3343.9976838464545, 756.9609789087285],
             "kind": "ask",
             "questions": [{ "content": "I see.", "then": "introductions.youSpeak.anyways" }]
         },
         "introductions.youSpeak.anyways": {
-            "position": [2873, 504],
+            "position": [3545.4966235340444, 477.2428399124388],
             "kind": "say",
             "character": "coco",
             "content": "Anyways. Is there anything in particular you're looking for?",
-            "then": "introductions.whatAreYouLookingFor"
+            "then": "introductions.whatAreYouLookingFor",
+            "expression": "neutral"
         },
         "introductions.certainly": {
-            "position": [909, 786],
+            "position": [1023.4340367927439, 1037.4053964424986],
             "kind": "say",
             "character": "coco",
             "content": "Interesting to see you keeping your composure after meeting a speaking cat.",
-            "then": "introductions.certainly2"
+            "then": "introductions.certainly2",
+            "expression": "neutral"
         },
         "introductions.certainly2": {
-            "position": [1198, 808],
+            "position": [1486.0582755831422, 1072.4866747075291],
             "kind": "ask",
             "questions": [
                 {
@@ -137,14 +142,15 @@
             ]
         },
         "introductions.certainly3": {
-            "position": [1488.5682846001077, 838.1352426900166],
+            "position": [1802.789116713308, 1115.7031956625758],
             "kind": "say",
             "character": "coco",
             "content": "Well anyways, while my owner is out, why don't we have a little chat?",
-            "then": "introductions.whatAreYouLookingFor"
+            "then": "introductions.whatAreYouLookingFor",
+            "expression": "neutral"
         },
         "introductions.whatAreYouLookingFor": {
-            "position": [3141.3603896932163, 869.1715728752538],
+            "position": [4132.564520047987, 987.497680818024],
             "kind": "ask",
             "questions": [
                 { "content": "Tell me more about yourself.", "then": "aboutYourself" },
@@ -152,14 +158,15 @@
             ]
         },
         "aboutYourself": {
-            "position": [3444, 896],
+            "position": [4435.204130354776, 1014.3261079427699],
             "kind": "say",
             "character": "coco",
             "content": "I'm Coco, a black cat that lives in the treehouse. I like scritches and treats. One day I climbed into the treehouse and got lost. Fortunately my fine owner lady found me and took good care of me! Nowadays I live a happy life with the treefolk.",
-            "then": "aboutYourself2"
+            "then": "aboutYourself2",
+            "expression": "neutral"
         },
         "aboutYourself2": {
-            "position": [3886.97533918036, 1025.1352426900164],
+            "position": [4878.179469535142, 1143.4613506327885],
             "kind": "ask",
             "questions": [
                 { "content": "(scritch Coco)", "then": "aboutYourself2.scritch" },
@@ -178,7 +185,7 @@
             ]
         },
         "aboutYourself2.scritch": {
-            "position": [4221.582467674217, 925.4408641473156],
+            "position": [5212.786598028997, 1043.7669720900856],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -186,21 +193,23 @@
             "then": "v1.qCm2wQvSNmkTksTY"
         },
         "aboutYourself2.friends": {
-            "position": [4200.783477800995, 1037.4408641473149],
+            "position": [5191.987608155775, 1155.766972090087],
             "kind": "say",
             "character": "coco",
             "content": "I'm just here for the warmth, food, and scritches. The people here could just as easily be someone else. This is just a nice place to live, so I'm not complaining.",
-            "then": "v1.qCm2wQvSNmkTksTY"
+            "then": "v1.qCm2wQvSNmkTksTY",
+            "expression": "neutral"
         },
         "aboutYourself2.extraordinary": {
-            "position": [4153.975339180357, 1288.1352426900166],
+            "position": [5145.179469535137, 1406.4613506327887],
             "kind": "say",
             "character": "coco",
             "content": "I speak. Is there anything more to say?",
-            "then": "aboutYourself2.extraordinary2"
+            "then": "aboutYourself2.extraordinary2",
+            "expression": "neutral"
         },
         "aboutYourself2.extraordinary2": {
-            "position": [4470.107345787878, 1296.2106202315606],
+            "position": [5585.764145600204, 1424.6274851573774],
             "kind": "ask",
             "questions": [
                 {
@@ -210,7 +219,7 @@
             ]
         },
         "aboutYourself2.extraordinary3": {
-            "position": [4779.9252740929505, 1307.5742058925755],
+            "position": [5903.991038057815, 1425.9003138353476],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -218,14 +227,15 @@
             "then": "v1.qCm2wQvSNmkTksTY"
         },
         "aboutPlace": {
-            "position": [3452, 1447],
+            "position": [4448.249508846297, 1780.5955902477249],
             "kind": "say",
             "character": "coco",
             "content": "This is the back porch of the house. What do you think?",
-            "then": "aboutPlace.definition"
+            "then": "aboutPlace.definition",
+            "expression": "neutral"
         },
         "aboutPlace.definition": {
-            "position": [3726, 1471],
+            "position": [4722.249508846305, 1804.5955902477249],
             "kind": "ask",
             "questions": [
                 { "content": "It's empty.", "then": "aboutPlace.definition.empty" },
@@ -236,37 +246,37 @@
             ]
         },
         "aboutPlace.definition.empty": {
-            "position": [4008.4330419100943, 1447.1892071150028],
+            "position": [5004.682550756394, 1780.7847973627277],
             "kind": "set",
             "fact": "kuroneko/empty",
             "then": "aboutPlace.definition.thankYou"
         },
         "aboutPlace.definition.wild": {
-            "position": [4008.2977992200776, 1525.7028640350252],
+            "position": [5004.547308066378, 1859.29845428275],
             "kind": "set",
             "fact": "kuroneko/wild",
             "then": "aboutPlace.definition.thankYou"
         },
         "aboutPlace.definition.odd": {
-            "position": [4010.2438347950915, 1607.0273138400444],
+            "position": [5006.493343641392, 1940.6229040877693],
             "kind": "set",
             "fact": "kuroneko/odd",
             "then": "aboutPlace.definition.thankYou"
         },
         "aboutPlace.definition.even": {
-            "position": [4007.4870063350804, 1690.459692495036],
+            "position": [5003.736515181381, 2024.055282742761],
             "kind": "set",
             "fact": "kuroneko/even",
             "then": "aboutPlace.definition.thankYou"
         },
         "aboutPlace.definition.what": {
-            "position": [4000.5409707600666, 1800.6755501949806],
+            "position": [4996.7904796063685, 2134.2711404426996],
             "kind": "set",
             "fact": "kuroneko/what",
             "then": "aboutPlace.definition.thankYou2"
         },
         "aboutPlace.definition.thankYou": {
-            "position": [4212, 1525],
+            "position": [5208.249508846302, 1858.5955902477249],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -274,7 +284,7 @@
             "then": "aboutPlace.thatsIt"
         },
         "aboutPlace.definition.thankYou2": {
-            "position": [4202.1625565300565, 1900.1352426900166],
+            "position": [5198.412065376358, 2233.7308329377347],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -282,7 +292,7 @@
             "then": "aboutPlace.theWhat"
         },
         "aboutPlace.thatsIt": {
-            "position": [4470.455844122718, 1551.2426406871193],
+            "position": [5534.587603962928, 1879.1813766853518],
             "kind": "ask",
             "questions": [
                 {
@@ -292,7 +302,7 @@
             ]
         },
         "aboutPlace.theWhat": {
-            "position": [4502, 1907],
+            "position": [5656.641427832091, 2193.9265426894085],
             "kind": "ask",
             "questions": [
                 {
@@ -302,7 +312,7 @@
             ]
         },
         "aboutPlace.end": {
-            "position": [4789, 1573],
+            "position": [5827.675915717493, 1902.3529495606056],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -312,32 +322,32 @@
         "v1.qCm2wQvSNmkTksTY": {
             "then": "aboutYourself2",
             "kind": "reroute",
-            "position": [4957.675775329901, 1117.374415103508]
+            "position": [6291.96564310818, 1427.424905724129]
         },
         "v1.i6IwB-frd2vis_74": {
             "then": "v1.SaE4OOZteE3OAUwW",
             "kind": "reroute",
-            "position": [5102.276460763493, 1428.9064843393523]
+            "position": [6098.525969609795, 1762.5020745870772]
         },
         "v1.SaE4OOZteE3OAUwW": {
             "then": "introductions.whatAreYouLookingFor",
             "kind": "reroute",
-            "position": [4815.25048828125, 2002.486083984375]
+            "position": [6119.798553724883, 2321.939538608364]
         },
         "v1.OdLSay_6qwb4kT1O": {
             "content": "back to questions about Coco",
             "kind": "comment",
-            "position": [4991.493398124236, 1063.5522460967761]
+            "position": [6241.693624377157, 1370.2391510563823]
         },
         "v1.2b7DL3JPFTElvVHE": {
             "content": "back to main question loop",
             "kind": "comment",
-            "position": [5136.769023769541, 1368.8106845820746]
+            "position": [6053.974269581994, 1707.4516533213218]
         },
         "v1.F6MzHIyOfUO3E429": {
             "then": "introductions.youSpeak.anyways",
             "kind": "reroute",
-            "position": [1951.9477628503892, 468.6100574351973]
+            "position": [2442.49569778902, 464.4478325326877]
         }
     }
 }

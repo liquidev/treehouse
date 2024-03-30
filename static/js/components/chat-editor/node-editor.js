@@ -74,7 +74,7 @@ export class NodeEditor extends HTMLElement {
                 );
                 worldPosition = this.transformMatrixInverted.transformPoint(worldPosition);
 
-                let menu = contextMenus.open(new AddNode(event));
+                let menu = contextMenus.openAtCursor(new AddNode(event));
                 menu.addEventListener(".addNode", (event) => {
                     let name = nodes.generateUniqueName();
                     event.modelNode.position = [worldPosition.x, worldPosition.y];

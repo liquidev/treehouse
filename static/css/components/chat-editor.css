@@ -133,23 +133,69 @@ th-chat-editor-node-pin {
 th-chat-editor-node-say.th-chat-editor-node {
     flex-direction: row;
 
+    max-width: 384px;
+
     &>.details {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        align-items: center;
 
         pointer-events: none;
 
-        &>.character {
-            --recursive-wght: 700;
-            text-align: center;
-            margin: 4px 8px;
+        &>.picture {
+            margin: 4px 4px;
+            padding: 4px 4px;
+            border-radius: 4px;
+
+            cursor: pointer;
+            pointer-events: all;
+
+            &:hover {
+                background-color: var(--shaded-background);
+            }
         }
 
         &>.content {
             user-select: auto;
-            margin: 0 8px;
-            margin-bottom: 4px;
+            margin: 8px 8px;
             pointer-events: all;
+        }
+    }
+}
+
+th-chat-editor-node-say-character-picker.th-context-menu {
+    display: flex;
+    flex-direction: column;
+
+    font-size: 12px;
+
+    cursor: default;
+
+    &>.character-name {
+        text-align: center;
+        margin: 4px;
+
+        --recursive-wght: 700;
+    }
+
+    &>.expressions {
+        display: flex;
+        flex-direction: row;
+
+        &>.button {
+            padding: 8px 8px;
+            line-height: 1;
+
+            &>.label {
+                margin-top: 4px;
+                text-align: center;
+                font-size: 80%;
+                opacity: 80%;
+            }
+
+            &:hover {
+                background-color: var(--shaded-background);
+            }
         }
     }
 }

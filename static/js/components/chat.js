@@ -1,11 +1,6 @@
 import { addSpell, spell } from "treehouse/spells.js";
 import { Branch } from "treehouse/tree.js";
-
-const characters = {
-    coco: {
-        name: "Coco",
-    },
-};
+import { getCharacterPictureSrc } from "./chat/characters.js";
 
 const persistenceKey = "treehouse.chats";
 let persistentState = JSON.parse(localStorage.getItem(persistenceKey)) || {};
@@ -60,7 +55,7 @@ class Said extends HTMLElement {
     connectedCallback() {
         if (this.character != null) {
             this.picture = new Image(64, 64);
-            this.picture.src = `${TREEHOUSE_SITE}/static/character/${this.character}/${this.expression}.svg`;
+            this.picture.src = getCharacterPictureSrc(this.character, this.expression);
             this.picture.classList.add("picture");
             this.appendChild(this.picture);
         }
