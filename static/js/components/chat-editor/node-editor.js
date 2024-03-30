@@ -444,10 +444,17 @@ export class NodeEditor extends HTMLElement {
         if (this.ongoingConnection != null) {
             poolPath(this.ongoingConnectionLine);
 
+            let node = this.nodes.get(this.ongoingConnection.name);
             let outputPin = this.ongoingConnection.pin;
-            let [fromX, fromY] = getPositionRelativeToAncestor(this.nodesDiv, outputPin);
-            // fromX += outputPin.connectionX;
-            // fromY += outputPin.connectionY;
+            let outputPinRect = node.getPinRect(outputPin);
+            let fromX =
+                node.modelNode.position[0] +
+                outputPinRect.x +
+                outputPin.getConnectionX(outputPinRect);
+            let fromY =
+                node.modelNode.position[1] +
+                outputPinRect.y +
+                outputPin.getConnectionY(outputPinRect);
             let toX = this.mouseX;
             let toY = this.mouseY;
 

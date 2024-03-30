@@ -3,6 +3,8 @@ import { Pin } from "./pin.js";
 import * as lens from "treehouse/common/lens.js";
 
 export class NodeSay extends NodeBase {
+    static characters = [{ name: "coco", expressions: ["neutral", "eyes_closed"] }];
+
     connectedCallback() {
         super.connectedCallback();
 
