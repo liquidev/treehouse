@@ -41,7 +41,7 @@
             "kind": "ask",
             "questions": [
                 { "content": "Who was the other?", "then": "introductions.youSpeak.theOther" },
-                { "content": "I mean, obviously.", "then": "introductions.youSpeak.anyways" }
+                { "content": "I mean, obviously.", "then": "v1.F6MzHIyOfUO3E429" }
             ]
         },
         "introductions.youSpeak.theOther": {
@@ -333,6 +333,11 @@
             "content": "back to main question loop",
             "kind": "comment",
             "position": [5136.769023769541, 1368.8106845820746]
+        },
+        "v1.F6MzHIyOfUO3E429": {
+            "then": "introductions.youSpeak.anyways",
+            "kind": "reroute",
+            "position": [1951.9477628503892, 468.6100574351973]
         }
     }
 }
