@@ -159,6 +159,12 @@ th-chat-editor-node-say.th-chat-editor-node {
             user-select: auto;
             margin: 8px 8px;
             pointer-events: all;
+
+            &.empty::before {
+                content: 'Type a message here…';
+                opacity: 50%;
+                cursor: text;
+            }
         }
     }
 }
@@ -242,6 +248,12 @@ th-chat-editor-node-ask.th-chat-editor-node {
                 margin: 3px 0;
                 padding: 0 4px;
                 margin-left: auto;
+
+                &.empty::before {
+                    content: 'Type a question here…';
+                    opacity: 50%;
+                    cursor: text;
+                }
             }
         }
 

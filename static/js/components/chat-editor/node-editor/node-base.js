@@ -106,10 +106,22 @@ export class NodeBase extends HTMLElement {
 
     bindInput(element, lens) {
         element.textContent = lens.get();
+        NodeBase.#updateEmptiness(element);
         element.addEventListener("input", () => {
             lens.set(element.textContent);
+            NodeBase.#updateEmptiness(element);
             this.sendModelUpdate();
         });
+    }
+
+    static #updateEmptiness(element) {
+        if (element.textContent.length == 0) {
+            element.classList.add("empty");
+            // Get rid of any leftover elements; Firefox leaves behind a <br>.
+            element.textContent = "";
+        } else {
+            element.classList.remove("empty");
+        }
     }
 
     #updatePinRects() {
