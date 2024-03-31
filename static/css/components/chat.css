@@ -78,6 +78,7 @@ th-chat-asked {
         margin-right: 2rem;
 
         --recursive-wght: 500;
+        font-size: inherit;
         text-decoration: underline;
         text-align: right;
         opacity: 80%;
@@ -116,7 +117,8 @@ th-chat-asked {
             transition: opacity var(--transition-duration), translate var(--transition-duration);
         }
 
-        &:hover::before, &[disabled]::before {
+        &:hover::before,
+        &[disabled]::before {
             opacity: 50%;
             translate: 0 0;
         }

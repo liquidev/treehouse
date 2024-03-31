@@ -13,7 +13,7 @@ function savePersistentState() {
     localStorage.setItem(persistenceKey, JSON.stringify(persistentState));
 }
 
-class Chat extends HTMLElement {
+export class Chat extends HTMLElement {
     constructor(id, model) {
         super();
         this.id = id;
@@ -38,6 +38,12 @@ class Chat extends HTMLElement {
             persistentState.log[this.id] = this.state.log;
             savePersistentState();
         };
+        this.state.onPause = (name) => {
+            this.dispatchEvent(Object.assign(new Event(".pause"), { atNode: name }));
+        };
+        this.state.onError = (error) => {
+            this.dispatchEvent(Object.assign(new Event(".playbackError"), { error }));
+        };
         this.state.animate = false;
         this.state.exec(startNode);
         this.state.animate = true;
@@ -45,13 +51,25 @@ class Chat extends HTMLElement {
         let log = persistentState.log[this.id];
         if (log != null) {
             this.state.animate = false;
-            this.state.replay(log);
+            try {
+                this.state.replay(log);
+            } catch (error) {
+                throw new PlaybackError(`uncaught error while replaying log`, { cause: error });
+            }
             this.state.animate = true;
         }
+    }
+
+    editLog(then) {
+        then(this.state.log);
+        persistentState.log[this.id] = this.state.log;
+        savePersistentState();
     }
 }
 
 customElements.define("th-chat", Chat);
+
+export class PlaybackError extends Error {}
 
 class Said extends HTMLElement {
     constructor({ content, character, expression, animate }) {
@@ -190,7 +208,11 @@ class ChatState {
         this.log = [];
         this.results = {};
         this.wereAsked = new Set();
-        this.onInteract = (_) => {};
+        this.onInteract = () => {};
+        this.onPause = (_name) => {};
+        this.onError = (error) => {
+            throw error;
+        };
 
         this.animate = true;
     }
@@ -199,30 +221,45 @@ class ChatState {
 
     replay(log) {
         for (let entry of log) {
-            this.interact(entry);
+            let interactionResult = this.interact(entry);
+            if (interactionResult != ChatState.interactionOk) {
+                return interactionResult;
+            }
         }
+        return ChatState.interactionOk;
     }
 
-    exec(name) {
+    exec(name, by) {
         let node = this.model.nodes[name];
+        if (node == null) {
+            this.onError(
+                Object.assign(new PlaybackError(`encountered an unconnected node`), {
+                    atNode: by,
+                })
+            );
+            return;
+        }
+
+        this.onPause(name);
+
         let results = this.results[name];
         this.results[name] = this[node.kind](name, node, results);
     }
 
     // Implementations of nodes
 
-    start(_, node) {
-        this.exec(node.then);
+    start(name, node) {
+        this.exec(node.then, name);
     }
 
-    say(_, node) {
+    say(name, node) {
         let said = new Said({
             content: node.content,
             character: node.character,
             expression: node.expression,
             animate: this.animate,
         });
-        said.addEventListener(".textFullyVisible", (_) => this.exec(node.then));
+        said.addEventListener(".textFullyVisible", (_) => this.exec(node.then, name));
         this.container.appendChild(said);
         this.#scrollIntoView(said);
     }
@@ -255,22 +292,28 @@ class ChatState {
         return questions;
     }
 
-    set(_, node) {
+    set(name, node) {
         persistentState.facts[node.fact] = true;
         savePersistentState();
-        this.exec(node.then);
+        this.exec(node.then, name);
     }
 
-    reroute(_, node) {
-        this.exec(node.then);
+    reroute(name, node) {
+        this.exec(node.then, name);
     }
 
     end() {}
 
     // Persistent restorable interactions
 
+    static interactionOk = "ok";
+    static interactionFailed = "fail";
+
     interact(interaction) {
         let node = this.model.nodes[interaction.name];
+        if (node == null) {
+            return ChatState.interactionFailed;
+        }
 
         this.log.push(interaction);
         this.onInteract();
@@ -287,7 +330,7 @@ class ChatState {
                     let question = node.questions[interaction.option];
                     let asked = questions[interaction.option];
                     asked.interactionFinished();
-                    this.exec(question.then);
+                    this.exec(question.then, interaction.name);
                     for (let q of questions) {
                         if (q != asked) {
                             q.parentNode.removeChild(q);
@@ -296,6 +339,8 @@ class ChatState {
                 }
                 break;
         }
+
+        return ChatState.interactionOk;
     }
 
     // Utilities

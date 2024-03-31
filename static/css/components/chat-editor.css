@@ -1,3 +1,5 @@
+@import url("./chat.css");
+
 html,
 body {
     margin: 0 0;
@@ -13,15 +15,60 @@ th-chat-editor {
 
     overflow: hidden;
 
-    &>.horizontal-container {
-        height: calc(100% - 24px);
+    &>.vertical-split {
+        flex-grow: 1;
 
         display: flex;
         flex-direction: row;
-    }
 
-    & th-chat-node-editor {
-        flex-grow: 1;
+        overflow: hidden;
+
+        &>.node-editor-area {
+            flex-grow: 1;
+
+            position: relative;
+
+            &>th-chat-node-editor {
+                width: 100%;
+                height: 100%;
+            }
+
+            &>.preview-toggle {
+                position: absolute;
+                right: 8px;
+                top: 8px;
+
+                padding: 4px 8px;
+                font-size: 12px;
+                border-radius: 4px;
+
+                cursor: default;
+                user-select: none;
+
+                &:hover {
+                    background-color: var(--shaded-background);
+                }
+            }
+        }
+
+        &>th-chat-preview {
+            max-width: 500px;
+            width: 50%;
+            flex-shrink: 0;
+
+            border-left: 1px solid var(--border-1);
+        }
+
+        &:not(.preview-visible)>th-chat-preview {
+            display: none;
+        }
+
+        &.preview-visible>.node-editor-area>.preview-toggle {
+            --recursive-wght: 700;
+            border-bottom: 2px solid var(--liquidex-brand-blue);
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
     }
 
     & :focus {
@@ -57,6 +104,8 @@ th-chat-node-editor {
     }
 
     &>.canvas>.selection-rubberband {
+        position: absolute;
+
         border: 1px solid var(--border-1);
         background-color: var(--shaded-background);
         opacity: 0%;
@@ -99,6 +148,18 @@ th-chat-editor-node-pin {
     border-radius: 8px;
 
     overflow: hidden;
+
+    &.error {
+        border: 4px solid var(--liquidex-brand-red);
+        background-color: #eb134a44;
+        margin: -2px;
+    }
+
+    &.paused {
+        border: 4px solid var(--liquidex-brand-blue);
+        background-color: #058ef044;
+        margin: -2px;
+    }
 
     &.selected {
         border: 2px solid var(--liquidex-brand-yellow);
@@ -383,7 +444,61 @@ th-chat-editor-add-node.th-context-menu {
     }
 }
 
-th-model-viewer {
+th-chat-preview {
+    display: flex;
+    flex-direction: column;
+
+    font-size: 12px;
+
+    height: 100%;
+
+    &>.controls {
+        padding: 8px;
+        border-bottom: 1px solid var(--border-1);
+
+        &>button {
+            font: inherit;
+            background: transparent;
+            color: inherit;
+            border: none;
+
+            padding: 4px 8px;
+            margin-right: 4px;
+
+            border-radius: 4px;
+
+            &:hover {
+                background-color: var(--shaded-background);
+            }
+        }
+    }
+
+    &>.scroll {
+        padding: 8px 12px;
+        overflow-y: scroll;
+
+        &>th-chat {
+            &>th-chat-said {
+                /* The preview window is pretty narrow, so give said messages some extra width. */
+                max-width: 80%;
+            }
+
+            &>th-chat-asked>button {
+                margin-right: 0;
+            }
+        }
+
+        &>.errors {
+            --recursive-mono: 0.5;
+            --recursive-wght: 500;
+
+            color: var(--error-color);
+            white-space: pre;
+        }
+    }
+}
+
+th-chat-model-viewer {
     &>input {
         font: 10px RecVar;
         font-variation-settings: "MONO" 1;

@@ -26,6 +26,8 @@
     /* Hack to enable theme-matching scrollbars in <pre> */
     --shaded-against-background: #f2f0ea;
     --shaded-against-background-twice: #e6e4de;
+
+    --transition-duration: 0.15s;
 }
 
 @media (prefers-color-scheme: dark) {

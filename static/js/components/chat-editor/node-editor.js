@@ -32,6 +32,8 @@ export class NodeEditor extends HTMLElement {
     ongoingConnectionLine = null;
     hoveredPin = null;
 
+    currentPausedNode = null;
+
     constructor(model) {
         super();
         this.model = model;
@@ -177,12 +179,14 @@ export class NodeEditor extends HTMLElement {
     }
 
     updateFromModel() {
+        this.resetMarkers();
         this.rebuildNodes();
         this.rebuildAllDependencies();
         this.rebuildAllConnections();
     }
 
     sendModelUpdate() {
+        this.resetMarkers();
         this.dispatchEvent(new Event(".modelUpdate"));
     }
 
@@ -558,6 +562,29 @@ export class NodeEditor extends HTMLElement {
     selectAllNodes() {
         this.nodes.forEach((_, name) => this.selectedNodes.add(name));
         this.updateNodeSelectionState();
+    }
+
+    markNodeAsErrorSource(name) {
+        this.nodes.get(name).markError();
+    }
+
+    resetMarkers() {
+        for (let [_, node] of this.nodes) {
+            node.unmarkError();
+        }
+        if (this.currentPausedNode != null) {
+            this.currentPausedNode.unmarkPaused();
+            this.currentPausedNode = null;
+        }
+    }
+
+    markNodeAsPaused(name) {
+        let node = this.nodes.get(name);
+        if (this.currentPausedNode != null) {
+            this.currentPausedNode.unmarkPaused();
+        }
+        node.markPaused();
+        this.currentPausedNode = node;
     }
 }
 

@@ -16,4 +16,4 @@ export class ModelViewer extends HTMLElement {
     }
 }
 
-customElements.define("th-model-viewer", ModelViewer);
+customElements.define("th-chat-model-viewer", ModelViewer);

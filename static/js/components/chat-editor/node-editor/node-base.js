@@ -148,6 +148,22 @@ export class NodeBase extends HTMLElement {
     updateRenderingCache() {
         this.#updatePinRects();
     }
+
+    markError() {
+        this.classList.add("error");
+    }
+
+    unmarkError() {
+        this.classList.remove("error");
+    }
+
+    markPaused() {
+        this.classList.add("paused");
+    }
+
+    unmarkPaused() {
+        this.classList.remove("paused");
+    }
 }
 
 customElements.define("th-chat-editor-node-base", NodeBase);

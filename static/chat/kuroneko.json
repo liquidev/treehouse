@@ -9,7 +9,7 @@
             "then": "initQuestion"
         },
         "initQuestion": {
-            "position": [327, 418],
+            "position": [334.729846247518, 419.1892071150028],
             "kind": "ask",
             "questions": [{ "content": "Kitty?", "then": "kitty" }]
         },
@@ -227,7 +227,7 @@
             "then": "v1.qCm2wQvSNmkTksTY"
         },
         "aboutPlace": {
-            "position": [4523.249508846297, 1784.5955902477249],
+            "position": [4507.249508846297, 1711.5955902477249],
             "kind": "say",
             "character": "coco",
             "content": "This is the back porch of the house. What do you think?",
@@ -235,7 +235,7 @@
             "expression": "neutral"
         },
         "aboutPlace.definition": {
-            "position": [4797.249508846305, 1808.5955902477249],
+            "position": [4981.576611671719, 1794.3251048676916],
             "kind": "ask",
             "questions": [
                 { "content": "It's empty.", "then": "aboutPlace.definition.empty" },
@@ -246,37 +246,37 @@
             ]
         },
         "aboutPlace.definition.empty": {
-            "position": [5079.682550756394, 1784.7847973627277],
+            "position": [5264.009653581808, 1770.5143119826944],
             "kind": "set",
             "fact": "kuroneko/empty",
             "then": "aboutPlace.definition.thankYou"
         },
         "aboutPlace.definition.wild": {
-            "position": [5079.547308066378, 1863.29845428275],
+            "position": [5263.874410891792, 1849.0279689027168],
             "kind": "set",
             "fact": "kuroneko/wild",
             "then": "aboutPlace.definition.thankYou"
         },
         "aboutPlace.definition.odd": {
-            "position": [5081.493343641392, 1944.6229040877693],
+            "position": [5265.820446466806, 1930.352418707736],
             "kind": "set",
             "fact": "kuroneko/odd",
             "then": "aboutPlace.definition.thankYou"
         },
         "aboutPlace.definition.even": {
-            "position": [5078.736515181381, 2028.055282742761],
+            "position": [5263.063618006795, 2013.7847973627277],
             "kind": "set",
             "fact": "kuroneko/even",
             "then": "aboutPlace.definition.thankYou"
         },
         "aboutPlace.definition.what": {
-            "position": [5071.7904796063685, 2138.2711404426996],
+            "position": [5256.1175824317825, 2124.0006550626663],
             "kind": "set",
             "fact": "kuroneko/what",
             "then": "aboutPlace.definition.thankYou2"
         },
         "aboutPlace.definition.thankYou": {
-            "position": [5283.249508846302, 1862.5955902477249],
+            "position": [5467.576611671716, 1848.3251048676916],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -284,7 +284,7 @@
             "then": "aboutPlace.thatsIt"
         },
         "aboutPlace.definition.thankYou2": {
-            "position": [5273.412065376358, 2237.7308329377347],
+            "position": [5457.739168201772, 2223.4603475577014],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -292,7 +292,7 @@
             "then": "aboutPlace.theWhat"
         },
         "aboutPlace.thatsIt": {
-            "position": [5609.587603962928, 1883.1813766853518],
+            "position": [5793.914706788342, 1868.9108913053185],
             "kind": "ask",
             "questions": [
                 {
@@ -302,7 +302,7 @@
             ]
         },
         "aboutPlace.theWhat": {
-            "position": [5731.641427832091, 2197.9265426894085],
+            "position": [5915.968530657505, 2183.6560573093752],
             "kind": "ask",
             "questions": [
                 {
@@ -312,7 +312,7 @@
             ]
         },
         "aboutPlace.end": {
-            "position": [5902.675915717493, 1906.3529495606056],
+            "position": [6087.003018542907, 1892.0824641805723],
             "kind": "say",
             "character": "coco",
             "expression": "eyes_closed",
@@ -327,12 +327,12 @@
         "v1.i6IwB-frd2vis_74": {
             "then": "v1.SaE4OOZteE3OAUwW",
             "kind": "reroute",
-            "position": [6173.525969609795, 1766.5020745870772]
+            "position": [6357.853072435209, 1752.231589207044]
         },
         "v1.SaE4OOZteE3OAUwW": {
             "then": "introductions.whatAreYouLookingFor",
             "kind": "reroute",
-            "position": [6194.798553724883, 2325.939538608364]
+            "position": [6379.125656550297, 2311.6690532283305]
         },
         "v1.OdLSay_6qwb4kT1O": {
             "content": "back to questions about Coco",
@@ -342,7 +342,7 @@
         "v1.2b7DL3JPFTElvVHE": {
             "content": "back to main question loop",
             "kind": "comment",
-            "position": [6128.974269581994, 1711.4516533213218]
+            "position": [6313.301372407408, 1697.1811679412885]
         },
         "v1.F6MzHIyOfUO3E429": {
             "then": "introductions.youSpeak.anyways",
