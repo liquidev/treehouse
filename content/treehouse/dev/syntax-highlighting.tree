@@ -133,8 +133,10 @@
     }
     ```
 
+% id = "01HTAQ23YHXTEZ7WNVZREZ8WSZ"
 - `lua`
 
+    % id = "01HTAQ23YHP2MN7VANBA573WWB"
     - patterns
     ```lua
     -- single-line comment
@@ -154,6 +156,7 @@
     funciton() ident
     ```
 
+    % id = "01HTAQ23YHY8EH8Z8AQEQ8G6SA"
     - keywords
     ```lua
     if then else elseif end do function repeat until while for break return local in not and or goto
@@ -162,6 +165,7 @@
     <close> <const>
     ```
 
+    % id = "01HTAQ23YHCRZFXM02VYRVS4JS"
     - sample
     ```lua
     -- Ticks the scheduler: executes every active fiber, removes inactive fibers,
