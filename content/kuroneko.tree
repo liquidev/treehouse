@@ -1,0 +1,8 @@
+%% title = "back porch"
+   scripts = ["components/chat.js"]
+   styles = ["components/chat.css"]
+
+% template = true
+  cast = "chat js"
+  id = "01HSS5TMDD4WSZSXW17ANQN7VK"
+- {% include_static chat/kuroneko.json %}

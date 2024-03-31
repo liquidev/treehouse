@@ -291,6 +291,7 @@ impl Generator {
                 treehouse,
                 config,
                 &mut config_derived_data,
+                paths,
                 parsed_tree.file_id,
                 &roots.branches,
             );

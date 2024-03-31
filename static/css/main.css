@@ -101,7 +101,8 @@ body::selection {
 body,
 pre,
 code,
-kbd {
+kbd,
+button {
     font-family: 'RecVar', sans-serif;
     font-size: 14px;
     line-height: 1.5;
@@ -341,6 +342,13 @@ a {
 
 a:visited {
     color: var(--link-color-visited);
+}
+
+/* Allow for some secret links */
+
+a.secret {
+    color: var(--text-color);
+    text-decoration: none;
 }
 
 /* Make blockquotes a bit prettier */

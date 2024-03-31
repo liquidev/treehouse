@@ -13,7 +13,7 @@
     - welcome! make yourself at home :ralsei_wave:
 
     % id = "01H8VWEHX501SNYQTE61WX7YJC"
-    - _"owo, what's this?"_
+    - <a class="secret" href="/kuroneko">_"owo, what's this?"_</a>
 
         % id = "about"
           content.link = "about"

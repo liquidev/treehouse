@@ -86,6 +86,7 @@ fn get_content_type(path: &str) -> Option<&'static str> {
         _ if path.ends_with(".html") => Some("text/html"),
         _ if path.ends_with(".js") => Some("text/javascript"),
         _ if path.ends_with(".woff2") => Some("font/woff2"),
+        _ if path.ends_with(".svg") => Some("image/svg+xml"),
         _ => None,
     }
 }

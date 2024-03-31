@@ -1,4 +1,4 @@
-use std::ops::Range;
+use std::{ffi::OsStr, ops::Range};
 
 use anyhow::Context;
 use treehouse_format::ast::Branch;
@@ -154,7 +154,7 @@ pub fn fix_file_cli(fix_args: FixArgs) -> anyhow::Result<()> {
 pub fn fix_all_cli(fix_all_args: FixAllArgs, paths: &Paths<'_>) -> anyhow::Result<()> {
     for entry in WalkDir::new(paths.content_dir) {
         let entry = entry?;
-        if entry.file_type().is_file() {
+        if entry.file_type().is_file() && entry.path().extension() == Some(OsStr::new("tree")) {
             let file = std::fs::read_to_string(entry.path())
                 .with_context(|| format!("cannot read file to fix: {:?}", entry.path()))?;
             let utf8_filename = entry.path().to_string_lossy();

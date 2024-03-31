@@ -1,0 +1,96 @@
+:root {
+    --icon-choose: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTYgMTJMMTAgOEw2IDQiIHN0cm9rZT0iIzU1NDIzZSIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPgo=');
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --icon-choose: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTYgMTJMMTAgOEw2IDQiIHN0cm9rZT0iI2Q3Y2RiZiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPgo=');
+    }
+}
+
+th-chat {
+    display: flex;
+    flex-direction: column;
+}
+
+th-chat-said {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    border: 1px solid var(--border-1);
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 8px;
+
+    max-width: 60%;
+
+    &>.picture {
+        padding-right: 16px;
+        align-self: baseline;
+    }
+
+    &>.text-container {
+        display: inline-block;
+    }
+}
+
+th-chat-asked {
+    display: flex;
+    flex-direction: row-reverse;
+
+    &>button {
+        /* Reset <button> */
+        border: none;
+        background: none;
+        color: var(--text-color);
+        user-select: auto;
+
+        padding: 0.5em 0;
+        margin-right: 2rem;
+
+        --recursive-wght: 500;
+        text-decoration: underline;
+        text-align: right;
+        opacity: 80%;
+
+        cursor: pointer;
+        transition: opacity var(--transition-duration);
+
+        &.asked {
+            display: none;
+            opacity: 50%;
+        }
+
+        &[disabled] {
+            --recursive-wght: 600;
+            cursor: default;
+            opacity: 100%;
+            text-decoration: none;
+        }
+
+        &:hover {
+            opacity: 100%;
+        }
+
+        &::before {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5em;
+            background-image: var(--icon-choose);
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            opacity: 0%;
+            vertical-align: middle;
+            translate: -1em 0;
+            transition: opacity var(--transition-duration), translate var(--transition-duration);
+        }
+
+        &:hover::before, &[disabled]::before {
+            opacity: 50%;
+            translate: 0 0;
+        }
+    }
+}
