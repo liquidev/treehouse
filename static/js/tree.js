@@ -45,12 +45,12 @@ export class Branch {
             this.details.open = isOpen;
         }
         if (!this.isLeaf) {
-            this.details.addEventListener("toggle", _ => {
+            this.details.addEventListener("toggle", (_) => {
                 saveBranchIsOpen(element.id, this.details.open);
             });
         }
 
-        this.namedID = element.id.split(':')[1];
+        this.namedID = element.id.split(":")[1];
         Branch.branchesByNamedID.set(this.namedID, element);
 
         if (ulid.isCanonicalUlid(this.namedID)) {
@@ -96,7 +96,7 @@ class LinkedBranch extends Branch {
             this.loadTree("constructor");
         }
 
-        this.details.addEventListener("toggle", _ => {
+        this.details.addEventListener("toggle", (_) => {
             if (this.details.open) {
                 this.loadTree("toggle");
             }
@@ -105,7 +105,9 @@ class LinkedBranch extends Branch {
 
     async loadTreePromise(_initiator) {
         try {
-            let response = await fetch(`${TREEHOUSE_SITE}/${this.linkedTree}.html`);
+            let response = await fetch(
+                `${TREEHOUSE_SITE}/${this.linkedTree}.html`
+            );
             if (response.status == 404) {
                 throw `Hmm, seems like the tree "${this.linkedTree}" does not exist.`;
             }
@@ -146,7 +148,8 @@ addSpell("b-linked", LinkedBranch);
 /* Fragment navigation */
 
 let rehashing = false;
-function rehash() { // https://www.youtube.com/watch?v=Tv1SYqLllKI
+function rehash() {
+    // https://www.youtube.com/watch?v=Tv1SYqLllKI
     if (!rehashing) {
         rehashing = true;
         let hash = window.location.hash;
@@ -168,7 +171,7 @@ function expandDetailsRecursively(element) {
 }
 
 function navigateToPage(page) {
-    window.location.pathname = `${page}`
+    window.location.pathname = `${page}`;
 }
 
 async function navigateToBranch(fragment) {
@@ -179,9 +182,16 @@ async function navigateToBranch(fragment) {
         // If the element is already loaded on the page, we're good.
         expandDetailsRecursively(element);
         rehash();
+
+        // NOTE(2024-03-31): Only scroll into view in the loaded case.
+        // This case happens very often with `/b`-navigated branches, and those serve the specific
+        // page that contains the provided branch.
+        // Hash-links are not used anymore so upgrading the second case is unnecessary.
+        // They were a thing before I linked to the treehouse very often so no need to update.
+        element.scrollIntoView();
     } else {
         // The element is not loaded, we need to load the tree that has it.
-        let parts = fragment.split(':');
+        let parts = fragment.split(":");
         if (parts.length >= 2) {
             let [page, _id] = parts;
             let fullPath = navigationMap[page];
@@ -245,7 +255,10 @@ async function expandLinkedBranch() {
     let currentlyHighlightedBranch = getCurrentlyHighlightedBranch();
     if (currentlyHighlightedBranch.length > 0) {
         let linkedBranch = document.getElementById(currentlyHighlightedBranch);
-        if (linkedBranch.children.length > 0 && linkedBranch.children[0].tagName == "DETAILS") {
+        if (
+            linkedBranch.children.length > 0 &&
+            linkedBranch.children[0].tagName == "DETAILS"
+        ) {
             expandDetailsRecursively(linkedBranch.children[0]);
         }
     }
