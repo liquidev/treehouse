@@ -235,7 +235,7 @@
             "expression": "neutral"
         },
         "aboutPlace.definition": {
-            "position": [4981.576611671719, 1794.3251048676916],
+            "position": [4961.395097705622, 1835.529029215121],
             "kind": "ask",
             "questions": [
                 { "content": "It's empty.", "then": "aboutPlace.definition.empty" },

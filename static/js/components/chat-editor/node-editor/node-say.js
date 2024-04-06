@@ -51,6 +51,7 @@ customElements.define("th-chat-editor-node-say", NodeSay);
 class CharacterPicker extends ContextMenu {
     static characters = [
         { name: "coco", prettyName: "Coco", expressions: ["neutral", "eyes_closed"] },
+        { name: "vick", prettyName: "Vick", expressions: ["neutral"] },
     ];
 
     connectedCallback() {

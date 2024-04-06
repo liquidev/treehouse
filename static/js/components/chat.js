@@ -72,9 +72,8 @@ customElements.define("th-chat", Chat);
 export class PlaybackError extends Error {}
 
 class Said extends HTMLElement {
-    constructor({ content, character, expression, animate }) {
+    constructor({ character, expression, animate }) {
         super();
-        this.content = content;
         this.character = character;
         this.expression = expression ?? "neutral";
         this.doAnimate = animate;
@@ -82,33 +81,54 @@ class Said extends HTMLElement {
 
     connectedCallback() {
         if (this.character != null) {
-            this.picture = new Image(64, 64);
-            this.picture.src = getCharacterPictureSrc(this.character, this.expression);
-            this.picture.classList.add("picture");
-            this.appendChild(this.picture);
+            this.picture = this.appendChild(document.createElement("div"));
+            this.picture.classList.add(
+                "picture",
+                `character-${this.character}`,
+                `expression-${this.expression}`
+            );
+
+            if (this.doAnimate) {
+                this.picture.style.animation =
+                    "th-chat-appear var(--transition-duration) forwards ease-out";
+            }
         }
 
-        this.textContainer = document.createElement("span");
-        this.textContainer.innerHTML = this.content;
-        this.textContainer.classList.add("text-container");
-        this.appendChild(this.textContainer);
-
-        if (this.doAnimate) {
-            this.style.animation = "th-chat-appear var(--transition-duration) forwards ease-out";
-            let beginLetterAnimation = this.#animateLetters();
-            this.addEventListener("animationend", async (event) => {
-                if (event.animationName == "th-chat-appear") {
-                    await beginLetterAnimation();
-                    this.dispatchEvent(new Event(".textFullyVisible"));
-                }
-            });
-        } else {
-            this.dispatchEvent(new Event(".textFullyVisible"));
-        }
+        this.textBoxes = this.appendChild(document.createElement("div"));
+        this.textBoxes.classList.add("text-boxes");
     }
 
-    #animateLetters() {
-        return Said.#animateLettersInNode(this.textContainer);
+    addTextBox(content) {
+        let textBox = this.textBoxes.appendChild(document.createElement("div"));
+        textBox.classList.add("text-box");
+
+        let textContainer = textBox.appendChild(document.createElement("span"));
+        textContainer.classList.add("text-container");
+        textContainer.innerHTML = content;
+
+        if (this.doAnimate) {
+            textBox.textFullyVisible = false;
+
+            textBox.style.animation = "th-chat-appear var(--transition-duration) forwards ease-out";
+
+            let waiter = new Waiter();
+            let beginLetterAnimation = Said.#animateLettersInNode(waiter, textContainer);
+
+            textBox.addEventListener("animationend", async (event) => {
+                if (event.animationName == "th-chat-appear") {
+                    await beginLetterAnimation();
+                    textBox.dispatchEvent(new Event(".textFullyVisible"));
+                }
+            });
+
+            window.addEventListener("mousedown", () => {
+                waiter.skip = true;
+            });
+        } else {
+            textBox.textFullyVisible = true;
+        }
+
+        return textBox;
     }
 
     static #delayAfterLetter(letter) {
@@ -125,7 +145,7 @@ class Said extends HTMLElement {
         }
     }
 
-    static #animateLettersInNode(node) {
+    static #animateLettersInNode(waiter, node) {
         let display = node.style.display;
         node.style.display = "none";
 
@@ -139,18 +159,23 @@ class Said extends HTMLElement {
                     child.replaceWith(container);
 
                     // TODO: As of 2024-03-25, Intl.Segmenter is not available on all major browser
-                    // versions (it is available on Nightly Firefox). This means we are not able to
-                    // do a more proper Unicode-aware version of this for now.
+                    // versions (on Firefox, it is only available in Nightly). This means we are not
+                    // able to do a more proper Unicode-aware version of this for now.
                     for (let i = 0; i < text.length; ++i) {
                         let c = text.substring(i, i + 1);
-                        let span = document.createElement("span");
+                        if (waiter.skip) {
+                            c = text.substring(i);
+                        }
+                        let span = container.appendChild(document.createElement("span"));
                         span.classList.add("animated-letter");
                         span.textContent = c;
-                        container.appendChild(span);
-                        await wait(Said.#delayAfterLetter(c));
+                        if (waiter.skip) {
+                            break;
+                        }
+                        await waiter.wait(Said.#delayAfterLetter(c));
                     }
                 } else {
-                    await Said.#animateLettersInNode(child)();
+                    await Said.#animateLettersInNode(waiter, child)();
                 }
             }
         };
@@ -159,8 +184,16 @@ class Said extends HTMLElement {
     }
 }
 
-function wait(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+class Waiter {
+    skip = false;
+
+    wait(ms) {
+        if (this.skip) {
+            return new Promise((resolve) => resolve());
+        } else {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+    }
 }
 
 customElements.define("th-chat-said", Said);
@@ -202,19 +235,24 @@ class Asked extends HTMLElement {
 customElements.define("th-chat-asked", Asked);
 
 class ChatState {
+    animate = true;
+    log = [];
+    results = {};
+    wereAsked = new Set();
+
+    onInteract = () => {};
+    onPause = (_name) => {};
+    onError = (error) => {
+        throw error;
+    };
+
+    animate = true;
+
+    #currentSaid = null;
+
     constructor(container, model) {
         this.container = container;
         this.model = model;
-        this.log = [];
-        this.results = {};
-        this.wereAsked = new Set();
-        this.onInteract = () => {};
-        this.onPause = (_name) => {};
-        this.onError = (error) => {
-            throw error;
-        };
-
-        this.animate = true;
     }
 
     // General control
@@ -253,21 +291,37 @@ class ChatState {
     }
 
     say(name, node) {
-        let said = new Said({
-            content: node.content,
-            character: node.character,
-            expression: node.expression,
-            animate: this.animate,
-        });
-        said.addEventListener(".textFullyVisible", (_) => this.exec(node.then, name));
-        this.container.appendChild(said);
-        this.#scrollIntoView(said);
+        if (
+            this.#currentSaid == null ||
+            this.#currentSaid.character != node.character ||
+            this.#currentSaid.expression != node.expression
+        ) {
+            this.#currentSaid = new Said({
+                character: node.character,
+                expression: node.expression,
+                animate: this.animate,
+            });
+            this.container.appendChild(this.#currentSaid);
+        }
+
+        let textBox = this.#currentSaid.addTextBox(node.content);
+        textBox.addEventListener(".textFullyVisible", (_) => this.exec(node.then, name));
+        // Kind of a shitty hack that works around us not being able to use a connectedCallback for
+        // non-custom elements. We'd want to dispatch the .textFullyVisible event only whenever the
+        // text box is connected, but as far as I know that's impossible to do without registering
+        // a custom element.
+        if (textBox.textFullyVisible) {
+            this.exec(node.then, name);
+        }
+        this.#scrollIntoView(textBox);
     }
 
     ask(name, node) {
+        this.#currentSaid = null;
+
         let questions = [];
         for (let i_ = 0; i_ < node.questions.length; ++i_) {
-            let i = i_;
+            let i = i_; // closures my lovely
             let key = `${name}[${i}]`;
 
             let question = node.questions[i];

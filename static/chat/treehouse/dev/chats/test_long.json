@@ -1,0 +1,114 @@
+{
+    "nodes": {
+        "v1.-nJ71gGM9ETzrV_3": {
+            "then": "v1.kBD470hYdfE4S6US",
+            "kind": "start",
+            "position": [214, 310]
+        },
+        "v1.kBD470hYdfE4S6US": {
+            "character": "vick",
+            "expression": "neutral",
+            "content": "Title T 1",
+            "then": "v1.B2F-R3ef70ANsIMF",
+            "kind": "say",
+            "position": [345.4590292399352, 277.40506481494845]
+        },
+        "v1.B2F-R3ef70ANsIMF": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "it's a me, coco",
+            "then": "v1.h5wVGH4d-rLqhgDK",
+            "kind": "say",
+            "position": [583.2651604123988, 448.85489293484136]
+        },
+        "v1.h5wVGH4d-rLqhgDK": {
+            "character": "vick",
+            "expression": "neutral",
+            "content": "shuddup",
+            "then": "v1.eVBwMDZqfWVVQAFA",
+            "kind": "say",
+            "position": [882.9453502947595, 436.9628205944977]
+        },
+        "v1.eVBwMDZqfWVVQAFA": {
+            "character": "vick",
+            "expression": "neutral",
+            "content": "Title T 2",
+            "then": "v1.fuh1tX-LLQZJrLpR",
+            "kind": "say",
+            "position": [1149.327722671147, 445.2872710121796]
+        },
+        "v1.fuh1tX-LLQZJrLpR": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "no u",
+            "then": "v1.G4yCDTtLBh2NfEc9",
+            "kind": "say",
+            "position": [1416.8993183478728, 455.9901333354342]
+        },
+        "v1.G4yCDTtLBh2NfEc9": {
+            "character": "vick",
+            "expression": "neutral",
+            "content": "darnit",
+            "then": "v1.dYH3kAvgS-0CIeEV",
+            "kind": "say",
+            "position": [1654.7407377774684, 435.7736122228461]
+        },
+        "v1.dYH3kAvgS-0CIeEV": {
+            "character": "vick",
+            "expression": "neutral",
+            "content": "Title T 3",
+            "then": "v1.Qs7fVTq5hB9n0lDi",
+            "kind": "say",
+            "position": [1961.5561692470526, 482.1526895329055]
+        },
+        "v1.Qs7fVTq5hB9n0lDi": {
+            "character": "vick",
+            "expression": "neutral",
+            "content": "Title T 4",
+            "then": "v1.KsN316xHhsXevpYg",
+            "kind": "say",
+            "position": [2281.4528794893017, 508.3152471795769]
+        },
+        "v1.KsN316xHhsXevpYg": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "lol",
+            "then": "v1.6p_3ba5rlEKyl2rq",
+            "kind": "say",
+            "position": [2546.64606223137, 529.720974934542]
+        },
+        "v1.6p_3ba5rlEKyl2rq": {
+            "character": "vick",
+            "expression": "neutral",
+            "content": "long long maaaaaaan",
+            "then": "v1.1V8LyLNtCn68HiMS",
+            "kind": "say",
+            "position": [2823.731315948418, 573.7216375419703]
+        },
+        "v1.1V8LyLNtCn68HiMS": {
+            "character": "vick",
+            "expression": "neutral",
+            "content": "Title T 5",
+            "then": "v1.HSWV9mas29bsEOlj",
+            "kind": "say",
+            "position": [3197.1423445453047, 634.3711995143715]
+        },
+        "v1.HSWV9mas29bsEOlj": {
+            "character": "vick",
+            "expression": "neutral",
+            "content": "Title T 6",
+            "then": "v1.VAT9ZTQp6r0Bm4ay",
+            "kind": "say",
+            "position": [3521.79588217978, 685.5071047067881]
+        },
+        "v1.VAT9ZTQp6r0Bm4ay": {
+            "character": "vick",
+            "expression": "neutral",
+            "content": "Title T 7",
+            "then": "v1.a_K2BS3k6qBbhjk5",
+            "kind": "say",
+            "position": [3798.881135669267, 690.2639139706586]
+        },
+        "v1.a_K2BS3k6qBbhjk5": { "kind": "end", "position": [4056.436508308359, 707.1492185832606] }
+    }
+}
