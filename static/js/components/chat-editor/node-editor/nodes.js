@@ -5,6 +5,7 @@ import { NodeEnd } from "./node-end.js";
 import { NodeReroute } from "./node-reroute.js";
 import { NodeComment } from "./node-comment.js";
 import { NodeStart } from "./node-start.js";
+import * as lens from "treehouse/common/lens.js";
 
 export const types = {
     say: NodeSay,
@@ -14,6 +15,36 @@ export const types = {
     end: NodeEnd,
     reroute: NodeReroute,
     comment: NodeComment,
+};
+
+function getThenReference(node) {
+    return [lens.field(node, "then")];
+}
+
+export const schema = {
+    say: {
+        getNodeReferences: getThenReference,
+    },
+    ask: {
+        getNodeReferences(node) {
+            return node.questions.map((q) => lens.field(q, "then"));
+        },
+    },
+    set: {
+        getNodeReferences: getThenReference,
+    },
+    start: {
+        getNodeReferences: getThenReference,
+    },
+    end: {
+        getNodeReferences: () => [],
+    },
+    reroute: {
+        getNodeReferences: getThenReference,
+    },
+    comment: {
+        getNodeReferences: () => [],
+    },
 };
 
 const nameCharset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";

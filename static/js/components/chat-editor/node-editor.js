@@ -61,6 +61,7 @@ export class NodeEditor extends HTMLElement {
                 event.preventDefault();
 
                 document.activeElement.blur();
+                document.getSelection().empty();
                 this.focus();
 
                 this.beginRubberbandSelection();
@@ -150,8 +151,12 @@ export class NodeEditor extends HTMLElement {
                     event.preventDefault();
                     this.selectAllNodes();
                 }
-                if (event.code == "KeyX" || event.code == "Delete") {
+                if (!this.isCtrlDown && (event.code == "KeyX" || event.code == "Delete")) {
                     this.deleteSelectedNodes();
+                }
+                if (this.isCtrlDown && event.code == "KeyD") {
+                    event.preventDefault();
+                    this.dupeSelectedNodes();
                 }
             }
         });
@@ -162,6 +167,29 @@ export class NodeEditor extends HTMLElement {
             }
             if (event.key == "Control") {
                 this.isCtrlDown = false;
+            }
+        });
+
+        const CLIPBOARD_MIME_TYPE = "application/prs.house.liquidex.chat-editor-clipboard-v1";
+
+        document.addEventListener("copy", (event) => {
+            if (event.target == document.body) {
+                event.preventDefault();
+                event.clipboardData.setData(CLIPBOARD_MIME_TYPE, this.copyNodes());
+            }
+        });
+
+        document.addEventListener("cut", (event) => {
+            if (event.target == document.body) {
+                event.preventDefault();
+                event.clipboardData.setData(CLIPBOARD_MIME_TYPE, this.cutNodes());
+            }
+        });
+
+        document.addEventListener("paste", (event) => {
+            let data = event.clipboardData.getData(CLIPBOARD_MIME_TYPE);
+            if (data.length > 0) {
+                this.pasteNodes(data);
             }
         });
 
@@ -562,6 +590,74 @@ export class NodeEditor extends HTMLElement {
     selectAllNodes() {
         this.nodes.forEach((_, name) => this.selectedNodes.add(name));
         this.updateNodeSelectionState();
+    }
+
+    copyNodes() {
+        let selection = [];
+        this.selectedNodes.forEach((name) =>
+            selection.push({ name, model: this.model.nodes[name] })
+        );
+        return JSON.stringify({ nodes: selection });
+    }
+
+    cutNodes() {
+        let copied = this.copyNodes();
+        this.deleteSelectedNodes();
+        return copied;
+    }
+
+    pasteNodes(clipboard) {
+        let pasted = JSON.parse(clipboard);
+
+        let pastedLeft = Infinity;
+        let pastedTop = Infinity;
+        for (let node of pasted.nodes) {
+            pastedLeft = Math.min(pastedLeft, node.model.position[0]);
+            pastedTop = Math.min(pastedTop, node.model.position[1]);
+        }
+
+        let byName = new Map();
+        for (let node of pasted.nodes) {
+            node.newName = nodes.generateUniqueName();
+            byName.set(node.name, node);
+        }
+        for (let node of pasted.nodes) {
+            let references = nodes.schema[node.model.kind].getNodeReferences(node.model);
+            for (let reference of references) {
+                let referencedNode = byName.get(reference.get());
+                if (referencedNode != null) {
+                    reference.set(referencedNode.newName);
+                } else {
+                    reference.set(null);
+                }
+            }
+        }
+
+        let targetLeft = this.mouseX;
+        let targetTop = this.mouseY;
+        for (let node of pasted.nodes) {
+            node.model.position[0] = node.model.position[0] - pastedLeft + targetLeft;
+            node.model.position[1] = node.model.position[1] - pastedTop + targetTop;
+
+            this.model.nodes[node.newName] = node.model;
+            this.nodesDiv.appendChild(this.createNode(node.newName));
+        }
+        for (let node of pasted.nodes) {
+            this.rebuildDependenciesForNode(node.newName);
+            this.rebuildConnectionsForNodeOneDeep(node.newName);
+        }
+
+        this.selectedNodes.clear();
+        for (let node of pasted.nodes) {
+            this.selectedNodes.add(node.newName);
+        }
+        this.updateNodeSelectionState();
+
+        this.sendModelUpdate();
+    }
+
+    dupeSelectedNodes() {
+        this.pasteNodes(this.copyNodes());
     }
 
     markNodeAsErrorSource(name) {
