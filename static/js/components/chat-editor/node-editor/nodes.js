@@ -8,16 +8,9 @@ import { NodeStart } from "./node-start.js";
 import { NodeCheck } from "./node-check.js";
 import * as lens from "treehouse/common/lens.js";
 
-export const types = {
-    say: NodeSay,
-    ask: NodeAsk,
-    set: NodeSet,
-    check: NodeCheck,
-    start: NodeStart,
-    end: NodeEnd,
-    reroute: NodeReroute,
-    comment: NodeComment,
-};
+function getNoFactReferences() {
+    return [];
+}
 
 function getThenReference(node) {
     return [lens.field(node, "then")];
@@ -25,31 +18,47 @@ function getThenReference(node) {
 
 export const schema = {
     say: {
+        editorClass: NodeSay,
         getNodeReferences: getThenReference,
+        getFactReferences: getNoFactReferences,
     },
     ask: {
+        editorClass: NodeAsk,
         getNodeReferences: (node) => node.questions.map((q) => lens.field(q, "then")),
+        getFactReferences: getNoFactReferences,
     },
     set: {
+        editorClass: NodeSet,
         getNodeReferences: getThenReference,
+        getFactReferences: (node) => [node.fact],
     },
     check: {
+        editorClass: NodeCheck,
         getNodeReferences: (node) => [
             lens.field(node, "ifSetThen"),
             lens.field(node, "ifNotSetThen"),
         ],
+        getFactReferences: (node) => [node.fact],
     },
     start: {
+        editorClass: NodeStart,
         getNodeReferences: getThenReference,
+        getFactReferences: getNoFactReferences,
     },
     end: {
+        editorClass: NodeEnd,
         getNodeReferences: () => [],
+        getFactReferences: getNoFactReferences,
     },
     reroute: {
+        editorClass: NodeReroute,
         getNodeReferences: getThenReference,
+        getFactReferences: getNoFactReferences,
     },
     comment: {
+        editorClass: NodeComment,
         getNodeReferences: () => [],
+        getFactReferences: getNoFactReferences,
     },
 };
 

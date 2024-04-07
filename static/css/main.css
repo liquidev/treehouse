@@ -58,6 +58,8 @@ body {
 
     display: flex;
     flex-direction: column;
+
+    accent-color: var(--liquidex-brand-blue);
 }
 
 main {

@@ -519,6 +519,22 @@ th-chat-preview {
         padding: 8px 12px;
         overflow-y: scroll;
 
+        &>.facts {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+
+            &>.fact {
+                &>input {
+                    margin-right: 8px;
+                }
+            }
+
+            &>.fact:not(:last-child) {
+                padding-right: 8px;
+            }
+        }
+
         &>th-chat {
             &>th-chat-said {
                 /* The preview window is pretty narrow, so give said messages some extra width. */

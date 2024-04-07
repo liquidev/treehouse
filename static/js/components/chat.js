@@ -13,6 +13,15 @@ function savePersistentState() {
     localStorage.setItem(persistenceKey, JSON.stringify(persistentState));
 }
 
+export function getFactValue(name) {
+    return persistentState.facts[name];
+}
+
+export function setFactValue(name, value) {
+    persistentState.facts[name] = value;
+    savePersistentState();
+}
+
 export class Chat extends HTMLElement {
     constructor(id, model) {
         super();

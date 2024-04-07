@@ -281,7 +281,7 @@ export class NodeEditor extends HTMLElement {
     }
 
     createNode(name) {
-        let node = new nodes.types[this.model.nodes[name].kind](this.model, name);
+        let node = new nodes.schema[this.model.nodes[name].kind].editorClass(this.model, name);
 
         node.addEventListener(".modelUpdate", () => {
             this.sendModelUpdate();
