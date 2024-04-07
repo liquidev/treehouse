@@ -198,8 +198,10 @@
     end
     ```
 
+% id = "01HTWRAS0EHFG2V4N6NCR403C5"
 - `rust`
 
+    % id = "01HTWRAS0E9FRH08MZZKMKXX2M"
     - patterns
     ```rust
     // this is a comment
@@ -221,6 +223,7 @@
     europeanunion A
     ```
 
+    % id = "01HTWRAS0EQ3E9BV7TWEGQ01YF"
     - keywords
     ```rust
     _ as async await break const continue dyn else enum extern fn for if impl in let loop
@@ -233,6 +236,7 @@
     abstract become box do final macro override priv try typeof unsized virtual yield
     ```
 
+    % id = "01HTWRAS0EQRQJ9NHYPTE89Q5H"
     - sample
     ```rust
     use chrono::{Datelike, Utc};
