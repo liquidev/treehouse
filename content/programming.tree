@@ -13,7 +13,11 @@
 
     % content.link = "programming/blog/tairu"
       id = "01HPD4XQQ5WM0APCAX014HM43V"
-    + tairu - an interactive exploration of 2D autotiling techniques
+    + <span class="badge blue">featured</span> tairu - an interactive exploration of 2D autotiling techniques
+
+    % content.link = "programming/blog/or-types"
+      id = "01HTWN4XB2YMF3615BE8V6Y76A"
+    - OR-types
 
 % id = "01HRG2RJCNKT9JJJVQ8WVRC9CA"
 - ### languages

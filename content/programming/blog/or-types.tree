@@ -1,0 +1,323 @@
+%% title = "OR-types"
+   scripts = ["components/literate-programming.js"]
+
+% id = "01HTWN4XAD7C41X8XKRBFZMHJ8"
+- last night I couldn't fall asleep because I was thinking how sites like [Anilist](https://anilist.co) implement their tag-based search systems.
+
+    % id = "01HTWN4XAD4CPDR36P4XNYZAE3"
+    - my mind was racing, and with enough thinking about scores and weights and sums and products… I arrived at the topic of *sum types* and *product types.*
+
+    % id = "01HTWN4XAD4NK5TRFVPCC4EHJ2"
+    - I was thinking, "*this is actually really interesting - why do we call them sum types and product types?*" -
+    I had some intuitive understanding as to where these names come from, but I wanted to write down my thoughts for future me, and future generations.
+
+    % id = "01HTWN4XADR3SARMFCF6PB8T7D"
+    - so I set down an alarm for today, and went to sleep.
+
+% id = "01HTWN4XADJ9NAWKY8G4BDS9E0"
+- recall that I was faced with the question of "why do we call product types *product types*, and why do we call sum types *sum types*?"
+my intuitive understanding was this:
+
+    % id = "01HTWN4XADVCMHQCGDM4RM6YBN"
+    - so you know how the Boolean operations `AND` and `OR` have these truth tables that show you all the outcomes:
+
+    | A | B | AND |
+    | - | - | --- |
+    | 0 | 0 | 0 |
+    | 0 | 1 | 0 |
+    | 1 | 0 | 0 |
+    | 1 | 1 | 1 |
+
+    | A | B | OR |
+    | - | - | -- |
+    | 0 | 0 | 0 |
+    | 0 | 1 | 1 |
+    | 1 | 0 | 1 |
+    | 1 | 1 | 1 |
+
+    % id = "01HTWN4XAD7ZZ459MHZXA61KGB"
+    - what if we did that, but with multiplication and addition?
+
+    | A | B | * |
+    | - | - | - |
+    | 0 | 0 | 0 |
+    | 0 | 1 | 0 |
+    | 1 | 0 | 0 |
+    | 1 | 1 | 1 |
+
+    | A | B | + |
+    | - | - | - |
+    | 0 | 0 | 0 |
+    | 0 | 1 | 1 |
+    | 1 | 0 | 1 |
+    | 1 | 1 | 2 |
+
+        % id = "01HTWN4XAD0XMSDYKP46J9ZTQX"
+        - wait a minute. this looks quite familiar :thinking:
+
+    % id = "01HTWN4XADTE3GV1RYM7HX5SWM"
+    - if you stick to arguments consisting of just zero and one, you'll end up with "truth" tables that look very similar to those of `AND` and `OR` - with multiplication (product) resembling `AND`,
+    and addition (sum) resembling `OR`, with the only difference being that `1 + 1 = 2`, unlike `1 OR 1` which is equal to `1`. but they're quite similar!
+
+
+% id = "01HTWN4XAD1MF8MGFK2BQPNQJQ"
+- now you might ask "what does this have to do with types mr. liquidex?"
+
+    % id = "01HTWN4XADE1NAXYNE0MWP03SP"
+    - I've always thought of product types as being very similar to a Boolean `AND` of two types, and sum types as being very similar to a Boolean `OR` of two types.
+
+        % id = "01HTWN4XADZ9V715DY7CYCWSFR"
+        - after all, having a struct/record `{ a: T, b: U }`, or - how I'll represent it in this post - a product `T * U`, is very similar to saying "I have both a `T` `AND` a `U` value here."
+
+            % id = "01HTWN4XADBZ929PMJHVSDJCFC"
+            - we can create a subtype relation based on this Boolean algebra - we'll say that `V` is a subtype of `T * U` if `has(T) AND has(U)` is true, where `has(T)` is true if the type `V` is a subtype of `T`
+
+        % id = "01HTWN4XAD7BGTB0ZFG0PVER9P"
+        - and having a type union `T | U` seems very similar to saying "I have either a `T` `OR` a `U` value here" - `has(T) OR has(U)`
+
+    % id = "01HTWN4XADF1S6ZG32WE8HQXCR"
+    - but look again at the truth table for `OR`:
+
+    | A | B | OR |
+    | - | - | -- |
+    | 0 | 0 | 0 |
+    | 0 | 1 | 1 |
+    | 1 | 0 | 1 |
+    | 1 | 1 | 1 |
+
+        % id = "01HTWN4XADJ7X17GDWDGXPJSVG"
+        - based on this table, we can infer that:
+
+            % id = "01HTWN4XAD4EGXJ799M63ZD75S"
+            - `T` is a subtype of `T | U`, because `T` is present (`1`) and `U` is not (`0`), therefore `has(T) OR has(U)` is true;
+
+            % id = "01HTWN4XAD74PHRPX29WZMRHMQ"
+            - `U` is a subtype of `T | U`, because `T` is not present (`0`) and `U` is (`1`), therefore `has(T) OR has(U)` is true.
+
+        % id = "01HTWN4XADF41KXW2RAW980BJZ"
+        - however, this also means `T * U` is a subtype of `T | U`, because in `T * U`, both `T` is present (`1`), and `U` is present (`1`), and therefore `has(T) OR has(U)` is true.
+
+    % id = "01HTWN4XADATFCP17H518DMQGA"
+    - therefore we cannot use this definition for our familiar and beloved sum types `T | U`! we've invented something new here. I'll call it *`OR-types`*, and represent it using `T ++ U`.
+
+    % id = "01HTWN4XADW9K01669TZ4ER692"
+    - having `OR`-types is *really frickin' weird*, because it yields a type system which would allow you to do this (in pseudo-Rust):
+
+    ```rust
+    fn get_string(or: i32 ++ &str) -> Option<&str> {
+        match or {
+            x: &str => Some(x),
+            _ => None,
+        }
+    }
+    ```
+
+        % id = "01HTWN4XADGE5DCCNRYTTYRWAA"
+        - the existence of this `OR`-type would make `match` really weird, as now it could enter multiple `match` arms:
+
+        ```rust
+        fn print_variants(or: i32 ++ &str) {
+            match or {
+                x: i32 => println!("{x}"),
+                x: &str => println!("{x}"),
+            }
+        }
+
+        fn main() {
+            let t = 123 ++ "many hugs";
+            print_variants(t);
+            // prints:
+            // 123
+            // many hugs
+        }
+        ```
+
+    % id = "01HTWN4XADRC8SSHD96HKQP9S8"
+    - outside type systems which have bit sets, which are like a more limited version of this, I've never seen something like this implemented in practice :thinking:
+
+        % id = "01HTWN4XADNQF7J49SVEWZZ9CT"
+        - probably because the following is so much simpler and more familiar (in real Rust):
+
+        ```rust
+        pub struct IntOrStr<'a> {
+            pub int: Option<i32>,
+            pub str: Option<&'a str>,
+        }
+        ```
+
+        % id = "01HTWN4XADHF71DZEVAYV0VMPD"
+        - however, with Rust's somewhat annoying lack of built-in support for bit sets, I wonder just how different programming would be in a language that supports this.
+
+    % id = "01HTWN4XADE0W5TVPMJ9MDXWW1"
+    - back from dreamland - in terms of Boolean algebra, sum types would instead be represented by `has(T) XOR has(U)`, which has this truth table:
+
+    | A | B | XOR |
+    | - | - | --- |
+    | 0 | 0 | 0 |
+    | 0 | 1 | 1 |
+    | 1 | 0 | 1 |
+    | 1 | 1 | 0 |
+
+        % id = "01HTWN4XAD80W44JDK2429N90B"
+        - and based on this table, we can infer that:
+
+            % id = "01HTWN4XAD3CQ4P3JMYP57Q3NP"
+            - `T` is a subtype of `T | U`, because `T` is present (`1`) and `U` is not (`0`), therefore `has(T) XOR has(U)` is true;
+
+            % id = "01HTWN4XAD3WNRX28GJ9P3645B"
+            - `U` is a subtype of `T | U`, because `T` is not present (`0`) and `U` is (`1`), therefore `has(T) XOR has(U)` is true.
+
+        % id = "01HTWN4XAD15CWASNFEQRTP0H7"
+        - *but* unlike our previous hypothetical `T + U`, `T * U` is not a subtype of `T | U`, because if `T` is present (`1`) and `U` is also present (`1`), `has(T) XOR has(U)` will be false -
+        which matches more typical sum types.
+
+% id = "01HTWN4XADJC8ZHBHNTSDW8EQP"
+- I had to write this down like 5 times until I managed to figure out the exact details, because it resembles set-theoretic types a lot, yet it is not the same.
+
+    % id = "01HTWN4XADYSFXEQDMSGMSYQ0E"
+    - in this type system, every type `T` acts like a function - you pass it another type `U` and it returns whether `U` is a subtype of `T`
+
+    % id = "01HTWN4XADXMQ1YS7NZJD9XY9W"
+    - this confused me a lot because, from my limited understanding of them, set-theoretic types represents types as sets of possible values - and mathematically any set `S` can be represented by a function `S(x)`, which is `true` if `x` is present in the set
+
+    % id = "01HTWN4XADSSASE388BBS79X7J"
+    - but again, it is *not* the same, because the type system I described here is defined based on subtype relations rather than sets of values.
+
+    % id = "01HTWN4XADQ3F5CYBEN44J10D5"
+    - in the world of set-theoretic types, we get sum types for free, because the type `T | U` represents the union of the set of all possible `T` values, and the set of all possible `U` values.
+
+    % id = "01HTWN4XAD8SCT2ZQT92G1MNDF"
+    - as far as I understand, product types have to be represented in a different way -
+    they'd be represented by values themselves - one rank lower than types - because if we took the intersection of all values of `T` and all values of `U`, we could end up with an empty set.
+
+% id = "01HTWN4XADD0ACKWVW7Q79TH8H"
+- as closing words, I'd just like to say I haven't looked for any soundness holes in this theoretical type system with `OR`-types. if you find any, feel free to [get in touch][branch:hello] -
+I'll add a note to this post summarizing what's wrong with my reasoning.
+
+% stage = "Draft"
+  id = "01HTWN4XADBA7MHQT8FH9WBFBZ"
++ permanent draft which stirred up this train of thought: notes on tag searches using addition and multiplication to weigh scores
+
+    % id = "01HTWN4XADGWVWZGTJCCQDK0RF"
+    - I couldn't sleep last night because of a weird realization I came to. suppose you had to write a tag-based search engine for a site like [Anilist](https://anilist.co)…
+
+        % id = "01HTWN4XAD3XN15QZEJAE2J3N4"
+        - the thing with Anilist tags is that each anime not only has a tag, but also a _percentage_ of how relevant that tag is for a given anime.
+        therefore you might have an anime which is, say `Travel 96%`, or one which is `Cyberpunk 77%`.
+
+        % id = "01HTWN4XADZQW6YHWHD288N9Y6"
+        - their system causes an interesting conundrum when searching for multiple tags, because you can no longer apply ordinary Boolean `AND` and `OR` operators to look for entries.
+
+        % id = "01HTWN4XADRTMDZM5ND69SM8MX"
+        - in a simple "has tag/does not have tag" system, if you wanted to find anime which are about crimes in space, you would construct a query like `has(Crime) AND has(Space)`.
+        likewise, if you feel like watching an anime which is either about crime or about space, but not necessarily about both, you may construct a query like `has(Crime) OR has(Space)`.
+
+        % id = "01HTWN4XADK9PTKA2BXYF1Y56D"
+        - but this does not work with percentage tags, because you can't `AND` two numbers… right?
+
+            % id = "01HTWN4XAD4T2FQ89VQWZ6KZP8"
+            - suppose we represent Boolean `false` and `true` as `0` and `1` respectively. now let's see what happens if we multiply them:
+
+            | A | B | \* |
+            | - | - | -- |
+            | 0 | 0 | 0 |
+            | 0 | 1 | 0 |
+            | 1 | 0 | 0 |
+            | 1 | 1 | 1 |
+
+                % id = "01HTWN4XAD4ES3GYXF4CMK7ENV"
+                - seem familiar? it's exactly the same as the truth table for `AND`ing two numbers!
+
+            % id = "01HTWN4XADB7K02JDWMJ5T3KN9"
+            - except because we're working with _numbers_ here, we can take it a step further and multiply *any* two numbers, not just zero and one.
+
+            % id = "01HTWN4XAD9ESATEWPNC6Y72S3"
+            - therefore we can search and rank our anime about crimes in space based on a *score* produced by multiplying the tag values.
+            let's see [what Anilist tells us about crimes in space](https://anilist.co/search/anime?genres=Space&genres=Crime).
+
+            I wrote down the data of the first 10 anime it displayed to me on the day I'm writing this, so this data may become out of date with time. ignoring spoiler tags because noone likes those.
+
+            ```javascript crimes-in-space
+            import { showTable } from "treehouse/sandbox/table.js";
+
+            export const anime = [
+                { title: "Cowboy Bebop", crime: 0.94, space: 0.92 },
+                { title: "Gintama", crime: 0.60, space: 0.51 },
+                { title: "Cyberpunk: Edgerunners", crime: 0.0, space: 0.92 },
+                { title: "Trigun", crime: 0.0, space: 0.76 },
+                { title: "Akudama Drive", crime: 0.0, space: 0.95 },
+                { title: "Redline", crime: 0.77, space: 0.46 },
+                { title: "ASTRA LOST IN SPACE", crime: 0.99, space: 0.62 },
+                { title: "Cowboy Bebop: The Movie - Knockin' on Heaven's Door", crime: 0.73, space: 0.78 },
+                { title: "Kaiba", crime: 0.82, space: 0.40 },
+                { title: "Metallic Rogue", crime: 0.74, space: 0.72 },
+            ];
+
+            showTable(anime, { columns: ["title", "crime", "space"] });
+            ```
+
+            ```output crimes-in-space
+            ```
+
+            % id = "01HTWN4XAD382KB5331EG8GJGG"
+            - now let's see what score each anime will get:
+
+            ```javascript crimes-in-space
+            import { showTable } from "treehouse/sandbox/table.js";
+
+            showTable(
+                anime
+                    .map((entry) => ({
+                        score: entry.crime * entry.space,
+                        ...entry,
+                    }))
+                    .sort((a, b) => b.score - a.score),
+                { columns: ["title", "crime", "space", "score"] },
+            );
+            ```
+
+            ```output crimes-in-space
+            ```
+
+            % id = "01HTWN4XADJY5N3MJ45CJ3Y2PJ"
+            - cool! it works kind of like a fuzzy `AND`. now let's try finding the opposite operation - `OR`. if we try adding 0 and 1 together, we get this:
+
+            | A | B | + |
+            | - | - | - |
+            | 0 | 0 | 0 |
+            | 0 | 1 | 1 |
+            | 1 | 0 | 1 |
+            | 1 | 1 | 2 |
+
+            which is really close! the only thing you could say is "wrong" is that `true OR true` should be equal to `true` (`1`), but we get `2`.
+
+                % id = "01HTWN4XAD58M0Z2JG8ADCFGH1"
+                - I argue this is fine for the sake of scoring search results - entries which will have both `A` and `B` will be the most likely to match your interests, so they will get a higher score -
+                but it is possible to counteract this by clamping the output to 1.
+                note however that clamping will reduce your output range; if you _just_ want to keep your score between 0 and 1, then you can divide the result by 2.
+
+            % id = "01HTWN4XAD94D7XR4AXYFQQDCH"
+            - let's see how the scores will look with that logic in place:
+
+            ```javascript crimes-in-space
+            import { showTable } from "treehouse/sandbox/table.js";
+
+            showTable(
+                anime
+                    .map((entry) => ({
+                        score: entry.crime + entry.space,
+                        ...entry,
+                    }))
+                    .sort((a, b) => b.score - a.score),
+                { columns: ["title", "crime", "space", "score"] },
+            );
+            ```
+
+            ```output crimes-in-space
+            ```
+
+            % id = "01HTWN4XADZYW8F7JK2N8BJZ1P"
+            - surprisingly similar! only difference I see is Akudama Drive scoring higher than Edgerunners due to its higher Crime score, which is arguably good -
+            the user seeks the results which are the most relevant to their interests, so if an anime has more crime, that's what the user's looking for -
+            so we show it first.
+

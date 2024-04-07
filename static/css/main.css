@@ -649,6 +649,10 @@ th-literate-program[data-mode="output"] {
         display: block;
     }
 
+    & iframe {
+        width: 100%;
+    }
+
     & img.placeholder-image.js {
         transition: opacity var(--transition-duration);
     }
