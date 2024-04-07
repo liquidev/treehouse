@@ -10,6 +10,13 @@
 
 [read][page:programming/blog/tairu]
 
+% id = "01HTWNETT2S5NSBF3QR4HYA7HN"
+- last night I couldn't sleep because of type theory. in the process of trying to write down my thoughts, I ended up discovering a class of types which, to my knowledge, no language implements.
+
+### OR-types
+
+[what the hell do you mean, aren't sum types exactly that??][page:programming/blog/or-types]
+
 % id = "01HRG3VN091V715A8T54QK5PVX"
 - I really like Lua, did you know that? but I get kind of tired of explaining why a thousand times to people who don't know the language, so…
 
