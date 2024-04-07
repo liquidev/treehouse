@@ -197,3 +197,73 @@
         end
     end
     ```
+
+- `rust`
+
+    - patterns
+    ```rust
+    // this is a comment
+    /* this is a multiline comment */
+
+    "string" 'c' 'ł'
+    b"string" b'ł'
+    r"string" r#"string"# r##"string"## r###"string"###
+    0b11001100 0b11001100_u8
+    0o1234567_f32
+    0xDEADBEEF 0xDEADBEEF_i16
+    2137
+    3.14159265 2.3e-32
+    + - * / % == ~= <= >= & .
+    #![doc = ""]
+    identifier macro! function() 'static
+    T Vec<i32>
+    union Example
+    europeanunion A
+    ```
+
+    - keywords
+    ```rust
+    _ as async await break const continue dyn else enum extern fn for if impl in let loop
+    macro_rules! match mod move mut pub ref return static struct trait type unsafe use where while
+
+    crate self Self super
+
+    true false
+
+    abstract become box do final macro override priv try typeof unsized virtual yield
+    ```
+
+    - sample
+    ```rust
+    use chrono::{Datelike, Utc};
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
+    #[serde(rename_all = "snake_case")]
+    pub enum Season {
+        Spring,
+        Summer,
+        Autumn,
+        Winter,
+    }
+
+    impl Season {
+        pub fn on(month: u32, day: u32) -> Option<Season> {
+            let md = (month, day);
+            Some(match () {
+                _ if ((1, 1)..=(3, 20)).contains(&md) => Season::Winter,
+                _ if ((3, 21)..=(6, 21)).contains(&md) => Season::Spring,
+                _ if ((6, 22)..=(9, 22)).contains(&md) => Season::Summer,
+                _ if ((9, 23)..=(12, 21)).contains(&md) => Season::Autumn,
+                _ if ((12, 22)..=(12, 31)).contains(&md) => Season::Winter,
+                // Just in case something really darn weird happens to the calendar.
+                _ => return None,
+            })
+        }
+
+        pub fn current() -> Option<Season> {
+            let now = Utc::now();
+            Self::on(now.month(), now.day())
+        }
+    }
+    ```
