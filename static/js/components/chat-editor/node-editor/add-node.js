@@ -7,6 +7,7 @@ export class AddNode extends ContextMenu {
         { name: "say", description: "Make a character say something" },
         { name: "ask", description: "Give the player a dialog choice" },
         { name: "set", description: "Store a bit of information for later" },
+        { name: "check", description: "Check if a bit of information is set" },
         { name: "start", description: "Start the conversation from here" },
         { name: "end", description: "End the conversation immediately" },
     ];
@@ -30,6 +31,11 @@ export class AddNode extends ContextMenu {
         },
         set: {
             fact: "example/fact",
+        },
+        check: {
+            fact: "example/fact",
+            ifSetThen: null,
+            ifNotSetThen: null,
         },
         start: { then: null },
         end: {},

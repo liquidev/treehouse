@@ -352,6 +352,14 @@ class ChatState {
         this.exec(node.then, name);
     }
 
+    check(name, node) {
+        if (persistentState.facts[node.fact]) {
+            this.exec(node.ifSetThen, name);
+        } else {
+            this.exec(node.ifNotSetThen, name);
+        }
+    }
+
     reroute(name, node) {
         this.exec(node.then, name);
     }

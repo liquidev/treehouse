@@ -13,7 +13,7 @@ export class NodeSay extends NodeBase {
         this.details = this.appendChild(document.createElement("div"));
         this.details.classList.add("details");
 
-        this.picture = this.details.appendChild(new Image(64, 64));
+        this.picture = this.details.appendChild(new Image(80, 80));
         this.picture.classList.add("picture");
         this.#updatePicture();
         this.picture.addEventListener("click", () => {
@@ -77,7 +77,7 @@ class CharacterPicker extends ContextMenu {
                     this.close();
                 });
 
-                let picture = button.appendChild(new Image(64, 64));
+                let picture = button.appendChild(new Image(80, 80));
                 picture.src = getCharacterPictureSrc(character.name, expression);
 
                 let label = button.appendChild(document.createElement("p"));

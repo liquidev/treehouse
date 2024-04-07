@@ -206,6 +206,9 @@ th-chat-editor-node-say.th-chat-editor-node {
             padding: 4px 4px;
             border-radius: 4px;
 
+            object-fit: cover;
+            object-position: 50% 0%;
+
             cursor: pointer;
             pointer-events: all;
 
@@ -250,6 +253,11 @@ th-chat-editor-node-say-character-picker.th-context-menu {
         &>.button {
             padding: 8px 8px;
             line-height: 1;
+
+            &>img {
+                object-fit: cover;
+                object-position: 50% 0%;
+            }
 
             &>.label {
                 margin-top: 4px;
@@ -332,6 +340,40 @@ th-chat-editor-node-set.th-chat-editor-node {
 
     &>.fact {
         margin-right: 4px;
+    }
+}
+
+th-chat-editor-node-check.th-chat-editor-node {
+    &>.rows {
+        display: flex;
+        flex-direction: column;
+
+        align-items: end;
+
+        pointer-events: none;
+
+        &>.top-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 4px;
+
+            height: 24px;
+            padding: 0px 8px;
+
+            --recursive-wght: 700;
+
+            &>.fact {
+                pointer-events: all;
+            }
+        }
+
+        &>.branch-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+        }
     }
 }
 

@@ -1,0 +1,1000 @@
+{
+    "nodes": {
+        "v1.8FQX7Www7G3rRuV7": {
+            "then": "v1.WSmd2KHah9nQNZ3g",
+            "kind": "start",
+            "position": [-77, 273]
+        },
+        "v1.WSmd2KHah9nQNZ3g": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "We meet again.",
+            "then": "v1.L9euKsx7ZxjcH5ip",
+            "kind": "say",
+            "position": [385, 318]
+        },
+        "v1.L9euKsx7ZxjcH5ip": {
+            "questions": [
+                { "content": "Hello.", "then": "v1.tMD5eJszj5QZOWn6" },
+                {
+                    "content": "Nice to see a soul that's alive and well.",
+                    "then": "v1.wLk8ickLyZr366gb"
+                }
+            ],
+            "kind": "ask",
+            "position": [734, 317]
+        },
+        "v1.wLk8ickLyZr366gb": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Thanks, you too.",
+            "then": "v1.sYk_oH2NJwokK9xf",
+            "kind": "say",
+            "position": [1103, 415]
+        },
+        "v1.tMD5eJszj5QZOWn6": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Welcome.",
+            "then": "v1.sYk_oH2NJwokK9xf",
+            "kind": "say",
+            "position": [1102, 294]
+        },
+        "v1.sYk_oH2NJwokK9xf": {
+            "questions": [
+                { "content": "May I ask, what is this place?", "then": "v1.np5JLf-RK8CJUCM7" },
+                { "content": "May I ask, why are you here?", "then": "v1.0kG9zOe7R9yS86fM" }
+            ],
+            "kind": "ask",
+            "position": [1497, 324]
+        },
+        "v1.np5JLf-RK8CJUCM7": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "This is the 404 page. Seem familiar?",
+            "then": "v1.eQCKX4fG7drs4EHA",
+            "kind": "say",
+            "position": [1832.2203369140625, 317.39697265625]
+        },
+        "v1.eQCKX4fG7drs4EHA": {
+            "questions": [
+                {
+                    "content": "Yeah, I've definitely seen one of these before.",
+                    "then": "v1.KRnfFAylhLKgPBkJ"
+                },
+                {
+                    "content": "What do you mean \"404 page\"? I thought this was a treehouse?",
+                    "then": "v1.Ks2WK6N4FNmGVKR1"
+                }
+            ],
+            "kind": "ask",
+            "position": [2266.2203369140625, 302.39697265625]
+        },
+        "v1.KRnfFAylhLKgPBkJ": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Page 404 generally appears when you've gone out of bounds of the place you're in.",
+            "then": "v1.6aObRYPK4BsMTcdR",
+            "kind": "say",
+            "position": [2658.841922684058, -56.06470960408741]
+        },
+        "v1.6aObRYPK4BsMTcdR": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "You've now exited the bounds of the treehouse. Congratulations.",
+            "then": "v1.hp1FC75j5D7jGmUK",
+            "kind": "say",
+            "position": [3064.841922684058, -59.06470960408741]
+        },
+        "v1.hp1FC75j5D7jGmUK": {
+            "questions": [
+                { "content": "Got it.", "then": "v1.CIBjGKlXiCgD1E3X" },
+                { "content": "And why are you here?", "then": "v1.1CcYJZw5DTZnG5r3" }
+            ],
+            "kind": "ask",
+            "position": [3505.8420447543704, -58.06470960408741]
+        },
+        "v1.1CcYJZw5DTZnG5r3": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Cats like to visit weird places. Did you know that?",
+            "then": "v1.Hxn5vXvXpPGcs1AI",
+            "kind": "say",
+            "position": [3808.8420447543704, -10.06470960408744]
+        },
+        "v1.Hxn5vXvXpPGcs1AI": {
+            "questions": [
+                {
+                    "content": "Yeah, I'm pretty familiar with cats.",
+                    "then": "v1.uDNdPgrL-s49jIJi"
+                },
+                { "content": "I had no clue.", "then": "v1.uDNdPgrL-s49jIJi" }
+            ],
+            "kind": "ask",
+            "position": [4278.842044754368, -10.06470960408744]
+        },
+        "v1.uDNdPgrL-s49jIJi": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "I personally like them because it's quiet. Nobody to fool around and make noise. You can just…",
+            "then": "v1.zauCukslEB9jVRHk",
+            "kind": "say",
+            "position": [4617.842044754368, -8.06470960408744]
+        },
+        "v1.zauCukslEB9jVRHk": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "sleep… calmly…",
+            "then": "v1.EVJ1jvF9u_zAs-_j",
+            "kind": "say",
+            "position": [5036.842044754368, -8.06470960408744]
+        },
+        "v1.EVJ1jvF9u_zAs-_j": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "and there's noone to interrupt your slumber.",
+            "then": "v1.r1hEkMnB1hd5cdrn",
+            "kind": "say",
+            "position": [5322.841800613743, -8.06470960408744]
+        },
+        "v1.r1hEkMnB1hd5cdrn": {
+            "questions": [
+                { "content": "Sounds like the ultimate chill zone.", "then": "v1.877JA_pkEcgrnWu5" }
+            ],
+            "kind": "ask",
+            "position": [5773.809574051243, -8.119950235190956]
+        },
+        "v1.877JA_pkEcgrnWu5": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Pretty much. Knowing that, you'll be able to find me pretty easily if you know where to look.",
+            "then": "v1.KSKJt6ks6ew8IC2p",
+            "kind": "say",
+            "position": [6097.809574051243, 24.88005167215769]
+        },
+        "v1.0kG9zOe7R9yS86fM": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "I was just taking one of my usual eight-times-a-day naps while you stormed in. May I ask, why are <em>you</em> here?",
+            "then": "v1.WglbtPcjVuPhbudv",
+            "kind": "say",
+            "position": [1827.4693603515625, 589.0507125854492]
+        },
+        "v1.WglbtPcjVuPhbudv": {
+            "questions": [
+                { "content": "Uhh…", "then": "v1.YwJFn1QgGuPXlvVQ" },
+                {
+                    "content": "Someone told me to read an article, but I ended up here while looking for it.",
+                    "then": "v1.mCXFkTA9VM0hAiOk"
+                },
+                { "content": "I barged in.", "then": "v1.6DWOQggfRMqUSJ0i" }
+            ],
+            "kind": "ask",
+            "position": [2263.4693603515625, 589.0507125854492]
+        },
+        "v1.6DWOQggfRMqUSJ0i": {
+            "questions": [
+                {
+                    "content": "Y'know, I'm a curious cat like you are.",
+                    "then": "v1.xCSzr-WeDMG6Wqy6"
+                },
+                { "content": "Sorry about that.", "then": "v1.XLmr8v5GCm3vbUdv" }
+            ],
+            "kind": "ask",
+            "position": [2679.7125318915514, 1228.8368522802004]
+        },
+        "v1.XLmr8v5GCm3vbUdv": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Not a problem whatsoever. It's a public treehouse, after all. Everyone's free to explore whichever part they please.",
+            "then": "v1.BPLfL6Nq6qCyyvVl",
+            "kind": "say",
+            "position": [3044.198982086864, 1480.131179062427]
+        },
+        "v1.xCSzr-WeDMG6Wqy6": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "And how do you know I'm curious? I told you I'm a pretty unusual cat.",
+            "then": "v1.AT9L-eNpXhhwVeYn",
+            "kind": "say",
+            "position": [3044.198982086864, 1261.131179062427]
+        },
+        "v1.AT9L-eNpXhhwVeYn": {
+            "questions": [{ "content": "Just a hunch.", "then": "v1.E356S1vx6BvrSWRc" }],
+            "kind": "ask",
+            "position": [3542.198982086864, 1261.131194321216]
+        },
+        "v1.E356S1vx6BvrSWRc": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Right.",
+            "then": "v1.Sr9yaEMD2l21_XU9",
+            "kind": "say",
+            "position": [3773.962409821239, 1284.9301750341067]
+        },
+        "v1.BPLfL6Nq6qCyyvVl": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Just… don't make too much noise, okay? I like to hang out around the more quiet, abandoned parts. I don't necessarily like it when someone wakes me up.",
+            "then": "v1.iAJD5hIkj2B1U7c4",
+            "kind": "say",
+            "position": [3517.705277754964, 1479.4934389854818]
+        },
+        "v1.iAJD5hIkj2B1U7c4": {
+            "questions": [
+                { "content": "Understood.", "then": "v1.TDyG15EAXTl2vpZj" },
+                {
+                    "content": "Sure, I'll be on the lookout for you.",
+                    "then": "v1.svxvZQAkDcrzmZox"
+                }
+            ],
+            "kind": "ask",
+            "position": [3979.168464508739, 1479.528136459888]
+        },
+        "v1.YwJFn1QgGuPXlvVQ": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "…Nothing coming out of your mouth, I see.",
+            "then": "v1.pJg3dYtAAw1VWniK",
+            "kind": "say",
+            "position": [2633.166015625, 613.4149169921875]
+        },
+        "v1.pJg3dYtAAw1VWniK": {
+            "questions": [{ "content": "I mean…", "then": "v1.R9lHmr-2klaJWSd2" }],
+            "kind": "ask",
+            "position": [3097.166015625, 613.4149169921875]
+        },
+        "v1.CIBjGKlXiCgD1E3X": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Say, what do you think happens now?",
+            "then": "v1.WS4n6EbeApxfE0gv",
+            "kind": "say",
+            "position": [3811.6215857699954, -176.4616822603374]
+        },
+        "v1.WS4n6EbeApxfE0gv": {
+            "questions": [
+                {
+                    "content": "It's purgatory. There is no way out.",
+                    "then": "v1.BLrvyjvFZADnEd3i"
+                },
+                { "content": " I'll go back to the homepage.", "then": "v1.RXVO2aD-iWg_MrBK" },
+                { "content": "A secret is uncovered!", "then": "v1.Co0E-Miop_iBU0uS" }
+            ],
+            "kind": "ask",
+            "position": [4280.621585769993, -249.4616822603374]
+        },
+        "v1.BLrvyjvFZADnEd3i": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Wrong.",
+            "then": "v1.WS4n6EbeApxfE0gv",
+            "kind": "say",
+            "position": [4609.621585769993, -423.4616822603373]
+        },
+        "v1.RXVO2aD-iWg_MrBK": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Well, you <em>can</em> do that. Here's a <a href=\"/\">link</a> for you. You might want to stick around with me for a little longer, though.",
+            "then": "v1.00TvWUYvklQDl-Yf",
+            "kind": "say",
+            "position": [4604.621585769993, -276.4616822603374]
+        },
+        "v1.00TvWUYvklQDl-Yf": {
+            "questions": [{ "content": "And why's that?", "then": "v1.7uhkQBS2XyZf2XAD" }],
+            "kind": "ask",
+            "position": [5052.621585769993, -276.4616822603374]
+        },
+        "v1.7uhkQBS2XyZf2XAD": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "I still wanna chat with you a little longer. You haven't entertained me enough yet.",
+            "then": "v1.BSWUrBb-JXTyevdj",
+            "kind": "say",
+            "position": [5301.621585769993, -278.4616822603374]
+        },
+        "v1.BSWUrBb-JXTyevdj": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "You know, when you wake a cat up from a nap… you better have something interesting to tell them.",
+            "then": "v1.KSKJt6ks6ew8IC2p",
+            "kind": "say",
+            "position": [5760.621585769993, -278.4616822603374]
+        },
+        "v1.Co0E-Miop_iBU0uS": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "We could settle for that, but I think this is just a regular place in the house. Nothing special about it.",
+            "then": "v1.dDV7JrkFF9uMe9cN",
+            "kind": "say",
+            "position": [4606.077798676385, -150.56397848427605]
+        },
+        "v1.dDV7JrkFF9uMe9cN": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Technically it stretches out into infinity, but…",
+            "then": "v1.bIFFcfzP5iigOaPF",
+            "kind": "say",
+            "position": [5041.528812332493, -149.6319245699077]
+        },
+        "v1.bIFFcfzP5iigOaPF": {
+            "questions": [{ "content": "…but what?", "then": "v1.EGB9bpzZnqyfpdg5" }],
+            "kind": "ask",
+            "position": [5502.528812332493, -148.63193982869677]
+        },
+        "v1.EGB9bpzZnqyfpdg5": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Nothing. Just keep your eyes peeled.",
+            "then": "v1.KSKJt6ks6ew8IC2p",
+            "kind": "say",
+            "position": [5712.528812332493, -147.63193982869677]
+        },
+        "v1.R9lHmr-2klaJWSd2": {
+            "questions": [
+                {
+                    "content": "It's not like I was <em>trying</em> to wake you up, okay!?",
+                    "then": "v1.97Yez1cjCgcZw_du"
+                }
+            ],
+            "kind": "ask",
+            "position": [3271.654296875, 606.7056274414062]
+        },
+        "v1.97Yez1cjCgcZw_du": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Fair. But that still does not answer my question.",
+            "then": "v1.WweCREnRSMp3JGt1",
+            "kind": "say",
+            "position": [3612.654296875, 648.7056274414062]
+        },
+        "v1.WweCREnRSMp3JGt1": {
+            "questions": [
+                {
+                    "content": "…I was just lurking around. Looking for interesting places.",
+                    "then": "v1.Fmp54uAfCb_suxp8"
+                },
+                { "content": "I got lost.", "then": "v1.8l-EFv--rkFGCdtT" }
+            ],
+            "kind": "ask",
+            "position": [4075.9814453125, 650.0853729248047]
+        },
+        "v1.Fmp54uAfCb_suxp8": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "And an interesting place you've gotten yourself into, indeed.",
+            "then": "v1.C3i5w6LLM4y70dDA",
+            "kind": "say",
+            "position": [4441.793701171875, 652.2977905273438]
+        },
+        "v1.8l-EFv--rkFGCdtT": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Well now that you're here, I might as well just tell you what this place is all about.",
+            "then": "v1.6UTMrlNLwWGuJENx",
+            "kind": "say",
+            "position": [4440.86767578125, 776.4809875488281]
+        },
+        "v1.C3i5w6LLM4y70dDA": {
+            "then": "v1.shbocAvIVjMF-WT0",
+            "kind": "reroute",
+            "position": [5045.230564723047, 465.28863485677607]
+        },
+        "v1.shbocAvIVjMF-WT0": {
+            "then": "v1.np5JLf-RK8CJUCM7",
+            "kind": "reroute",
+            "position": [1663.3346441721837, 459.3453737729245]
+        },
+        "v1.IBFmD6KL6fyxtz-K": {
+            "content": "To \"this is the 404 page\" dialogue tree",
+            "kind": "comment",
+            "position": [5031.2264615166105, 408.8831851640807]
+        },
+        "v1.6UTMrlNLwWGuJENx": {
+            "questions": [{ "content": "Go on.", "then": "v1.C3i5w6LLM4y70dDA" }],
+            "kind": "ask",
+            "position": [4890.226302552024, 786.0228313198398]
+        },
+        "v1.mCXFkTA9VM0hAiOk": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Interesting. Mind telling the guy behind this website? Dead links are no good.",
+            "then": "v1.Z8mzD3Vj98PmuP8a",
+            "kind": "say",
+            "position": [2650.9971923828125, 792.7919311523438]
+        },
+        "v1.Z8mzD3Vj98PmuP8a": {
+            "questions": [
+                { "content": "How can I contact him?", "then": "v1.P-KkcvVyOPgW5Z1h" },
+                { "content": "I'll pass.", "then": "v1.09iqo4MchmFQ-OMe" }
+            ],
+            "kind": "ask",
+            "position": [3097.73876953125, 792.3375854492188]
+        },
+        "v1.P-KkcvVyOPgW5Z1h": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Walk over to the <a href=\"/about\">about</a> branch. But before you do, I'd like to have a short chat with you. ",
+            "then": "v1.GJbT9zv2ccIjqP9l",
+            "kind": "say",
+            "position": [3390.3603553012445, 940.2043325245068]
+        },
+        "v1.GJbT9zv2ccIjqP9l": {
+            "questions": [{ "content": "Go on.", "then": "v1.-eH2f_pWHXP22Cic" }],
+            "kind": "ask",
+            "position": [3869.3603553012445, 939.2043325245068]
+        },
+        "v1.09iqo4MchmFQ-OMe": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Not very nice of you. If you change your mind, look <a href=\"/about\">here</a> for contact details.",
+            "then": "v1.gYQcTTf9l22X8rFD",
+            "kind": "say",
+            "position": [3388.214607086864, 1095.8745720067632]
+        },
+        "v1.gYQcTTf9l22X8rFD": {
+            "questions": [{ "content": "Sure.", "then": "v1.KrjANULfDGpcnbRY" }],
+            "kind": "ask",
+            "position": [3856.214607086864, 1096.8745720067632]
+        },
+        "v1.KrjANULfDGpcnbRY": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Mind having a little chat while we're here?",
+            "then": "v1.QTJ_yP4M1N25qTr7",
+            "kind": "say",
+            "position": [4042.046882477489, 1123.293029038013]
+        },
+        "v1.QTJ_yP4M1N25qTr7": {
+            "questions": [
+                { "content": "Not at all.", "then": "v1.VXEhtn_NJDR8hGUO" },
+                { "content": "I've got places to be.", "then": "v1.ybStXlVcqOOiAFgj" }
+            ],
+            "kind": "ask",
+            "position": [4505.046882477492, 1147.293029038013]
+        },
+        "v1.ybStXlVcqOOiAFgj": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Just know that I have a hunch my owner might be missing in action. I need your help in finding her. Come back to this page whenever you change your mind.",
+            "then": "v1.2TWTF4UvRH-fRQma",
+            "kind": "say",
+            "position": [4806.046882477492, 1200.293029038013]
+        },
+        "v1.SvLimYDyq-Ps8yFH": {
+            "content": "TODO: Narrator's remark here that your progress is saved",
+            "kind": "comment",
+            "position": [5280.059075786317, 1234.293029038013]
+        },
+        "v1.2TWTF4UvRH-fRQma": {
+            "questions": [{ "content": "I'm back.", "then": "v1.zEt2lte9bCVSQYVd" }],
+            "kind": "ask",
+            "position": [5623.046882477492, 1226.293029038013]
+        },
+        "v1.M5hEVfWfCSDmEv6L": {
+            "fact": "kuroneko/empty",
+            "ifSetThen": "v1.WSmd2KHah9nQNZ3g",
+            "ifNotSetThen": "v1.S9qsDWK9qNKVJLMk",
+            "kind": "check",
+            "position": [59, 45]
+        },
+        "v1.S9qsDWK9qNKVJLMk": {
+            "fact": "kuroneko/wild",
+            "ifSetThen": "v1.WSmd2KHah9nQNZ3g",
+            "ifNotSetThen": "v1.6mKXYQvzZRuaYgvY",
+            "kind": "check",
+            "position": [60, 137]
+        },
+        "v1.6mKXYQvzZRuaYgvY": {
+            "fact": "kuroneko/odd",
+            "ifSetThen": "v1.WSmd2KHah9nQNZ3g",
+            "ifNotSetThen": "v1.Wr5ZV5avOFUka0_g",
+            "kind": "check",
+            "position": [59, 228]
+        },
+        "v1.wcZnnNfd_Z6BQxli": {
+            "fact": "kuroneko/what",
+            "ifSetThen": "v1.WSmd2KHah9nQNZ3g",
+            "ifNotSetThen": "v1.3q1sHPpwR3xcE2zK",
+            "kind": "check",
+            "position": [59, 424]
+        },
+        "v1.Wr5ZV5avOFUka0_g": {
+            "fact": "kuroneko/even",
+            "ifSetThen": "v1.WSmd2KHah9nQNZ3g",
+            "ifNotSetThen": "v1.wcZnnNfd_Z6BQxli",
+            "kind": "check",
+            "position": [59, 324]
+        },
+        "v1.3q1sHPpwR3xcE2zK": { "kind": "end", "position": [400, 589] },
+        "v1.svxvZQAkDcrzmZox": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Right.",
+            "then": "v1.TDyG15EAXTl2vpZj",
+            "kind": "say",
+            "position": [4317.407947209905, 1537.1184776500634]
+        },
+        "v1.TDyG15EAXTl2vpZj": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "I actually have some something I want to ask of you.",
+            "then": "v1.UX9vfzA91IG6yUEZ",
+            "kind": "say",
+            "position": [4592.396491852492, 1503.3756706395754]
+        },
+        "v1.UX9vfzA91IG6yUEZ": {
+            "questions": [{ "content": "Tell me more.", "then": "v1.khdA2sWs1B_rRyCP" }],
+            "kind": "ask",
+            "position": [5059.667976227492, 1503.4870597997317]
+        },
+        "v1.khdA2sWs1B_rRyCP": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "I think my owner is missing in action. She was supposed to be back last month, but I still haven't heard from her.",
+            "then": "v1.MKdu3gKKn86KiYSk",
+            "kind": "say",
+            "position": [8584.071440698663, 981.2690445683475]
+        },
+        "v1.VXEhtn_NJDR8hGUO": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "I'll get straight to the point then.",
+            "then": "v1.khdA2sWs1B_rRyCP",
+            "kind": "say",
+            "position": [4810.11390419144, 1085.2929877982936]
+        },
+        "v1.-eH2f_pWHXP22Cic": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "My owner went for a trip last month. She was supposed to get back home a few weeks ago, but I haven't heard anything from her.",
+            "then": "v1.MKdu3gKKn86KiYSk",
+            "kind": "say",
+            "position": [4051.248242072011, 942.7855535476148]
+        },
+        "v1.MKdu3gKKn86KiYSk": {
+            "questions": [{ "content": "That can't be good.", "then": "v1.hrEx_CpFAXX2P5rC" }],
+            "kind": "ask",
+            "position": [9009.918565808668, 932.9116341776269]
+        },
+        "v1.hrEx_CpFAXX2P5rC": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "The treehouse has a quarantine for holding things we don't trust. I've never been there myself, nor do I know what it's for, but it's pretty far away from here.",
+            "then": "v1.jH-8D4DqrvE6m4uv",
+            "kind": "say",
+            "position": [9287.61020108366, 955.9546215084777]
+        },
+        "v1.jH-8D4DqrvE6m4uv": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "My owner went on a trip to research means of getting to the quarantine faster.",
+            "then": "v1.Sxt1KplipZCTpBkD",
+            "kind": "say",
+            "position": [9736.111177646162, 956.6394359616027]
+        },
+        "v1.Sxt1KplipZCTpBkD": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "For the past couple of days, I've been hearing a distress signal coming from her. That's why I'm worried.",
+            "then": "v1.y7dwHeAnHMVwm-7F",
+            "kind": "say",
+            "position": [10179.111177646162, 957.6394359616027]
+        },
+        "v1.y7dwHeAnHMVwm-7F": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "And I'm just a cat. As much as I can sense the beacon being somewhere, it's too far away for me to check out what's going on.",
+            "then": "v1.M2QmcI564FLUbaVb",
+            "kind": "say",
+            "position": [10633.111177646162, 957.6394359616027]
+        },
+        "v1.M2QmcI564FLUbaVb": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Even then I wouldn't be able to help, since I'm too small to lift or move very heavy things by myself. Opening the quarantine doors requires some force.",
+            "then": "v1.EPfwC44YUtFErlVV",
+            "kind": "say",
+            "position": [11097.111177646166, 956.6394359616027]
+        },
+        "v1.EPfwC44YUtFErlVV": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Would you be able to help?",
+            "then": "v1.6Y11N6GaVug2acP_",
+            "kind": "say",
+            "position": [11549.11117764617, 956.6394359616027]
+        },
+        "v1.6Y11N6GaVug2acP_": {
+            "questions": [
+                {
+                    "content": "Sure, but how exactly do I tell where the distress signal is coming from?",
+                    "then": "v1.i7BACpahZ8oCne_9"
+                },
+                { "content": "I can't hear anything.", "then": "v1.smgAlkF3WWXzknvT" }
+            ],
+            "kind": "ask",
+            "position": [11998.11117764617, 955.6394359616027]
+        },
+        "v1.i7BACpahZ8oCne_9": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "You seem to have some <em>special tools</em> on you that might be able to help you out.",
+            "then": "v1.95GyO4DGq25xfiD7",
+            "kind": "say",
+            "position": [12576.11117764617, 941.6394359616027]
+        },
+        "v1.7lapmbejn9A_J0ii": {
+            "content": "TODO: ask user for devtools availability (might be limited on mobile)",
+            "kind": "comment",
+            "position": [12289.241885958796, 676.9871440502885]
+        },
+        "v1.JN7i6-mGbB90QK83": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "First of all, you will need a computer. ",
+            "then": "v1.-8r142rX5IjIQodi",
+            "kind": "say",
+            "position": [12575.65609952117, 1125.2074901608214]
+        },
+        "v1.-8r142rX5IjIQodi": {
+            "questions": [
+                { "content": "I have one of those.", "then": "v1.wq6IHQGC33jjRmcx" },
+                { "content": "I don't own a computer.", "then": "v1.QjEzEcZ-1mfLW5pA" }
+            ],
+            "kind": "ask",
+            "position": [13050.65609952117, 1125.2074901608214]
+        },
+        "v1.QjEzEcZ-1mfLW5pA": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Are you really sure about that? Most people have a computer nowadays. Even an old one will do.",
+            "then": "v1.fDq9yZ9Avx7OZM-c",
+            "kind": "say",
+            "position": [13336.65609952117, 1266.2074901608214]
+        },
+        "v1.fDq9yZ9Avx7OZM-c": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Thing is, computers have some specialized signal analysis machinery that will help us find my owner.",
+            "then": "v1.CLgmozQNkeHy21d-",
+            "kind": "say",
+            "position": [13770.65609952117, 1266.2074901608214]
+        },
+        "v1.wq6IHQGC33jjRmcx": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Try logging into it and redoing your progress here.",
+            "then": "v1.YOvF2pTiVxe69CqW",
+            "kind": "say",
+            "position": [13337.65609952117, 1129.2074901608214]
+        },
+        "v1.YOvF2pTiVxe69CqW": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "I have a hard time discerning details between faces. I can only identify people by the device they're using.",
+            "then": "v1.8bN9MX7aBcOE1nS4",
+            "kind": "say",
+            "position": [13771.65609952117, 1128.2074901608214]
+        },
+        "v1.8bN9MX7aBcOE1nS4": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "So you'll need to go through this conversation with me one more time. Then we can continue.",
+            "then": "v1.CReexN0ipTj8bXff",
+            "kind": "say",
+            "position": [14213.65609952117, 1123.2074901608214]
+        },
+        "v1.95GyO4DGq25xfiD7": {
+            "questions": [{ "content": "What special tools?", "then": "v1.FL0zf-e1ORzENXde" }],
+            "kind": "ask",
+            "position": [13037.61020108367, 942.2574779537902]
+        },
+        "v1.FL0zf-e1ORzENXde": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Your computer. It has a signal analyzer.",
+            "then": "v1.cnrasC0OhbhvsYF6",
+            "kind": "say",
+            "position": [13323.61020108367, 938.2574779537902]
+        },
+        "v1.cnrasC0OhbhvsYF6": {
+            "questions": [{ "content": "What??", "then": "v1.q3reV6cWHJXUBNhg" }],
+            "kind": "ask",
+            "position": [13775.61020108367, 938.2574779537902]
+        },
+        "v1.q3reV6cWHJXUBNhg": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Do I look like I can use computers?",
+            "then": "v1.g5HPbRJI12UatHAG",
+            "kind": "say",
+            "position": [13971.61020108367, 940.2574779537902]
+        },
+        "v1.g5HPbRJI12UatHAG": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "The treefolk all have signal-detecting machinery in their computers. You don't have it?",
+            "then": "v1.lPr9oNJdaCNiw7DM",
+            "kind": "say",
+            "position": [14414.61020108367, 939.2574779537902]
+        },
+        "v1.CReexN0ipTj8bXff": {
+            "questions": [{ "content": "Lame, but fair.", "then": "v1.zwJZ-1pI8OcRKmJZ" }],
+            "kind": "ask",
+            "position": [14701.19613858367, 1126.767182543634]
+        },
+        "v1.zwJZ-1pI8OcRKmJZ": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "See you then.",
+            "then": "v1.HTPuS0KP-uosFSm0",
+            "kind": "say",
+            "position": [14940.19613858367, 1128.767182543634]
+        },
+        "v1.HTPuS0KP-uosFSm0": {
+            "kind": "end",
+            "position": [15275.19613858367, 1130.767182543634]
+        },
+        "v1.lPr9oNJdaCNiw7DM": {
+            "questions": [
+                {
+                    "content": "I've no idea what you're talking about.",
+                    "then": "v1.-l09kvgXzrTv6GsG"
+                },
+                { "content": "I think I might know what you mean.", "then": "v1.ubQOLPt8r3HxZw3g" }
+            ],
+            "kind": "ask",
+            "position": [14871.32699795867, 914.8083812741027]
+        },
+        "v1.ubQOLPt8r3HxZw3g": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Glad to hear that. In any case, <span class=\"try-removing-the-styles-from-this-class\">I'm glad you figured it out so quickly</span>.",
+            "then": "v1.Wo06hAs0-3J3yM8o",
+            "kind": "say",
+            "position": [15260.32699795867, 990.8083812741027]
+        },
+        "v1.-l09kvgXzrTv6GsG": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Well…",
+            "then": "v1.Wo06hAs0-3J3yM8o",
+            "kind": "say",
+            "position": [15257.32699795867, 822.8083812741027]
+        },
+        "v1.Wo06hAs0-3J3yM8o": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "<span class=\"try-removing-the-styles-from-this-class\">Why don't you try looking in the Network tab</span>, meow?",
+            "then": "v1.lv7rpt8K3aLrbhCn",
+            "kind": "say",
+            "position": [15730.32699795867, 874.8083812741027]
+        },
+        "v1.lv7rpt8K3aLrbhCn": {
+            "kind": "end",
+            "position": [16485.724458896177, 875.3247997311339]
+        },
+        "v1.bid3j-Lo614WbNSP": {
+            "content": "TODO: Narrator: the cat walked away, with nothing else to say…",
+            "kind": "comment",
+            "position": [16193.72445889617, 621.3247997311339]
+        },
+        "v1.Ks2WK6N4FNmGVKR1": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "It would probably be worth for you to realize at this point that the treehouse is not a normal house on a tree.",
+            "then": "v1.pKOz6k9Pyb5h9WcU",
+            "kind": "say",
+            "position": [2686.556884765625, 220.3992462158203]
+        },
+        "v1.pKOz6k9Pyb5h9WcU": {
+            "questions": [
+                { "content": "Yeah, yeah. I know.", "then": "v1.gmdzunyEqJ53n45h" },
+                { "content": "Really!?", "then": "v1.m38YaGMVBPcUVytS" }
+            ],
+            "kind": "ask",
+            "position": [3120.556884765625, 220.3992462158203]
+        },
+        "v1.gmdzunyEqJ53n45h": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Where did all the trees go? It's not green in here at all. There is no pleasant smell of sap, nor are we in a forest or anything.",
+            "then": "v1.3T-hc18_rSZYm_eh",
+            "kind": "say",
+            "position": [3385.556884765625, 145.3992462158203]
+        },
+        "v1.3T-hc18_rSZYm_eh": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "My point is, this place is a bit more magical than just a regular house on a tree.",
+            "then": "v1.6W0mRtfTTmTDmUn-",
+            "kind": "say",
+            "position": [3838.367677650622, 145.2100391008176]
+        },
+        "v1.m38YaGMVBPcUVytS": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "I wonder why it looks so weird then, very much <em>unlike</em> the trees you find outside.",
+            "then": "v1.6W0mRtfTTmTDmUn-",
+            "kind": "say",
+            "position": [3385.455234913043, 283.01311815643305]
+        },
+        "v1.6W0mRtfTTmTDmUn-": {
+            "questions": [{ "content": "Right.", "then": "v1.JvhwIpRUpyYe-3ua" }],
+            "kind": "ask",
+            "position": [4361.033352163756, 282.489738762388]
+        },
+        "v1.KSKJt6ks6ew8IC2p": {
+            "questions": [{ "content": "Right.", "then": "v1.Ec4pWfuoslOujlET" }],
+            "kind": "ask",
+            "position": [7757.820016395075, -204.9879374715299]
+        },
+        "v1.Ec4pWfuoslOujlET": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Anyways… let me get straight to the point.",
+            "then": "v1.khdA2sWs1B_rRyCP",
+            "kind": "say",
+            "position": [8001.596268193479, -180.854806868856]
+        },
+        "v1.JvhwIpRUpyYe-3ua": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Being rooted in the digital, the treehouse is a bit weird.",
+            "then": "v1.vwd9qR6fYXwNT7q1",
+            "kind": "say",
+            "position": [4601.99072265625, 158.17869567871094]
+        },
+        "v1.vwd9qR6fYXwNT7q1": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "This page is one of the backrooms of the house. There is no entrance, nor is there an exit.",
+            "then": "v1.4vbb9zMNb6K_8yHL",
+            "kind": "say",
+            "position": [5053.99072265625, 157.1787109375]
+        },
+        "v1.4vbb9zMNb6K_8yHL": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "It's called a page because the treehouse is like a book. It has words, and the words live on pages.",
+            "then": "v1.rexk7aj61BTrlmvh",
+            "kind": "say",
+            "position": [5493.99072265625, 157.1787109375]
+        },
+        "v1.rexk7aj61BTrlmvh": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "But I'm not the one you want to be asking these things. I know very little about how the treehouse works.",
+            "then": "v1.VHXGfb4aDva_N_OO",
+            "kind": "say",
+            "position": [5936.99072265625, 157.1787109375]
+        },
+        "v1.VHXGfb4aDva_N_OO": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Over time, the treehouse has attracted a few researchers curious about how it works. Those are the people who live in the treehouse. And my owner is one of them.",
+            "then": "v1.H7UC9yiRe80u4p7u",
+            "kind": "say",
+            "position": [6375.58935546875, 157.56289672851562]
+        },
+        "v1.H7UC9yiRe80u4p7u": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Except…",
+            "then": "v1.IG_ygKZuzPrmeG7l",
+            "kind": "say",
+            "position": [6831.6864396362025, 158.60352853094372]
+        },
+        "v1.IG_ygKZuzPrmeG7l": {
+            "questions": [{ "content": "Except what?", "then": "v1.khdA2sWs1B_rRyCP" }],
+            "kind": "ask",
+            "position": [7103.86865234375, 159.32473754882812]
+        },
+        "v1.zEt2lte9bCVSQYVd": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Welcome. I'll get straight to the point.",
+            "then": "v1.khdA2sWs1B_rRyCP",
+            "kind": "say",
+            "position": [5821.013703480376, 1228.7901868413087]
+        },
+        "v1.Sr9yaEMD2l21_XU9": {
+            "questions": [
+                { "content": "So are you a curious cat or not?", "then": "v1.SZwftd8OFIaLwEpQ" }
+            ],
+            "kind": "ask",
+            "position": [4037.6181640625, 1284.4967041015625]
+        },
+        "v1.SZwftd8OFIaLwEpQ": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Well, your hunch was correct. I really like exploring unknown places.",
+            "then": "v1.a44NUSjOJmOTqpZX",
+            "kind": "say",
+            "position": [4348.6181640625, 1317.4967041015625]
+        },
+        "v1.a44NUSjOJmOTqpZX": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Just… try not to assume things about people, okay?",
+            "then": "v1.JMtW_qVJ_lCa7u6B",
+            "kind": "say",
+            "position": [4844.6181640625, 1346.4967041015625]
+        },
+        "v1.JMtW_qVJ_lCa7u6B": {
+            "questions": [{ "content": "And cats are people too?", "then": "v1.eirsqzXGzElF9JIr" }],
+            "kind": "ask",
+            "position": [5279.6181640625, 1350.4967041015625]
+        },
+        "v1.eirsqzXGzElF9JIr": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Are they not?",
+            "then": "v1.LSV6NMYgSTJ3xyXh",
+            "kind": "say",
+            "position": [5560.6181640625, 1373.4967041015625]
+        },
+        "v1.LSV6NMYgSTJ3xyXh": {
+            "questions": [
+                { "content": "Yeah, they are.", "then": "v1.98D6-gm6tfcC4l9T" },
+                { "content": "No, they're pets.", "then": "v1.VhHwWUtb4a-XaOqS" }
+            ],
+            "kind": "ask",
+            "position": [5874.6298828125, 1373.76904296875]
+        },
+        "v1.VhHwWUtb4a-XaOqS": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Then better get used to treating them like people. Or at least, please do when you visit the treehouse.",
+            "then": "v1.ILPjGXnMWZ2xXB_C",
+            "kind": "say",
+            "position": [6154.6298828125, 2034.76904296875]
+        },
+        "v1.98D6-gm6tfcC4l9T": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "Good.",
+            "then": "v1.ol9c1lJEG_Uvw35A",
+            "kind": "say",
+            "position": [6155.478338203624, 1894.3858421584616]
+        },
+        "v1.ILPjGXnMWZ2xXB_C": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "I told you I'm no ordinary cat.",
+            "then": "v1.ol9c1lJEG_Uvw35A",
+            "kind": "say",
+            "position": [6588.47412109375, 2033.68603515625]
+        },
+        "v1.ol9c1lJEG_Uvw35A": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Anyways, I have something I need to tell you.",
+            "then": "v1.khdA2sWs1B_rRyCP",
+            "kind": "say",
+            "position": [6977.090242793791, 1897.0537339167186]
+        },
+        "v1.smgAlkF3WWXzknvT": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Of course you can't, dummy. I'm a cat, my ears can hear noises whose pitch is as high as 60 kilohertz.",
+            "then": "v1.sgwcsPAsEoPwZqwG",
+            "kind": "say",
+            "position": [12316.466226587569, 1416.6774118333963]
+        },
+        "v1.sgwcsPAsEoPwZqwG": {
+            "character": "coco",
+            "expression": "eyes_closed",
+            "content": "It's so high-pitched that it's kind of annoying.",
+            "then": "v1.6Y11N6GaVug2acP_",
+            "kind": "say",
+            "position": [12774.201171875, 1415.847900390625]
+        },
+        "v1.HhOHF9-H7EEbIpAB": {
+            "content": "TODO: Narrator tells you here that you're of little use to Coco if you do not have a browser with developer tools available.",
+            "kind": "comment",
+            "position": [14374, 1406.3819580078125]
+        }
+    }
+}

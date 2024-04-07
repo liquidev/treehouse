@@ -5,12 +5,14 @@ import { NodeEnd } from "./node-end.js";
 import { NodeReroute } from "./node-reroute.js";
 import { NodeComment } from "./node-comment.js";
 import { NodeStart } from "./node-start.js";
+import { NodeCheck } from "./node-check.js";
 import * as lens from "treehouse/common/lens.js";
 
 export const types = {
     say: NodeSay,
     ask: NodeAsk,
     set: NodeSet,
+    check: NodeCheck,
     start: NodeStart,
     end: NodeEnd,
     reroute: NodeReroute,
@@ -26,12 +28,16 @@ export const schema = {
         getNodeReferences: getThenReference,
     },
     ask: {
-        getNodeReferences(node) {
-            return node.questions.map((q) => lens.field(q, "then"));
-        },
+        getNodeReferences: (node) => node.questions.map((q) => lens.field(q, "then")),
     },
     set: {
         getNodeReferences: getThenReference,
+    },
+    check: {
+        getNodeReferences: (node) => [
+            lens.field(node, "ifSetThen"),
+            lens.field(node, "ifNotSetThen"),
+        ],
     },
     start: {
         getNodeReferences: getThenReference,

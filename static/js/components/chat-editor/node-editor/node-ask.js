@@ -51,6 +51,10 @@ export class NodeAsk extends NodeBase {
                 )
             );
         }
+
+        // Elements are added progressively, which can cause the size of the node to change as it's
+        // being built. Therefore the rendering cache has to be updated once it's entirely ready.
+        this.updateRenderingCache();
     }
 
     newQuestion() {
