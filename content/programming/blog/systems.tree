@@ -1,0 +1,150 @@
+%% title = "systems are just a bunch of code"
+
+% id = "01HV1DGFGNV3DXD8A3CW2J4RZP"
+- often enough I see people scared to dive deep into the internals of their favorite technologies
+
+    % id = "01HV1DGFGN1KJRA93GWZZ3159S"
+    - because it looks scary, or they think it's not really gonna impact their lives too much.
+
+% id = "01HV1DGFGNNZN0RR9DFV2G6EXM"
+- and people tend to form these grandiose noun phrases like _The Object System_, or _The Borrow Checker_, making it seem like there are impenetrable walls that guard these complicated pieces of software,
+and that only people worthy enough will be granted entry into them.
+
+    % id = "01HV1DGFGNHX9H39FFT4BTZ8RB"
+    - _but great adventurers fear no dungeons, as the deepest dungeons often hide the most precious treasure._
+
+% id = "01HV1DGFGN729RHYNZB7AS36TD"
+- over time I've been growing accustomed to _knowing my dependencies_.
+after all, how can I _depend_ on some code functioning correctly, if I don't even know how it works, or what to do to repair bugs in it?
+or even where to go to customize it to my liking?
+
+    % id = "01HV1DGFGNA306RSQW9NRV79YQ"
+    - it's largely annoying to me that compilers ship without their source code, nor do they ship with debug symbols.
+    it would be great if whenever `rustc` crashes on me while incremental-compiling the treehouse (and it does so pretty often),
+    I was able to catch the crash with a debugger and step through the code to see what happened.
+
+        % id = "01HV1DGFGN2WE5RK5X31H5AFSP"
+        - but alas, performance and size optimizations make that impossible.
+        I just end up filing bugs in the compiler repo `OR` moving on with my life.
+
+        % id = "01HV1DGFGNJ0ZA14QQH40S5FNS"
+        - I wonder what the world could have been, had we been compiling and optimizing software on users' computers rather than downloading ready-to-use, but opaque binaries.
+
+            % id = "01HV1DGFGN5CAV3RP4GXASQVQJ"
+            - I imagine a world where I can tell the computer "I'd like to debug this crash" after the compiler crashes, and it will download the relevant sources and let me single-step through the
+            code to see what happened.
+
+                % id = "01HV1DGFGNY3FGEKY70D6RMV22"
+                - and then I could edit the source code and submit the patch *right where I'm standing* rather than having to go through complicated and lengthy processes of cloning repositories,
+                bootstrapping, reproducing, and such.
+                *imagine fixing compiler bugs on real codebases rather than having to come up with isolated, reproducible examples first.*
+
+            % id = "01HV1DGFGNXJJX0BMMM3KQ42M0"
+            - I know how hard this is to achieve in practice, which is precisely why I don't use Gentoo.
+
+    % id = "01HV1DGFGN8WEWY1CVV4HNNBQ4"
+    - package managers like Cargo make using someone's code incredibly easy, and that's really cool.
+    we should be encouraged to share reliable, well-tested code instead of reinventing half-baked solutions every time we need a thing.
+
+        % id = "01HV1DGFGN3V7WTM1FQE8GC92D"
+        - but I think at the same time they make understanding someone else's code kind of an afterthought.
+
+            % id = "01HV1DGFGNVD0BPN0S9WCGQY61"
+            + to integrate a library into your C++ project you usually have to browse through their CMake build files to figure out how they name their build targets.
+            and while doing that, through cursory glances at `CMakeLists.txt`, you gain knowledge of what knobs can be tweaked in the project, how it _builds_.
+            you may even stumble upon a list of source files, which can give you clues as to the underlying architecture.
+
+            while this can hardly be called _understanding_ the code, at least it gives you a _peek_ into how it's structured.
+
+                % id = "01HV1DGFGNW44T5FGJ7W4AT85M"
+                - (and I'm not defending C++ here, I think its dependency management has a terrible UX in the long run and makes sharing code needlessly hard - but like all tools, it has its strengths and weaknesses)
+
+        % id = "01HV1DGFGNGDB48GB1268R6DB5"
+        - Cargo on the other hand makes it needlessly difficult to _poke_ at someone's code.
+
+            % id = "01HV1DGFGNBJZX522X5EBMC6XM"
+            - when vendoring code into C++ projects, you make the build system treat your dependencies as _just another piece of code in your code base_,
+            which means you can insert debugging code wherever you please, and the build system will happily rebuild it.
+
+            % id = "01HV1DGFGNJFFN73F5FF49V3YS"
+            + Cargo treats dependencies as immutable, which means that a given version of a package only compiles _once_ per your project.
+            you can't go poking at the package's files for debugging purposes - you can't insert `dbg!(x)` expressions where you need them, which is really annoying.
+            the only way I know of is to use [overrides](https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html), but compared to editing an already vendored dependency, those are quite cumbersome to set up...
+
+                % id = "01HV1DGFGNE4REYV9QKV3494AM"
+                - you need to clone the repository at the correct version (I don't even remember the Git command to clone a repository at a given tag)
+
+                    % id = "01HV1DGFGNQ54Q71EB7W7F7R80"
+                    - which means opening a separate terminal, `cd`ing into your folder with repositories
+
+                    % id = "01HV1DGFGNX61NAMNGSMWSMX5W"
+                    - also adding the repo as a project in your IDE
+
+                % id = "01HV1DGFGN41KWVQX8J9JG3E9H"
+                - then you need to edit `Cargo.toml` to override the dependency
+
+                    % id = "01HV1DGFGNGXC4WBYQ1MZT5HMK"
+                    - have fun typing in that full path `/home/daknus/Repositories/cool-library`
+
+                    % id = "01HV1DGFGN5X57Z807GMS3F07Q"
+                    + *and* don't forget to revert the changes to `Cargo.toml` once you're done.
+                    unlike editing a vendored dependency, which will appear under a very visible path in Git, it's pretty easy to forget to check your `Cargo.toml` diff before staging/committing changes.
+                    I mean, I edit my `Cargo.toml` all the time, adding in libaries and stuff.
+                    so why would I look at every single change?
+
+                        % id = "01HV1DGFGN0DAMASGQD64XXTRK"
+                        - *and* before you go at me and say "bah you should be reviewing all changes that end up in your codebase"
+
+                        sigh.
+
+                        listen. I'm not gonna review all the garbage I commit into my personal website, alright.
+                        I value fast prototyping over having a clean Git history in this particular case.
+
+                    % id = "01HV1DGFGN6P3BDXEXZEB97GY2"
+                    - don't forget that overriding dependencies doesn't always work - if the resolver cannot resolve your override, it will not build your project.
+
+                        % id = "01HV1DGFGN72Q12G1AKVGEXRXV"
+                        - most of the time the more reliable approach ends up being editing the `workspace.dependencies` entry for your dependency, and changing it to use a `path` instead of a `version`.
+
+                % id = "01HV1DGFGNPWTRV8W582JRPEH2"
+                - this all sounds automatable, but it's pretty annoying nevertheless that the basic functionality of _poking into one of your dependencies_ is hidden away under layers of caching and patching and immutability and stuff.
+
+                    % id = "01HV1DGFGNC1JV9ZSJAMQKZ61W"
+                    - seriously I just wanna insert a `dbg!(x)`, how hard could it be?
+
+% id = "01HV1DGFGNWWQ8XX2X67STEC8B"
+- as an example, when I first started working with Unreal Engine, everything seemed like magic.
+
+    % id = "01HV1DGFGNJGMRWJZZ9Q7WYPFE"
+    - like [how in the world does the `GENERATED_BODY()` macro manage to expand to different things depending on which class or struct it's declared in?][page:programming/technologies/unreal-engine/generated-body]
+
+    % id = "01HV1DGFGN8MZB8YTGB5SFP577"
+    - but the more you poke at it, the more you look at definitions, the more you look at the build tools, the less magical it all seems.
+    it's all just code-generating syntax sugar!
+
+        % id = "01HV1DGFGNVRX5C3TST00V58DK"
+        - **everything is code! *there is no magic*!**
+
+            % id = "01HV1DGFGN569R7MEE9FBXRF7H"
+            - there are no walls blocking you from looking at the code. the grandiose noun phrases are misleading!
+
+                % id = "01HV1DGFGNE1CTAX01DE61GWC5"
+                - UnrealBuildTool is just a bunch of C# files. and the *Gameplay Ability System™* is likewise just a bunch of C++ sources.
+                why can't we come up with more inviting names?
+
+                    % id = "01HV1DGFGN129VY5FHHF4GC4Z5"
+                    - grandiose noun phrases sound so hostile. *but it's all just code.*
+
+% id = "01HV1DGFGN96CPWYMJ14EWJJR2"
+- most of the time not knowing your software is largely fine - not everyone has the time to deeply inspect a piece of software, deciphering functions, consulting manuals, asking the authors (when possible.)
+
+    % id = "01HV1DGFGNJYYN7SKYGCFDXN3M"
+    - what I'm saying is that we should be encouraging more engineering practices and tools that enable us to inspect and poke at our dependencies _when we need it_.
+
+        % id = "01HV1DGFGN0QE49S9VBGVYVZY9"
+        - _don't fear code_; respect it like it's your [Holy Mountain](https://noita.wiki.gg/wiki/Holy_Mountain).
+        a place to tinker with stuff, and occasionally wreak havoc, anger the fuck out of the gods, and let them kick your ass with an `EXCEPTION_ACCESS_VIOLATION` or another `Segmentation fault (core dumped)`.
+        and then [Steve](https://noita.wiki.gg/wiki/Stevari) kills you but you start another run anyways because this game of chasing bugs and perpetually improving software is just too damn addicting
+
+% id = "01HV1DGFGN2EGFPD48WA8XZ34Z"
+- next time you encounter a crash in some library you're using, try _stepping into it_ with your debugger. you might find some real gems in there.

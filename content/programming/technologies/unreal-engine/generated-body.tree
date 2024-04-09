@@ -1,0 +1,103 @@
+%% title = "how does GENERATED_BODY() work?"
+
+% id = "01HV1DGFHMD7KNNX3FWS6R11SF"
+- the `UCLASS()`, `USTRUCT()`, and other reflection macros - but especially the `GENERATED_BODY()` macro might seem a bit magical the first time you see them.
+
+    % id = "01HV1DGFHM71ZD6CJY77N0PA8X"
+    - the thing about it is that it defies the usual rules of how C++ macros work.
+    let's have a look at it together.
+
+% id = "01HV1DGFHM75BEC4B54MSBQ3P9"
+- _what does it even expand to?_
+
+    % id = "01HV1DGFHM2SAR1JMV8BAGDNE6"
+    - try looking at what your IDE's autocomplete suggests -
+    from a cursory glance at the symbols available in a `UCLASS()`-declared class, you will notice there are a few that are non-standard ones, such as `StaticClass()` or `Super`.
+    this is what the `GENERATED_BODY()` macro ends up expanding to after all the preprocessing is done.
+
+        % id = "01HV1DGFHMZ4F2DYDDJXXJXX63"
+        - but the thing is that `Super` is a typedef to the parent class - how does it know the parent class without passing it in as a macro argument?
+
+        % id = "01HV1DGFHMG2FFHTC9EA5NXB78"
+        - and `StaticClass()` returns a different value for each class. this would require _knowing_ the class beforehand - how does it know?
+
+% id = "01HV1DGFHMDFMWY2FWRHN3NGAX"
+- the thing is - it doesn't. `GENERATED_BODY()` by itself is incredibly stupid:
+```cpp
+#define BODY_MACRO_COMBINE_INNER(A,B,C,D) A##B##C##D
+#define BODY_MACRO_COMBINE(A,B,C,D) BODY_MACRO_COMBINE_INNER(A,B,C,D)
+#define GENERATED_BODY(...) BODY_MACRO_COMBINE(CURRENT_FILE_ID,_,__LINE__,_GENERATED_BODY);
+```
+let's disassemble it piece by piece.
+
+    % id = "01HV1DGFHM4BW1FXVX3AMJYR91"
+    - `BODY_MACRO_COMBINE` is just a macro combining four identifiers together. no magic here.
+
+    % id = "01HV1DGFHM29ENZ6HE36B2SP92"
+    - so `GENERATED_BODY` combines the identifiers `CURRENT_FILE_ID`, `_`, `__LINE__`, and `_GENERATED_BODY`.
+
+        % id = "01HV1DGFHM8JH5RMTV79P8HRDV"
+        + `CURRENT_FILE_ID` is a preprocessor macro defined by the UnrealBuildTool for each file.
+        for simplicity's sake, let's assume it's the filename with dots replaced by underscores.
+        for instance, `GameplayAbility_h`.
+
+            % id = "01HV1DGFHM6XQ68XJPART8TND3"
+            - the actual form it seems to take is `FID_{Path}` with `{Path}` being the file path relative to the project root directory, with slashes and dots replaced with underscores.
+            for:
+            ```
+                Engine/Source/Runtime/Engine/Classes/Engine/Blueprint.h
+            ```
+            the file ID is:
+            ```
+            FID_Engine_Source_Runtime_Engine_Classes_Engine_Blueprint_h
+            ```
+            I haven't inspected the UnrealBuildTool/UnrealHeaderTool sources though, so there may be more to it.
+
+        % id = "01HV1DGFHMVS11W47KWXJC7TY4"
+        - `_` is just an underscore. nothing magical here.
+
+        % id = "01HV1DGFHMPC27J2JN30PRGQSF"
+        - `__LINE__` is a standard C++ macro which expands to the current line number.
+
+        % id = "01HV1DGFHMAEZV26CE77X5AXYF"
+        - and `_GENERATED_BODY` is just an identifier.
+
+    % id = "01HV1DGFHM2Q8EC8EMKN0HMXTB"
+    - therefore for a simple file, let's call it `MyClass.h`:
+
+    ```cpp
+    #pragma once
+
+    #include "UObject/Object.h"
+
+    #include "MyClass.generated.h"
+
+    UCLASS()
+    class UMyClass : public UObject
+    {
+        GENERATED_BODY()
+    };
+    ```
+
+    after expanding the `GENERATED_BODY()`, we'll get this:
+
+    ```cpp
+    // -- snip --
+
+    UCLASS()
+    class UMyClass : public UObject
+    {
+        MyClass_h_10_GENERATED_BODY
+    };
+    ```
+
+        % id = "01HV1DGFHM78BW738ENHCN0ASF"
+        - and this identifier is declared as a macro in the UnrealHeaderTool-generated `MyClass.generated.h` -
+        and expands to a bunch of declarations, including the declaration of `Super` and `StaticClass`, as well as constructors if they're not already declared.
+
+            % id = "01HV1DGFHMFZNP6S3E1YNC8QH7"
+            - you can even inspect the source code of `.generated.h` files yourself, by <kbd>Ctrl</kbd>+clicking on them (at least in Rider. I haven't tested Visual Studio.)
+
+% id = "01HV1DGFHMP6ZP6N4WNWPTT04D"
+- that's all there is to it.
+incredibly simple, cursed as heck, yet super effective.

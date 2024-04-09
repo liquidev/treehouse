@@ -14,6 +14,11 @@
 % id = "01HP1FESY5WVJG4X80AZ4ZBX5D"
 - ### random but cool things
 
+    % content.link = "programming/technologies/unreal-engine/generated-body"
+      id = "01HV1DGFHP6GB268MDGGDXMR12"
+    + how does `GENERATED_BODY()` work exactly?
+
     % content.link = "programming/technologies/unreal-engine/fixes"
       id = "01HP1FESY5ZS6YTZXA8QTT5V1Z"
     + data validation quick fixes
+
