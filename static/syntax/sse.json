@@ -1,0 +1,13 @@
+{
+    "patterns": [
+        { "regex": ":.*\n", "is": "comment" },
+        {
+            "regex": "([^:]+:)(.*\n)",
+            "is": {
+                "default": "string",
+                "captures": ["keyword1", "normal"]
+            }
+        }
+    ],
+    "keywords": {}
+}

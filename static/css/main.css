@@ -259,7 +259,6 @@ th-literate-program {
     }
 }
 
-
 @media (prefers-color-scheme: dark) {
     .tree summary:hover {
 
@@ -288,6 +287,12 @@ th-literate-program {
     min-width: 0;
     width: auto;
     overflow: auto;
+}
+
+/* <code> tags should render their inner whitespace. */
+
+code {
+    white-space: pre;
 }
 
 /* Also don't let images get out of hand */

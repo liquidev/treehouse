@@ -1,0 +1,24 @@
+%% title = "Resource Constrained Radio Protocol, v1"
+
+- ### Description
+
+    - The Resource Constrained Radio Protocol is used for communication between cheap low-energy devices where a long battery life is more important than sending information in large volumes.
+
+        - In particular, it is designed to be used by SOS devices to send distress signals in case of an emergency.
+
+- ### Tuning in
+
+    - Messages sent by Resource Constrained Radio can be maximally 40 characters long, and must be comprised out of all-uppercase Latin letters `A-Z`.
+    Additionally, punctuation characters ` ` (space), `.,!?-` are allowed, to form a 32-character set, with 5 bits per character.
+
+        - These constraints result in very low memory requirements, with only 200 bits of storage needed per message.
+        That is 25 bytes (!) at the cost of having to decode a bit-packed character encoding.
+
+        - Senders need to convert this encoding into ASCII before sending anyways to comply with HTTP, resulting in an additional 40-byte runtime storage requirement.
+
+- ### Broadcasting
+
+    - When broadcasting on a Resource Constrained Radio frequency, please include the following identifying information:
+
+        - `DEVICE - {device name}` - replace `{device name}` with the name of the sending device.
+        This helps identify the purpose the message is sent with, as most RCRP devices are single-purpose only.

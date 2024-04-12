@@ -1,0 +1,110 @@
+%% title = "Alpha Key Protocol, v1"
+   scripts = ["components/literate-programming.js"]
+
+- ### Description
+
+    - Alpha keys are used to authorize common requests available to everyone.
+
+    - This protocol is used for obtaining Alpha keys.
+
+- ### Obtaining a key
+
+    - A key can be requested by transmitting [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_client_applications) on the frequency `/radio/station/1801812339`.
+
+        - Upon connecting, a relative URL of this protocol is sent to the client to indicate a successful connection.
+
+    - Upon connecting to the frequency indicated in the sandbox maintenance panel, the user may request a key by transmitting a message containing the string `key`.
+
+    - In response, a small *maze* will be sent that the user will need to solve.
+    This is intended as a rate-limiting measure for things that may need authorization.
+
+        - This maze takes on a simple graphical ASCII representation.
+        Each wall is rendered as `##` (two pounds, ASCII 23h), and each piece of walkable path is rendered as `  ` (two spaces, ASCII 20h).
+        Rows of cells are separated by line feeds (ASCII 0Ah).
+        Example:
+
+        ```text
+        ##################
+        ##      ##      ##
+        ##  ##  ##  ######
+        ##  ##  ##      ##
+        ######  ######  ##
+        ##  ##  ##      ##
+        ##  ##  ##  ##  ##
+        ##          ##  ##
+        ##################
+        ```
+
+        - (Note from Max: Please don't use computers to solve the maze. The mazes are small for a reason!)
+
+    - In response to this, the user must send a message containing the solution to said maze.
+
+        - The solution is a string of *directions* that a hypothetical hamster must walk in order to solve the maze.
+        Each character must be one of `E` (east), `S` (south), `W` (west), `N` (north).
+
+            - North goes towards the first line in the ASCII input, south goes towards the last line in the input.
+            West goes towards the first character of a line, and east goes towards the last character of a line.
+
+            - With each command, the hamster goes *two tiles forward* in that direction rather than one.
+            This is because crossroads in the maze only ever happen on multiples of two tiles.
+
+        - The hamster starts from the northwestmost corner.
+
+        - The hamster **must not** walk over any walls for a solution to be considered valid.
+
+        - The hamster **must not** backtrack (walk over any tile twice) for a solution to be considered valid.
+
+        - The hamster **must** reach the southeastmost corner for a solution to be considered valid.
+
+        - Example solution for the maze above:
+
+        ```text
+        ESSSENES
+        ```
+
+            - In this solution, the hamster takes the following path (indicated with `..`):
+
+            ```text
+            ##################
+            ##......##      ##
+            ##  ##..##  ######
+            ##  ##..##      ##
+            ######..######  ##
+            ##  ##..##......##
+            ##  ##..##..##..##
+            ##    ......##..##
+            ##################
+            ```
+
+    - If the maze is solved correctly, a new key will be generated and the user will receive a response of the form `ok: {key}`, where `{key}` is the generated key.
+    If the maze is not solved correctly, the key generator will repond with `error: {description}`, with `{description}` being a short description of what's wrong with the solution.
+
+        - In case of error, this whole procedure has to be repeated (and a new maze will be generated in the process.)
+
+    - The returned key has no structure; it can be treated as an opaque string that can be used to perform operations.
+
+    - The returned key is single-use.
+    Using it on something will cause the key to be invalidated, and a new key will need to be generated.
+
+    - Keys are valid for 30 seconds since their generation.
+    That way it's impossible to stock up on a large amount of keys and then expend them at will.
+
+% stage = "Draft"
+- ### Tests
+
+    - ```javascript tests
+    import { jsConsole as console } from "treehouse/components/literate-programming/eval.js";
+
+    let ws = new WebSocket("/radio/station/1801812339");
+
+    ws.addEventListener("open", console.log);
+    ws.addEventListener("message", console.log);
+    ws.addEventListener("error", console.error);
+
+    ws.addEventListener("open", () => {
+        ws.send("key");
+    });
+
+    ```
+    ```output tests
+    ```

@@ -29,6 +29,8 @@
     {{> components/_footer.hbs }}
     {{/if}}
 
+    {{!-- This is unimportant so we can load it last. --}}
+    <script type="module" src="{{ config.site }}/static/js/radio-receiver.js"></script>
 </body>
 
 </html>

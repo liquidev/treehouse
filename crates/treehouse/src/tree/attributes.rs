@@ -52,7 +52,7 @@ pub struct Picture {
 }
 
 /// Branch attributes.
-#[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Attributes {
     /// Unique identifier of the branch.
     ///
@@ -89,6 +89,21 @@ pub struct Attributes {
     /// List of extra `data` attributes to add to the block.
     #[serde(default)]
     pub data: HashMap<String, String>,
+}
+
+impl Default for Attributes {
+    fn default() -> Self {
+        Self {
+            id: Default::default(),
+            content: Default::default(),
+            do_not_persist: Default::default(),
+            classes: Default::default(),
+            process: default_process(),
+            stage: Default::default(),
+            cast: Default::default(),
+            data: Default::default(),
+        }
+    }
 }
 
 /// Controls for block content presentation.

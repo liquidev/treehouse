@@ -1,0 +1,60 @@
+%% title = "Radio Index Protocol, v1"
+
+- ### Description
+
+    - Used for indexing available radio stations.
+
+- ### Listening to available stations
+
+    - Connect to `/treehouse/radio`.
+
+        - This endpoint broadcasts [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events).
+
+    - As with all treehouse stations, the first message always denotes the protocol and version used, and is a (relative) URL to this document.
+
+        - Stations listed by the index protocol which broadcast server-sent events must send the protocol URL as their first message upon tuning in, to signal the type of data being sent over radio.
+
+    - Messages that follow are composed of the following:
+
+        - A single word (terminated with a space) determining the type of message
+
+        - The message content
+
+        - Example: `some-message payload goes here`
+
+            - The type is `some-message`
+
+            - The content is `payload goes here`
+
+    - The following message types are sent:
+
+        - `station /station/url` - broadcast whenever a ping is received from a station
+
+        - Other message types should be ignored by compliant clients.
+
+    - Example event stream you can receive from the `/treehouse/radio` endpoint:
+
+    ```sse
+    data: /treehouse/protocol/radio-index/v1
+    data: station /treehouse/radio/some-dummy-station
+    ```
+
+    - Additional data about stations, such as the protocol used, title, description, and broadcaster, can be retrieved by tuning into them.
+    This data is specific to the protocol used and therefore is not provided by the index system.
+
++ ### Submitting available stations
+
+    % # NOTE: Intentional. There's no outside way of broadcasting to this protocol.
+    - TODO
+
+        - loose notes while this section is unfinished
+
+            - stations should send a heartbeat to the index server at least once a minute. if a station hasn't sent anything within that interval, that means it's offline
+
++ ### Design notes
+
+    - This protocol only concerns itself with indexing radio stations. Further data should be provided by stations themselves.
+
+    - Human FM stations did not use to have such functionality. The agreed-upon way was to scan the entire FM range for signals.
+
+        - The treehouse has no electromagnetic waves for us to be able to use FM or anything of that sort, hence the radio protocol was developed.

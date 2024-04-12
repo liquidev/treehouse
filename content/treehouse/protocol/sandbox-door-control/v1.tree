@@ -1,0 +1,25 @@
+%% title = "Sandbox Door Control Protocol, v1"
+
+- ### Description
+
+    - Used to control the door to the sandbox.
+
+- ### Controlling the door
+
+    - The door can be controlled by transmitting a HTTP `POST` to the frequency indicated in the sandbox's remote maintenance panel.
+
+    - The body of the `POST` must be one of the following:
+
+        - `open {key}`, where `{key}` is a [version 1 Alpha key][page:treehouse/protocol/key-alpha/v1]
+
+        - `close {key}`, where `{key}` is a [version 1 Alpha key][page:treehouse/protocol/key-alpha/v1]
+
+    - The door will respond with one of the following:
+
+        - `ok`, to indicate that the door was successfully opened or closed
+
+        - `error: {description}`, to indicate that the door could not be opened or closed.
+        `{description}` contains further details on why that was the case.
+
+            - Note that the description string has no structure.
+            It should be showed verbatim in user interfaces rather than attempted to be parsed.

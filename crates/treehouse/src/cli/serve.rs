@@ -20,25 +20,26 @@ use tokio::net::TcpListener;
 
 use crate::{
     config::Config,
+    fun::radio::radio,
     state::{Source, Treehouse},
 };
 
 use super::Paths;
 
-struct SystemPages {
-    index: String,
-    four_oh_four: String,
-    b_docs: String,
-    sandbox: String,
+pub struct SystemPages {
+    pub index: String,
+    pub four_oh_four: String,
+    pub b_docs: String,
+    pub sandbox: String,
 
-    navmap: String,
+    pub navmap: String,
 }
 
-struct Server {
-    config: Config,
-    treehouse: Treehouse,
-    target_dir: PathBuf,
-    system_pages: SystemPages,
+pub struct Server {
+    pub config: Config,
+    pub treehouse: Treehouse,
+    pub target_dir: PathBuf,
+    pub system_pages: SystemPages,
 }
 
 pub async fn serve(
@@ -47,7 +48,8 @@ pub async fn serve(
     paths: &Paths<'_>,
     port: u16,
 ) -> anyhow::Result<()> {
-    let app = Router::new()
+    let app: Router = Router::new()
+        .nest("/radio", radio())
         .route("/", get(index))
         .route("/*page", get(page))
         .route("/b", get(branch))
@@ -55,7 +57,7 @@ pub async fn serve(
         .route("/sandbox", get(sandbox))
         .route("/static/*file", get(static_file))
         .fallback(get(four_oh_four))
-        .with_state(Arc::new(Server {
+        .with_state::<()>(Arc::new(Server {
             config,
             treehouse,
             target_dir: paths.target_dir.to_owned(),

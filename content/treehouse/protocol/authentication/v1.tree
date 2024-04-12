@@ -1,0 +1,39 @@
+%% title = "Authentication Protocol, v1"
+
+- *a note from liquidex sticks out from under the page…*
+
+    - > hello there! thank you for your interest in participating in this Liquidex Inc. Recreational Activity.
+    >
+    > this is where I have to break the fourth wall for you a bit, since this part *does* require some explanation that the world can't exactly do by itself.
+    >
+    > assume this document was written by me.
+
+- ### Description
+
+    - Certain operations require authorization as a verified :verified: person.
+
+    - These operations usually involve messing with parts of the treehouse, such as opening doors.
+
+- ### Progress cookies
+
+    + Authenticating in the treehouse requires cookies.
+    By creating an account, you agree that the treehouse will store a *progress cookie* in your browser.
+
+        - Since maintaining a real account system is expensive, your progress and interactions with characters will be stored in a local cookie.
+
+        + This *does* mean you can skip parts of the story if you get someone else's progress cookie, or reverse engineer the format, but doing that is not recommended.
+
+            - The website is built on the assumption you have interacted with everything in a natural way, so things may break if you replace your cookie with someone else's.
+
+        - Note that the cookie does not contain any personally identifiable information.
+        However, participating in the story will mean you'll have to **unblock cookies** for the treehouse.
+        If that doesn't sit right with you, you'll have to miss out on it.
+
+- ### Creating an account
+
+    - Tune into `/radio/station/1094927188` to create an account.
+
++ ### Resetting progress
+
+    - The intention is that all your progress in the treehouse is **permanent.**
+    It is possible to reset your progress by erasing browser data for the website, but it goes against the intended experience and is not recommended.
