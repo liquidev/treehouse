@@ -1,0 +1,33 @@
+%% title = "Spot(the user hostil)ify"
+
+- this page is dedicated to pointing out stupid design flaws in Spotify's user experience.
+
+    + as a paying customer I'd expect it to be better but I guess they're just not making enough money.
+    what a poor, small company they are to be having these problems :(
+
+        - "well then why are you paying them, liquidex?" unfortunately lots of music is only available (*and* UNAVAILABLE!) on Spotify, as seen on [_fuck DRM_][page:music/fuck-drm].
+        from a consumer standpoint it's also really nice for discovering new music, because you don't have to pay a large amount just to give a listen to an album you may not end up liking.
+
+- a couple days ago I've noticed the queue in the desktop app has changed...
+
+    - this is how it looks now:
+    ![screenshot of my Spotify playlist with the queue open][pic:01HVNW10W65N70ETK28Q4C5DQ9]
+
+    - while I do appreciate the fact that you can open the queue next to your playlist, which allows you to see more information at a time, there is one very serious problem which unfortunately I cannot illustrate very well with a screenshot (at least as I'm typing this right now).
+
+    I'll try my best though.
+
+        - if you hover over any of the entries in `Next from: joker_stare.png (rolling)`, you'll notice they look a bit like this:
+        ![screenshot of a fragment of the queue panel, with a track I hovered over displaying a play button][pic:01HVNW6AQQN9345X3HXY9NN5RR]
+
+        - if you hover over _any_ part of the row, you get the <span style="cursor: pointer; text-decoration: dotted underline;" title="yeah, *this* cursor you're seeing right now">pointer</span> rather than default cursor, which suggests that clicking is gonna result in an action being taken immediately - except that's not what happens.
+        instead, if you click on the blank part, the element is only gonna get selected - as it used to in the old queue, which is _good_.
+        but if that's what happens, that's definitely not the cursor to use.
+
+            - in addition to this, the play button that appears on the album art (pictured on the screenshot) further suggests that clicking anywhere on the row will result in playback skipping to the track you click.
+
+        + this threw me off the first time I saw the new panel, because I thought it was a *downgrade* in terms of functionality.
+        "what, I can't select many items in the queue now to delete them?", I thought, but no.
+        that is still possible; the mouse cursor is just confusing.
+
+            - I should probably do a writeup of textures given off by various cursors and other UI interactions someday.
