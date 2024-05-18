@@ -10,6 +10,14 @@
 
 [read][page:programming/blog/tairu]
 
+% id = "01HY5R1ZW2PYZSSP2J2KAA23DA"
+- I recently got a question from my someone telling me they doesn't understand why `*x` does not read from the pointer `x` when on the left-hand side of an assignment.
+and that made me think,
+
+### what's up with `*x` not always meaning the same thing in different contexts?
+
+[read][page:programming/blog/lvalues]
+
 % id = "01HV1DGFHZ65GJVQRSREKR67J9"
 - I've been thinking recently how cool it is to be able to single-step into Unreal Engine's source code and edit it while you're working with it, and how uncool it is that I can't do the same thing easily in the Rust world.
 

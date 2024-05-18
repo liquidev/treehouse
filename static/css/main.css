@@ -108,6 +108,13 @@ button {
     line-height: 1.5;
 }
 
+pre,
+code,
+kbd,
+button {
+    font-size: 100%;
+}
+
 :root {
     --recursive-mono: 0.0;
     --recursive-casl: 1.0;
@@ -791,6 +798,15 @@ th-literate-program[data-mode="output"] {
     &.error {
         color: var(--error-color);
         text-decoration: wavy underline;
+    }
+
+    &.hidden {
+        display: none;
+    }
+
+    &.type-hint {
+        color: var(--syntax-comment);
+        font-size: 80%;
     }
 }
 

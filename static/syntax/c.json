@@ -1,0 +1,98 @@
+{
+    "patterns": [
+        {
+            "regex": "#include (<.+?>)",
+            "is": { "default": "keyword1", "captures": ["string"] }
+        },
+        { "regex": "#[a-zA-Z0-9_]+", "is": "keyword1" },
+        { "regex": "\\/\\/.*", "is": "comment" },
+        {
+            "regex": "\\/\\*.*?\\*\\/",
+            "flags": ["dotMatchesNewline"],
+            "is": "comment"
+        },
+        {
+            "regex": "[a-zA-Z_][a-zA-Z0-9_]*(\\()",
+            "is": { "default": "function", "captures": ["default"] }
+        },
+        {
+            "regex": "(struct|enum|union)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+            "is": {
+                "default": "default",
+                "captures": ["identifier", "keyword2"]
+            }
+        },
+        { "regex": "(u8|u|U|L)'(\\\\'|[^'])'", "is": "string" },
+        { "regex": "(u8|u|U|L)\"(\\\\\"|[^\"])*\"", "is": "string" },
+        { "regex": "[a-zA-Z_][a-zA-Z0-9_]*", "is": "identifier" },
+        { "regex": "0[bB][01']+[uUlLfFlLdDwWbB]*", "is": "literal" },
+        {
+            "regex": "0[xX][0-9a-fA-F']+(\\.[0-9a-fA-F']*([pP][-+]?[0-9a-fA-F']+)?)?+[uUlLwWbB]*",
+            "is": "literal"
+        },
+        {
+            "regex": "[0-9']+(\\.[0-9']*([eE][-+]?[0-9']+)?)?[uUlLfFlLdDwWbB]*",
+            "is": "literal"
+        },
+        { "regex": "[+=/*^%<>!~|&\\.?:#-]+", "is": "operator" },
+        { "regex": "[,;]", "is": "punct" }
+    ],
+    "keywords": {
+        "alignas": { "into": "keyword1" },
+        "alignof": { "into": "keyword1" },
+        "auto": { "into": "keyword1" },
+        "break": { "into": "keyword1" },
+        "case": { "into": "keyword1" },
+        "const": { "into": "keyword1" },
+        "constexpr": { "into": "keyword1" },
+        "continue": { "into": "keyword1" },
+        "default": { "into": "keyword1" },
+        "do": { "into": "keyword1" },
+        "else": { "into": "keyword1" },
+        "extern": { "into": "keyword1" },
+        "for": { "into": "keyword1" },
+        "goto": { "into": "keyword1" },
+        "if": { "into": "keyword1" },
+        "inline": { "into": "keyword1" },
+        "register": { "into": "keyword1" },
+        "restrict": { "into": "keyword1" },
+        "return": { "into": "keyword1" },
+        "sizeof": { "into": "keyword1" },
+        "static": { "into": "keyword1" },
+        "static_assert": { "into": "keyword1" },
+        "switch": { "into": "keyword1" },
+        "thread_local": { "into": "keyword1" },
+        "typedef": { "into": "keyword1" },
+        "typeof": { "into": "keyword1" },
+        "typeof_unqual": { "into": "keyword1" },
+        "volatile": { "into": "keyword1" },
+        "while": { "into": "keyword1" },
+        "_Generic": { "into": "keyword1" },
+        "_Noreturn": { "into": "keyword1" },
+
+        "bool": { "into": "keyword2" },
+        "char": { "into": "keyword2" },
+        "double": { "into": "keyword2" },
+        "enum": { "into": "keyword2" },
+        "float": { "into": "keyword2" },
+        "int": { "into": "keyword2" },
+        "long": { "into": "keyword2" },
+        "short": { "into": "keyword2" },
+        "signed": { "into": "keyword2" },
+        "struct": { "into": "keyword2" },
+        "unsigned": { "into": "keyword2" },
+        "union": { "into": "keyword2" },
+        "void": { "into": "keyword2" },
+        "_Atomic": { "into": "keyword2" },
+        "_BitInt": { "into": "keyword2" },
+        "_Complex": { "into": "keyword2" },
+        "_Decimal128": { "into": "keyword2" },
+        "_Decimal32": { "into": "keyword2" },
+        "_Decimal64": { "into": "keyword2" },
+        "_Imaginary": { "into": "keyword2" },
+
+        "nullptr": { "into": "literal" },
+        "false": { "into": "literal" },
+        "true": { "into": "literal" }
+    }
+}

@@ -1,0 +1,337 @@
+%% title = "places, or what is up with *x not always meaning the same thing in different contexts"
+
+% id = "01HY5R1ZV9DD7BV0F66Y0DHAEA"
+- I recently got a question from my someone telling me they doesn't understand why `*x` does not read from the pointer `x` when on the left-hand side of an assignment.
+
+    % id = "01HY5R1ZV9G92SVA0XP7CG1X6K"
+    - as in this case:
+    ```c
+    void example(int *x) {
+        int y = *x;  // (1)
+        *x = 10;     // (2)
+    }
+    ```
+
+    % id = "01HY5R1ZV9MVWYF9VNPK403JDE"
+    - it seems pretty weird, right? why does it read from the pointer in declaration `(1)`, but not in the assignment `(2)`?
+
+        % id = "01HY5R1ZV9N9AY0HAYEWC0RBFT"
+        - doesn't `*x` mean "read the value pointed to by `x`?"
+
+% id = "01HY5R1ZV9WJM9DMW5QGK04DCR"
+- TL;DR: the deal with this example is that `*x` *does not mean* "read from the location pointed to by `x`", but _just_ "the location pointed to by `x`".
+
+    % id = "01HY5R1ZV9JN9GZ8BECJ0KV1FC"
+    - **`*x` is not a _value_, it's a _memory location_, or _place_ in Rust parlance**
+
+        % id = "01HY5R1ZV9QVH3W5BRS16V6EPG"
+        - same thing with `x`
+
+        % id = "01HY5R1ZV9RQQCBNFHY0ZSX4RP"
+        - same thing with `some_struct.abc` or `some_struct->abc`
+
+% id = "01HY5R1ZV9BMQ7NZJ06B0W48HP"
+- but instead of jumping to conclusions, let's go back to the beginning.
+let's think, what is it that makes places _different_?
+
+    % id = "01HY5R1ZV9JGE9FTN9CN736FJN"
+    - the main thing is that you can write to them and create references to them.
+    for instance, this doesn't work:
+
+    ```c
+    void example(void) {
+        1 = 2;  // error!
+    }
+    ```
+
+    but this does:
+
+    ```c
+    void example(void) {
+        int i;
+        i = 2;  // fine!
+    }
+    ```
+
+    % id = "01HY5R1ZV91NN3YMXFNRACPDS7"
+    - so really, places are kind of a different _type_ - we can do certain additional operations with them, such as writing!
+
+        % id = "01HY5R1ZV9KH99CGCFM7TM1ZZB"
+        - we'll call this type `place(T)`, where `T` is any arbitrary type that is stored at the memory location represented by the `place(T)`.
+
+% id = "01HY5R1ZV9F6BEQ5RHRPZPRVM6"
+- `place(T)` behaves a bit weirdly compared to other types.
+for starters, it is impossible to write the type down in C code, so we're always bound to turn `place(T)` into something else quickly after its creation.
+
+    % id = "01HY5R1ZV92VA27TGY6DJPZNP9"
+    - for instance, in this example:
+
+    ```c.types
+    void take_int(int x);
+
+    void example(int x) {
+        take_int(x /*: place(int) */);
+    }
+    ```
+
+    the type of `x` being passed into the `take_int` function is `place(int)`, but since that function accepts an `int`, we convert from `place(int)`
+    to a regular `int`.
+
+        % id = "01HY5R1ZV9ST0B5PHERGD4J4R8"
+        - this conversion happens implicitly and involves _reading_ from the place -
+        remember that places represent locations in memory, so they're a bit like pointers.
+        we have to read from them before we can access the value.
+
+% id = "01HY5R1ZV9E1NSCCTF1CXPMY3D"
+- but there are operations in the language that _expect_ a `place(T)`, and therefore do not perform the implicit conversion.
+
+    % id = "01HY5R1ZV95BHSV9MF4Z46M377"
+    + we're able to describe these operations as _functions_ which take in a type `T` and return a type `U` - written down like `T -> U`.
+
+        % id = "01HY5R1ZV90Z3S1FZ65R977P8Y"
+        - this notation is taken from functional languages like Haskell.
+
+        % id = "01HY5R1ZV9RERR87NHVSGS6TWP"
+        - the `->` operator is _right-associative_ - `T -> U -> V` is a function which returns a function `U -> V`, not a function that accepts a `T -> U`.
+
+    % id = "01HY5R1ZV9CG67DEA8Y649D40T"
+    - one of these operations is _assignment_, which is like a function `place(T) -> T -> T`.
+
+    it accepts a `place(T)` to write to, a `T` to write to that place, and returns the `T` written.
+    note that in that case no read occurs, since the implicit conversion described before does not apply.
+
+    ```c.types
+    void example(void) {
+        int x = 0;
+        x /*: place(int) */ = 1 /*: int */; /*-> int (discarded) */
+    }
+    ```
+
+    % id = "01HY5R1ZV9MNZKK381TS7K3VR2"
+    - another one of these operations is the _`&` reference operator_, which is like a function `place(T) -> T*`.
+
+    it accepts a `place(T)` and returns a pointer `T*` that points to the place's memory location in exchange.
+
+    ```c.types
+    void example(void) {
+        int x = 0;
+        int* p = &(x /*: place(T) */);
+    }
+    ```
+
+        % id = "01HY5R1ZV9YN7H33BMK0NPX4QT"
+        - and of course its analogue, the _`*` dereferencing operator_, which does not consume a place, but produces one.
+
+        it accepts a `T*` and produces a `place(T)` that is placed at the pointer's memory location - it's the reverse of `&x`, `T* -> place(T)`.
+
+        ```c
+        void example(int* x) {
+            int y = *x;
+        }
+        ```
+
+    % id = "01HY5R1ZV9KZZARNK8KXZTGAFX"
+    - another couple of operations that accept a `place(T)` is the _`.` and `[]` operators_, both of which can be used to refer to subplaces
+    within the place.
+
+        % id = "01HY5R1ZV9N6PY2ANQC45NN27E"
+        - the difference is that `.` is a _static, compile-time known_ subplace, while `[]` may be _dynamic, runtime known_.
+
+        % id = "01HY5R1ZV99N78RA7Z5GSVVPRB"
+        - the `.` operator takes in a `place(T)` and returns a `place(U)` depending on the type of structure field we're referencing.
+
+            % id = "01HY5R1ZV99PZT6SDK2HRCRMAZ"
+            - since there is no type that represents the set of fields of a structure `S`, we'll invent a type `anyfield(S)` which represents that set.
+
+                % id = "01HY5R1ZV9RYF2P5X53VW9S9K8"
+                - the type of a specific field `f` in the structure `S` is `field(S, f)`.
+
+            % id = "01HY5R1ZV9PACB0HVE976TZZ69"
+            - we'll also introduce a type `fieldtype(F)` which is the type stored in the field `F`.
+
+            % id = "01HY5R1ZV99M92Z0XH1H3385JE"
+            - given that, the type of the `.` operator is `place(T) -> F -> place(fieldtype(F))`, where `F` is an `anyfield(T)`.
+
+            % id = "01HY5R1ZV9VZFHRKY4QWBDTFJ7"
+            - example:
+            ```c.types
+            void example(void) {
+                struct S { int x; } s;
+
+                s /*: place(struct S) */;
+                s /*: place(struct S) */ .x /*: field(struct S, x) */; /*-> place(int) (discarded) */
+            }
+            ```
+
+        % id = "01HY5R1ZV952B3C5AHFME5TJG4"
+        - the `[]` operator takes in a `T*`, a `ptrdiff_t` to offset the pointer by, and returns a `place(T)` whose memory location is the offset pointer.
+        the function signature is therefore `T* -> ptrdiff_t -> place(T)`.
+
+        example:
+        ```c.types
+        void example(int* array) {
+            int* p = &((array /*: int* */)[123] /*: place(int) */);
+        }
+        ```
+
+            % id = "01HY5R1ZV9VC2NNFKY9W0AE8F1"
+            - we can actually think of this `a[i]` operator as syntax sugar for `*(a + i)`.
+
+                % id = "01HY5R1ZV9SKX5QGJCBRG5QAD9"
+                - this has a funny consequence where `array[0]` is equivalent to `0[array]` -
+                offsetting a pointer is just addition, and addition is commutative.
+                therefore we can swap the operands to `[]` and it will work just fine!
+
+                    % id = "01HY5R1ZV9MQWK5VQZQG8JJ03J"
+                    - I do wonder though why it doesn't produce a warning.
+                    I'm no standards lawyer, but I *believe* this may have something to do with implicit type conversions - the `0` gets promoted to a
+                    pointer as part of the desugared addition.
+                    I really need to read up about C's type promotion rules.
+
+% id = "01HY5R1ZV9KA2Q3TKQWQPS19KV"
+- now I have to confess, I lied to you.
+there are no places in C.
+
+    % id = "01HY5R1ZV9PAD1XRS29YV64GV2"
+    - the C standard actually calls this concept "lvalues", which comes from the fact that they are **values** which are valid
+    **l**eft-hand sides of assignment.
+
+        % id = "01HY5R1ZV9BNZM45RK2AW8BF5N"
+        + however, I don't like that name since it's quite esoteric - if you tell a beginner "`x` is not an lvalue," they will look at you confused.
+        but if you tell a beginner "`x` is not a place in memory," then it's immediately more clear!
+
+        so I will keep using the Rust name despite the name "lvalues" technically being more "correct" and standards-compliant.
+
+            % id = "01HY5R1ZV9DXQ8AQJXVK1JE9XS"
+            - I'm putting "correct" in quotes because I don't believe this is a matter of correctness, just opinion.
+
+% id = "01HY5R1ZV9HP593J62VWDBWHK4"
+- what's interesting about `place(T)` is that it's actually a real type in C++ - except under a different name: `T&`.
+
+    % id = "01HY5R1ZV961P77W5TPDP9AMT9"
+    - references are basically a way of introducing places into the type system for real, which is nice,
+    but on the other hand having places bindable to names results in some weird holes in the language.
+
+    % id = "01HY5R1ZV9F292M89VEBSMB80F"
+    - to begin with, in C we could assume that referencing any variable `T x` by its name `x` would produce a `place(T)`.
+    this is a simple and clear rule to understand.
+
+        % id = "01HY5R1ZV9WPRVN3S84B7H9W25"
+        - in C++, this is no longer the case - referencing a variable `T x` by its name `x` produces a `T&`,
+        but referencing a variable `T& x` by its name `x` produces a `T&`, not a `T& &`!
+
+        in layman's terms, C++ makes it impossible to rebind references to something else.
+        you can't make this variable point to `y`:
+
+        <!-- NOTE: using `c` syntax here instead of `cpp` because I don't have a working C++ syntax at the moment! -->
+        ```c
+        int x = 0;
+        int y = 1;
+        int& r = x;
+        r = y; // nope, this is just the same as x = y
+        ```
+
+        % id = "01HY5R1ZV9FQX72E6XDJ8BHY7K"
+        - and it's not like it could've been done any better - if we got a `T& &` instead, we'd be able to reassign a different place to
+        the variable, but then we'd get a type mismatch on something like `r = 1`
+
+            % id = "01HY5R1ZV98W2X9HSG1KM7CDPN"
+            - because assignment is `T& -> T -> T`;
+            if our `T` is `int& &`, the expected signature is `int& & -> int& -> int&`, but we're providing an `int`, not an `int&` -
+            and we can't make a reference out of a value!
+
+        % id = "01HY5R1ZV9AVSDRGP8XYG56KNK"
+        - so we'd need a way of doing `T& -> T`, but guess what: (almost) this already exists and is called "pointers" and "the unary `*` operator".
+
+            % id = "01HY5R1ZV99T9X3ANYQJS40NBX"
+            - except of course, with pointers the signature is `T* -> T&`.
+
+    % id = "01HY5R1ZV94MHBS9RERA4CWPTM"
+    - so by introducing references, C++ was actually made less consistent!
+
+        % id = "01HY5R1ZV93GGZ7CPTEPY8CW8K"
+        - I actually kind of wish references were more like they are in Rust - basically just pointers but non-null and guaranteed to be aligne
+
+% id = "01HY5R1ZV9QWHZRJ5V53CVYG5V"
+- anyways, as a final ~~boss~~ bonus of this blog post, I'd like to introduce you to the `x->y` operator (the C one)
+
+    % id = "01HY5R1ZV9AYFWV96FC07WX68G"
+    - if you've been programmming C or C++ for a while, you'll know that it's pretty dangerous to just go pointer-[walkin'](https://www.youtube.com/watch?v=d_dLIy2gQGU) with the `->` operator
+    ```c
+    int* third(struct list* first) {
+        return &list->next->next->value;
+    }
+    ```
+
+        % id = "01HY5R1ZV9XR75M4TN7H08HYPF"
+        + there's a pretty high chance that using the `third` function will cause a crash for you if there are only two elements in the list.
+
+            % id = "01HY5R1ZV97K8Y4S4V68555MKV"
+            - if it doesn't cause a crash, you may have more serious problems to worry about :kamien:
+
+        % id = "01HY5R1ZV9EEN448SB62YMAGZP"
+        - but how does it cause a crash if we're taking the reference out of that whole `->` chain? shouldn't taking a reference not cause any reads?
+
+    % id = "01HY5R1ZV977KHP1QDXWY7CTZJ"
+    - the secret lies in what the `x->y` operator really does.
+    basically, it's just convenience syntax for `(*x).y`.
+
+    % id = "01HY5R1ZV9X8M5T64BD0MZ2WN2"
+    - let's start by dismantling the entire pointer access chain into separate expressions:
+    ```c
+    int* third(struct list* first) {
+        struct list* second = first->next;
+        struct list* third = second->next;
+        return &third->value;
+    }
+    ```
+
+    % id = "01HY5R1ZV9PGQMS2A6H5XTWYZX"
+    - now let's desugar the `->` operator:
+    ```c
+    int* third(struct list* first) {
+        struct list* second = (*first).next;
+        struct list* third = (*second).next;
+        return &(*third).value;
+    }
+    ```
+
+    % id = "01HY5R1ZV92CZAV13P4KFABTR1"
+    - and add some type annotations:
+    ```c.types
+    int* third(struct list* first) {
+        struct list* second = (*first).next /*: place(struct list*) */;
+        struct list* third = (*second).next /*: place(struct list*) */;
+        return &(*third).value;
+    }
+    ```
+
+    % id = "01HY5R1ZV9671KDJAATWBPGD2C"
+    - and now let's follow it line by line.
+
+        % id = "01HY5R1ZV936BNY9MY4ANCXYH1"
+        - ```c.types
+        struct list* second = (*first).next /*: place(struct list*) */;
+        ```
+        first we read the value of the `next` field from the structure pointed to by `first`.
+        assuming `first` is a valid pointer, this shouldn't fail.
+
+        % id = "01HY5R1ZV9VNTRSCFWBW9BCTHJ"
+        - ```c.types
+        struct list* third = (*second).next /*: place(struct list*) */;
+        ```
+        but now something bad happens: we don't know if the `second` pointer we just got a `place(T)` from is valid.
+        we offset it by `.next` and implicitly read from it, which is bad!
+
+        % id = "01HY5R1ZV9S50S4MYYQ1Q5P00Z"
+        - at this point there's no point in analyzing the rest of the function - we've hit Undefined Behavior!
+
+    % id = "01HY5R1ZV9A1FS9SRFJBM5NVSR"
+    - the conclusion here is that chaining `x->y` can be really dangerous if you don't check for the validity of each reference.
+    just doing one hop and a reference - `&x->y` - is fine, because we never end up reading from the invalid pointer -
+    it's like doing `&x[1]`.
+    but two hops is where it gets hairy - in `x->y->z`, the `->z` has to _read_ from `x->y` to know the pointer to read from.
+
+% id = "01HY5R1ZV9VSE2WWH93NCAGRS8"
+- TODO: in the future I'd like to embed a C compiler here that will desugar all place operations into explicit ones.
+stay tuned for that!

@@ -6,6 +6,133 @@
     % id = "01HRT0DG7VF31P185J898QQH85"
     - really there's not much more to it, but I use it for debugging + with it you can get a general feel for how I highlight things in the treehouse
 
+% id = "01HY5R1ZW5JFAYBFFT579HF1T4"
+- design notes
+
+    % id = "01HY5R1ZW5V5Q72QGP1RK13H10"
+    - don't do magic: stick to standards and community conventions.
+
+        % id = "01HY5R1ZW578NT8G6BTNAN79QK"
+        - like in C, don't highlight uppercase identifiers.
+        those are not special in any way.
+
+        % id = "01HY5R1ZW5MAS6K7K9QJT4HYQV"
+        - in Rust, we highlight identifiers starting with an uppercase letter, because that's the
+        style convention for user-defined types.
+
+    % id = "01HY5R1ZW5NC96PA7VDKDVMEPX"
+    - keep it simple.
+    the highlighting doesn't have to be perfect.
+    you know what you're typing.
+    in case of user input, you have a compiler that will highlight the error anyways.
+
+% id = "01HY5R1ZW5R3808RNG6RAPC8H4"
+- `c`
+    % id = "01HY5R1ZW51JDH26B27ZTGP9JA"
+    - NOTE: this is C23 so you may see some unfamiliar keywords
+    % id = "01HY5R1ZW5DDH54AFNJTFMKZSF"
+    - patterns
+    ```c
+    #include <stdio.h>
+    #define SOMETHING_SOMETHING
+
+    // a comment
+    /* a multiline
+       comment */
+
+    function()
+    struct S  enum E  union U
+    u8'ą' u'g' U'g' L'g'
+    u8"UTF-8" u"UTF-16" U"UTF-32" L"wchar_t"
+    ident
+
+    0b1010'1010 0b1010'1010u 0b1010'1010llu 0b1010'1010wb
+    0xDeadBeef 012345l
+    123ull 127wb
+    3.14159265 3.141592f 1.0e-4d 0xa.dp+2
+
+    . ->
+    ++ -- & * + - ~ !
+    / % << >> < > <= >= == != ^ | && ||
+    ? : :: ; ...
+    = *= /= %= += -= <<= >>= &= ^= |=
+    , # ##
+    <: :> <% %> %: %:%:
+    ```
+
+    % id = "01HY5R1ZW5X2AVZFVHV0QR1J93"
+    - keywords
+    ```c
+    alignas alignof auto break case const constexpr continue default do else extern for goto if
+    inline register restrict return sizeof static static_assert switch thread_local typedef typeof
+    typeof_unqual volatile while _Generic _Noreturn
+
+    bool char double float int long short signed struct unsigned union void _Atomic _BitInt _Complex
+    _Decimal128 _Decimal32 _Decimal64 _Imaginary
+
+    nullptr false true
+    ```
+
+    % id = "01HY5R1ZW5PP1C00NSWAG5FA8B"
+    - sample
+    ```c
+    #include <snug/bump.h>
+
+    #include <snug/panic.h>
+
+    void bump_init(struct bump* a, void* slab, i32 size)
+    {
+        a->start = slab;
+        a->ptr = slab + size;
+    #if SNUGGLES_BUMP_TRACKING
+        a->tracker = null;
+    #endif
+    }
+
+    void* bump_try_alloc(struct bump* a, i32 size, const char* what)
+    {
+        // Allocate n bytes and align the pointer to 16 bytes.
+        a->ptr = (void*)((long long)(a->ptr - size) & ~0xF);
+
+        void* addr;
+        // TODO: Because this check is done after the allocation, this will eventually start
+        // overflowing. Not good, but not important either because most allocations
+        // use bump_alloc_or_panic.
+        if (a->ptr < a->start) {
+            addr = null;
+        } else {
+            addr = a->ptr;
+        }
+
+    #if SNUGGLES_BUMP_TRACKING
+        if (a->tracker) {
+            (a->tracker)(addr, size, what);
+        }
+    #endif
+
+        return addr;
+    }
+
+    void* bump_alloc_or_panic(struct bump* a, i32 size, const char* what)
+    {
+        (void)what; // Currently unused, may use for panic message in the future.
+
+        void* p = bump_try_alloc(a, size, what);
+        b32 allocation_succeeded = p != 0;
+        ASSERT(allocation_succeeded, "out of memory");
+        return p;
+    }
+    ```
+
+    % id = "01HY5R1ZW5Y28GDH0YX46WV9KN"
+    - `.types`
+
+        % id = "01HY5R1ZW5KYY6VCKWBHN1GF10"
+        - patterns
+        ```c.types
+        x /*: int */
+        ```
+
 % id = "01HRT0DG7VN5TH971H7W8AT8YY"
 - `javascript`
 
