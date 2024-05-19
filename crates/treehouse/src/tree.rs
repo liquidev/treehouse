@@ -144,7 +144,6 @@ pub struct SemaBranch {
     pub file_id: FileId,
 
     pub indent_level: usize,
-    pub raw_attributes: Option<treehouse_format::pull::Attributes>,
     pub kind: BranchKind,
     pub kind_span: Range<usize>,
     pub content: Range<usize>,
@@ -170,7 +169,6 @@ impl SemaBranch {
         let branch = Self {
             file_id,
             indent_level: branch.indent_level,
-            raw_attributes: branch.attributes,
             kind: branch.kind,
             kind_span: branch.kind_span,
             content: branch.content,

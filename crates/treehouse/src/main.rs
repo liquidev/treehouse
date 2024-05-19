@@ -5,6 +5,7 @@ use cli::{
     fix::{fix_all_cli, fix_file_cli},
     generate::regenerate_or_report_error,
     serve::serve,
+    wc::wc_cli,
     Command, Paths, ProgramArgs,
 };
 use log::{error, info, warn};
@@ -49,6 +50,8 @@ async fn fallible_main() -> anyhow::Result<()> {
 
         Command::Fix(fix_args) => fix_file_cli(fix_args)?,
         Command::FixAll(fix_args) => fix_all_cli(fix_args, &paths)?,
+
+        Command::Wc(wc_args) => wc_cli(paths.content_dir, wc_args)?,
 
         Command::Ulid => {
             let mut rng = rand::thread_rng();

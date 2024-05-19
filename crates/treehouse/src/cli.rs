@@ -2,6 +2,7 @@ pub mod fix;
 pub mod generate;
 mod parse;
 pub mod serve;
+pub mod wc;
 
 use std::path::{Path, PathBuf};
 
@@ -36,6 +37,9 @@ pub enum Command {
         #[clap(flatten)]
         serve: ServeArgs,
     },
+
+    /// Count words in the treehouse's branches.
+    Wc(#[clap(flatten)] WcArgs),
 
     /// Generates a new ulid and prints it to stdout.
     Ulid,
@@ -73,6 +77,13 @@ pub struct ServeArgs {
     /// The port under which to serve the treehouse.
     #[clap(short, long, default_value_t = 8080)]
     pub port: u16,
+}
+
+#[derive(Args)]
+pub struct WcArgs {
+    /// A list of paths to report the word counts of.
+    /// If no paths are provided, the entire tree is word-counted.
+    pub paths: Vec<PathBuf>,
 }
 
 #[derive(Debug, Clone, Copy)]
