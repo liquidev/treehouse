@@ -14,9 +14,9 @@ use axum::{
     routing::get,
     Router,
 };
-use log::{error, info};
 use pulldown_cmark::escape::escape_html;
 use tokio::net::TcpListener;
+use tracing::{error, info, info_span};
 
 use crate::{
     config::Config,
@@ -47,6 +47,8 @@ pub async fn serve(
     paths: &Paths<'_>,
     port: u16,
 ) -> anyhow::Result<()> {
+    let _span = info_span!("serve").entered();
+
     let app = Router::new()
         .route("/", get(index))
         .route("/*page", get(page))

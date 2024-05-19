@@ -1,0 +1,10 @@
+[package]
+name = "traceli"
+version = "0.1.0"
+edition = "2021"
+description = "Fancy tracing subscriber for CLI applications"
+
+[dependencies]
+owo-colors = "4.0.0"
+tracing.workspace = true
+tracing-subscriber = { workspace = true, features = ["registry"] }

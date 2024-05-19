@@ -2,7 +2,7 @@ use std::{
     collections::HashMap,
     ffi::OsStr,
     path::{Path, PathBuf},
-    time::Instant,
+    time::{Duration, Instant},
 };
 
 use anyhow::{bail, Context};
@@ -12,8 +12,8 @@ use codespan_reporting::{
 };
 use copy_dir::copy_dir;
 use handlebars::Handlebars;
-use log::{debug, error, info};
 use serde::Serialize;
+use tracing::{debug, error, info, info_span};
 use walkdir::WalkDir;
 
 use crate::{
@@ -162,7 +162,11 @@ impl Generator {
             } else {
                 paths.target_dir.join(tree_path).with_extension("html")
             };
-            debug!("generating: {path:?} -> {target_path:?}");
+            let tree_path = tree_path
+                .with_extension("")
+                .to_string_lossy()
+                .replace('\\', "/");
+            let _span = info_span!("page", path = tree_path).entered();
 
             let source = match std::fs::read_to_string(path) {
                 Ok(source) => source,
@@ -177,10 +181,6 @@ impl Generator {
                     continue;
                 }
             };
-            let tree_path = tree_path
-                .with_extension("")
-                .to_string_lossy()
-                .replace('\\', "/");
             let file_id = treehouse.add_file(
                 utf8_filename.into_owned(),
                 Source::Tree {
@@ -355,44 +355,63 @@ impl Generator {
 }
 
 pub fn generate(paths: &Paths<'_>) -> anyhow::Result<(Config, Treehouse)> {
+    let _span = info_span!("generate").entered();
+
     let start = Instant::now();
 
-    info!("loading config");
-    let mut config = Config::load(paths.config_file)?;
-    config.site = std::env::var("TREEHOUSE_SITE").unwrap_or(config.site);
-    config.autopopulate_emoji(&paths.static_dir.join("emoji"))?;
-    config.autopopulate_pics(&paths.static_dir.join("pic"))?;
-    config.load_syntaxes(&paths.static_dir.join("syntax"))?;
+    let config = {
+        let _span = info_span!("load_config").entered();
+        let mut config = Config::load(paths.config_file)?;
+        config.site = std::env::var("TREEHOUSE_SITE").unwrap_or(config.site);
+        config.autopopulate_emoji(&paths.static_dir.join("emoji"))?;
+        config.autopopulate_pics(&paths.static_dir.join("pic"))?;
+        config.load_syntaxes(&paths.static_dir.join("syntax"))?;
+        config
+    };
 
-    info!("cleaning target directory");
-    let _ = std::fs::remove_dir_all(paths.target_dir);
-    std::fs::create_dir_all(paths.target_dir)?;
+    {
+        let _span = info_span!("clean").entered();
+        let _ = std::fs::remove_dir_all(paths.target_dir);
+        std::fs::create_dir_all(paths.target_dir)?;
+    }
 
-    info!("copying static directory to target directory");
-    copy_dir(paths.static_dir, paths.target_dir.join("static"))?;
+    {
+        let _span = info_span!("copy_static").entered();
+        copy_dir(paths.static_dir, paths.target_dir.join("static"))?;
+    }
 
-    info!("parsing tree");
-    let mut generator = Generator::default();
-    generator.add_directory_rec(paths.content_dir)?;
-    let (mut treehouse, parsed_trees) = generator.parse_trees(&config, paths)?;
+    let ((mut treehouse, parsed_trees), generator) = {
+        let _span = info_span!("tree").entered();
+        let mut generator = Generator::default();
+        generator.add_directory_rec(paths.content_dir)?;
+        (generator.parse_trees(&config, paths)?, generator)
+    };
 
-    info!("generating navigation map");
-    let navigation_map = build_navigation_map(&treehouse, "index");
-    std::fs::write(
-        paths.target_dir.join("navmap.js"),
-        navigation_map.to_javascript(),
-    )?;
+    let navigation_map = {
+        let _span = info_span!("navigation_map").entered();
+        let navigation_map = build_navigation_map(&treehouse, "index");
+        std::fs::write(
+            paths.target_dir.join("navmap.js"),
+            navigation_map.to_javascript(),
+        )?;
+        navigation_map
+    };
 
-    info!("generating standalone pages");
-    generator.generate_all_files(
-        &mut treehouse,
-        &config,
-        paths,
-        &navigation_map,
-        parsed_trees,
-    )?;
+    {
+        let _span = info_span!("pages").entered();
+        generator.generate_all_files(
+            &mut treehouse,
+            &config,
+            paths,
+            &navigation_map,
+            parsed_trees,
+        )?;
+    }
 
-    treehouse.report_diagnostics()?;
+    {
+        let _span = info_span!("diagnostics").entered();
+        treehouse.report_diagnostics()?;
+    }
 
     let duration = start.elapsed();
     info!("generation done in {duration:?}");
@@ -405,8 +424,6 @@ pub fn generate(paths: &Paths<'_>) -> anyhow::Result<(Config, Treehouse)> {
 }
 
 pub fn regenerate_or_report_error(paths: &Paths<'_>) -> anyhow::Result<(Config, Treehouse)> {
-    info!("regenerating site content");
-
     let result = generate(paths);
     if let Err(e) = &result {
         error!("{e:?}");

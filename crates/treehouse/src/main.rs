@@ -7,7 +7,8 @@ use cli::{
     serve::serve,
     Command, Paths, ProgramArgs,
 };
-use log::{error, info, warn};
+use traceli::TraceliConfig;
+use tracing::{error, info, warn};
 
 mod cli;
 mod config;
@@ -64,9 +65,8 @@ async fn fallible_main() -> anyhow::Result<()> {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    env_logger::Builder::new()
-        .filter_module("treehouse", log::LevelFilter::Debug)
-        .init();
+    tracing::subscriber::set_global_default(TraceliConfig::default().start())
+        .expect("cannot set global tracing subscriber");
 
     match fallible_main().await {
         Ok(_) => (),

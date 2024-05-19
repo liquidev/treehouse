@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use log::error;
 use regex::{Regex, RegexBuilder};
+use tracing::error;
 
 use super::{RegexFlag, Syntax, TokenTypes};
 

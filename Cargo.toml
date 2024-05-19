@@ -3,6 +3,8 @@ members = ["crates/*"]
 resolver = "2"
 
 [workspace.dependencies]
-log = "0.4.20"
+tracing = "0.1.40"
+tracing-subscriber = "0.3.18"
 
-treehouse-format = { path = "crates/treehouse-format" }
+treehouse-format.path = "crates/treehouse-format"
+traceli.path = "crates/traceli"

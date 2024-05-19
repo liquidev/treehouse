@@ -1,8 +1,8 @@
 use std::{collections::HashMap, ffi::OsStr, fs::File, io::BufReader, path::Path};
 
 use anyhow::Context;
-use log::debug;
 use serde::{Deserialize, Serialize};
+use tracing::{debug, info_span};
 use walkdir::WalkDir;
 
 use crate::html::highlight::{
@@ -72,6 +72,8 @@ pub struct Redirects {
 
 impl Config {
     pub fn load(path: &Path) -> anyhow::Result<Self> {
+        let _span = info_span!("load_config").entered();
+
         let string = std::fs::read_to_string(path).context("cannot read config file")?;
         toml_edit::de::from_str(&string).context("error in config file")
     }
@@ -81,6 +83,8 @@ impl Config {
     }
 
     pub fn autopopulate_emoji(&mut self, dir: &Path) -> anyhow::Result<()> {
+        let _span = info_span!("autopopulate_emoji").entered();
+
         for file in WalkDir::new(dir) {
             let entry = file?;
             if entry.file_type().is_file() && Self::is_emoji_file(entry.path()) {
@@ -112,6 +116,8 @@ impl Config {
     }
 
     pub fn autopopulate_pics(&mut self, dir: &Path) -> anyhow::Result<()> {
+        let _span = info_span!("autopopulate_pics").entered();
+
         for file in WalkDir::new(dir) {
             let entry = file?;
             if entry.file_type().is_file() && Self::is_pic_file(entry.path()) {
@@ -154,6 +160,8 @@ impl Config {
 
     /// Loads all syntax definition files.
     pub fn load_syntaxes(&mut self, dir: &Path) -> anyhow::Result<()> {
+        let _span = info_span!("load_syntaxes").entered();
+
         for entry in WalkDir::new(dir) {
             let entry = entry?;
             if entry.path().extension() == Some(OsStr::new("json")) {
@@ -162,7 +170,7 @@ impl Config {
                     .file_stem()
                     .expect("syntax file name should have a stem")
                     .to_string_lossy();
-                debug!("loading syntax {name:?}");
+                let _span = info_span!("syntax", ?name).entered();
 
                 let syntax: Syntax = serde_json::from_reader(BufReader::new(
                     File::open(entry.path()).context("could not open syntax file")?,
