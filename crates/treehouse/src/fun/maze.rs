@@ -1,6 +1,4 @@
-use std::{collections::HashSet, time::Duration};
-
-use rand::{distributions::Slice, prelude::SliceRandom, random, Rng};
+use rand::{prelude::SliceRandom, Rng};
 use wyrand::WyRand;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

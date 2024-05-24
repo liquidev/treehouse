@@ -1,26 +1,16 @@
-use std::{
-    hash::{DefaultHasher, Hash, Hasher},
-    sync::Arc,
-    time::Duration,
-};
+use std::{sync::Arc, time::Duration};
 
 use axum::{
     extract::{
         ws::{Message, WebSocket},
         State,
     },
-    http::header::SET_COOKIE,
-    response::{sse::Event, IntoResponse, Response, Sse},
+    response::{sse::Event, IntoResponse, Sse},
 };
-use chrono::{DateTime, Datelike, Utc};
 use tokio::sync::{mpsc::unbounded_channel, watch};
 use tokio_stream::wrappers::UnboundedReceiverStream;
 
-use super::{
-    authentication::{ProgressCookie, NO_PROGRESS},
-    questline::{self, Q000_SAVING_VICK},
-    RadioState,
-};
+use super::{authentication::ProgressCookie, questline, RadioState};
 
 pub struct QuestState {
     sos_message_rx: watch::Receiver<String>,

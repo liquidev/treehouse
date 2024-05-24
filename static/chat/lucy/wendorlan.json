@@ -1,0 +1,224 @@
+{
+    "nodes": {
+        "v1.KpeiPkVnNd6VcFAN": {
+            "then": "v1.6UYQyCUqVkk8qpYq",
+            "kind": "start",
+            "position": [165, 372]
+        },
+        "v1.LfSKdWvH49Wd2pGc": {
+            "content": "NOTE: Needs character replacement to… whatever the name of the character that's into audio is gonna be.",
+            "kind": "comment",
+            "position": [277, -31]
+        },
+        "v1.6UYQyCUqVkk8qpYq": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "So, Squarepusher has recently released <a href=\"https://squarepusher.bandcamp.com/album/dostrotime-1\"><em>Dostrotime</em></a>, right.",
+            "then": "v1.hFknVxmhaHsoMMtF",
+            "kind": "say",
+            "position": [308, 371]
+        },
+        "v1.MNYdbAFEF6mA2qYA": {
+            "content": "Broad discussion topics:- Dostrotime- the vectorscope debocle- digital decay- and you cannot escape it",
+            "kind": "comment",
+            "position": [717, 183]
+        },
+        "v1.hFknVxmhaHsoMMtF": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "I've listened to it and it's pretty good.",
+            "then": "v1.Z3aulB86NbxFSvaO",
+            "kind": "say",
+            "position": [730, 370]
+        },
+        "v1.Z3aulB86NbxFSvaO": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "A track that piqued my interest is <em>Wendorlan</em>. Mainly because of the visualizer video, which features some sweet XY oscilloscope visuals.",
+            "then": "v1.i6Kxlzf37mAQ5X5G",
+            "kind": "say",
+            "position": [1158, 370]
+        },
+        "v1.i6Kxlzf37mAQ5X5G": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "But being the audio [guy/girl] I am, I was like, <em>hey this is not what the sound is!</em> I've dabbled with oscilloscope music before and it just didn't make sense, right.",
+            "then": "v1.uGTROrweUE3kRLxE",
+            "kind": "say",
+            "position": [1619, 368]
+        },
+        "v1.uGTROrweUE3kRLxE": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Well it turns out <em>Wendorlan</em> was <a href=\"https://squarepusher.bandcamp.com/album/wendorlan\">also released as a single</a> featuring some extra remixes, and one of them is called <em>Wendorlan (XY Code S1575F7.VS050).</em>",
+            "then": "v1.FAXib-KldAMJRqnt",
+            "kind": "say",
+            "position": [2066, 368]
+        },
+        "v1.FAXib-KldAMJRqnt": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "So I went to buy it, and my credit card had declined. Ain't that great.",
+            "then": "v1.pDA1augsGuVNYIsv",
+            "kind": "say",
+            "position": [2525.166015625, 367.8178253173828]
+        },
+        "v1.pDA1augsGuVNYIsv": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "My bank thought this was the best time to interject. Really, have you never seen someone buy 10 albums in a single day? Sheesh.",
+            "then": "v1.TgpvKVmIbGvaH4TY",
+            "kind": "say",
+            "position": [2982.166015625, 365.81782722473145]
+        },
+        "v1.TgpvKVmIbGvaH4TY": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "But it was past their customer service hours, so it's not like I could do anything anyways.",
+            "then": "v1.OXXfNY9FPDdDY3Zv",
+            "kind": "say",
+            "position": [3416.166015625, 371.8178253173828]
+        },
+        "v1.OXXfNY9FPDdDY3Zv": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "So I said, \"fuck it, I'll just play it back in lossy format on Spotify.\"",
+            "then": "v1.saTw3AN6jEdmnli1",
+            "kind": "say",
+            "position": [4152.9726245571865, 361.6228693804048]
+        },
+        "v1.SgGsnLlvKqrT4ROl": {
+            "content": "Vectorscope rant begins here",
+            "kind": "comment",
+            "position": [4150.69189453125, 297.12696075439453]
+        },
+        "v1.saTw3AN6jEdmnli1": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "That at least could be done, because <em>Dostrotime</em> was not available on streaming services, only <em>Wendorlan</em> was. So I went to pull out liquidex's old vectorscope…",
+            "then": "v1.RizFoKnaQ5lRPyjk",
+            "kind": "say",
+            "position": [4595.176513671875, 362.8058280944824]
+        },
+        "v1.RizFoKnaQ5lRPyjk": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "That at least could be done, because <em>Dostrotime</em> was not available on streaming services, only <em>Wendorlan</em> was. So I went to pull out <a href=\"https://github.com/liquidev/vectorscope\">liquidex's old vectorscope</a>…",
+            "then": "v1.PPVChusSHfUnqy42",
+            "kind": "say",
+            "position": [5040.17626953125, 363.8058280944824]
+        },
+        "v1.PPVChusSHfUnqy42": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Guess fucking what.",
+            "then": "v1.O5LMm6pujG-22pnI",
+            "kind": "say",
+            "position": [5476.17626953125, 364.8058280944824]
+        },
+        "v1.O5LMm6pujG-22pnI": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Of course it didn't compile. The vectorscope is written in Rust, and they removed the <code>stdsimd</code> nightly feature a while back, breaking compilation of <a href=\"https://lib.rs/crates/wide\"><code>wide</code></a>. <em>Sugoi.</em>",
+            "then": "v1.2npuqRcmL2ChxLxK",
+            "kind": "say",
+            "position": [5825.17626953125, 363.80582785606384]
+        },
+        "v1.2npuqRcmL2ChxLxK": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "So I went ahead trying to update the crates to a newer version… but looking at just how much winit changed their public API over the past few years, I immediately turned back.",
+            "then": "v1.QRQQPFdlldweI2I2",
+            "kind": "say",
+            "position": [6287.17626953125, 365.8058280944824]
+        },
+        "v1.QRQQPFdlldweI2I2": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Just let me run that darn vectorscope will you!!",
+            "then": "v1.GwnEuqs4-lvRJnJA",
+            "kind": "say",
+            "position": [6751.17626953125, 364.80582797527313]
+        },
+        "v1.GwnEuqs4-lvRJnJA": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "So I reverted back to Rust 1.64. It just happened to be a fairly old version that I had installed, likely not the one liquidex had used to build this, but \"eh good enough\" I said. They had only removed <code>stdsimd</code> fairly recently, right.",
+            "then": "v1.1BLceJahI5jhH0PA",
+            "kind": "say",
+            "position": [7202.17626953125, 362.8058280944824]
+        },
+        "v1.1BLceJahI5jhH0PA": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "And it <em>did compile</em>! ",
+            "then": "v1.oTkIEcoFVvqtqCKx",
+            "kind": "say",
+            "position": [7651.17626953125, 365.8058280944824]
+        },
+        "v1.oTkIEcoFVvqtqCKx": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "But didn't run, because something broke on the Wayland side of things. ",
+            "then": "v1.RXXI6_NL4sG68N4D",
+            "kind": "say",
+            "position": [8060.17626953125, 365.8058280944824]
+        },
+        "v1.RXXI6_NL4sG68N4D": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "<em>What broke</em> I won't tell you, because at that point I was sick enough of this I decided to drop software and go become a fisherman.",
+            "then": "v1.gVrT7kPAfXKmt5UU",
+            "kind": "say",
+            "position": [8511.17626953125, 363.8058280944824]
+        },
+        "v1.gVrT7kPAfXKmt5UU": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "And the worst part is that even if this was written in C or C++, it would probably <em>also</em> not work, because Linux maintainers still haven't figured out how to have multiple versions of one library on your system.",
+            "then": "v1.3nIioqsKh1XAhqkn",
+            "kind": "say",
+            "position": [9209.260864071799, 358.85979251946884]
+        },
+        "v1.3nIioqsKh1XAhqkn": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "So even if I had used C with SDL or GLFW or what have you, while it <em>would</em> have lasted longer <sup>[citation needed]</sup>, it still would've likely broken at some point.",
+            "then": "v1.W1_wuMYKzdAB8suN",
+            "kind": "say",
+            "position": [9675.261352353049, 375.85979251946884]
+        },
+        "v1.W1_wuMYKzdAB8suN": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "Amazing, isn't it?",
+            "then": "v1.2g6UTB6b7KaeBYGd",
+            "kind": "say",
+            "position": [10144.261352353049, 386.85979251946884]
+        },
+        "v1.2g6UTB6b7KaeBYGd": {
+            "character": "coco",
+            "expression": "neutral",
+            "content": "I love modern software.",
+            "then": "v1.jW_9zspn_CYS9n4Q",
+            "kind": "say",
+            "position": [10527.261352353049, 400.85979251946884]
+        },
+        "v1.w6SCY-fK4dgf_yHN": {
+            "content": "Digital decay part comes in here",
+            "kind": "comment",
+            "position": [9212.652038493326, 280.4899308009614]
+        },
+        "v1.xQ6b5Y2660hhInvd": {
+            "content": "Idea: Maybe do this dialogue with more than one character?",
+            "kind": "comment",
+            "position": [278.3166923522949, 86.53623962402344]
+        },
+        "v1.B0AYPrkyQzzAVthY": {
+            "content": "TODO: Needs branching paths, I'm sure you can figure something out.",
+            "kind": "comment",
+            "position": [281.3166923522949, 174.53623962402344]
+        },
+        "v1.jW_9zspn_CYS9n4Q": { "kind": "end", "position": [10912.8662109375, 403.6195077896118] }
+    }
+}

@@ -15,6 +15,8 @@
 
     - Upon connecting to the frequency indicated in the sandbox maintenance panel, the user may request a key by transmitting a message containing the string `key`.
 
+        - If any other string is sent, the server will send an `error: unknown command` and close the connection to signal an error.
+
     - In response, a small *maze* will be sent that the user will need to solve.
     This is intended as a rate-limiting measure for things that may need authorization.
 
@@ -93,18 +95,142 @@
 - ### Tests
 
     - ```javascript tests
-    import { jsConsole as console } from "treehouse/components/literate-programming/eval.js";
-
     let ws = new WebSocket("/radio/station/1801812339");
 
-    ws.addEventListener("open", console.log);
-    ws.addEventListener("message", console.log);
+    let state = "waitingForMaze";
+
+    ws.addEventListener("open", () => console.log("Connection opened"));
+    ws.addEventListener("message", (event) => {
+        console.log(event.data);
+
+        if (event.data == "/treehouse/protocol/key-alpha/v1") return;
+
+        if (state == "waitingForMaze") {
+            ws.send(solveMaze(new Maze(event.data)));
+            state = "mazeSolved";
+        }
+    });
     ws.addEventListener("error", console.error);
 
     ws.addEventListener("open", () => {
         ws.send("key");
     });
 
+    function reconstructPath(cameFrom, current) {
+        let totalPath = [current];
+        while (cameFrom.has(current)) {
+            current = cameFrom.get(current);
+            totalPath.push(current);
+        }
+        totalPath.reverse();
+        return totalPath;
+    }
+
+    function astar(start, goal, { heuristic, getNeighbors }) {
+        let openSet = new Set([start]);
+
+        let cameFrom = new Map();
+
+        let gScore = new Map();
+        gScore.set(start, 0);
+
+        let fScore = new Map();
+        fScore.set(start, heuristic(start));
+
+        console.log("asdsaad", Array(openSet));
+        while (openSet.size > 0) {
+            let current = null;
+            let minFScore = Infinity;
+            openSet.forEach((node) => {
+                let nodeFScore = fScore.get(node) ?? Infinity;
+                if (nodeFScore < minFScore) {
+                    current = node;
+                    minFScore = nodeFScore;
+                }
+            });
+            if (current == goal) {
+                return reconstructPath(cameFrom, current);
+            }
+
+            openSet.delete(current);
+            for (let neighbor of getNeighbors(current)) {
+                let tentativeGScore = gScore.get(current) ?? Infinity;
+                if (tentativeGScore < gScore.get(neighbor)) {
+                    cameFrom.set(neighbor, current);
+                    gScore.set(neighbor, tentativeGScore);
+                    fScore.set(neighbor, tentativeGScore + heuristic(neighbor));
+                    if (!openSet.has(neighbor)) {
+                        openSet.add(neighbor);
+                    }
+                }
+            }
+        }
+
+        console.log("A*: no path found");
+
+        return null;
+    }
+
+    class Maze {
+        static WALL = 0;
+        static PATH = 1;
+
+        constructor(ascii) {
+            let lines = ascii.split("\n");
+            lines.pop();
+
+            this.width = lines[0].length;
+            this.height = lines.length;
+            this.cells = new Uint8Array(this.width * this.height);
+
+            for (let y = 0; y < this.height; ++y) {
+                for (let x = 0; x < this.width; ++x) {
+                    let cell = lines[y].substring(x * 2, x * 2 + 2);
+                    if (cell == '  ') {
+                        this.cells[x + y * this.width] = Maze.PATH;
+                    }
+                }
+            }
+        }
+
+        get(x, y) {
+            if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
+                return this.cells[x + y * this.width];
+            } else {
+                return Maze.WALL;
+            }
+        }
+    }
+
+    function solveMaze(maze) {
+        let start = [1, 1];
+        let goal = [9, 9];
+
+        let path = astar(JSON.stringify(start), JSON.stringify(goal), {
+            heuristic(node) {
+                node = JSON.parse(node);
+                let [nodeX, nodeY] = node;
+                let [goalX, goalY] = goal;
+                let deltaX = goalX - nodeX;
+                let deltaY = goalY - nodeY;
+                return Math.abs(deltaX + deltaY);
+            },
+            getNeighbors(node) {
+                node = JSON.parse(node);
+                let [nodeX, nodeY] = node;
+                let neighbors = [];
+                if (maze.get(nodeX + 1, nodeY) == Maze.PATH) neighbors.push([nodeX + 1, nodeY]);
+                if (maze.get(nodeX, nodeY + 1) == Maze.PATH) neighbors.push([nodeX, nodeY + 1]);
+                if (maze.get(nodeX - 1, nodeY) == Maze.PATH) neighbors.push([nodeX - 1, nodeY]);
+                if (maze.get(nodeX, nodeY - 1) == Maze.PATH) neighbors.push([nodeX, nodeY - 1]);
+                return neighbors;
+            },
+        });
+
+        console.log(path);
+
+        return "EEEESSSS";
+    }
     ```
     ```output tests
     ```

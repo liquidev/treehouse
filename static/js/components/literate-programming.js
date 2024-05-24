@@ -23,19 +23,28 @@ function getLiterateProgramWorkerCommands(name, count) {
     let commands = [];
     let literateProgram = getLiterateProgram(name);
 
+    let previousOutputIndex = null;
+
     for (let i = 0; i < count; ++i) {
         let frame = literateProgram.frames[i];
         if (frame.mode == "input") {
+            if (frame.outputIndex != previousOutputIndex) {
+                commands.push({ kind: "setOutputIndex", outputIndex: frame.outputIndex });
+            }
             commands.push({ kind: "module", source: frame.textContent });
+            previousOutputIndex = frame.outputIndex;
         } else if (frame.mode == "output") {
             commands.push({ kind: "output" });
+            previousOutputIndex = frame.outputIndex;
         }
     }
 
     return commands;
 }
 
-const javascriptJson = await (await fetch(`${TREEHOUSE_SITE}/static/syntax/javascript.json`)).text();
+const javascriptJson = await (
+    await fetch(`${TREEHOUSE_SITE}/static/syntax/javascript.json`)
+).text();
 
 class InputMode {
     static JAVASCRIPT = compileSyntax(JSON.parse(javascriptJson));
@@ -43,15 +52,17 @@ class InputMode {
     constructor(frame) {
         this.frame = frame;
 
+        this.outputIndex = this.frame.program.outputCount;
+
         InputMode.highlight(frame);
         this.codeJar = CodeJar(frame, InputMode.highlight);
         this.codeJar.onUpdate(() => {
             for (let handler of frame.program.onChanged) {
                 handler(frame.programName);
             }
-        })
+        });
 
-        frame.addEventListener("click", event => event.preventDefault());
+        frame.addEventListener("click", (event) => event.preventDefault());
     }
 
     static highlight(frame) {
@@ -68,7 +79,7 @@ class InputMode {
 
 function messageOutputArrayToString(output) {
     return output
-        .map(x => {
+        .map((x) => {
             if (typeof x === "object") return JSON.stringify(x);
             else return x + "";
         })
@@ -97,7 +108,7 @@ class OutputMode {
 
         this.iframe.contentWindow.treehouseSandboxInternals = { outputIndex: this.outputIndex };
 
-        this.iframe.contentWindow.addEventListener("message", event => {
+        this.iframe.contentWindow.addEventListener("message", (event) => {
             let message = event.data;
             if (message.kind == "ready") {
                 this.evaluate();
@@ -121,14 +132,17 @@ class OutputMode {
             this.frame.placeholderImage.classList.add("loading");
         }
 
-        this.frame.program.onChanged.push(_ => this.evaluate());
+        this.frame.program.onChanged.push(() => this.evaluate());
     }
 
     evaluate() {
         this.requestConsoleClear();
         this.iframe.contentWindow.postMessage({
             action: "eval",
-            input: getLiterateProgramWorkerCommands(this.frame.programName, this.frame.frameIndex + 1),
+            input: getLiterateProgramWorkerCommands(
+                this.frame.programName,
+                this.frame.frameIndex + 1
+            ),
         });
     }
 
@@ -161,7 +175,7 @@ class OutputMode {
 
         // One day this will be more fancy. Today is not that day.
         line.textContent = output.message
-            .map(x => {
+            .map((x) => {
                 if (typeof x === "object") return JSON.stringify(x);
                 else return x + "";
             })
