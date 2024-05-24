@@ -1,22 +1,30 @@
 %% title = "what's going on inside the house? (a changelog)"
 
+% id = "01HYP17EQHKKXFDV71ZR0DWJN9"
 - **revision 8:** fancy syntax highlighting
 
+    % id = "01HYP17EQHKPBRZPMD85NYZPMT"
     - over the past few months the treehouse has been receiving a bunch more syntax highlighters
 
+    % id = "01HYP17EQHWAG0W5BNC4RM8VK4"
     - there are now syntaxes for [Lua][branch:01HTAQ23YHXTEZ7WNVZREZ8WSZ], [Rust][branch:01HTWRAS0EHFG2V4N6NCR403C5], [JSON][branch:01HRT0W4AKQJEAMJ8XHJVMY4ZV], and [C][branch:01HY5R1ZW5R3808RNG6RAPC8H4]!
 
+        % id = "01HYP17EQHZPTZ00YYM48ASJ34"
         + C++ probably coming soon™, but with its much more complex syntax it's likely the highlighting isn't gonna be as nice
 
+            % id = "01HYP17EQHSD0WFJ57H7JB57QH"
             - and I'm only mentioning it because there are some C++ code snippets in the treehouse, and it would be _really_ nice if they finally started being highlighted
 
+    % id = "01HYP17EQH21BNJ0VJXGN74ZSP"
     - what's cool is that all the syntax highlighters work even if you have JavaScript disabled.
     which I wouldn't recommend, but it's nice.
     because you absolutely do _not_ need to embed a heavyweight JavaScript library for this
 
+        % id = "01HYP17EQHJH3VFBWKANHT52BG"
         - and it enhances the responsiveness!
         you don't need to _wait_ for code to be highlighted.
 
+    % id = "01HYP17EQH83P776ZFMDC53XF7"
     - I was also told there's a secret now?
     like, no clue what they mean by that but cool?
 
