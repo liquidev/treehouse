@@ -67,6 +67,9 @@ impl ProgressCookie {
     pub fn to_header_value(&self) -> HeaderValue {
         let mut s = String::from("progress=");
         s.reserve(Self::QUESTLINES);
+        for c in &self.questlines {
+            s.push(*c as char);
+        }
         s.push_str("; Max-Age=34560000; Path=/; SameSite=Lax");
         HeaderValue::from_str(&s).expect("progress cookie header contains invalid characters")
     }

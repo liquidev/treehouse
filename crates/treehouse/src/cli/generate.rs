@@ -12,8 +12,8 @@ use codespan_reporting::{
 };
 use copy_dir::copy_dir;
 use handlebars::Handlebars;
-use log::{debug, error, info};
 use serde::Serialize;
+use tracing::{debug, error, info};
 use walkdir::WalkDir;
 
 use crate::{

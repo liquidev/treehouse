@@ -1,39 +1,54 @@
 %% title = "Authentication Protocol, v1"
 
+% id = "01HZ5BE84YDJSQGFPJSS8ZR772"
 - *a note from liquidex sticks out from under the page…*
 
+    % id = "01HZ5BE84Y0GRC5F2A3255B933"
     - > hello there! thank you for your interest in participating in this Liquidex Inc. Recreational Activity.
     >
     > this is where I have to break the fourth wall for you a bit, since this part *does* require some explanation that the world can't exactly do by itself.
     >
     > assume this document was written by me.
 
+% id = "01HZ5BE84Y03CZWNTY1GB1Q3CG"
 - ### Description
 
-    - Certain operations require authorization as a verified :verified: person.
+    % id = "01HZ5BE84Y957FSBEVH5CKT3MX"
+    - Certain operations require authorization as a **verified** :verified: person.
 
+    % id = "01HZ5BE84Y3FA817ZXMDTYJ62T"
     - These operations usually involve messing with parts of the treehouse, such as opening doors.
 
+% id = "01HZ5BE84YPDF8NBFQJZP0DHCG"
 - ### Progress cookies
 
+    % id = "01HZ5BE84YW0P14PZN8M3HF2FW"
     + Authenticating in the treehouse requires cookies.
     By creating an account, you agree that the treehouse will store a *progress cookie* in your browser.
 
-        - Since maintaining a real account system is expensive, your progress and interactions with characters will be stored in a local cookie.
+        % id = "01HZ5BE84Y22X1PNVQ31YMJ9M3"
+        - Since maintaining a real account system is expensive, your progress and interactions with characters will be stored **fully locally**.
 
+        % id = "01HZ5BE84Y36V9HCHJBRBRDAF5"
         + This *does* mean you can skip parts of the story if you get someone else's progress cookie, or reverse engineer the format, but doing that is not recommended.
 
+            % id = "01HZ5BE84Y2TFY1A6HQ732AN7S"
             - The website is built on the assumption you have interacted with everything in a natural way, so things may break if you replace your cookie with someone else's.
 
+        % id = "01HZ5BE84YMYTTF2HGGSSE6YYK"
         - Note that the cookie does not contain any personally identifiable information.
         However, participating in the story will mean you'll have to **unblock cookies** for the treehouse.
         If that doesn't sit right with you, you'll have to miss out on it.
 
+% id = "01HZ5BE84YWMK0MGA6V2E0P3T8"
 - ### Creating an account
 
+    % id = "01HZ5BE84YDZV3RRHEJAXXHKP1"
     - Tune into `/radio/station/1094927188` to create an account.
 
+% id = "01HZ5BE84Y78YZ8GKMR105M4E3"
 + ### Resetting progress
 
+    % id = "01HZ5BE84YE8F2NA1GDE45S8GE"
     - The intention is that all your progress in the treehouse is **permanent.**
     It is possible to reset your progress by erasing browser data for the website, but it goes against the intended experience and is not recommended.

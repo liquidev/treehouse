@@ -131,6 +131,10 @@ fn check_maze_solution(maze: &Maze, solution: &str) -> anyhow::Result<()> {
         }
     }
 
+    if hamster.x != maze.width - 2 && hamster.y != maze.height - 2 {
+        bail!("the hamster did not reach the southeastmost corner of the maze")
+    }
+
     Ok(())
 }
 
@@ -142,7 +146,7 @@ async fn key_registrar(ws: WebSocket, alpha_keys: Arc<AlphaKeys>) {
         while let Some(message) = ws.recv().await {
             let message = message?;
             if message.to_text().is_ok_and(|c| c == "key") {
-                let mut maze = Maze::new(11, 11);
+                let mut maze = Maze::new(11, 11 | 1024);
                 let mut rng = WyRand::new(random());
                 maze.generate(&mut rng);
                 ws.send(Message::Text(maze.render_default())).await?;
@@ -177,8 +181,8 @@ async fn key_registrar(ws: WebSocket, alpha_keys: Arc<AlphaKeys>) {
     _ = fallible(ws, alpha_keys).await;
 }
 
-pub fn router<S>() -> Router<S> {
+pub fn router<S>(alpha_keys: Arc<AlphaKeys>) -> Router<S> {
     Router::new()
         .route("/", get(handler))
-        .with_state(Arc::new(AlphaKeys::new()))
+        .with_state(alpha_keys)
 }

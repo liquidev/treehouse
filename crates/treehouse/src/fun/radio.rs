@@ -6,21 +6,25 @@ use std::{sync::Arc, time::Duration};
 
 use axum::{
     response::{sse::Event, IntoResponse, Sse},
-    routing::get,
+    routing::{get, post},
     Router,
 };
 use tokio::sync::mpsc::unbounded_channel;
 use tokio_stream::wrappers::UnboundedReceiverStream;
+
+use self::key_alpha::AlphaKeys;
 
 mod questline {
     pub const Q000_SAVING_VICK: usize = 0;
 }
 
 struct RadioState {
+    alpha_keys: Arc<AlphaKeys>,
     q000: q000_saving_vick::QuestState,
 }
 
 pub fn radio<S>() -> Router<S> {
+    let alpha_keys = Arc::new(AlphaKeys::new());
     Router::new()
         .route("/", get(index))
         .route(
@@ -32,8 +36,13 @@ pub fn radio<S>() -> Router<S> {
             "/station/1395024484",
             get(q000_saving_vick::get_door_status),
         )
-        .nest("/station/1801812339", key_alpha::router())
+        .route("/station/1395024452", post(q000_saving_vick::door_control))
+        .nest(
+            "/station/1801812339",
+            key_alpha::router(Arc::clone(&alpha_keys)),
+        )
         .with_state(Arc::new(RadioState {
+            alpha_keys,
             q000: q000_saving_vick::QuestState::new(),
         }))
 }
@@ -47,12 +56,14 @@ async fn index() -> impl IntoResponse {
 
         struct RadioStation {
             path: &'static str,
+            protocol: &'static str,
             // Different frequencies!! Every station should have a different heartbeat.
             heartbeat: Duration,
         }
 
         let radio_stations = [RadioStation {
             path: "/radio/station/1397838624",
+            protocol: "/treehouse/protocol/resource-constrained-radio/v1",
             heartbeat: Duration::from_millis(12345),
         }];
 
@@ -61,9 +72,8 @@ async fn index() -> impl IntoResponse {
             tokio::spawn(async move {
                 loop {
                     tokio::time::sleep(station.heartbeat).await;
-                    _ = tx.send(Ok(
-                        Event::default().data(format!("station {}", station.path))
-                    ));
+                    _ = tx.send(Ok(Event::default()
+                        .data(format!("station {} {}", station.path, station.protocol))));
                 }
             });
         }

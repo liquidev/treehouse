@@ -15,11 +15,11 @@ clap = { version = "4.3.22", features = ["derive"] }
 codespan-reporting = "0.11.1"
 copy_dir = "0.1.3"
 dashmap = "5.5.3"
-env_logger = "0.10.0"
 handlebars = "4.3.7"
 http-body = "1.0.0"
 image = "0.24.8"
-log = { workspace = true }
+tracing.workspace = true
+tracing-subscriber = { version = "0.3.18", features = ["fmt"] }
 pulldown-cmark = { version = "0.9.3", default-features = false }
 rand = "0.8.5"
 regex = "1.10.3"
@@ -28,6 +28,7 @@ serde_json = "1.0.105"
 tokio = { version = "1.32.0", features = ["full"] }
 tokio-stream = "0.1.15"
 toml_edit = { version = "0.19.14", features = ["serde"] }
+tower-http = { version = "0.5.2", features = ["trace"] }
 tower-livereload = "0.9.2"
 walkdir = "2.3.3"
 wyrand = "0.1.6"

@@ -7,7 +7,8 @@ use cli::{
     serve::serve,
     Command, Paths, ProgramArgs,
 };
-use log::{error, info, warn};
+use tracing::{error, info, warn, Level};
+use tracing_subscriber::FmtSubscriber;
 
 mod cli;
 mod config;
@@ -64,13 +65,18 @@ async fn fallible_main() -> anyhow::Result<()> {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    env_logger::Builder::new()
-        .filter_module("treehouse", log::LevelFilter::Debug)
-        .init();
+    let subscriber = FmtSubscriber::builder()
+        .with_max_level(Level::TRACE)
+        .finish();
+
+    tracing::subscriber::set_global_default(subscriber).expect("could not set tracing subscriber");
 
     match fallible_main().await {
         Ok(_) => (),
-        Err(error) => error!("fatal: {error:?}"),
+        Err(error) => {
+            error!("fatal: {error:?}");
+            std::process::exit(1);
+        }
     }
 
     Ok(())

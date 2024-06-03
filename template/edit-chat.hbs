@@ -26,11 +26,32 @@
     <th-chat-editor id="main-editor"></th-chat-editor>
 
     <script type="module">
-        let filename = window.location.hash.substring(1);
-        let model = JSON.parse(await(await fetch(filename)).text());
-        let editor = document.getElementById("main-editor");
-        editor.useModel(model);
-        editor.updateFromModel();
+        async function main() {
+            let filename = window.location.hash.substring(1);
+            if (!filename.startsWith('/')) {
+                // TODO: would be nice if we had a way to report this error to the user.
+                console.error("filename must be absolute");
+                return;
+            }
+        
+            let model = JSON.parse(await(await fetch(`/development/read-file/${filename.substring(1)}`)).text());
+            let editor = document.getElementById("main-editor");
+            editor.useModel(model);
+            editor.updateFromModel();
+
+            let debounceTimeout = 0;
+            editor.addEventListener(".modelUpdate", (event) => {
+                clearTimeout(debounceTimeout);
+                debounceTimeout = setTimeout(async () => {
+                    console.log("auto-saving document");
+                    await fetch(`/development/write-file/${filename.substring(1)}`, {
+                        method: "POST",
+                        body: JSON.stringify(event.model),
+                    });
+                }, 1000);
+            });
+        }
+        main();
     </script>
 
     <th-context-menus></th-context-menus>

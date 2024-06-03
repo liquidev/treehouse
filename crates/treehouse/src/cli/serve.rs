@@ -1,3 +1,4 @@
+mod development;
 #[cfg(debug_assertions)]
 mod live_reload;
 
@@ -14,9 +15,10 @@ use axum::{
     routing::get,
     Router,
 };
-use log::{error, info};
 use pulldown_cmark::escape::escape_html;
 use tokio::net::TcpListener;
+use tower_http::trace::TraceLayer;
+use tracing::{error, info};
 
 use crate::{
     config::Config,
@@ -53,6 +55,7 @@ pub async fn serve(
         .route("/", get(index))
         .route("/*page", get(page))
         .route("/b", get(branch))
+        .nest("/development", development::router())
         .route("/navmap.js", get(navmap))
         .route("/sandbox", get(sandbox))
         .route("/static/*file", get(static_file))
@@ -73,7 +76,8 @@ pub async fn serve(
                 navmap: std::fs::read_to_string(paths.target_dir.join("navmap.js"))
                     .context("cannot read navigation map")?,
             },
-        }));
+        }))
+        .layer(TraceLayer::new_for_http());
 
     #[cfg(debug_assertions)]
     let app = live_reload::live_reload(app);

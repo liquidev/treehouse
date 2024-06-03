@@ -1,8 +1,6 @@
 const DOOR_STATUS_FREQUENCY = `${TREEHOUSE_SITE}/radio/station/1395024484`;
-const KEY_OF_THE_DAY_FREQUENCY = `${TREEHOUSE_SITE}/radio/station/1395024459`;
 
 let doorStatusSpan = document.getElementById("sandbox/maintenance:door-status");
-let kotdSpan = document.getElementById("sandbox/maintenance:kotd");
 
 // Poll for status every so often.
 async function updateDoorStatus() {

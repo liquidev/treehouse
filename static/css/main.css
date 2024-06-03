@@ -526,6 +526,11 @@ span.badge {
         background-color: #058ef0;
     }
 
+    &.green {
+        color: white;
+        background-color: #0c993c;
+    }
+
     &.before-content {
         margin-right: 6px;
     }

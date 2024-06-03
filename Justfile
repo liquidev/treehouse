@@ -1,7 +1,9 @@
 port := "8080"
 
 serve:
-    cargo watch -- cargo run -- serve --port {{port}}
+    cargo watch \
+        --ignore static/chat \
+        -- cargo run -- serve --port {{port}}
 
 fix:
     cargo run -- fix-all --apply

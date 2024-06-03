@@ -1,24 +1,34 @@
 %% title = "Resource Constrained Radio Protocol, v1"
 
+% id = "01HZ5BE851S6R8PK2513E0FFD7"
 - ### Description
 
+    % id = "01HZ5BE8512Z9V8PPVXWVN0ZV6"
     - The Resource Constrained Radio Protocol is used for communication between cheap low-energy devices where a long battery life is more important than sending information in large volumes.
 
+        % id = "01HZ5BE851CPGBGP9H3DKN7RVP"
         - In particular, it is designed to be used by SOS devices to send distress signals in case of an emergency.
 
+% id = "01HZ5BE851DHPE0DWG5CYCEK2X"
 - ### Tuning in
 
+    % id = "01HZ5BE851WB3HAVV443WKB892"
     - Messages sent by Resource Constrained Radio can be maximally 40 characters long, and must be comprised out of all-uppercase Latin letters `A-Z`.
     Additionally, punctuation characters ` ` (space), `.,!?-` are allowed, to form a 32-character set, with 5 bits per character.
 
+        % id = "01HZ5BE851FKH5PXJ9GFJ83M84"
         - These constraints result in very low memory requirements, with only 200 bits of storage needed per message.
         That is 25 bytes (!) at the cost of having to decode a bit-packed character encoding.
 
+        % id = "01HZ5BE851PAF0X5WQDQQWXASH"
         - Senders need to convert this encoding into ASCII before sending anyways to comply with HTTP, resulting in an additional 40-byte runtime storage requirement.
 
+% id = "01HZ5BE8515YG5DVC7PQR901EN"
 - ### Broadcasting
 
+    % id = "01HZ5BE851ZYE6YDR201G4SAB1"
     - When broadcasting on a Resource Constrained Radio frequency, please include the following identifying information:
 
+        % id = "01HZ5BE851MQRB49D74H72SPM2"
         - `DEVICE - {device name}` - replace `{device name}` with the name of the sending device.
         This helps identify the purpose the message is sent with, as most RCRP devices are single-purpose only.

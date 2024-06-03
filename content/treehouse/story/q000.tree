@@ -1,0 +1,79 @@
+% id = "01HZ4Q1XP02AE36JN7VDV4AY69"
+- Vick finds herself stranded in the quarantine
+
+    % id = "01HZ4Q1XP01PGGSVWYSQMZY7EY"
+    + Q: how did she get here?
+
+        % id = "01HZ4Q1XP085K916ZF2CMVM17G"
+        - idea: software update. she made some modifications to the quarantine software an went to fix them
+
+            % id = "01HZ5BE84VDZE194H98F7FPXK6"
+            - Q: why did she get trapped?
+        
+    % id = "01HZ4Q1XP0MQZW96PMT0YSVGK4"
+    + Q: what's the quarantine for?
+
+        % id = "01HZ4Q1XP045CXCX23RF4B8QET"
+        - the quarantine is a physical manifestation of /sandbox, the thing we use to sandbox iframes on pages like tairu
+
+% id = "01HZ4Q1XP05AW6QVNF21HDCRRH"
+- the goal of the quest is to free Vick, which will unlock her as a character in future dialogues
+
+    % id = "01HZ4Q1XP041GMDNKQGWBFDAHG"
+    - dialogues before this will not feature Vick as she's trapped
+
+    % id = "01HZ4Q1XP0CP354Q9K4HZBZ0Z9"
+    + Q: do we want to have Max and Lucy available from the start? 
+
+        % id = "01HZ4Q1XP00PBY1J49SFFXMVK7"
+        - I'd say no, but that might be due to reasons different to Vick - Vick is just a bit of a dummy sometimes and that's what got her trapped
+
+% id = "01HZ4Q1XP00NN6XWDH2XWBHGBY"
+- in the quest, the player learns the inner workings of the treehouse by learning some of its basic protocols
+
+    % id = "01HZ4Q1XP0B22FNSGGAEX18ZRZ"
+    - the main puzzle is writing a maze solver that can connect to the treehouse and generate Alpha Keys
+
+        % id = "01HZ4Q1XP0EVRDZHNZ0X6B5AQ8"
+        - an Alpha Key is required to open the quarantine door
+
+        % id = "01HZ4Q1XP0HN1PFN19MS1E8NTX"
+        + Q: who made Alpha Keys?
+
+            % id = "01HZ4Q1XP0T4SSV00VPMCQRNYQ"
+            - Max.
+            he's the mastermind behind most of the treehouse's protocols, having built protocols for various "frameworking" purposes
+
+        % id = "01HZ4Q1XP0A2BA0WXM2AQKV3KC"
+        + Q: what's the purpose of Alpha Keys?
+
+            % id = "01HZ4Q1XP0MQQ3PAQ57WB5MRW8"
+            - it was to provide an additional layer of security against attackers
+
+                % id = "01HZ4Q1XP04Y7P5D0F3GD41S7E"
+                - just that Max is not much of a security-savvy guy and he absolutely doesn't know what he's doing.
+                so he made a protocol that he *thinks* is secure, but really is not that secure at all
+
+                % id = "01HZ4Q1XP0HPT16W0AYT1A6EE8"
+                - this will be a story arc of Max's - building upon this security protocol by means of these keys, but never really reaching anything satisfying.
+                just building layer upon layer of complexity.
+                never really reaching a *good* protocol, but inventing something increasingly fun to solve each time.
+
+        % id = "01HZ4Q1XP05PN4W9VQ1S59HECK"
+        + Q: how do we make future Alpha Keys interesting? we wouldn't just want this to be a one-time puzzle, no?
+
+            % id = "01HZ4Q1XP0DAVFXDRFS7VQSWEG"
+            - I was thinking with each type of Key broken by the player, Max will try to best them by building another, improved type of key.
+            so the next type of key after Alpha Keys will be Beta Keys, which are supposed to have stronger security'n'stuff
+
+% id = "01HZ4Q1XP0BXK09JSV7RMS48PX"
+- Alpha Keys were supposed to be solvable by people, but something went haywire
+
+    % id = "01HZ4Q1XP0YB466TRKT1XB8YXQ"
+    + Q: what went haywire?
+
+        % id = "01HZ4Q1XP08Z2EF5HH5HX481EX"
+        - cosmic ray bit flip.
+        by default, Alpha Keys are 9x9 squares.
+        a cosmic ray flipped a bit and made them 9x1033 instead (ORing a 2^10 into the number)
+

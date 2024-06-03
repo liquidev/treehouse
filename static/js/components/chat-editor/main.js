@@ -33,6 +33,7 @@ class ChatEditor extends HTMLElement {
         this.nodeEditor.addEventListener(".modelUpdate", () => {
             this.modelViewer.updateFromModel();
             this.preview.updateFromModel();
+            this.sendModelUpdate();
         });
     }
 
@@ -44,6 +45,10 @@ class ChatEditor extends HTMLElement {
         this.nodeEditor.updateFromModel();
         this.modelViewer.updateFromModel();
         this.preview.updateFromModel();
+    }
+
+    sendModelUpdate() {
+        this.dispatchEvent(Object.assign(new Event(".modelUpdate"), { model: this.model }));
     }
 }
 

@@ -1,7 +1,11 @@
-%% scripts = ["page/sandbox/maintenance.js"]
+%% title = "Sandbox maintenance panel"
+   scripts = ["page/sandbox/maintenance.js"]
 
+% id = "01HZ5BE84NGNN366321WHF1QYW"
 - # treehouse sandbox maintenance panel
 
+    % id = "01HZ5BE84NFDDD2NMKVA017306"
     - Door is currently <span class="badge" id="sandbox/maintenance:door-status">fetching status</span>
 
+    % id = "01HZ5BE84N5M2JRMREB5PV5VSD"
     - Door controls can be accessed by broadcasting [`/treehouse/protocol/sandbox-door-control/v1`][page:treehouse/protocol/sandbox-door-control/v1] on `/radio/station/1395024452`

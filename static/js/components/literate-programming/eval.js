@@ -3,7 +3,6 @@ let outputIndex = 0;
 export const jsConsole = console;
 
 function stringifyValue(x) {
-    jsConsole.log(typeof x, x instanceof Set);
     if (x === undefined) return "undefined";
     else if (x === null) return "null";
     else if (x instanceof Set) return `{${Array.from(x).map(stringifyValue).join(", ")}}`;

@@ -1,8 +1,8 @@
 use std::{collections::HashMap, ffi::OsStr, fs::File, io::BufReader, path::Path};
 
 use anyhow::Context;
-use log::debug;
 use serde::{Deserialize, Serialize};
+use tracing::debug;
 use walkdir::WalkDir;
 
 use crate::html::highlight::{

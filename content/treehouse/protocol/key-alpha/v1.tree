@@ -1,25 +1,34 @@
 %% title = "Alpha Key Protocol, v1"
    scripts = ["components/literate-programming.js"]
 
+% id = "01HZ4SZKTGE39B02A6X1K3E3GR"
 - ### Description
 
+    % id = "01HZ4SZKTGZHWNPDH1Y5HJ4TZX"
     - Alpha keys are used to authorize common requests available to everyone.
 
+    % id = "01HZ4SZKTGEDW1KFT3BWAHNM0T"
     - This protocol is used for obtaining Alpha keys.
 
+% id = "01HZ4SZKTGN9Y4E2JVJXPTCK7E"
 - ### Obtaining a key
 
+    % id = "01HZ4SZKTGHV25VRSHMP4H15EP"
     - A key can be requested by transmitting [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_client_applications) on the frequency `/radio/station/1801812339`.
 
+        % id = "01HZ4SZKTGQ70K7G6MXAAMR7AW"
         - Upon connecting, a relative URL of this protocol is sent to the client to indicate a successful connection.
 
+    % id = "01HZ4SZKTGQJ3AD8YHXVTCYDJT"
     - Upon connecting to the frequency indicated in the sandbox maintenance panel, the user may request a key by transmitting a message containing the string `key`.
 
+        % id = "01HZ4SZKTGWRY9W5ZD59W2G9E4"
         - If any other string is sent, the server will send an `error: unknown command` and close the connection to signal an error.
 
+    % id = "01HZ4SZKTGGGFWFAJT91JE6RE4"
     - In response, a small *maze* will be sent that the user will need to solve.
-    This is intended as a rate-limiting measure for things that may need authorization.
 
+        % id = "01HZ4SZKTGTJ361AWK1Q8CJZYG"
         - This maze takes on a simple graphical ASCII representation.
         Each wall is rendered as `##` (two pounds, ASCII 23h), and each piece of walkable path is rendered as `  ` (two spaces, ASCII 20h).
         Rows of cells are separated by line feeds (ASCII 0Ah).
@@ -37,33 +46,45 @@
         ##################
         ```
 
-        - (Note from Max: Please don't use computers to solve the maze. The mazes are small for a reason!)
+        % id = "01HZ4SZKTGTK00FDHMNJT42XQ3"
+        - > Please don't use computers to solve the maze. The mazes are small for a reason!
+        > <p align="right">~ Max</p>
 
+    % id = "01HZ4SZKTGXGPYR051SCW6AZ33"
     - In response to this, the user must send a message containing the solution to said maze.
 
+        % id = "01HZ4SZKTGTJ2P103EFEHNDW6K"
         - The solution is a string of *directions* that a hypothetical hamster must walk in order to solve the maze.
         Each character must be one of `E` (east), `S` (south), `W` (west), `N` (north).
 
+            % id = "01HZ4SZKTGXAC78M3YR6F1376N"
             - North goes towards the first line in the ASCII input, south goes towards the last line in the input.
             West goes towards the first character of a line, and east goes towards the last character of a line.
 
+            % id = "01HZ4SZKTG3P4B158598F7EGCR"
             - With each command, the hamster goes *two tiles forward* in that direction rather than one.
             This is because crossroads in the maze only ever happen on multiples of two tiles.
 
+        % id = "01HZ4SZKTGM0S20XNK9KWWD3GA"
         - The hamster starts from the northwestmost corner.
 
+        % id = "01HZ4SZKTGZYD9TX2PESM4T37T"
         - The hamster **must not** walk over any walls for a solution to be considered valid.
 
+        % id = "01HZ4SZKTGBYY8Y79K27T0HSJV"
         - The hamster **must not** backtrack (walk over any tile twice) for a solution to be considered valid.
 
+        % id = "01HZ4SZKTGY6KNQTHE4AGF5HFN"
         - The hamster **must** reach the southeastmost corner for a solution to be considered valid.
 
+        % id = "01HZ4SZKTGKD4QREPXW6J666F3"
         - Example solution for the maze above:
 
         ```text
         ESSSENES
         ```
 
+            % id = "01HZ4SZKTG4JZMQEYWK28EXBKD"
             - In this solution, the hamster takes the following path (indicated with `..`):
 
             ```text
@@ -78,159 +99,33 @@
             ##################
             ```
 
+    % id = "01HZ4SZKTGBCP5VCN765X9ABS4"
     - If the maze is solved correctly, a new key will be generated and the user will receive a response of the form `ok: {key}`, where `{key}` is the generated key.
     If the maze is not solved correctly, the key generator will repond with `error: {description}`, with `{description}` being a short description of what's wrong with the solution.
 
+        % id = "01HZ4SZKTG5YN53PVR825B1K4K"
         - In case of error, this whole procedure has to be repeated (and a new maze will be generated in the process.)
 
+    % id = "01HZ4SZKTGQEJMDGXASKW8AR02"
     - The returned key has no structure; it can be treated as an opaque string that can be used to perform operations.
 
+    % id = "01HZ4SZKTGEDJ0DRK3Q6T8K2Y4"
     - The returned key is single-use.
     Using it on something will cause the key to be invalidated, and a new key will need to be generated.
 
+    % id = "01HZ4SZKTG00W32BSGVC8HX768"
     - Keys are valid for 30 seconds since their generation.
     That way it's impossible to stock up on a large amount of keys and then expend them at will.
 
 % stage = "Draft"
+  id = "01HZ4SZKTGYYAKEFWEH6EV4BSN"
 - ### Tests
 
+    % id = "01HZ4SZKTGNV64DTFN2R8NAGTJ"
     - ```javascript tests
-    let ws = new WebSocket("/radio/station/1801812339");
-
-    let state = "waitingForMaze";
-
-    ws.addEventListener("open", () => console.log("Connection opened"));
-    ws.addEventListener("message", (event) => {
-        console.log(event.data);
-
-        if (event.data == "/treehouse/protocol/key-alpha/v1") return;
-
-        if (state == "waitingForMaze") {
-            ws.send(solveMaze(new Maze(event.data)));
-            state = "mazeSolved";
-        }
-    });
-    ws.addEventListener("error", console.error);
-
-    ws.addEventListener("open", () => {
-        ws.send("key");
-    });
-
-    function reconstructPath(cameFrom, current) {
-        let totalPath = [current];
-        while (cameFrom.has(current)) {
-            current = cameFrom.get(current);
-            totalPath.push(current);
-        }
-        totalPath.reverse();
-        return totalPath;
-    }
-
-    function astar(start, goal, { heuristic, getNeighbors }) {
-        let openSet = new Set([start]);
-
-        let cameFrom = new Map();
-
-        let gScore = new Map();
-        gScore.set(start, 0);
-
-        let fScore = new Map();
-        fScore.set(start, heuristic(start));
-
-        console.log("asdsaad", Array(openSet));
-        while (openSet.size > 0) {
-            let current = null;
-            let minFScore = Infinity;
-            openSet.forEach((node) => {
-                let nodeFScore = fScore.get(node) ?? Infinity;
-                if (nodeFScore < minFScore) {
-                    current = node;
-                    minFScore = nodeFScore;
-                }
-            });
-            if (current == goal) {
-                return reconstructPath(cameFrom, current);
-            }
-
-            openSet.delete(current);
-            for (let neighbor of getNeighbors(current)) {
-                let tentativeGScore = gScore.get(current) ?? Infinity;
-                if (tentativeGScore < gScore.get(neighbor)) {
-                    cameFrom.set(neighbor, current);
-                    gScore.set(neighbor, tentativeGScore);
-                    fScore.set(neighbor, tentativeGScore + heuristic(neighbor));
-                    if (!openSet.has(neighbor)) {
-                        openSet.add(neighbor);
-                    }
-                }
-            }
-        }
-
-        console.log("A*: no path found");
-
-        return null;
-    }
-
-    class Maze {
-        static WALL = 0;
-        static PATH = 1;
-
-        constructor(ascii) {
-            let lines = ascii.split("\n");
-            lines.pop();
-
-            this.width = lines[0].length;
-            this.height = lines.length;
-            this.cells = new Uint8Array(this.width * this.height);
-
-            for (let y = 0; y < this.height; ++y) {
-                for (let x = 0; x < this.width; ++x) {
-                    let cell = lines[y].substring(x * 2, x * 2 + 2);
-                    if (cell == '  ') {
-                        this.cells[x + y * this.width] = Maze.PATH;
-                    }
-                }
-            }
-        }
-
-        get(x, y) {
-            if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
-                return this.cells[x + y * this.width];
-            } else {
-                return Maze.WALL;
-            }
-        }
-    }
-
-    function solveMaze(maze) {
-        let start = [1, 1];
-        let goal = [9, 9];
-
-        let path = astar(JSON.stringify(start), JSON.stringify(goal), {
-            heuristic(node) {
-                node = JSON.parse(node);
-                let [nodeX, nodeY] = node;
-                let [goalX, goalY] = goal;
-                let deltaX = goalX - nodeX;
-                let deltaY = goalY - nodeY;
-                return Math.abs(deltaX + deltaY);
-            },
-            getNeighbors(node) {
-                node = JSON.parse(node);
-                let [nodeX, nodeY] = node;
-                let neighbors = [];
-                if (maze.get(nodeX + 1, nodeY) == Maze.PATH) neighbors.push([nodeX + 1, nodeY]);
-                if (maze.get(nodeX, nodeY + 1) == Maze.PATH) neighbors.push([nodeX, nodeY + 1]);
-                if (maze.get(nodeX - 1, nodeY) == Maze.PATH) neighbors.push([nodeX - 1, nodeY]);
-                if (maze.get(nodeX, nodeY - 1) == Maze.PATH) neighbors.push([nodeX, nodeY - 1]);
-                return neighbors;
-            },
-        });
-
-        console.log(path);
-
-        return "EEEESSSS";
-    }
+    import { requestKey } from "treehouse/page/treehouse/protocol/key-alpha/v1.js";
+    console.log(await requestKey());
     ```
     ```output tests
     ```
+

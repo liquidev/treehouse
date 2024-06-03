@@ -1,6 +1,6 @@
-use std::{ffi::OsStr, ops::Range};
+use std::{ffi::OsStr, io::Read, ops::Range};
 
-use anyhow::Context;
+use anyhow::{bail, Context};
 use treehouse_format::ast::Branch;
 use walkdir::WalkDir;
 
@@ -127,7 +127,15 @@ pub fn fix_file(
 
 pub fn fix_file_cli(fix_args: FixArgs) -> anyhow::Result<()> {
     let utf8_filename = fix_args.file.to_string_lossy().into_owned();
-    let file = std::fs::read_to_string(&fix_args.file).context("cannot read file to fix")?;
+    let file = if utf8_filename == "-" {
+        let mut f = String::new();
+        std::io::stdin()
+            .read_to_string(&mut f)
+            .context("cannot read stdin")?;
+        f
+    } else {
+        std::fs::read_to_string(&fix_args.file).context("cannot read file to fix")?
+    };
 
     let mut treehouse = Treehouse::new();
     let file_id = treehouse.add_file(utf8_filename, Source::Other(file));
@@ -146,6 +154,7 @@ pub fn fix_file_cli(fix_args: FixArgs) -> anyhow::Result<()> {
         }
     } else {
         treehouse.report_diagnostics()?;
+        bail!("cannot fix file with invalid syntax");
     }
 
     Ok(())

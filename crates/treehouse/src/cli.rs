@@ -48,6 +48,7 @@ pub struct GenerateArgs {}
 pub struct FixArgs {
     /// Which file to fix. The fixed file will be printed into stdout so that you have a chance to
     /// see the changes.
+    /// `-` can be provided as the argument to read from stdin.
     pub file: PathBuf,
 
     /// If you're happy with the suggested changes, specifying this will apply them to the file

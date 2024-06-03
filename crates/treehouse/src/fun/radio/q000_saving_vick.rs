@@ -1,10 +1,8 @@
 use std::{sync::Arc, time::Duration};
 
 use axum::{
-    extract::{
-        ws::{Message, WebSocket},
-        State,
-    },
+    extract::State,
+    http::{header::SET_COOKIE, HeaderMap, StatusCode},
     response::{sse::Event, IntoResponse, Sse},
 };
 use tokio::sync::{mpsc::unbounded_channel, watch};
@@ -71,13 +69,59 @@ pub async fn get_door_status(progress: ProgressCookie) -> impl IntoResponse {
     }
 }
 
-pub async fn door_control(ws: WebSocket) {
-    async fn ws_loop(mut ws: WebSocket) -> anyhow::Result<()> {
-        ws.send(Message::Text("/treehouse/protocol/sandbox-door/v1".into()))
-            .await?;
-
-        Ok(())
+pub async fn door_control(
+    progress: ProgressCookie,
+    radio_state: State<Arc<RadioState>>,
+    command: String,
+) -> impl IntoResponse {
+    if let Some((command, key)) = command.split_once(' ') {
+        if !radio_state.alpha_keys.is_valid(key) {
+            return (StatusCode::FORBIDDEN, HeaderMap::new(), "error: invalid key. please request an Alpha Key via /treehouse/protocol/key-alpha/v1");
+        }
+        match command {
+            "open" => {
+                if progress.get(questline::Q000_SAVING_VICK) >= QuestState::DOOR_OPENED {
+                    (
+                        StatusCode::FORBIDDEN,
+                        HeaderMap::new(),
+                        "error: door already open",
+                    )
+                } else {
+                    let mut progress = progress;
+                    progress.set(questline::Q000_SAVING_VICK, QuestState::DOOR_OPENED);
+                    (
+                        StatusCode::OK,
+                        HeaderMap::from_iter([(SET_COOKIE, progress.to_header_value())]),
+                        "ok",
+                    )
+                }
+            }
+            "close" => {
+                if progress.get(questline::Q000_SAVING_VICK) >= QuestState::DOOR_OPENED {
+                    (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        HeaderMap::new(),
+                        "error: door stuck",
+                    )
+                } else {
+                    (
+                        StatusCode::FORBIDDEN,
+                        HeaderMap::new(),
+                        "error: door already closed",
+                    )
+                }
+            }
+            _ => (
+                StatusCode::BAD_REQUEST,
+                HeaderMap::new(),
+                "error: unknown command. available commands: `open`, `close`",
+            ),
+        }
+    } else {
+        (
+            StatusCode::BAD_REQUEST,
+            HeaderMap::new(),
+            "error: command must take the form `COMMAND KEY`",
+        )
     }
-
-    _ = ws_loop(ws);
 }

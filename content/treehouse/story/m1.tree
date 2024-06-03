@@ -1,0 +1,146 @@
+%% title = "a treehouse story, milestone 1"
+
+% id = "01HZ6VXA0DM037BWY60P1AYC0T"
+- NOTE: this page was written once the general framework for treehouse stories was established.
+therefore it may be missing some things that happened on the `story` branch
+
+% id = "01HZ6VXA0E0V83H5S0RPEJ1EYM"
+- ### framework
+
+    % id = "01HZ6VXA0E9WNX7MN8R6WG1DAA"
+    - :TODO: dialogue system upgrades
+
+        % id = "01HZ7ZTWRW6R8GDQ2AKVCVMXSX"
+        - :DONE: dialogue editor should auto-save
+
+        % id = "01HZ89T8BKNHPJ0J33YT464Q48"
+        + :TODO: `ask` node should have an additional output pin that gets jolted whenever there are no more options to pick from.
+
+            % id = "01HZ89T8BKM1SD9SGQSNSV8WG2"
+            - it should probably be optional though, having to specify it every single time _even when the dialogue does not loop back to the choice_ would be quite annoying.
+
+        % id = "01HZ6VXA0E8DK7Z7JTY2F00N7J"
+        - :TODO: chaining multiple `say`s together should result in a pause between each `say`, letting the user read the words said and ponder on them for a while
+
+    % id = "01HZ6Z5ANW1T8NEH6NC738EMRP"
+    - :TODO: chats should be wrapped in a `<script>` to prevent crawlers from indexing the JSON content
+
+    % id = "01HZ7S71P9TMN7E53H4ANXRMDX"
+    - :TODO: `@treehouse(non-production)` should cause a file to be excluded from the final build.
+    this is to prevent people from peeking at answers that are often written in JS files.
+
+    % id = "01HZ7S71P9YA0DGVBXP1BZ6NGT"
+    - :TODO: likewise an empty `_non-production` file anywhere signals that a given directory should not be included in production builds
+
+% id = "01HZ6VXA0ETZ2M036S81PC82B8"
+- ### art
+
+    % id = "01HZ6VXA0ENMJSVP63TN1VBFC9"
+    - :TODO: Vick assets
+
+        % id = "01HZ6VXA0EQ194XXEPQQT8YSHK"
+        - :DONE: pose: default 
+
+        % id = "01HZAHC4W0W27GC3R9AMART0K5"
+        - :TODO: determine which other poses are needed, then consolidate consolidate consolidate.
+        I wouldn't wanna overscope!                
+
+        % id = "01HZAHXGB19RX331CN6QE2X23T"
+        - hard but important
+
+            % id = "01HZAHC4W0NZRHRV67DS4F05G4"
+            - :TODO: wave
+
+            % id = "01HZAHC4W0GKJAY49SNWPHKV25"
+            - :TODO: unamused
+
+            % id = "01HZAHC4W0K72G5QN8PT3J2TG7"
+            - :TODO: smug
+
+            % id = "01HZAHC4W0DETVB844T1R3F1W4"
+            - :TODO: thinking
+
+            % id = "01HZAHC4W0EKST657WAG9WMBMG"
+            - :TODO: flushed
+
+            % id = "01HZAHC4W09SFSEEA0A53PX63A"
+            - :TODO: raised eyebrow
+
+        % id = "01HZAHXGB1HJZPEA69G920YVDH"
+        - easy and important
+
+            % id = "01HZAHC4W0MYEZVV8PAK6RXQTT"
+            - :TODO: happy
+
+        % id = "01HZAHXGB1XT6GMKGF49TJ6AZ7"
+        - easy and unimportant
+
+            % id = "01HZAHC4W00BAQW92Q5TJD9B0N"
+            - :TODO: frown
+
+        % id = "01HZAHXGB1Q0THX7D6CVBCERVH"
+        - hard but unimportant
+
+            % id = "01HZAHC4W0YN6BTJZYNFB0JQT0"
+            - :TODO: shouty
+
+            % id = "01HZAHC4W0FTE4C56C6C63EH2R"
+            - :TODO: tired
+
+            % id = "01HZAHC4W0TQ06Y2VKEZ8XJHBH"
+            - :TODO: kamien
+
+% id = "01HZ6VXA0ENWD7A1QHZ8CH2YQV"
+- ### design
+
+    % id = "01HZ6VXA0EYAX6HFHJ9KYFN23B"
+    + :TODO: figure out how the heck to display characters in dialogues such that they do not occupy way too much space
+
+        % id = "01HZ6VXA0EMW0H75BXBK1S0BFZ"
+        - problem: we'd like to show the full character sprites if preferable, but not have them occupy too much space in the dialogue history
+
+        % id = "01HZ6VXA0EXVRQZX31AVJS8SVR"
+        - possible solution: full-page vs intra-page dialogues.
+        when a dialogue is meant to occupy your entire attention, we could use a different tree layout template that's specifically for displaying dialogues and puts the character with their current expression at the bottom of the screen.
+
+        then when replaying the log, the character is presented as a smaller head-only sprite
+
+% id = "01HZ6VXA0EPZZAYF67K0BKW4V9"
+- ### story
+
+    % id = "01HZ6VXA0EKRS13MXC68QRYZJK"
+    + :TODO: introduction
+
+        % id = "01HZ6VXA0ERY0H27C6KK3DANR9"
+        - the current way of introducing the player to the story is a bit crappy - it's very hit or miss
+
+        % id = "01HZ6VXA0E1DHMX56WB21B4X87"
+        - I'd prefer it if the player had an obvious clue in front of them that showed them "hey, there's something to look for here"
+
+            % id = "01HZ6VXA0EGWD0ECVYWC87D0AW"
+            - this means modifying [page:index] to accomodate some better visual hints.
+
+                % id = "01HZ6VXA0E9C80VSA60W3Y1QBR"
+                - idea: cat icon at the bottom that only appears once?
+
+                % id = "01HZ6VXA0EXZ5GX9WXKP4FCRP0"
+                - idea: vibrate the "owo, what's this?" text after you visit [page:treehouse/new]?
+
+    % id = "01HZ6VXA0EFG8RX3F30JJDQCRJ"
+    - :TODO: [page:treehouse/story/q000]
+
+        % id = "01HZ6Z5ANXYAWSE8DSRYE58K9Y"
+        - :DONE: Alpha Key puzzle
+
+        % id = "01HZ6Z5ANXJS4H4C2S284QDVWA"
+        - :DONE: opening the door
+
+        % id = "01HZ6Z5ANXED28PKFW324XNY0C"
+        - :DONE: chat with Vick about whatever the hell just happened
+
+
+
+
+
+
+

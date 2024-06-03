@@ -1,60 +1,92 @@
 %% title = "Radio Index Protocol, v1"
 
+% id = "01HZ5BE851WMR4YZXB3VCEZEVE"
 - ### Description
 
+    % id = "01HZ5BE851SG3EK5561K41EKE2"
     - Used for indexing available radio stations.
 
+% id = "01HZ5BE851FP4KSXQ99C2NV60P"
 - ### Listening to available stations
 
+    % id = "01HZ5BE8513F1YP08APX03HGFR"
     - Connect to `/treehouse/radio`.
 
+        % id = "01HZ5BE8514H8AK20XGCTED4EW"
         - This endpoint broadcasts [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events).
 
+    % id = "01HZ5BE851K1RN5GNAGXK7DM7V"
     - As with all treehouse stations, the first message always denotes the protocol and version used, and is a (relative) URL to this document.
 
+        % id = "01HZ5BE851FSPTVWCXNXRDKSYJ"
         - Stations listed by the index protocol which broadcast server-sent events must send the protocol URL as their first message upon tuning in, to signal the type of data being sent over radio.
 
+    % id = "01HZ5BE851J785XMPQXH5MB93E"
     - Messages that follow are composed of the following:
 
+        % id = "01HZ5BE8516PXTKWR38R1XG3YT"
         - A single word (terminated with a space) determining the type of message
 
+        % id = "01HZ5BE85161SE17EGNEDHEK6N"
         - The message content
 
+        % id = "01HZ5BE8512WXEJ206MW97EEW6"
         - Example: `some-message payload goes here`
 
+            % id = "01HZ5BE8515MV3CH3YM0FDJFT8"
             - The type is `some-message`
 
+            % id = "01HZ5BE851ST7DG60YEB2N1APQ"
             - The content is `payload goes here`
 
+    % id = "01HZ5BE851AN709DA4YQTZR9FG"
     - The following message types are sent:
 
-        - `station /station/url` - broadcast whenever a ping is received from a station
+        % id = "01HZ5BE851M61Y8N2V8YPSBTGE"
+        - `station /station/url /protocol/url` - broadcast whenever a ping is received from a station.
+        The `/protocol/url` can be used to determine ahead of time what sort of device this station broadcasts for, and filter out stations which are not compatible with the listening device.
 
+        % id = "01HZ5BE8510FJV3GD0PQSMPF44"
         - Other message types should be ignored by compliant clients.
 
+    % id = "01HZ5BE851CMCJKHVJQRSHVSH3"
     - Example event stream you can receive from the `/treehouse/radio` endpoint:
 
     ```sse
     data: /treehouse/protocol/radio-index/v1
-    data: station /treehouse/radio/some-dummy-station
+    data: station /treehouse/radio/some-dummy-station /treehouse/protocol/resource-constrained-radio/v1
     ```
 
-    - Additional data about stations, such as the protocol used, title, description, and broadcaster, can be retrieved by tuning into them.
+    % id = "01HZ5BE851459VZ3HPK55FP7FE"
+    - Additional data about stations, such as the title, description, and broadcaster, can be retrieved by tuning into them.
     This data is specific to the protocol used and therefore is not provided by the index system.
 
+        % id = "01HZ7WET1217G6DYGF65RWQA9K"
+        - Some protocols may even be constrained to send the least data possible.
+        Therefore the presence of this information is not guaranteed.
+
+% id = "01HZ5BE8512FT6ST9MCF5AMQNB"
 + ### Submitting available stations
 
-    % # NOTE: Intentional. There's no outside way of broadcasting to this protocol.
+    % id = "01HZ5BE851HXKGFK7RRD31HQ2G"
+      # NOTE: Intentional. There's no outside way of broadcasting to this protocol.
     - TODO
 
+        % id = "01HZ5BE851P0KYPF2V0TMW5KHD"
         - loose notes while this section is unfinished
 
+            % id = "01HZ5BE851S3YP5GDKG7343YWH"
             - stations should send a heartbeat to the index server at least once a minute. if a station hasn't sent anything within that interval, that means it's offline
 
+% id = "01HZ5BE851F8GT84KNQAHRP29G"
 + ### Design notes
 
+    % id = "01HZ5BE85101GCAR160KW8QB32"
     - This protocol only concerns itself with indexing radio stations. Further data should be provided by stations themselves.
 
+    % id = "01HZ5BE851M6QXMRA3VBM9TRVS"
     - Human FM stations did not use to have such functionality. The agreed-upon way was to scan the entire FM range for signals.
 
+        % id = "01HZ5BE851PMN11FRNNJFSTVEH"
         - The treehouse has no electromagnetic waves for us to be able to use FM or anything of that sort, hence the radio protocol was developed.
+

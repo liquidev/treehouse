@@ -1,25 +1,37 @@
 %% title = "Sandbox Door Control Protocol, v1"
 
+% id = "01HZ5B9DSS8B203T2MFYERDRSF"
 - ### Description
 
+    % id = "01HZ5B9DSSZGBDTDRM606F5D48"
     - Used to control the door to the sandbox.
 
+% id = "01HZ5B9DSSV5KNPCT0A98SJNS6"
 - ### Controlling the door
 
+    % id = "01HZ5B9DSSE3ZF2VFVFQTNH091"
     - The door can be controlled by transmitting a HTTP `POST` to the frequency indicated in the sandbox's remote maintenance panel.
 
+    % id = "01HZ5B9DSSR780ENFFAW0JP8G0"
     - The body of the `POST` must be one of the following:
 
+        % id = "01HZ5B9DSSKCK9Z1Z06WY5RSAD"
         - `open {key}`, where `{key}` is a [version 1 Alpha key][page:treehouse/protocol/key-alpha/v1]
 
+        % id = "01HZ5B9DSS97BK1S3DQ6Y1NHHG"
         - `close {key}`, where `{key}` is a [version 1 Alpha key][page:treehouse/protocol/key-alpha/v1]
 
+    % id = "01HZ5B9DSSSP41SVG1GTDTDPMQ"
     - The door will respond with one of the following:
 
+        % id = "01HZ5B9DSS6628N9HA3246HPR7"
         - `ok`, to indicate that the door was successfully opened or closed
 
+        % id = "01HZ5B9DSSZTSDP5ZPNTJ6B5XD"
         - `error: {description}`, to indicate that the door could not be opened or closed.
         `{description}` contains further details on why that was the case.
 
+            % id = "01HZ5B9DSSWQB93MDYT6HFSV9B"
             - Note that the description string has no structure.
             It should be showed verbatim in user interfaces rather than attempted to be parsed.
+
