@@ -233,7 +233,11 @@ th-bc {
 }
 
 /* Display a chevron hinting that the collapsed branch has more content in its children. */
-.tree details:not([open])>summary>th-bc>:last-child {
+.tree details:not([open])>summary>th-bc>:last-child,
+/* NOTE: Linked branches have a slightly different structure (extra <noscript> tag) and therefore
+   :last-child does not work. */
+.tree li[data-th-link]>details:not([open])>summary>th-bc>:nth-last-child(2) {
+
     &::after {
         content: '\00A0';
         display: inline-block;
