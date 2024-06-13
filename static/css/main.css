@@ -115,10 +115,17 @@ body::selection {
     font-variation-settings: "MONO" 1.0;
 }
 
-body {
+body,
+pre,
+code,
+kbd,
+button {
     font-family: 'RecVar', sans-serif;
-    font-size: 87.5%;
     line-height: 1.5;
+}
+
+body {
+    font-size: 87.5%;
 }
 
 pre,
@@ -242,7 +249,7 @@ code,
 th-literate-program {
     padding: var(--3px) var(--4px);
     background-color: var(--shaded-background);
-    border-radius: var(--4px);
+    border-radius: 0.4em;
 }
 
 th-literate-program,
@@ -253,7 +260,7 @@ th-literate-output {
 kbd {
     padding: var(--3px) var(--6px);
     border: var(--1px) solid var(--border-1);
-    border-radius: var(--6px);
+    border-radius: 0.4em;
 }
 
 pre,
@@ -261,7 +268,7 @@ th-literate-program {
     padding: var(--8px) var(--12px);
     margin: var(--12px) 0;
     background-color: var(--shaded-against-background);
-    border-radius: var(--8px);
+    border-radius: 0.5em;
 
     transition: background-color var(--transition-duration);
 }
