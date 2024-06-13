@@ -1,22 +1,30 @@
 %% title = "what's going on inside the house? (a changelog)"
 
+% id = "01J09K0B6JGYBJVVZ07QFXB0FM"
 - **revision 9:** summer cleaning
 
+    % id = "01J09K0B6J8GM4NYXDFSN0C58P"
     - cleaned up a bunch of pages! see [new][page:treehouse/new] for the details
 
+    % id = "01J09K0B6JVHX68NQA73TF2PSW"
     + there are now a bunch of colorful :folder: :page: icons next to pages
 
+        % id = "01J09K0B6J2487XGCTAVENWBVA"
         - experiments show that this improves readability by 100% despite the icons being ugly and blurry due to not integer-scaling.
         it's not like I can really fix that though, since they're next to text; good luck making pixel-perfect icons that are meant to appear next to fonts of like 10 different sizes that increment by very little.
 
+            % id = "01J09K0B6JWVDJA8NGCT7HEE90"
             - maybe one day I'll hint them to a bunch of sizes…
 
+    % id = "01J09K0B6JF4QAX37WN4WPWR1V"
     + the treehouse's design is now certified 4% more accessible :verified: by means of using `rem` metrics for all the UI elements, so now the UI will scale depending on the font size you've set in your browser.
     ain't that cool?
 
+        % id = "01J09K0B6JY47ME32NR6GC73S4"
         - on the one hand it seems cool, but I have to note here that I designed this website with 14px fonts and pixel metrics in mind.
         having switched it to `rem` everywhere might have produced some wonky layout bugs; if you find any, please [report them to me][branch:hello]!
 
+        % id = "01J09K0B6JJJMHPMHJD78X8H1A"
         - I also have the feeling that the layout is now a lot more spacious, but I can't quite figure out why.
         you may expect the layout to shrink a bit in the coming days.
         or not.
