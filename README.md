@@ -31,12 +31,9 @@ just port=8081
 
 The website will reload itself automatically if you change any file in the repository.
 
-## Contributing
+## Issues
 
-If you found a typo, be my guest. Just note that some typos are intentional, please make sure you understand the full context of the sentence.
+Please report issues [directly to me](https://liquidex.house/b?hello).
+Known issues are tracked on the [treehouse's issue tracker](https://liquidex.house/treehouse/issues).
 
-If you found a bug, by all means please submit a fix. (or at least an issue.)
-
-Since this is my personal website, I don't accept outside contributions for new content. Because then it would no longer be *my* treehouse.
-
-If you wish to create something similar to liquidex's treehouse, you probably want to use more mature software instead of my scrappy, opinionated piece of art. Check out [Logseq](https://logseq.com/) - it has static site generation built in, with a much more approachable UI, cross-device sync, and great customizability through community-made themes and plugins.
+I do not accept and do not plan to accept external contributions to the treehouse's codebase, because then it would no longer be *my* treehouse.
