@@ -1,5 +1,27 @@
 %% title = "what's going on inside the house? (a changelog)"
 
+- **revision 9:** summer cleaning
+
+    - cleaned up a bunch of pages! see [new][page:treehouse/new] for the details
+
+    + there are now a bunch of colorful :folder: :page: icons next to pages
+
+        - experiments show that this improves readability by 100% despite the icons being ugly and blurry due to not integer-scaling.
+        it's not like I can really fix that though, since they're next to text; good luck making pixel-perfect icons that are meant to appear next to fonts of like 10 different sizes that increment by very little.
+
+            - maybe one day I'll hint them to a bunch of sizes…
+
+    + the treehouse's design is now certified 4% more accessible :verified: by means of using `rem` metrics for all the UI elements, so now the UI will scale depending on the font size you've set in your browser.
+    ain't that cool?
+
+        - on the one hand it seems cool, but I have to note here that I designed this website with 14px fonts and pixel metrics in mind.
+        having switched it to `rem` everywhere might have produced some wonky layout bugs; if you find any, please [report them to me][branch:hello]!
+
+        - I also have the feeling that the layout is now a lot more spacious, but I can't quite figure out why.
+        you may expect the layout to shrink a bit in the coming days.
+        or not.
+        I use a slightly smaller font size in my browser so I might just forget about it.
+
 % id = "01HYP17EQHKKXFDV71ZR0DWJN9"
 - **revision 8:** fancy syntax highlighting
 
