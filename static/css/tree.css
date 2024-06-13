@@ -25,9 +25,9 @@
 /*** Variables ***/
 
 :root {
-    --tree-indent-width: 28px;
+    --tree-indent-width: 2rem;
     --transition-duration: 0.15s;
-    --button-bar-icon-size: 24px;
+    --button-bar-icon-size: 1.75rem;
 }
 
 /*** Breadcrumbs ***/
@@ -57,7 +57,7 @@
     background-position: 50% 50%;
     opacity: 70%;
 
-    width: 32px;
+    width: 2.25rem;
     height: 1.2em;
 
     vertical-align: text-bottom;
@@ -96,12 +96,12 @@
 
 /* Use an indent level appropriate for the viewport. */
 .tree ul {
-    --tree-responsive-indent-width: clamp(8px, 2vw, var(--tree-indent-width));
+    --tree-responsive-indent-width: clamp(var(--8px), 2vw, var(--tree-indent-width));
 
     /* Draw indent guides. */
     padding-left: calc(var(--tree-responsive-indent-width) / 2);
     margin-left: calc(var(--tree-responsive-indent-width) / 2);
-    border-left: 1px solid var(--tree-indent-guide-dim);
+    border-left: var(--1px) solid var(--tree-indent-guide-dim);
 
     transition: border-left-color var(--transition-duration);
 }
@@ -145,8 +145,8 @@
     &>div {
         box-sizing: border-box;
 
-        margin-bottom: -1px;
-        border-bottom: 1px solid transparent;
+        margin-bottom: calc(- var(--1px));
+        border-bottom: var(--1px) solid transparent;
         transition: border-bottom-color var(--transition-duration);
 
         &:hover {
@@ -167,7 +167,7 @@
     and notably *excludes* children. */
 .tree details>summary {
     /* Slightly round for elegance */
-    border-radius: 8px;
+    border-radius: var(--8px);
 
     /* Give it a shaded background on hover */
     background-color: transparent;
@@ -183,12 +183,12 @@
 
     .tree li>div:first-child,
     .tree li>details>summary:first-child {
-        border-bottom: 1px solid var(--border-1);
+        border-bottom: var(--1px) solid var(--border-1);
     }
 
     .tree details>summary {
         /* In that case summaries shall not be rounded. */
-        border-radius: 0px;
+        border-radius: 0;
     }
 }
 
@@ -198,7 +198,7 @@
 th-bp {
     display: block;
     width: var(--tree-indent-width);
-    height: 24px;
+    height: 1.75rem;
 
     background-image: var(--icon-leaf);
     background-repeat: no-repeat;
@@ -220,8 +220,8 @@ th-bp {
 /* bc - branch content */
 th-bc {
     display: block;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-top: var(--6px);
+    padding-bottom: var(--6px);
 
     /* Grow to fill the entire available space. This pushes out th-bb to the far right. */
     flex-grow: 1;
@@ -246,13 +246,13 @@ th-bc {
         background-repeat: no-repeat;
         background-position: 50% 50%;
 
-        width: 16px;
+        width: var(--16px);
         height: 1.2em;
 
         vertical-align: text-bottom;
         margin-left: 0.5em;
 
-        margin-right: -32px;
+        margin-right: -2.25rem;
     }
 }
 
@@ -268,8 +268,8 @@ th-bc {
 
         background-color: #058ef0;
         color: #ffffff;
-        padding: 4px 12px;
-        margin-bottom: 4px;
+        padding: var(--4px) var(--12px);
+        margin-bottom: var(--4px);
         border-radius: 100px;
     }
 }
@@ -277,7 +277,7 @@ th-bc {
 /* bb - button bar */
 th-bb {
     height: 100%;
-    margin: 4px;
+    margin: var(--4px);
 
     /* Should be displayed on the top of the branch rather than in the middle. */
     align-self: start;
@@ -299,7 +299,7 @@ th-bb {
 /* For media without hover functionality, th-bb should always be visible. */
 @media (hover: none) {
     :root {
-        --button-bar-icon-size: 32px;
+        --button-bar-icon-size: 2.25rem;
     }
 
     .tree th-bb {
@@ -309,8 +309,8 @@ th-bb {
         margin: 0px;
 
         & a.icon {
-            width: 32px;
-            height: 32px;
+            width: 2.25rem;
+            height: 2.25rem;
         }
     }
 }
@@ -350,7 +350,7 @@ th-bb .branch-date {
 
 /* Style the loading text to not be too attention grabbing. */
 .tree .link-loading {
-    padding-left: 24px;
+    padding-left: 1.75em;
     opacity: 50%;
 }
 
@@ -385,7 +385,7 @@ th-bb .branch-date {
 
 /* <noscript> navigation links */
 .tree .navigate {
-    padding-left: 24px;
+    padding-left: 1.75em;
     background-repeat: no-repeat;
     background-position: 0% 50%;
     opacity: 80%;
@@ -394,16 +394,16 @@ th-bb .branch-date {
 /* branch-quote class for "air quote branches"; used to separate a subtree from a parent tree
    stylistically such that it's interpretable as a form of block quote. */
 ul.branch-quote {
-    --vertical-margin: 8px;
-    --padding: 8px;
+    --vertical-margin: var(--8px);
+    --padding: var(--8px);
 
     margin-top: var(--vertical-margin);
     margin-bottom: var(--vertical-margin);
     padding-top: var(--padding);
     padding-bottom: var(--padding);
     padding-right: var(--padding);
-    border: 1px solid var(--border-1);
-    border-radius: 8px;
+    border: var(--1px) solid var(--border-1);
+    border-radius: var(--8px);
 
     position: relative;
 
@@ -414,8 +414,8 @@ ul.branch-quote {
 
         content: '“';
         position: absolute;
-        right: 16px;
-        top: 1px;
+        right: var(--16px);
+        top: var(--1px);
         font-size: 3rem;
         opacity: 50%;
 

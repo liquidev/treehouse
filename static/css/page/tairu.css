@@ -19,7 +19,7 @@
         display: inline-block;
         width: 56px;
         height: 56px;
-        margin: 8px;
+        margin: var(--8px);
         background-image: url('../../pic/01HPHVDRV0F0251MD0A2EG66C4-tilemap-heavy-metal-16+pixel+width160.png');
         background-size: 400%;
         image-rendering: pixelated;
@@ -35,7 +35,6 @@
         --recursive-slnt: 0.0;
         --recursive-mono: 1.0;
 
-        font-size: 14px;
         position: absolute;
         color: #d3dce9;
         text-shadow:
@@ -120,7 +119,7 @@
             0 1px 0 #1a2039,
             0 -1px 0 #1a2039;
 
-        margin-block: 8px;
+        margin-block: var(--8px);
         margin-left: 16px;
         padding-left: 0;
 

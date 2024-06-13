@@ -18,15 +18,15 @@ th-chat-said {
     flex-direction: row;
     align-items: center;
 
-    border: 1px solid var(--border-1);
-    padding: 12px 16px;
-    margin: 8px 0;
-    border-radius: 8px;
+    border: var(--1px) solid var(--border-1);
+    padding: var(--12px) var(--16px);
+    margin: var(--8px) 0;
+    border-radius: var(--8px);
 
     max-width: 60%;
 
     &>.picture {
-        padding-right: 16px;
+        padding-right: var(--16px);
         align-self: baseline;
     }
 
@@ -76,8 +76,8 @@ th-chat-asked {
         &::before {
             content: '';
             display: inline-block;
-            width: 16px;
-            height: 16px;
+            width: var(--16px);
+            height: var(--16px);
             margin-right: 0.5em;
             background-image: var(--icon-choose);
             background-position: 50% 50%;
@@ -88,7 +88,8 @@ th-chat-asked {
             transition: opacity var(--transition-duration), translate var(--transition-duration);
         }
 
-        &:hover::before, &[disabled]::before {
+        &:hover::before,
+        &[disabled]::before {
             opacity: 50%;
             translate: 0 0;
         }

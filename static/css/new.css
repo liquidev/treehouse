@@ -7,8 +7,8 @@ section {
 .tree th-bc>p:last-child {
     --transition-duration: 0.2s;
 
-    margin-top: 8px;
-    margin-bottom: 4px;
+    margin-top: var(--8px);
+    margin-bottom: var(--4px);
 
     &>a {
         display: inline-block;
@@ -17,7 +17,7 @@ section {
 
         color: var(--text-color);
         background-color: transparent;
-        border: 1px solid var(--border-1);
+        border: var(--1px) solid var(--border-1);
         border-radius: 2em;
         text-decoration: none;
 
@@ -58,7 +58,7 @@ section {
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 43rem) {
     .tree .branch-container {
         flex-direction: column-reverse;
     }
@@ -107,13 +107,13 @@ section.settings {
     }
 
     & p {
-        margin-bottom: 8px;
+        margin-bottom: var(--8px);
     }
 
     & button {
-        border: 1px solid var(--border-1);
+        border: var(--1px) solid var(--border-1);
         border-radius: 999px;
-        padding: 4px 12px;
+        padding: var(--4px) var(--12px);
         background: none;
         color: var(--text-color);
         font-size: 1rem;

@@ -26,6 +26,7 @@
     /* Hack to enable theme-matching scrollbars in <pre> */
     --shaded-against-background: #f2f0ea;
     --shaded-against-background-twice: #e6e4de;
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,10 +48,24 @@
     }
 }
 
+:root {
+    /* Font size-responsive measurements. treehouse was designed against a font size of 14px;
+       each of these sizes is (n / 14)rem where n is the number of pixels. */
+    --1px: 0.07142857143rem;
+    --2px: 0.1428571429rem;
+    --3px: 0.2142857143rem;
+    --4px: 0.2857142857rem;
+    --6px: 0.4285714286rem;
+    --8px: 0.5714285714rem;
+    --10px: 0.7142857143rem;
+    --12px: 0.8571428571rem;
+    --16px: 1.142857143rem;
+}
+
 /* Article-style layout. Center everything and give it a maximum width */
 
 body {
-    max-width: 1200px;
+    max-width: 86rem;
     margin-left: auto;
     margin-right: auto;
 
@@ -59,12 +74,12 @@ body {
 }
 
 main {
-    padding: 0 16px;
+    padding: 0 var(--16px);
 }
 
 @media screen and (max-width: 480px) {
     main {
-        padding: 0 8px;
+        padding: 0 var(--8px);
     }
 }
 
@@ -100,14 +115,9 @@ body::selection {
     font-variation-settings: "MONO" 1.0;
 }
 
-
-body,
-pre,
-code,
-kbd,
-button {
+body {
     font-family: 'RecVar', sans-serif;
-    font-size: 14px;
+    font-size: 87.5%;
     line-height: 1.5;
 }
 
@@ -217,7 +227,7 @@ h3,
 h4,
 h5,
 h6 {
-    margin: 4px 0;
+    margin: var(--4px) 0;
 }
 
 /* Lay out elements a little less compactly (actually just have some blank space past the end) */
@@ -230,9 +240,9 @@ body {
 
 code,
 th-literate-program {
-    padding: 3px 4px;
+    padding: var(--3px) var(--4px);
     background-color: var(--shaded-background);
-    border-radius: 4px;
+    border-radius: var(--4px);
 }
 
 th-literate-program,
@@ -241,17 +251,17 @@ th-literate-output {
 }
 
 kbd {
-    padding: 3px 6px;
-    border: 1px solid var(--border-1);
-    border-radius: 6px;
+    padding: var(--3px) var(--6px);
+    border: var(--1px) solid var(--border-1);
+    border-radius: var(--6px);
 }
 
 pre,
 th-literate-program {
-    padding: 8px 12px;
-    margin: 12px 0;
+    padding: var(--8px) var(--12px);
+    margin: var(--12px) 0;
     background-color: var(--shaded-against-background);
-    border-radius: 8px;
+    border-radius: var(--8px);
 
     transition: background-color var(--transition-duration);
 }
@@ -261,7 +271,7 @@ th-literate-program {
     pre,
     th-literate-program {
         background-color: transparent;
-        border: 1px solid var(--border-1);
+        border: var(--1px) solid var(--border-1);
     }
 }
 
@@ -280,7 +290,7 @@ pre>code,
 th-literate-program>code {
     padding: 0;
     background: none;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 th-literate-program {
@@ -305,8 +315,8 @@ img {
 /* Also regarding images - make them look a bit more pretty by default */
 
 img.pic {
-    border-radius: 6px;
-    margin: 8px 0;
+    border-radius: var(--6px);
+    margin: var(--8px) 0;
 }
 
 /* Image hints for tweaking rendering */
@@ -365,23 +375,23 @@ a.secret {
 
 blockquote {
     margin: 0;
-    padding: 4px 12px;
-    margin: 4px 0;
-    border-left: 4px solid var(--border-1);
+    padding: var(--4px) var(--12px);
+    margin: var(--4px) 0;
+    border-left: var(--4px) solid var(--border-1);
 }
 
 /* And tables. */
 
 table {
-    margin: 8px 0;
+    margin: var(--8px) 0;
 }
 
 table,
 th,
 td {
-    border: 1px solid var(--border-2);
+    border: var(--1px) solid var(--border-2);
     border-collapse: collapse;
-    padding: 4px 10px;
+    padding: var(--4px) var(--10px);
 }
 
 th {
@@ -396,7 +406,7 @@ th {
 hr {
     width: 100%;
     border: none;
-    border-top: 1px solid var(--border-1);
+    border-top: var(--1px) solid var(--border-1);
     margin-top: 2em;
     margin-bottom: 2em;
 }
@@ -404,11 +414,11 @@ hr {
 /* Style the noscript box a little more prettily. */
 
 .noscript {
-    padding: 16px;
+    padding: var(--16px);
     background-color: #fde748;
     color: var(--text-color-light);
-    border: 1px solid #6c581c;
-    border-radius: 8px;
+    border: var(--1px) solid #6c581c;
+    border-radius: var(--8px);
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
@@ -416,7 +426,7 @@ hr {
 
 .noscript p {
     margin-top: 0;
-    margin-bottom: 16px;
+    margin-bottom: var(--16px);
 }
 
 .noscript p:last-child {
@@ -464,7 +474,7 @@ h1.page-title {
     --recursive-wght: 800;
     margin-top: 0;
     margin-bottom: 0;
-    margin-left: 32px;
+    margin-left: 2.25rem;
     font-size: 1.25rem;
 
     & a {
@@ -489,7 +499,7 @@ a[data-cast~="new"] {
     color: var(--text-color);
     opacity: 50%;
 
-    margin-right: 16px;
+    margin-right: var(--16px);
 
     &.has-news {
         opacity: 100%;
@@ -501,7 +511,7 @@ a[data-cast~="new"] {
     }
 
     & .badge {
-        margin-left: 8px;
+        margin-left: var(--8px);
         text-decoration: none;
     }
 }
@@ -514,7 +524,7 @@ span.badge {
     --recursive-casl: 0;
 
     border-radius: 999px;
-    padding: 2px 6px;
+    padding: var(--2px) var(--6px);
     font-size: 0.9em;
 
     &.red {
@@ -528,7 +538,7 @@ span.badge {
     }
 
     &.before-content {
-        margin-right: 6px;
+        margin-right: var(--6px);
     }
 }
 
@@ -540,7 +550,7 @@ footer {
 
     & #footer-icon {
         color: var(--text-color);
-        padding-right: 24px;
+        padding-right: 1.75rem;
     }
 }
 
@@ -566,29 +576,29 @@ th-emoji-tooltip {
     z-index: 100;
 
     background-color: var(--background-color-tooltip);
-    padding: 8px;
-    margin-top: 8px;
-    border-radius: 6px;
+    padding: var(--8px);
+    margin-top: var(--8px);
+    border-radius: var(--6px);
 
     transition:
         opacity var(--transition-duration) cubic-bezier(0.22, 1, 0.36, 1),
         filter var(--transition-duration) cubic-bezier(0.22, 1, 0.36, 1),
         transform var(--transition-duration) cubic-bezier(0.22, 1, 0.36, 1);
     opacity: 0%;
-    filter: blur(3px);
+    filter: blur(var(--3px));
     pointer-events: none;
 }
 
 th-emoji-tooltip.transitioned-in {
     opacity: 100%;
-    filter: blur(0px);
+    filter: blur(0);
     transform: translateX(-50%) scale(1.0);
 }
 
 th-emoji-tooltip img {
     display: block;
-    max-width: 64px;
-    max-height: 64px;
+    max-width: 4.5rem;
+    max-height: 4.5rem;
 }
 
 th-emoji-tooltip p {
@@ -696,7 +706,7 @@ th-literate-program[data-mode="output"] {
         &::after {
             content: 'Error';
 
-            padding: 8px;
+            padding: var(--8px);
 
             position: absolute;
             right: 0;
@@ -720,7 +730,7 @@ th-literate-program[data-mode="output"] {
         &::after {
             content: 'Console';
 
-            padding: 8px;
+            padding: var(--8px);
 
             position: absolute;
             right: 0;
