@@ -1,8 +1,10 @@
+%% title = "C++"
+
 % id = "01H9R1KJESR2F420HE67HW4AVR"
 - design lessons from the best programming language of all time that everyone loves (not really)
 
 % id = "programming/cxx/access-modifiers-as-labels"
-+ access modifiers as labels (`private:`, `protected:`, and `public:`)
++ :page: access modifiers as labels (`private:`, `protected:`, and `public:`)
 
     % id = "01H9R1KJES39Z6RBCKY4E71PYD"
     - although Java and C#'s approach to symbol privacy may be verbose, it has one great advantage: it is stateless.

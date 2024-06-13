@@ -1,3 +1,7 @@
+% id = "01J09B24KXE16SKSHFTWPE5AM9"
+- NOTE: I haven't updated this branch in a while because I kind of got bored of doing music reviews.
+however the content's still here if you wanna read it
+
 % id = "01H969NN1B0752RC4VSEEK1CAT"
 + here you can find my thoughts on music I listen to
 
@@ -39,44 +43,44 @@
 
 % id = "music/album/aphex-twin/syro"
   content.link = "music/reviews/aphex-twin/syro"
-+ ### album: Aphex Twin - Syro
++ ### :page: album: Aphex Twin - Syro
 
 % id = "music/album/radiohead/a-moon-shaped-pool"
   content.link = "music/reviews/radiohead/a-moon-shaped-pool"
-+ ### album: Radiohead - A Moon Shaped Pool
++ ### :page: album: Radiohead - A Moon Shaped Pool
 
 % id = "music/album/radiohead/ok-computer"
   content.link = "music/reviews/radiohead/ok-computer"
-+ ### album: Radiohead - OK Computer
++ ### :page: album: Radiohead - OK Computer
 
 % id = "music/album/telefon-tel-aviv/map-of-what-is-effortless"
   content.link = "music/reviews/telefon-tel-aviv/map-of-what-is-effortless"
-+ ### album: Telefon Tel Aviv - Map of What Is Effortless
++ ### :page: album: Telefon Tel Aviv - Map of What Is Effortless
 
 % id = "01H9R1NKBDKVKZ2515CJJ2G8HJ"
 + the following albums I haven't had time to review yet, but I'm including them here for permalinking in case I do review them in the future
 
     % id = "music/album/aphex-twin/drukqs"
       content.link = "music/reviews/aphex-twin/drukqs"
-    + ### album: Aphex Twin - drukQs
+    + ### :page: album: Aphex Twin - drukQs
 
         % id = "01H9JB094GTG1TJ029CQ4PNMS0"
         - buy: [Bandcamp](https://aphextwin.bandcamp.com/album/drukqs)
 
     % id = "music/album/the-flashbulb/our-simulacra"
-    + ### album: The Flashbulb - Our Simulacra
+    + ### :page: album: The Flashbulb - Our Simulacra
 
         % id = "01H9R1NKBD8JA76ZBEFTJ62XV0"
         - buy: [Bandcamp](https://theflashbulb.bandcamp.com/album/our-simulacra)
 
     % id = "music/album/radiohead/hail-to-the-thief"
-    + ### album: Radiohead - Hail to the Thief
+    + ### :page: album: Radiohead - Hail to the Thief
 
         % id = "01H969NN1B6W19ENMTBJ0D48AF"
         - buy: [Bandcamp](https://radiohead.bandcamp.com/album/hail-to-the-thief)
 
     % id = "music/album/radiohead/the-king-of-limbs"
-    + ### album: Radiohead - The King of Limbs
+    + ### :page: album: Radiohead - The King of Limbs
 
         % id = "01H9JB094HBXF1G48ZME4WV2JA"
         - buy: [Bandcamp](https://radiohead.bandcamp.com/album/the-king-of-limbs)

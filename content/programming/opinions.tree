@@ -4,7 +4,7 @@
 - > "Hotland - Bad Opinion Zone"
 
 % id = "01HBTSXTTAMWJ2BM6395YS72FN"
-+ log verbosity levels are stupid
++ :page: log verbosity levels are stupid
 
     % id = "01HBTSXTTA946PJ04NN50P393T"
     - because when should you use any log level other than `error`, `warn`, or `info`?
@@ -60,7 +60,7 @@
         - I have no clue how well that will work but it would be pretty interesting
 
 % id = "01HBTSXTTASQDZK2HMCZXR3JJ4"
-+ tracing is better than logging
++ :page: tracing is better than logging
 
     % id = "01HBTSXTTA08SCA313HSFWB13T"
     - information about time spans is very valuable for profiling
@@ -89,7 +89,7 @@
         be a worthwhile thing to do
 
 % id = "01HCD90XT3G0J8G9Y48H5QT1GJ"
-+ don't use [`RefCell<T>`](https://doc.rust-lang.org/std/cell/struct.RefCell.html)
++ :page: don't use [`RefCell<T>`](https://doc.rust-lang.org/std/cell/struct.RefCell.html)
 
     % id = "01HCD90XT3X82R37WTJJABZF4Y"
     + usually if you have to resort to `RefCell<T>`, it means something is wrong with your architecture
@@ -149,7 +149,7 @@
                 drop the temporary `Ref<'b, T>` guard after the expression ends
 
 % id = "01HCG7KTGGAFS07QYJXZG6WHJJ"
-+ `None` or `Invalid` cases in enums are a bad idea
++ :page: `None` or `Invalid` cases in enums are a bad idea
 
     % id = "01HCG7KTGGHWTT1ME9GQ5VPFPR"
     - by having them, you're forcing your users into an API that forces them to think about the
@@ -163,7 +163,7 @@
         to represent a possibly-invalid case
 
 % id = "01HPEMVAH9JZWYPVN53GVFQNQY"
-+ NaNs should crash the program
++ :page: NaNs should crash the program
 
     % id = "01HPEMVAH97PDHJJS70SKG5VMN"
     - any time I see a NaN I cry inside knowing how much pain debugging it's gonna be.
@@ -178,7 +178,7 @@
         - worst case scenario you pull a Rust and disable those checks on release mode. that *does* work, but I don't like the idea of disabling numeric safety checks on release mode either.
 
 % id = "01HPEQ01JRMM17Y30BP7ZFKZRJ"
-+ operator overloading is good, but getters and setters are not
++ :page: operator overloading is good, but getters and setters are not
 
     % id = "01HPEQ01JR57B057439SY90BQ9"
     - this one stems from an argument I had today, so I'll write my thoughts for future generations' enjoyment here

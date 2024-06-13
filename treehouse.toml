@@ -15,6 +15,7 @@ description = "a place on the Internet I like to call home"
 # Social garbage
 "social/github" = "https://github.com/liquidev"
 "social/soundcloud" = "https://soundcloud.com/daknus"
+"social/listenbrainz" = "https://listenbrainz.org/user/liquidev/"
 
 # My own repositories
 "stitchkit/repo" = "https://github.com/abyteintime/stitchkit"

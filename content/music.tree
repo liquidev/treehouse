@@ -3,15 +3,15 @@
 
 % content.link = "music/reviews"
   id = "01H969NN1BJYFYJJR0F458ACPN"
-+ ### stuff I listen to
++ ### :folder: stuff I listen to
 
 % content.link = "music/fuck-drm"
   id = "01HPECQ3ZE1YKC1FS2X23H77R2"
-+ ### fuck DRM
++ ### :folder: fuck DRM
 
 % content.link = "music/spotify"
   id = "01HVNX7FMW6KJC9H3CQ7TX8ST6"
-+ ### Spotify
++ ### :folder: Spotify
 
 % id = "01H969NN1BR7BH7M7SXBPGB0WC"
 - in the future this section may grow another branch related to music making.

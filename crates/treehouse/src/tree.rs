@@ -166,6 +166,8 @@ impl SemaBranch {
             attributes.id
         );
 
+        let redirect_here = attributes.redirect_here.clone();
+
         let branch = Self {
             file_id,
             indent_level: branch.indent_level,
@@ -208,6 +210,38 @@ impl SemaBranch {
                         },
                     ]),
             )
+        }
+
+        for source_branch_named_id in redirect_here {
+            if let Some(old_branch_id) = treehouse
+                .branch_redirects
+                .insert(source_branch_named_id.clone(), new_branch_id)
+            {
+                let new_branch = treehouse.tree.branch(new_branch_id);
+                let old_branch = treehouse.tree.branch(old_branch_id);
+
+                treehouse.diagnostics.push(
+                    Diagnostic::warning()
+                        .with_code("sema")
+                        .with_message(format!(
+                            "two branches serve as redirect targets for `{source_branch_named_id}`"
+                        ))
+                        .with_labels(vec![
+                            Label {
+                                style: LabelStyle::Primary,
+                                file_id,
+                                range: new_branch.kind_span.clone(),
+                                message: String::new(),
+                            },
+                            Label {
+                                style: LabelStyle::Primary,
+                                file_id: old_branch.file_id,
+                                range: old_branch.kind_span.clone(),
+                                message: String::new(),
+                            },
+                        ]),
+                )
+            }
         }
 
         new_branch_id

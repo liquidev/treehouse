@@ -1,192 +1,169 @@
 %% title = "who that! (about me)"
 
-% id = "01H89P3CH836K8WKQ9BPR6RE3C"
-- hello! I am liquidex
+% id = "01J09B2BZXJ989S2SGWBNZ397C"
++ hello! I am **liquidex**.
 
-    % id = "01H89P3CH8YZY1MTZS3DZGGFKX"
-    + also known as…
+    % id = "01J09B2BZX54T2GSP8H3D62S6J"
+    + also known as **liquidex**
 
-        % id = "01H89P3CH8GAHS8DDW1HHEWA3P"
-        - **liquidex** (just including this here for linking sake)
+        % id = "01J09B2BZXQ31FV1M3PMM6Q0GX"
+        - this is [the identity function](https://en.wikipedia.org/wiki/Identity_function) applied to my nickname
 
-        % id = "01H89P3CH8ER0M5WZBXQ292A2N"
-        - **liquidev** on various [programming-related platforms][def:social/github]
+    % id = "01J09B2BZX0R0AX5QHND6EBRFE"
+    - also known as **liquidev** on [various programming platforms][def:social/github]
 
-        % id = "01H89P3CH8943QGT52K7MRW12Q"
-        - **lqdev**, before I realized that name is taken. since then I use liquidev but you may see
-          this older name in some places
+    % id = "01J09B2BZXT6AAJNPEQ044KCDR"
+    - also known as **lqdev**, before I realized that name was taken.
+    you may notice this older name in some places.
 
-        % id = "01H89P3CH81FTHTQ552N7N1S3A"
-        - **daknus** [on SoundCloud][def:social/soundcloud]
+    % id = "01J09B2BZXBS2K6MRQYXFH43PW"
+    - also known as **daknus** [on SoundCloud][def:social/soundcloud].
+    I use this as my music making alias.
 
-        % id = "01H89P3CH8PB76G26M4T8P6QDZ"
-        + **limiter** sometimes jokingly on Discord
+    % id = "01J09B2BZXAD196RA16JTY3K3T"
+    + also known as **limiter**?
 
-            % id = "01H89P3CH8Z4MXQ0C9EWV01DPX"
-            + **limitre**, which is British for limiter
+        % id = "01J09B2BZXNRYX758J5S00EZRG"
+        - or **limitre**, which is British for limiter.
 
-                % id = "01H89P3CH8P7HAGDJVGVWD96K7"
-                - y'know. like centre is British for center, metre is British for meter? :hueh:
+% id = "01J09B2BZX25TN31D0F18YQPB2"
++ I'm a *he/him*-type cat person doing various stuff with computers
 
-    % id = "01H89P3CH8FA0JTX1TPRZV4BFM"
-    - before you ask, pronouns are _he/him_
+    % id = "01J09B2BZXWB695M9XYF7CZ2ZF"
+    - > you said cat person, does that mean you don't like dogs?
 
-    % id = "01H89P3CH8A12NYRT3SC324Y2M"
-    - I'm a programmer from Poland
+        % id = "01J09E55G0QWS7X0YNBWRW222X"
+        - I prefer cats myself. though foxes are canids and I consider them pretty cute :smile:
 
-        % id = "01H89P3CH8VN1MPKS4RQFFW778"
-        + I work in the game industry
+    % id = "01J09E55G0MZ0WFQ3WC98YDDGT"
+    - > unless by *cat person* you mean…
 
-            % id = "01H89P3CH88PKW82498V91VZ4W"
-            + somehow my skills brought me to work as a game programmer at CD PROJEKT RED
+        % id = "01J09E55G0YWYMAP62Q7AM18BE"
+        + what? :clueless:
 
-                % id = "01H89P3CH8SPX5RZDWR00CZ436"
-                + not sure how that happened still so don't ask
+            % id = "01J09E55G09K80E6YE1T4E3KJJ"
+            - > y'know… like a *furry*?
 
-                    % id = "01H8YJDNJFB2BGT0ASDNM8S4JJ"
-                    - impostor syndrome going hard right now
+                % id = "01J09E55G0F5TVAK2MT80H598M"
+                + :clueless:
 
-        % id = "01H89P3CH8QSQY1M7TZVH1FYQM"
-        - but that game programming thing is just coincidence, in reality I love toying with
-          computers in general
+                    % id = "01J09E55G0WS63QCFBPP12EMRM"
+                    + …
 
-            % id = "01H89P3CH8TACWXWWZGGHQD2MK"
-            - so you may see me doing other random and weird stuff
+                        % id = "01J09E55G0H58Q8V8NV23QSQGC"
+                        - huh. you're still here? :ahyes:
 
-                % id = "01H89P3CH89P2Q9XGQD7BCF0R6"
-                - perhaps [compilers][def:stitchkit/repo] are one of those weird things
+                        welcome to the club!
 
-                % id = "01H89P3CH8DYZHMQTGZDAEBNXN"
-                + or [audio][def:dawd3/repo]
+                        unfortunately I've got no fursona to show off at this moment, please come back later.
 
-                    % id = "01H89P3CH859AAGFEABN8EANSJ"
-                    - my favorite part of that is blowing my own eardrums out with my math skill, which is rather *underdeveloped* so to speak
+% id = "01J09B2BZX9QV3PM9YWPS628PJ"
++ I'm a game developer by trade :rarog:
 
-                % id = "01H89P3CH8R9WKSMMQVY0XARSF"
-                + heck even web development out of all things. I mean you're reading _my_ website right
-                now after all
+    % id = "01J09B2BZXNE1H2SXW9KSZK7Z5"
+    + I do various developer productivity-related stuff at CD PROJEKT RED, mostly focusing on the DX of delivering breathtaking games using the Unreal Engine.
 
-                    % id = "01H89P3CH88M1GZ3WN3RXCW1NN"
-                    - like truly *my my* website with *my own* backend, static generator, and all that
+        % id = "01J09B2BZX00X6A8Z6H4R16BDS"
+        - technically I don't really love *playing* big and serious games, but making one is a whole other challenge - a challenge of *scale*.
+        which is what really gets me going!
 
-                    % id = "01H89P3CH8CFBVXBF5W3GYA70X"
-                    - none of that pre-built stuff, this baby is generated from the *purest* samples
-                    of Uranium-235 I could source
+% id = "01J09B2BZXQKWYHC51D7QCJ6PF"
+- other than game development, I program various other things…
 
-                        % id = "01H89P3CH8HYM5XZRH56880TP5"
-                        - … wait you're saying building your own nuclear reactor at home is illegal? UHHHHHHHHHH
+    % id = "01J09B2BZXRE1VPASMR52RWNTH"
+    - [compilers][def:stitchkit/repo],
 
-                % id = "01H89P3CH8EGD14MHJEET6MJ27"
-                - who knows at this point
+    % id = "01J09B2BZXYXA16X95H2JKDJNK"
+    + [audio][def:dawd3/repo],
 
-    % id = "01H89P3CH8RFRCTC500059H5G8"
-    - apart from programming I also take interest in other various things
+        % id = "01J09B2BZXY51P9D4BM8AADGYW"
+        - my favorite part of that is blowing out my own eardrums with my math skill, which is rather *underdeveloped* so to speak,
 
-        % id = "01H89P3CH864VWM4JXQ0N5C1YV"
-        - like video games <!-- [video games][branch:games] -->
+    % id = "01J09B2BZX2P7XDH81BJ079PCP"
+    + [websites](/),
 
-            % id = "01H89P3CH8WK8F2XKBXFVE8KNX"
-            - yeah those are pretty great aren't they
+        % id = "01J09B2BZXN6GWK2JPC7YGT0E1"
+        + after all the treehouse is *my* website, with *my* own backend, static generator, *my* own design, [an only partially stolen color scheme](https://github.com/ayu-theme/ayu-colors), and most important, lots of fun stuff hidden underneath the surface.
 
-            % id = "01H89P3CH817HEVWCFHGJEGQHR"
-            - my faves are:
+            % id = "01J09B2BZXZAEPD36XG495WYFH"
+            + like have you wondered just how deep the rabbit hole goes?
+            I'm sure you can find some rather interesting easter eggs in there if you look hard enough.
+            who knows what you may find?
 
-                % id = "01H89P3CH8MHZMYKRFV30GSYWC"
-                - [A Hat in Time](https://hatintime.com)
+                % id = "01J09B2BZX0M925RBXR023XM6X"
+                - <!-- what I mean is if you haven't seen anyone else here, you haven't looked hard enough. -->
 
-                % id = "01H89P3CH8G625Q1NQVT8CJ3K1"
-                - [DELTARUNE](https://deltarune.com)
+    % id = "01J09B2BZXX2R1TH10GGZC25KG"
+    + you name it. as long as it poses a cool and fun challenge, I'll be on it :verified:
 
-                % id = "01H89P3CH89TQ3SFG2Z40J29HX"
-                - they're pretty great you should check them out <!-- (also check out [my games corner][branch:games]? :pleading_face:) -->
+        % id = "01J09B2BZX5WED9XE2RAADFW8M"
+        - there's probably only one thing I *don't* like and it's backend web development. where did all the simplicity go?
 
-        % id = "01H89P3CH8AJATQ5DJBBFXJ1NH"
-        - or [music][page:music]
+            % id = "01J09B2BZXQQMPDYQJ052131GT"
+            - obviously treehouse is a very simple website with a very simple backend, but. seriously.
+            why do people have to make websites be so complicated. and slow.
 
-            % id = "01H89P3CH8XQ59YZD3RFRYQ2BM"
-            - various genres from electronic through jazz and even rock
+% id = "01J09B2BZXS6NZKYS6CTWMG1QY"
+- and other than programming, I do various other things…
 
-                % id = "01H89P3CH8V8H7BVWYTFHYQQTZ"
-                - in that order of priority
+    % id = "01J09B2BZXX9PFV33J591B3C9K"
+    + like video games! those are pretty great, aren't they?
 
-                % id = "01H89P3CH8ZMVBKS6CXGRB8QHB"
-                - electronic definitely leaning toward the more um, _eccentric_ side
+        % id = "01J09B2BZXDB8CZK0X6JMRMNR1"
+        + my favorites are :hueh: [A Hat in Time](https://hatintime.com) and :nap: [DELTARUNE](https://deltarune.com).
+        if you haven't played them yet, I highly recommend checking them out!
 
-                    % id = "01H89P3CH836WYRR77815D8HCH"
-                    - all you have to know is I listen to Venetian Snares pretty regularly
+            % id = "01J09B2BZX9CM8B5G42E2KYDBT"
+            - (you may wanna check out [UNDERTALE](https://undertale.com/) before you play Deltarune though.)
 
-                    % id = "01H89P3CH8C719GX9CTK36FXXN"
-                    + if you don't know what that means then good for you
+    % id = "01J09B2BZXYCRJDVJAVYT1P50P"
+    + [music][page:music] is also cool.
+    did you know I listen to a lot of [music][page:music]?
+    and I mean, [a lot of ][def:social/listenbrainz][music][page:music]!
 
-                        % id = "01H8V55G7M7KEKBYX2D2RP9QQE"
-                        + but if you so insist… [you have been warned](https://www.youtube.com/watch?v=BB7ExLcUuH0)
+        % id = "01J09B2BZX5C2KBA2ZC0X0YYD6"
+        -
 
-                            % id = "01H8V55G7MWC7MQ9YQVDDFZ9QV"
-                            - (this is one of the more crazy ones anyways. he makes some [more normal stuff](https://www.youtube.com/watch?v=IuI6MMUtNdU) too if you care)
+    % id = "01J09B2BZX39FGP634BM5HJ0FD"
+    + did I mention [music][page:music]?
+    I also ~~aspire to~~ [make ][def:social/soundcloud][music][page:music][ sometimes][def:social/soundcloud].
 
-                % id = "01H89P3CH8XP6ZA1RWYVZWRXN3"
-                - jazz and rock I don't really know as well but I've been trying to broaden my
-                  horizons a bit
+        % id = "01J09B2BZXGG5HYVYDNPVFRKY1"
+        - I say aspire because I'd really like to be better at it, but *time*, man…
 
-                    % id = "01H89P3CH8EYKDYN83VPQQ088C"
-                    + I really like artists who merge them with elements of electronic music
+    % id = "01J09B2BZXY6AN3242DYECK74Z"
+    + from time to time I also try to draw things, but *time*, it's killing me, man…
 
-                        % id = "01H89P3CH8G5CFPME3Z88GNDD8"
-                        - ~~while the music corner is under construction I can recommend [Elaenia by Floating Points](https://floatingpoints.bandcamp.com/album/elaenia)
-                          as a good example of that~~ the music corner is no longer under construction. go [check it out][page:music]!
+        % id = "01J09B2BZXN3263NEHCKQ931TS"
+        - I'm sure one day you'll see the results of my practice, (unless you've already seen them :ralsei_wave:,) but for now I keep them largely to myself.
 
-    % id = "hello"
-    - feel free to come up to me and say hi!
+% id = "hello"
++ if all that sounds like an interesting bunch of words, feel free to come up to me and say hi!
 
-        % id = "01H89P3CH823H89YQJKH9DWMW9"
-        - I would love to make some new friends :ralsei_love:
+    % id = "01J09B2BZXEVKP4AM4NJ0ZY8VJ"
+    - I'd love to make some new friends :ralsei_love:
 
-        % id = "01H89P3CH8ZQ11ABP0YW86APN7"
-        - in person I'm pretty much exactly as on this website lol
+    % id = "01J09B2BZXMMYDQG3SD6KK8M5H"
+    - you can reach out to me via
 
-            % id = "01H89P3CH8DHJC5BJMHVBMDAXS"
-            - like this website is literally meant to be a reflection of my personality and a literal braindump
+        % id = "01J09B2BZXZQSRXV8EHT68YE7M"
+        - Discord - username is [this][branch:01J09B2BZX54T2GSP8H3D62S6J]
 
-            % id = "01H89P3CH80XYPAHXH1QZJ9SMZ"
-            + so I type here like I would type on some chat platform. but it's a tree, just like Reddit!
+        % id = "01J09E55G1DB0RCJ2Z0DND38KF"
+        - Matrix - username is [this][branch:01J09B2BZXT6AAJNPEQ044KCDR]
 
-                % id = "01H8V55G7MS3NBPFFFKYE8YGFK"
-                - except on chat I don't capitalize "I" so if that pisses you off you may wanna brace yourself (or just tell me, I'll do my best to adapt)
+        % id = "01J09E55G1VQ1K14BZ1QW1X2CA"
+        + email - for people, it's under this domain and is `hi`
 
-                    % id = "01H9DAJRZDNS9MSC9SK6HTEX2Z"
-                    - and Reddit sucks!
+            % id = "01J09E55G1AE9HZZYV2A7S8FR7"
+            - if you're not a person you can, I dunno.
+            what do robots like doing?
 
-        % id = "01H89P3CH8CD28KGX9GVRFK60E"
-        - anyways you can find me on
+            % id = "01J09E55G1AGZ51ZV5ZGFMF78H"
+            - listen I'm trying to ward off spam with this weird wording, but I bet you can figure out my email adddress from this pretty easily.
 
-            % id = "01H89P3CH8EMM31JEMJRVRAKF4"
-            + Discord - username is [this][branch:01H89P3CH8GAHS8DDW1HHEWA3P]
+            % id = "01J09E55G1XKF12N27Y8TCMQPY"
+            - if not then my email is not that hard to find in other places.
 
-                % id = "01H89P3CH89HHDVHGB9GE287TR"
-                - I'm most active there so you'll have the best chance of getting a reply
-
-                % id = "01H89P3CH8FBBJ6FKDCYDMD3T5"
-                - you'll know it's me if you see a profile with a fluffy boy avatar
-
-            % id = "01H89P3CH8WTBKXP0GGN0HYQK2"
-            + Matrix - username is [this][branch:01H89P3CH8943QGT52K7MRW12Q] at gacko.pl
-
-                % id = "01H89P3CH832E4GK0NJ77KED06"
-                - I try to be as active there as on Discord but my availability may be a little more
-                  limited
-
-            % id = "01H89P3CH8A31GJE0A0JTMK00B"
-            - just don't forget to wave at me when you do! I need to tell you apart from bots somehow
-
-            % id = "01H89P3CH8R323RCDZAG6Y6C1X"
-            - my email for people is under this domain and is `hi`
-
-                % id = "01H89P3CH8TAC5AB4QVA3E2Z0E"
-                - if you are not a person you can, I dunno. what do robots like doing?
-
-                % id = "01H89P3CH8QTANJJ5F1E4GCBNK"
-                - listen I'm trying to ward off the spam with this weird wording but I bet you can
-                  figure out my email address from this pretty easily
-
-                % id = "01H89P3CH80QR285WFDTK5X5VF"
-                - if not then look at my GitHub it also has an email address
+        % id = "01J09E55G1T4PPVBXH7PSR8ZNY"
+        - just don't forget to wave at me if you do - I need to tell you apart from bots somehow!

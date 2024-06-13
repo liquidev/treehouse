@@ -43,6 +43,8 @@ pub struct Treehouse {
     pub branches_by_named_id: HashMap<String, SemaBranchId>,
     pub roots: HashMap<String, SemaRoots>,
 
+    pub branch_redirects: HashMap<String, SemaBranchId>,
+
     missingno_generator: ulid::Generator,
 }
 
@@ -55,6 +57,8 @@ impl Treehouse {
             tree: SemaTree::default(),
             branches_by_named_id: HashMap::new(),
             roots: HashMap::new(),
+
+            branch_redirects: HashMap::new(),
 
             missingno_generator: ulid::Generator::new(),
         }

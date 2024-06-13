@@ -22,8 +22,8 @@ this branch is about that.
 
 % content.link = "design/sidebars"
   id = "01HR9ZTS6T2ZBWGMJP8376NGX1"
-+ sidebars
++ :page: sidebars
 
 % content.link = "design/digital-textures"
   id = "01HQ8JHZ5QTZXQW3M26CXPFQDF"
-+ on digital textures
++ :page: on digital textures

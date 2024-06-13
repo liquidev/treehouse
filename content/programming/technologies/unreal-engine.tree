@@ -1,3 +1,5 @@
+%% title = "Unreal Engine"
+
 % id = "01H8Y0CKD0ZDHAH1ET3BJNDS4E"
 - this is that really cool game engine I work with on a daily basis
 
@@ -9,16 +11,16 @@
 
 % id = "programming/technologies/unreal-engine/blueprint"
   content.link = "programming/technologies/unreal-engine/blueprint"
-+ ### thoughts on Blueprint
++ ### :page: thoughts on Blueprint
 
 % id = "01HP1FESY5WVJG4X80AZ4ZBX5D"
-- ### random but cool things
+- ### :folder: random but cool things
 
     % content.link = "programming/technologies/unreal-engine/generated-body"
       id = "01HV1DGFHP6GB268MDGGDXMR12"
-    + how does `GENERATED_BODY()` work exactly?
+    + :page: how does `GENERATED_BODY()` work exactly?
 
     % content.link = "programming/technologies/unreal-engine/fixes"
       id = "01HP1FESY5ZS6YTZXA8QTT5V1Z"
-    + data validation quick fixes
+    + :page: data validation quick fixes
 

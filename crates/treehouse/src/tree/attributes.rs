@@ -61,6 +61,12 @@ pub struct Attributes {
     #[serde(default)]
     pub id: String,
 
+    /// Redirect old and deleted listed in the list to this branch.
+    ///
+    /// This can be used to keep links permanent even in case the structure of the treehouse changes.
+    #[serde(default)]
+    pub redirect_here: Vec<String>,
+
     /// Controls how the block should be presented.
     #[serde(default)]
     pub content: Content,

@@ -160,7 +160,13 @@ async fn sandbox(State(state): State<Arc<Server>>) -> Response {
 
 async fn branch(RawQuery(named_id): RawQuery, State(state): State<Arc<Server>>) -> Html<String> {
     if let Some(named_id) = named_id {
-        if let Some(&branch_id) = state.treehouse.branches_by_named_id.get(&named_id) {
+        let branch_id = state
+            .treehouse
+            .branches_by_named_id
+            .get(&named_id)
+            .copied()
+            .or_else(|| state.treehouse.branch_redirects.get(&named_id).copied());
+        if let Some(branch_id) = branch_id {
             let branch = state.treehouse.tree.branch(branch_id);
             if let Source::Tree { input, tree_path } = state.treehouse.source(branch.file_id) {
                 let file_path = state.target_dir.join(format!("{tree_path}.html"));

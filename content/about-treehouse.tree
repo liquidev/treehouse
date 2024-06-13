@@ -145,7 +145,7 @@
 + ### the treehouse is a mostly statically generated website
 
     % id = "01H89RFHCQ2GWJPTAKTRGS1QAC"
-    - weird poems and philosophical talk are over, it's time to focus on the tech.
+    + weird poems and philosophical talk are over, it's time to focus on the tech.
 
         % id = "01H8V55APDEF8WTQ3KFC7E9HWB"
         - call this an overview, Defense of Design, or what have you
@@ -170,14 +170,14 @@
                     - (yes, I know that website is super old, but I still find it incredibly funny :hueh:)
 
         % id = "01H89RFHCQRA4BBBWDC8K68BB0"
-        - if you wanna browse the source code, feel free to [check it out on GitHub][def:treehouse/repo]
+        - if you wanna browse the source code, feel free to [check it out here][def:treehouse/repo]
 
     % id = "01H89RFHCQFWC2FWBAE9PVNC08"
     - as I alluded to [here][branch:01H89RFHCQ3EAP0F6PRSEK7S1T], treehouse is built to decay gracefully
       as you take away the fancy parts.
 
         % id = "01H8V55APDMPF3WFTNTFSYBQRF"
-        - you will be able to read it just fine without JavaScript, just that it'll be a little
+        + you will be able to read it just fine without JavaScript, just that it'll be a little
           less pleasant.
 
             % id = "01H8V55APD1RSSRMDZ3CEE9S9C"
@@ -220,7 +220,7 @@
           janky, but the content should still be fully readable.
 
     % id = "01H8V55APDWN8TV31K4SXBTTWB"
-    - myself, I'm writing this content in a bespoke format called `.tree`.
+    + myself, I'm writing this content in a bespoke format called `.tree`.
 
         % id = "01H8V55APDGX4EYV8W7ECXZ6FP"
         - the structure of `.tree` files is extremely minimal. there are only a few syntactic features to speak of.
@@ -229,7 +229,7 @@
         - here's a taste of `.tree`:
 
             % id = "01H8V55APD5686J8GTXP118V8E"
-            - ```
+            - ```treehouse
             % id = "root"
             - this is a branch
 
@@ -276,10 +276,10 @@
                 - …actually, that's a lie. see that code example above? Markdown code fences \`\`\` are handled specially to let embed `.tree` source code blocks within `.tree` files. that's all.
 
     % id = "01H8V55APDVQB6AD23Y6PZPPB8"
-    - you may have noticed in that code example above that almost every branch has an `id` attribute.
+    - every branch in the treehouse has a globally unique ID.
 
         % id = "01H8V55APD4H5JT8NTYCCTN77G"
-        - this is because I want every branch to be individually linkable and quotable.
+        + this is because I want every branch to be individually linkable and quotable.
 
             % id = "01H8V55APDPSZNP9AK7QRK62BG"
             - if you ever want to link anything I said in an argument online: hover over a branch, right-click that little _permalink_ icon that's on the right side of the screen, and _Copy Link_.
@@ -288,7 +288,7 @@
         - but manually coming up with ids for branches would be quite the nuisance.
 
             % id = "01H8V55APDXV0KRVEF9PTA72J7"
-            - that's why with the power of Tools Programming™, I built a tool that fills out all the ids for me.
+            + that's why with the power of Tools Programming™, I built a tool that fills out all the ids for me.
 
                 % id = "01H8V55APD8VG7WE6JX5JBDJEC"
                 - I chose [ulids](https://github.com/ulid/spec) for generated ids, for a few reasons:
@@ -324,10 +324,20 @@
                             - which is cool because it's much denser while avoiding ambiguous characters - `0`, `O`, and `o` are all interpreted as `0` (zero).
 
     % id = "01H8V55APDXT064G9PA78JW0CM"
-    - noticed how fast the treehouse restores your state? there's basically no delay.
+    + noticed how fast the treehouse restores your state? there's basically no delay.
 
         % id = "01H8V55APDGS626M5Y6DDAS9ZE"
-        - this is because it restores your state _as it's loading in_, by using [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).
+        + this is because it restores your state _as it's loading in_, by using a [`MutationObserver`](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).
+
+            % id = "01J09E55GTGHTGJP3JQN1SY4BM"
+            - initially the treehouse used Web Components, but for Webkit compatibility reasons, I had to switch that out to a more bespoke solution.
+
+            % redirect_here = ["01H8V55APD4V54M2EKQKQ4GNP8"]
+              id = "01J09E55GTFSQW46JSG3T3SSMQ"
+            - elements such as linked branches are implemented using _spells_, which are a custom framework for composing behaviors on top of existing elements.
+
+        % id = "01J09E55GTHJXWRG0P9MADASRQ"
+        + in addition to that, many things on the treehouse are Web Components, which are another awesome API that lets you prepare the DOM as soon as everything is ready.
 
             % id = "01H8V55APD73AG65NP2VGX6169"
             - despite many people calling that API extremely low-level, I beg to differ. it's actually pretty easy and pleasant to use.
@@ -335,20 +345,17 @@
             % id = "01H8V55APDDHYNRZXQDEG0A242"
             - most importantly it lets me enhance vanilla `<li>` elements with custom behavior executed on load, which I use to restore your reading progress as the page is loading in.
 
-        % id = "01H8V55APD4V54M2EKQKQ4GNP8"
-        - linked branches also use Web Components by the way.
-
     % id = "01H8V55APDKY0HYEJM2C1CJHEG"
-    - while not strictly a technical topic, I'd like to shout out [Recursive](https://recursive.design) for being an awesome font :ralsei_love:
+    + while not strictly a technical topic, I'd like to shout out [Recursive](https://recursive.design) for being an awesome font :ralsei_love:
 
         % id = "01H8V55APD88JCQBQ4SHVCYR97"
         - (not to be confused with [Font Awesome](https://fontawesome.com/), which I do not use here. icon designs are my own.)
 
         % id = "01H8V55APD0S00ACN0YY7Y9MSW"
-        - being a variable font, I can tweak the text's look and feel on many different axes.
+        + being a variable font, I can tweak the text's look and feel on many different axes.
 
             % id = "01H8V55APDRG88JRV74MMDTV4J"
-            - the one that I wanted to shout out in particular is `CASL`, which lets me make it look a lot more happy and playful.
+            + the one that I wanted to shout out in particular is `CASL`, which lets me make it look a lot more happy and playful.
 
                 % id = "01H8V55APDMP5FE9ZCMRACH18W"
                 + almost like Comic Sans, but without all the stigma.
@@ -363,7 +370,7 @@
                             - not everyone runs Windows or macOS, so just assuming the reader has Comic Sans installed isn't ideal.
 
             % id = "01H8V55APD2BPGQXEK7JARYJ9H"
-            - ~~in particular the variant on my website is 100% casual (`CASL`), and -2.0 slanted (`slnt`).~~
+            + ~~in particular the variant on my website is 100% casual (`CASL`), and -2.0 slanted (`slnt`).~~
 
                 % id = "01H8V55APDXZJE3HHH5AQ8ZQHF"
                 + that little bit of slant makes it look just a little more like handwriting.
@@ -384,4 +391,4 @@
                         - not to mention I'd have to handwrite a lot of text, and *then* either use OCR or type it all out again for accessibility. yeah, no thanks methinks.
 
                 % id = "01HRD97CSJSQN78SGM691B6PNQ"
-                - UPDATE: not slanted anymore. `slnt` is 0.
+                - NOTE: not slanted anymore. `slnt` is 0.
