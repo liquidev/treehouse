@@ -10,6 +10,10 @@
       content.link = "treehouse/changelog"
     + what's going on inside the house?
 
+    % id = "treehouse/issues"
+      content.link = "treehouse/issues"
+    + issues
+
     % id = "treehouse/credits"
     + credits
 

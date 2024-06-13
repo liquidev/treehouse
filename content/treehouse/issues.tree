@@ -1,0 +1,179 @@
+%% title = "issues"
+   styles = ["page/treehouse/issues.css"]
+
+% id = "01J093FGZF8R1MZR0QG7R6G2EB"
+- welcome! this page lists all publicly known issues with the treehouse, as well as future improvement plans etc.
+
+    % id = "01J093FGZFX9DW9YNDD61G1BX0"
+    - to submit an issue, please [get in touch][branch:hello].
+
+    % id = "01J093FGZFX3E14J7C5YPS97HC"
+    - before you do, please have a cursory glance at all the issues and ensure your issue hasn't already been fixed, or marked as "won't fix"
+
+% id = "issue-list"
+- ## issue list
+
+
+
+    % id = "01J095FBXRC760YT7PZWWXQCMT"
+    + :todo: :l_feat: add search feature to issue tracker
+
+        % id = "01J095FBXRR0B8ESMDNWGVE73V"
+        - it can be kind of annoying to have to navigate all the issues manually
+
+    % id = "01J093FGZFWANMZ16P3FS092QP"
+    + :todo: :l_art: this issue tracker lacks icons. lol
+
+        % id = "01J094P8H3Z82NASXGT5ASQ13J"
+        - in the meantime, if you're reading this - the `:l_*:` emoji are meant to be issue labels.
+
+        % id = "01J095FBXRP9WNX3XJ30WCKQRN"
+        - BEFORE YOU SCREAM AT ME THAT EVEN AS STUPID OF A THING AS `:todo:` IS MISSING - I KNOW.
+        LET ME COOK.
+
+    % id = "01J093FGZFTR7MET3K0J8XDV2J"
+    + :todo: :l_dev: a more sophisticated build system to avoid rebuilding all pages when that's not needed
+
+        % id = "01J093FGZFPS5BF2AMKZEJA5TE"
+        - currently the treehouse rebuilds the entirety of itself, always
+
+        % id = "01J093FGZFS4TTF9E212VJRPK7"
+        - I'd like to explore a more incremental approach where only changed files + dependencies are rebuilt
+
+            % id = "01J094P8H32GPSG0KPNXE345CH"
+            - probably without too much complicated dependency tracking because fuck that.
+            reparsing JS and HTML every single time cannot be fast
+
+    % id = "01J093FGZFGBDJ5QPHSZW9NVB5"
+    + :todo: :l_content: fill in the rest of my projects in [page:programming/projects]
+
+    % id = "01J093FGZF0D919Q1CS67SR4S2"
+    + :todo: :l_perf: experiment with fetching smaller amounts of HTML to fill in trees
+
+        % id = "01J093FGZFVCJFK2S2Z5YEMZ3N"
+        - currently opening an externally-linked branch fetches its linked page in its entirety, except that's not really necessary
+
+        % id = "01J093FGZFGZQX0ZNW1HTPPYGM"
+        - arguably the current `_tree.hbs` template is not that large, but it's not exactly small either
+
+    % id = "01J093FGZFMA8RWXA3QTMFX4A0"
+    + :todo: :l_content: [page:programming/blog/lvalues] C compiler that desugars lvalue operations
+
+        % id = "01J093FGZFDYYGHEQJ63AQ7HKX"
+        - it would be nice if we had a way of letting the user explore the idea in more detail
+
+    % id = "01J093FGZFR8YQB58SSDT4QDY4"
+    + :todo: :l_perf: experiment with caching HTML pages/fragments
+
+        % id = "01J093FGZF3JH8DVAKYDYETVQH"
+        - currently the browser fetches each branch from scratch because they cannot be cached
+
+        % id = "01J094P8H3AXF4J13KQGWW7ZNY"
+        - maybe exploiting cache control headers would help here to reduce the need to redownload the same content over and over again
+
+        % id = "01J094P8H3R910T6R10S62QA40"
+        - maybe using IndexDB to save branch content and fetch it quickly would help too.
+        but I don't like that as much as just using what the browser offers.
+
+    % id = "01J093FGZF8M0Q02YX3VFSZ06X"
+    + :todo: :l_feat: RSS/Atom feed
+
+        % id = "01J094P8H3VZKESVHKVJRVXTG1"
+        - there's no real way to subscribe to updates from the treehouse yet. (talking about [page:treehouse/new] here)
+
+        % id = "01J094P8H3Q59F5CAE8CK6DWYY"
+        - arguably this might be a bit hard, since it seems like feed readers are meant to let you read the whole post inline - which uh, treehouse, uhhhh
+
+            % id = "01J094P8H37P5F1MP14758ZNQH"
+            - its structure makes this kind of hard
+
+    % id = "01J093FGZFPT3EF8XX6ZRPJVR9"
+    + :todo: :l_a11y: respect user's font size instead of forcing 14px
+
+    % id = "01J093FGZF3M6HR6E0X3P44D0M"
+    + :todo: :l_a11y: respect `@media (prefers-reduced-motion: reduce)`
+
+        % id = "01J094P8H314H637A9ECGTCT95"
+        - should be pretty easy to implement this - we control all transitions via a single `var(--transition-duration)` CSS variable
+
+    % id = "01J093FGZFYEFPV01SG9MKM0GT"
+    + :todo: :l_feat: implement [Webmentions](https://indieweb.org/Webmention)
+
+    % id = "01J093FGZFJZ191RSZFVSND6QE"
+    + :todo: :l_content: leftover TODO in [tairu page][page:programming/blog/tairu]
+
+    % id = "01J093FGZF5PEM6EWCDEKSX8S0"
+    + :todo: :l_feat: :l_sandbox: do not load iframes that are out of viewport
+
+        % id = "01J094P8H3KK35GQ0A0KMMAPHQ"
+        - this slows down loading a page initially and contributes to layout shift when you're linked to a branch that's very far down the bottom of the page
+
+    % id = "01J093FGZFMAFSRZQ8QPMQRW04"
+    + :todo: :l_dev: fallback and dev servers
+
+        % id = "01J094P8H35B433CRTS1TYR7R8"
+        - add a fallback server that nginx redirects to while the main server is rebuilding
+
+            % id = "01J094P8H3C9ZMA482D49ZEM9F"
+            - once the main server is rebuilt, we boot it up and restart the fallback (which will be quick since there's no need to rebuild Rust code again)
+
+        % id = "01J094P8H3GDRAMRP025ZS352C"
+        - add a `https://dev.liquidex.house` that will let me push changes for friends to see without breaking shit on the main branch
+
+    % id = "01J093FGZF4400EAJYJGT2FFJJ"
+    + :todo: :l_sandbox: sandbox: <kbd>Delete</kbd> key does not work
+
+        % id = "01J094P8H34NSZDWC067ENAX3T"
+        - I managed to get the <kbd>Backspace</kbd> key to work fine in Firefox, but <kbd>Delete</kbd> still needs some work.
+
+    % id = "01J093FGZFMK5TM27RT7R2YM6N"
+    + :todo: :l_perf: cache static assets
+
+        % id = "01J094P8H3C9V6KFHTTS1MW467"
+        - this should improve performance for repeated visits *drastically* since Recursive isn't exactly the smallest font and takes a bunch of time to load
+
+    % id = "01J093FGZF2K8Y2S8JY61GBWHR"
+    + :todo: :l_feat: :l_a11y: keyboard navigation
+
+        % id = "01J094P8H38VGB9Q2AR70P0CR8"
+        - it should be possible to navigate the tree using your keyboard:
+
+            % id = "01J094P8H3HJCADRWQNGBWMR36"
+            - <kbd>↑</kbd> <kbd>↓</kbd> - choose branch
+
+            % id = "01J094P8H3B44DBXCY0N6AFG9D"
+            - <kbd>←</kbd> - collapse
+
+            % id = "01J094P8H30JBKYJPT01M0C68T"
+            - <kbd>→</kbd> - expand
+
+        % id = "01J094P8H3MTV093F4Z0AMSJQ9"
+        - these shortcuts overwrite browser functionality so it should probably only be enabled if the user starts pushing <kbd>Tab</kbd> to focus elements.
+
+            % id = "01J094P8H368794MNW65W074A0"
+            - this will probably also require us to add proper `tabindex`es to elements, which isn't currently done;
+            the <kbd>Tab</kbd> navigation experience is a hodgepodge, focusing on various elements that don't exactly make much sense.
+
+    % id = "01J093FGZFJB7BB1YNJX32MXCG"
+    + :todo: :l_feat: allow the user to "zoom into" a branch
+
+        % id = "01J094P8H34WES4R37NAE6DA6H"
+        - something akin to Logseq where you can click the bullet point to isolate the branch, because deep nesting can get a little unwieldy and hard to read (especially on mobile devices.)
+
+        % id = "01J094P8H3Z1XD5WZ61KP77A84"
+        - not sure how to solve this UX-wise.
+
+% id = "01J093FGZFS61ZEM1HCF6G5SRW"
++ curious why this is not GitHub?
+
+    % id = "01J093FGZFH0VCZ4T7WHMS9BJ5"
+    - since this is *my* website that is closed to contributions, I'd like the issue tracker to be hosted on a place *I* own.
+
+        % id = "01J093FGZFANJ8W6SPF78BS0XN"
+        - GitHub is simply not that, thank you very much.
+
+    % id = "01J093FGZFN5DTPA4AHSN3SPVK"
+    - hosting my own issue tracker does make submitting issues from eg. my phone impossible, but I'm trying out something new here.
+
+    % id = "01J094P8H36032168AZ72AJZJE"
+    - one thing that's a really cool side effect is that the tracker is linked to the rest of the treehouse, which makes it super easy to link stuff!

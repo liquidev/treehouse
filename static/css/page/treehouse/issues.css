@@ -1,0 +1,8 @@
+#treehouse\/issues\:issue-list>details>ul {
+
+    /* Make issue titles bold */
+    &>li>details>summary>th-bc,
+    &>li>div>th-bc {
+        --recursive-wght: 600;
+    }
+}
