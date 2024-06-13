@@ -70,13 +70,16 @@ main {
 
 /* Choose more pretty colors than vanilla HTML */
 
+:root {
+    scrollbar-color: var(--border-2) var(--shaded-background);
+    scrollbar-width: auto;
+    scrollbar-gutter: stable;
+}
+
 body {
     background-color: var(--background-color);
     color: var(--text-color);
 
-    scrollbar-color: var(--background-color);
-    scrollbar-width: auto;
-    scrollbar-gutter: stable;
 }
 
 body::selection {
