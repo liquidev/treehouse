@@ -10,6 +10,14 @@
 
 [read][page:programming/blog/tairu]
 
+% id = "01J0KRPMV7SS48B64BFCJZK7VQ"
+- it's updatin' time! I took some time to clean up old pages and update my *about me*.\
+over time I've been learning how to write content on the treehouse effectively, and the new about me reflects that.
+
+### about me (version 2)
+
+[read][page:about] [version 1][page:about/v1]
+
 % id = "01HY5R1ZW2PYZSSP2J2KAA23DA"
 - I recently got a question from my someone telling me they doesn't understand why `*x` does not read from the pointer `x` when on the left-hand side of an assignment.
 and that made me think,
