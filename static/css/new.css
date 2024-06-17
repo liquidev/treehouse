@@ -58,7 +58,7 @@ section {
     }
 }
 
-@media (max-width: 43rem) {
+@media (max-width: 600px) {
     .tree .branch-container {
         flex-direction: column-reverse;
     }

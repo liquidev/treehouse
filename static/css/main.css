@@ -65,7 +65,7 @@
 /* Article-style layout. Center everything and give it a maximum width */
 
 body {
-    max-width: 86rem;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
 
