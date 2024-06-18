@@ -15,6 +15,9 @@
       id = "01HY5R1ZW0M0Y5KQ1E8F0Q73ZT"
     + :page: places, or what is up with `*x` not always meaning the same thing
 
+    % content.link = "programming/blog/systems"
+    + :page: systems are just a bunch of code
+
     % content.link = "programming/blog/or-types"
       id = "01HTWN4XB2YMF3615BE8V6Y76A"
     + :page: OR-types
