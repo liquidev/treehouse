@@ -22,11 +22,6 @@
     --border-1: rgba(0, 0, 0, 15%);
     --border-2: rgba(0, 0, 0, 30%);
     --hover: rgba(0, 0, 0, 15%);
-
-    /* Hack to enable theme-matching scrollbars in <pre> */
-    --shaded-against-background: #f2f0ea;
-    --shaded-against-background-twice: #e6e4de;
-
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,9 +37,6 @@
         --border-1: #f7e5df26;
         --border-1-and-a-half: #f7e5df3a;
         --border-2: #f7e5df4d;
-
-        --shaded-against-background: #29313e;
-        --shaded-against-background-twice: #333a46;
     }
 }
 
@@ -267,7 +259,7 @@ pre,
 th-literate-program {
     padding: var(--8px) var(--12px);
     margin: var(--12px) 0;
-    background-color: var(--shaded-against-background);
+    background-color: var(--shaded-background);
     border-radius: 0.5em;
 
     transition: background-color var(--transition-duration);
@@ -279,17 +271,6 @@ th-literate-program {
     th-literate-program {
         background-color: transparent;
         border: var(--1px) solid var(--border-1);
-    }
-}
-
-
-@media (prefers-color-scheme: dark) {
-    .tree summary:hover {
-
-        & pre,
-        & th-literate-program:not([data-mode="output"]) {
-            background-color: var(--shaded-against-background-twice);
-        }
     }
 }
 
