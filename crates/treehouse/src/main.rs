@@ -10,6 +10,7 @@ use cli::{
 };
 use log::{error, info, warn};
 
+mod build;
 mod cli;
 mod config;
 mod fun;
