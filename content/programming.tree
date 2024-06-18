@@ -16,6 +16,7 @@
     + :page: places, or what is up with `*x` not always meaning the same thing
 
     % content.link = "programming/blog/systems"
+      id = "01J0PBKY1AAPGXG6NSRDTMV48F"
     + :page: systems are just a bunch of code
 
     % content.link = "programming/blog/or-types"
