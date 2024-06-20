@@ -10,6 +10,7 @@
 
 [read][page:programming/blog/tairu]
 
+% id = "01J0VNHPTRNC1HFXAQ790Y1EZB"
 - a friend of mine asked if it makes sense to define your own wrapper class for `SDL_Window` the way [Lazy Foo](https://lazyfoo.net/tutorials/SDL/10_color_keying/index.php) does it.
 I told him there's no reason to do that in modern C++, because `std::unique_ptr` can do everything for you anyways.
 
