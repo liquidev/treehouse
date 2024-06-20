@@ -1,0 +1,56 @@
+%% title = "C++ syntactic pitfall: access modifiers as labels"
+
+% id = "01H9R1KJES39Z6RBCKY4E71PYD"
+- although Java and C#'s approach to symbol privacy may be verbose, it has one great advantage: it is stateless.
+
+% id = "01H9R1KJES17626QXYEGM7XBC7"
+- the way they're implemented in C++, it's essentially a bit more parsing state you have to keep track of
+
+    % id = "01H9R1KJESG4K8T1K1G36T7HBP"
+    - and you know what other parsing state you have to keep track of in C++? - that's right, the preprocessor.\
+    access modifiers, like all tokens, are affected by the preprocessor, and you have to take that into account.
+
+        % id = "01H9R1KJESJ0G0VQAW994ZHR0S"
+        - take the following example:
+        ```cpp
+        class ComfyZone
+        {
+            std::vector<SoftBed> _soft_beds;
+
+        #if ENABLE_HUGS
+
+        public:
+            void hug(Person& person);
+
+        #endif
+
+            int _remaining_hugs = 10;
+        };
+        ```
+
+            % id = "01H9R1KJESDDX4089WVHVV8N3H"
+            + although quite contrived, it illustrates the problem pretty well
+
+                % id = "01H9R1KJESD2KED5TAFBY426A6"
+                - (before you ask, `_remaining_hugs` needs to be always present because it has to be (de)serialized no matter if hugging functionality is compiled in. otherwise we'd get data loss.)
+
+            % id = "01H9R1KJESES27VKVW4A0ZVM11"
+            - we intended for `_remaining_hugs` to be private, but if hugs are enabled, it becomes public.
+
+                % id = "01H9R1KJESTKW90R788SSPMNC6"
+                - this can be _very_ hard to spot if you have a big class with lots of declarations inside.
+
+        % id = "01H9R1KJESCJ3VC8ATPYFDCPSP"
+        - this can be worked around by banning access modifiers from appearing in `#ifdef`s, but you have to *realize* that this might happen
+
+            % id = "01H9R1KJES4ZYHVADDF80WAXH6"
+            - and I've seen instances of this exact thing occurring in the Unreal Engine codebase, which is *full* of long lists of declarations (made even longer by the prevalence of `UPROPERTY()` specifiers)
+
+% id = "01H9R1KJES182MCV2V0A4VHKKX"
+- even if we didn't have the preprocessor, that access modifier is state _you_ have to keep track of
+
+    % id = "01H9R1KJESH7PWNKCKW3H0WJHW"
+    - I very often find myself needing to scroll upward after <kbd>Ctrl</kbd>-clicking on a field or function declaration, just to find out if I can use it
+
+        % id = "01H9R1KJESFE6F1D4J5PA5Q381"
+        - (thankfully IDEs are helpful here and Rider shows you a symbol's visibility in the tooltip on hover, but I don't have Rider on code reviews)

@@ -1,0 +1,360 @@
+%% title = "freeing C memory automatically using `std::unique_ptr` and `std::shared_ptr`"
+
+- say you need to interface with a C library such as SDL2 in your C++ code
+
+    - obviously the simplest way would be to just use the C library.
+    ```cpp
+    int main(void)
+    {
+        SDL_Init(SDL_INIT_VIDEO);
+
+        SDL_Window* window = SDL_CreateWindow(
+            "Hello, world!",
+            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            800, 600,
+            0
+        );
+
+        bool running = true;
+        while (running) {
+            SDL_Event event;
+            while (SDL_PollEvent(&event)) {
+                if (event.type == SDL_QUIT) {
+                    running = false;
+                }
+            }
+        }
+
+        SDL_DestroyWindow(window);
+    }
+    ```
+
+    - this approach has the nice advantage of being really simple, but it doesn't work well if you build your codebase on RAII.
+
+        - and as much as I disagree with using it *everywhere* and injecting object-oriented design into everything, RAII is actually really useful for OS resources such as an `SDL_Window*`.
+
+- to make use of RAII you might be tempted to wrap your `SDL_Window*` in a class with a destructor…
+
+```cpp
+struct window
+{
+    SDL_Window* raw = nullptr;
+
+    window(const char* title, int x, int y, int w, int h, int flags)
+        : raw(SDL_CreateWindow(title, x, y, w, h, flags))
+    {}
+
+    ~window()
+    {
+        if (raw != nullptr) {
+            SDL_DestroyWindow(raw);
+            raw = nullptr;
+        }
+    }
+};
+```
+
+    + but remember the rule of three - if you declare a destructor, you pretty much always also want to declare a copy constructor, and a copy assignment operator
+
+        - the rule of three says that
+
+        > If a class requires a user-defined destructor, a user-defined copy constructor, or a user-defined copy assignment operator, it almost certainly requires all three.
+
+        from [cppreference.com](https://en.cppreference.com/w/cpp/language/rule_of_three#Rule_of_three), retrieved 2024-06-20 21:13 UTC+2
+
+            - imagine a situation where you have a class managing a raw pointer like our `window`.
+
+                - what will happen with an explicit destructor, but a default copy constructor and copy assignment operator, is that upon copying an instance of the object, the new object will receive the same pointer as the original -
+                and _its_ destructor will run to delete the pointer, _in addition to_ the destructor that will run to delete our original object - causing a double free!
+
+                - therefore we need a copy constructor to create a new allocation that will be freed by the second destructor.
+
+    - copying windows doesn't really make sense, so we can delete the copy constructor and copy assignment operator…
+    ```cpp
+    struct window
+    {
+        // -- snip --
+
+        window(const window&) = delete;
+        void operator=(const window&) = delete;
+    };
+    ```
+
+    - that alone is cool, but it would be nice if we could move a `window` to a different location in memory instead of having to keep it in place.
+
+        - having a copy constructor inhibits the compiler from creating a default move constructor and move assignment operator.
+
+    - so we'll also want an explicit move constructor and a move assignment operator:
+    ```cpp
+    struct window
+    {
+        // -- snip --
+
+        window(window&& other)
+        {
+            raw = other.raw;
+            other.raw = nullptr;
+        }
+
+        window& operator=(window&& other)
+        {
+            raw = other.raw;
+            other.raw = nullptr;
+            return *this;
+        }
+    };
+    ```
+
+    + this fulfills the rule of five, which says that if you follow the rule of three and would like the object to be movable, you will want a move constructor and move assignment operator.
+
+        - > Because the presence of a user-defined (or `= default` or `= delete` declared) destructor, copy-constructor, or copy-assignment operator prevents implicit definition of the move constructor and the move assignment operator, any class for which move semantics are desirable, has to declare all five special member functions: […]
+
+        from [cppreference.com](https://en.cppreference.com/w/cpp/language/rule_of_three#Rule_of_five), retrieved 2024-06-20 21:13 UTC+2
+
+    - with all of this combined, our final `window` class looks like this:
+    ```cpp
+    struct window
+    {
+        SDL_Window* raw = nullptr;
+
+        window(const char* title, int x, int y, int w, int h, int flags)
+            : raw(SDL_CreateWindow(title, x, y, w, h, flags))
+        {}
+
+        ~window()
+        {
+            if (raw != nullptr) {
+                SDL_DestroyWindow(raw);
+                raw = nullptr;
+            }
+        }
+
+        window(const window&) = delete;
+        void operator=(const window&) = delete;
+
+        window(window&& other)
+        {
+            raw = other.raw;
+            other.raw = nullptr;
+        }
+
+        window& operator=(window&& other)
+        {
+            raw = other.raw;
+            other.raw = nullptr;
+            return *this;
+        }
+    };
+    ```
+
+        - and with this class, our simple _Hello, world!_ program becomes this:
+
+        ```cpp
+        int main(void)
+        {
+            SDL_Init(SDL_INIT_VIDEO);
+
+            window window{
+                "Hello, world!",
+                SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                800, 600,
+                0,
+            };
+
+            bool running = true;
+            while (running) {
+                SDL_Event event;
+                while (SDL_PollEvent(&event)) {
+                    if (event.type == SDL_QUIT) {
+                        running = false;
+                    }
+                }
+            }
+        }
+        ```
+
+        - quite a bit of boilerplate just to call save a single line of code, isn't it?
+
+            + we blew up our single line into 32. good job, young C++ programmer!
+
+                - opinion time: you might be tempted to say that having this class makes it easy to provide functions that will query information about the window.
+
+                    - my argument is that in most cases you shouldn't create such functions, because the ones from SDL2 already exist.
+
+                    - albeit I'll admit that writing
+                    ```cpp
+                    int width;
+                    SDL_GetWindowSize(&window, &width, nullptr);
+                    ```
+                    just to obtain the window width does _not_ spark joy.
+
+                        - on the other hand it being this verbose does suggest that _maybe_ it's a little expensive to call, so there's that.
+
+                        maybe save it somewhere and reuse it during a frame.
+                        I dunno, I'm not your dad to be telling you what to do.
+
+                        neither have I read the SDL2 source code to know how expensive this function is, but the principle of least surprise tells me it should always return the _current_ window size, so I assume it always asks the OS.
+
+- but the fine folks designing the C++ standard library have already thought of this use case.
+this is what _smart pointers_ are for after all - our good friends `std::shared_ptr` and `std::unique_ptr`, which `delete` things for us when they go out of scope, automatically!
+
+- let's start with `std::shared_ptr` because it's a bit simpler.
+
+    - `std::shared_ptr` is a simple form of _garbage collection_ - it will free its associated allocation once there are no more referencers to it.
+
+    - naturally it has to know _how_ to perform the freeing.
+    the standard library designers could have just assumed that all allocations are created with `new` and deleted with `delete`, but unfortunately the real world is not so simple.
+    we have C libraries to interface with after all, and there destruction is accomplished simply by calling functions!
+
+        + not to mention polymorphism - `delete` does not have any metadata about the underlying type. it calls the destructor of the _static_ type, which wouldn't work very well if the actual type was something else.
+
+            - (this is why having a `virtual` method in your polymorphic class requires your destructor to become `virtual`, too.)
+
+        - because of this, `std::shared_ptr` actually stores a _deleter_ object, whose sole task is to destroy the shared pointer's contents once there are no more references to it.
+
+    - to set a custom deleter for an `std::shared_ptr`, we provide it as the 2nd argument of the constructor.
+    so to automatically free our `SDL_Window` pointer, we would do this:
+    ```cpp
+    int main(void)
+    {
+        SDL_Init(SDL_INIT_VIDEO);
+
+        std::shared_ptr<SDL_Window> window{
+            SDL_CreateWindow(
+                "Hello, world!",
+                SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                800, 600,
+                0
+            ),
+            SDL_DestroyWindow,
+        };
+
+        bool running = true;
+        while (running) {
+            SDL_Event event;
+            while (SDL_PollEvent(&event)) {
+                if (event.type == SDL_QUIT) {
+                    running = false;
+                }
+            }
+        }
+    }
+    ```
+    and that's all there is to it!
+
+        + this is pretty much the simplest solution to our problem - it does not require declaring any additional types or anything of that sort.
+        this is the solution I would go with in a production codebase.
+
+            - this is despite `std::shared_ptr`'s extra reference counting semantics -
+            having formed somem Good Memory Management habits in Rust, I tend to shape my memory layout into a _tree_ rather than a _graph_, so to pass the window to the rest of the program I would pass an `SDL_Window&` down in function arguments.
+            then only `main` has to concern itself with how the `SDL_Window`'s memory is managed.
+
+    - using `std::shared_ptr` does have a downside though, and it's that there is some extra overhead associated with handling the shared pointer's _control block_.
+
+        + the control block is an additional area in memory that stores metadata about the shared pointer -
+        the strong reference count, the [weak](https://en.cppreference.com/w/cpp/memory/weak_ptr) reference count, as well as our deleter.
+
+            - an additional thing to note is that when you're constructing an `std::shared_ptr` from an existing raw pointer, C++ cannot allocate the control block together with the original allocation.
+            this can reduce cache locality if the allocator happens to place the control block very far from the allocation we want to manage through the shared pointer.
+
+- we can avoid all of this overhead by using a `std::unique_ptr`, albeit not without some boilerplate.
+(spoiler: it's still way better than our original example though!)
+
+    - an `std::unique_ptr` stores which deleter to use as part of its template arguments - you may have never noticed, but `std::unique_ptr` is defined with an additional `Deleter` argument in its signature:
+
+    ```cpp
+    template <typename T, typename Deleter = std::default_delete<T>>
+    class unique_ptr
+    {
+        // ...
+    };
+    ```
+
+    - unfortunately for us, adding a deleter to an `std::unique_ptr` is not as simple as adding one to an `std::shared_ptr`, because it involves creating an additional type -
+    we cannot just pass `SDL_DestroyWindow` into that argument, because that's a _function_, not a _type_.
+
+    - writing a little wrapper that will call `SDL_DestroyWindow` (or really any static function) for us is a pretty trivial task though:
+
+    ```cpp
+    template <typename T, void (*Deleter)(T*)>
+    class function_delete
+    {
+        void operator()(void* allocation) const
+        {
+            Deleter(static_cast<T*>(allocation));
+        }
+    };
+    ```
+
+    - now we can delete an `SDL_Window` using our custom deleter like so:
+
+    ```cpp
+    std::unique_ptr<SDL_Window, function_delete<SDL_Window, SDL_DestroyWindow>> window{
+        SDL_CreateWindow(
+            "Hello, world!",
+            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            800, 600,
+            0
+        ),
+    };
+    ```
+
+        - having to type this whole type out every single time we want to refer to an owned `SDL_Window` is a bit of a pain though, so we can create a type alias:
+
+        ```cpp
+        namespace sdl
+        {
+            using window = std::unique_ptr<SDL_Window, function_delete<SDL_Window, SDL_DestroyWindow>>;
+        }
+
+        sdl::window window{
+            SDL_CreateWindow(
+                "Hello, world!",
+                SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                800, 600,
+                0
+            ),
+        };
+        ```
+
+            - and having to repeat `SDL_Window` twice in the type alias is no fun, so we can create a type alias for `std::unique_ptr<T, function_delete<T, Deleter>>` too:
+
+            ```cpp
+            template <typename T, void (*Deleter)(T*)>
+            using c_unique_ptr = std::unique_ptr<T, function_delete<T, Deleter>>;
+
+            namespace sdl
+            {
+                using window = c_unique_ptr<SDL_Window, SDL_DestroyWindow>;
+            }
+            ```
+
+            …you get the idea.
+
+                - I'm calling it `c_unique_ptr` by the way because it's a _unique pointer to a C resource_.
+
+    - the unfortunate downside to this approach is that you can get pretty abysmal template error messages upon type mismatch:
+
+    ```cpp
+    void example(const sdl::window& w);
+
+    int main(void)
+    {
+        example(1);
+
+        // ...
+    }
+    ```
+
+    ```diagnostics-clang
+    sdl2.cpp:36:5: error: no matching function for call to 'example'
+       36 |     example(1);
+          |     ^~~~~~~
+    sdl2.cpp:21:6: note: candidate function not viable: no known conversion from 'int' to 'const sdl::window' (aka 'const unique_ptr<SDL_Window, free_fn<SDL_Window, &SDL_DestroyWindow>>') for 1st argument
+       21 | void example(const sdl::window& w);
+          |      ^       ~~~~~~~~~~~~~~~~~~~~
+    1 error generated.
+    ```
+
+        - but hey, at least you avoid the overhead of reference counting - by making it completely unnecessary!
+        move semantics ftw!
