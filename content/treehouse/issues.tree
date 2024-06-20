@@ -13,12 +13,16 @@
 % id = "issue-list"
 - ## issue list
 
+    % id = "01J0VN48BRABQ11Z1CE8EDQXXS"
     + :TODO: :l_feat: add page backreferences
 
+        % id = "01J0VN48BRGF0YD16Q7XWE5BPS"
         - sometimes it's useful to see which pages link to a specific page
 
+    % id = "01J0VN48BRFM9DDP9KGZF4RGAR"
     + :TODO: :l_dev: replace Handlebars with something simpler and smaller
 
+        % id = "01J0VN48BR9299AB13A8FR2SF4"
         - I don't need this many dependencies with this little customizability thank you
 
     % id = "01J095FBXRC760YT7PZWWXQCMT"
@@ -53,6 +57,7 @@
     % id = "01J093FGZFGBDJ5QPHSZW9NVB5"
     + :TODO: :l_content: [page:programming/projects] needs the rest of my projects
 
+        % id = "01J0VN48BR5XZSHC0D6Q3DRG8P"
         - I haven't had the motivation (or a reason) to talk about my projects there yet so yeah.
 
     % id = "01J093FGZF0D919Q1CS67SR4S2"
