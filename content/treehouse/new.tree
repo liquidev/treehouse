@@ -10,6 +10,15 @@
 
 [read][page:programming/blog/tairu]
 
+- a friend of mine asked if it makes sense to define your own wrapper class for `SDL_Window` the way [Lazy Foo](https://lazyfoo.net/tutorials/SDL/10_color_keying/index.php) does it.
+I told him there's no reason to do that in modern C++, because `std::unique_ptr` can do everything for you anyways.
+
+### freeing C memory automatically using `std::unique_ptr` and `std::shared_ptr`
+
+<sub>on another note, I did read a blog post about this once somewhere, but couldn't be bothered to find it. so there you go! I made a post about this too.</sub>
+
+[read][page:programming/languages/cxx/shared-unique-ptr-deleter]
+
 % id = "01J0KRPMV7SS48B64BFCJZK7VQ"
 - it's updatin' time! I took some time to clean up old pages and update my *about me*.\
 over time I've been learning how to write content on the treehouse effectively, and the new about me reflects that.

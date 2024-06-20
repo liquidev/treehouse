@@ -5,7 +5,7 @@
 
 % content.link = "programming/languages/cxx/access-modifiers-as-labels"
   redirect_from = ["programming/cxx/access-modifiers-as-labels"]
-  id = "01J0VN48AZGGM35KT8ANEA2B9Q"
+  id = "01H9R1KJESGGM35KT8ANEA2B9Q"
 + :page: access modifiers as labels (`private:`, `protected:`, and `public:`)
 
 % content.link = "programming/languages/cxx/shared-unique-ptr-deleter"
