@@ -34,6 +34,10 @@
       id = "programming/languages/cxx"
     + #### :folder: C++
 
+    % content.link = "programming/languages/javascript"
+      id = "programming/languages/javascript"
+    + #### :page: JavaScript
+
     % content.link = "programming/languages/lua"
       id = "programming/languages/lua"
     + #### :page: Lua

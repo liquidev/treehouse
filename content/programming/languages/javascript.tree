@@ -1,0 +1,146 @@
+%% title = "JavaScript is not as bad as people make it out to be"
+scripts = [
+    "components/literate-programming.js",
+    "vendor/codejar.js",
+]
+
+% id = "01J291S06DS12DCFTNKJ27BNSQ"
+- *ooh I'm sure this one is gonna be really controversial but here I go*
+
+% id = "01J291S06DRH9SP8K1QE03JVK8"
+- time and time again I've heard from people just how horrible JavaScript is, but I beg to differ.
+
+    % id = "01J2931RRH96VXJ65ZCNRPMYJ2"
+    + this is my opinion after having experienced writing a small to medium-sized JavaScript app for some stuff I've been working on for the treehouse.
+
+        % id = "01J2931RRH0K837R7MSP19X7SS"
+        - can't tell you what it is yet. :shhh:
+
+% id = "01J291S06DTQA0JRJSBXKTWK9M"
+- I will purposefully refrain from talking about the JavaScript package ecosystem, because I don't use it myself.
+
+    % id = "01J2931RRHQ8CF5ZWZKZG5TS3J"
+    + my past experiences using `npm` have been quite painful, so I wouldn't recommend using it for anything.
+
+        % id = "01J2931RRHY408Q01E791CNMPK"
+        - (obviously this is written from the perspective of an indie website; different requirements will mandate different solutions, and you should pick the right one for you!)
+
+% id = "01J291S06DK4HA6PZXW9PWNRV4"
+- let me start with the hugest advantage JavaScript has over literally every single language in the world:
+you already have it on your computer.
+
+    % id = "01J2931RRHFPEH3D5MWEKGXGAE"
+    - don't believe me? let me show you:
+    ```javascript i-am-showing-you-right-now
+    console.log("see?") // and if you have JavaScript enabled, you can edit this!
+    ```
+    ```output i-am-showing-you-right-now
+    see?
+    ```
+
+    % id = "01J2931RRHDZ979VTF2SN3J9CB"
+    - and this goes for pretty much every modern personal computing device on the planet nowadays - *you can already run JavaScript on it.*
+
+        % id = "01J2931RRHEMZY9M5W3EG666YK"
+        - sure it may not be the cleanest language in terms of design, but JavaScript running anywhere and everywhere is its superpower.
+
+    % id = "01J2931RRH23N0B4Z64KS14WCA"
+    - JavaScript being available on everyone's computers makes it a super-accessible programming language to learn: all you have to do is open your web browser and go to the console in its Developer Tools.
+
+        % id = "01J2931RRH51K35C80Z2NHSVRW"
+        - moreso, if you are building a website and would like to embed a language interpreter (like me,) *you already have JavaScript for that.*
+
+            % id = "01J2931RRH65HHY6BQ7N0P9MX9"
+            - yes, you could in theory embed [Lua][page:programming/languages/lua], but for most cases JavaScript is Already There and there is nothing wrong with it.
+            apart from the fact that it's kind of hard to sandbox.
+
+            % id = "01J2931RRH7PX9BFDWHVPE6FCJ"
+            - this is precisely why [tairu][page:programming/blog/tairu] is written in JavaScript - not because it's a particularly good language for the task,
+            I think for game development C++ is a lot better - but I really wanted to build a blog post environment with interactive code examples, and JavaScript is the only way to do that without pulling in any dependencies.
+
+% id = "01J291S06DP1HGNKK2Q3Y28GFZ"
+- the 2nd best part of JavaScript is that if the author wants it (and you should!) it's _extremely_ easy to inspect `.js` files and learn from them.
+
+    % id = "01J2931RRHDC775QQ5MJ55N8EC"
+    - if you're on a computer, you can try it yourself with the treehouse!
+
+    % id = "01J2931RRHWZ3K9DGR6DG65833"
+    - if you're an independent blogger and you believe that having a more open Web is something you'd like, you should also avoid minifying your `.js` files.
+
+        % id = "01J2931RRHVKWY9HEGVCTJRN5D"
+        + gzip or brotli compression can already do wonders with compressing your text files - according to [PageSpeed Insights](https://pagespeed.web.dev), I could shave off around 48 KiB of transferred CSS and JS in the treehouse just by compressing it.
+
+            % id = "01J2931RRHFYCYJKNE7P2KR6G1"
+            - I don't do it yet only because I haven't yet gotten around to doing it.
+            I can't really pre-compress certain assets, too - such as `/b?` links, which have a dynamically-generated description.
+            I could probably LRU-cache those though.
+
+% id = "01J291S06D8A6S4C8Y5MNAZC01"
+- when you _do_ get to the language... it's really not as bad as many people paint it
+
+    % id = "01J2931RRHWXBWSQ6W1QZVJ810"
+    - the biggest quirks of JavaScript lie around the type system.
+
+        % id = "01J2931RRH2EEZXK7N3HMSR4Y3"
+        - I do believe some of the type coercions are pretty inexcusable, but I've never really run into them in practice
+
+        % id = "01J2931RRH6NNEG322TR5DZAC4"
+        - stuff like `"" == false` is a result of having to disambiguate type mismatches, but arguably you shouldn't be passing incompatible types around in the first place.
+
+            % id = "01J2931RRHDRCE4NNSRQAWBWWT"
+            - the TypeScript language server makes this easier, because it has type inference that can show types in your IDE.
+
+        % id = "01J2931RRHMBB5EH1PT8PC9P83"
+        - if you _really_ hate the type system, there's always TypeScript.
+        I choose not to use it in the treehouse codebase, because I don't like additional build steps slowing down generation.
+
+            % id = "01J2931RRHVPBQNNRQPZRGMPMC"
+            + the TypeScript compiler is slow enough to require me to perform incremental compilation, which complicates builds _a lot_.
+
+                % id = "01J2931RRH8CDTJ8QE8EAGQF50"
+                + right now the treehouse regenerates itself in its entirety, every single time.
+                iirc this takes around 40ms on debug mode, on Linux.
+                because moving files around on Windows is really slow.
+
+                    % id = "01J2931RRHGW25MHF4R6T1WRZT"
+                    - I love NTFS
+
+                % id = "01J2931RRH43EC5GMRRD9J628Y"
+                - arguably there's [swc](https://swc.rs/) but that still requires parsing and reemitting the JS
+
+                    % id = "01J2931RRHPYQ9SFZP42WRKR2D"
+                    - a) this may not be a lossless process, and I would like to preserve all comments and spacing choices
+
+                    % id = "01J2931RRHHD3RYZN97CVXR65G"
+                    + b) parsing is slow.
+                    one thing I tried was to automatically make all links in the generated HTML have something akin to a `?cache=` query that would make the server inject a "cache forever" policy, but it extended build times pretty much twofold.
+
+                        % id = "01J2931RRH043ZBHW4H58SP5D4"
+                        - adding a release mode switch is one solution, but it's an extra code branch I have to maintain.
+                        if I build only in debug mode locally, and then I push onto production which runs release mode, I won't find any bugs with the release mode-only parts of the generator until I get to production.
+
+                        % id = "01J2931RRH9GANCKTXPRCSN9RW"
+                        - also I was using [html5ever](https://lib.rs/crates/html5ever) which uses hash maps everywhere and produces non-deterministic HTML files :kamien:
+
+    % id = "01J2931RRHPTM4VGKEZW4FD0Y7"
+    - Web Components, albeit being pretty verbose, are a surprisingly pleasant API to work with.
+
+        % id = "01J2931RRHT3WSVCY6KECSWHF6"
+        - apart from _sometimes_ having to deal with tricky state updates, retained UI is still a really robust framework to build your UI on.
+
+        % id = "01J2931RRHHTA9ZAPV80YWHRRT"
+        - my only problem with programming the Web is that sometimes you Just Wanna Draw Shit on the Screen, but it doesn't let you do that. you have to go through `<svg>` or `<canvas>`, both of which are kind of annoying to use.
+
+            % id = "01J2931RRHJ23RXRDS93G9ZBN9"
+            - `<svg>` needs tricky state updates, and it's hard to write code with it that doesn't thrash the heap and make the GC stutter your page into oblivion.
+
+            % id = "01J2931RRH11V7GS3RC8K8F2QE"
+            - `<canvas>` is not DPI-aware by default, so if you zoom into it, you'll get a pixelated mess.
+
+% id = "01J291S06D1W58BP471NB2PHAF"
+- so like, yeah.
+stay away from `npm` and coding in JavaScript really isn't that bad.
+
+    % id = "01J2931RRHFSF2TYZ2WN6X9HB4"
+    - the modern Web platform is a really mature kit for building apps that run anywhere.
+    I think that is a really valuable tool to have in my toolbelt, even if JavaScript can be a bit quirky at times.
