@@ -10,6 +10,14 @@
 
 [read][page:programming/blog/tairu]
 
+% id = "01J293BFEBT15W0Z3XF1HEFGZT"
+- sometimes people call me crazy for saying that bashing JavaScript is senseless and that it's not as bad of a language as people make it out to be.
+so I decided to collect my thoughts into a nice little page I can link easily.
+
+### JavaScript is not as bad as people make it out to be
+
+[why dude why][page:programming/languages/javascript]
+
 % id = "01J0VNHPTRNC1HFXAQ790Y1EZB"
 - a friend of mine asked if it makes sense to define your own wrapper class for `SDL_Window` the way [Lazy Foo](https://lazyfoo.net/tutorials/SDL/10_color_keying/index.php) does it.
 I told him there's no reason to do that in modern C++, because `std::unique_ptr` can do everything for you anyways.
