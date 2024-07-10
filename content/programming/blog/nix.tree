@@ -1,0 +1,68 @@
+%% title = "derive me some Nix"
+
+- chances are you've heard about Nix or NixOS from somewhere and would like to learn more about it.
+
+    - if that is the case, welcome to the club!
+    we're pretty much in the same bucket.
+    I literally just started using Nix a couple days ago, and I found the documentation *really* unclear.
+    so here's my shot at a more pedagogical approach.
+
+    - if that's not the case - Nix is a package manager and system configuration language.
+    basically, you specify how you want your system to look using config files stored in one place, and Nix _derives_ the system from that config file for you!
+
+        - I emphasized the word _derives_, because _derivation_ is the fundamental operation of Nix the package manager.
+        your entire config is specified declaratively, and the entire folder structure and all configuration files are _derived_ from that config.
+        but we'll get to that shortly.
+
+- people seem to be excited about Nix for many reasons.
+I'm excited because it helps me achieve *online independence.*
+
+    - did you know that since last weekend (since this was written) this website runs on NixOS?
+
+    - being able to take your VPS's configuration elsewhere and let Nix cook your system up automatically is extremely cool.
+    it's something that's always frustrated me with how Linux software is configured -
+    lots of little configuration files scattered across `/etc` and sometimes other directories, which ends up being extremely hard to replicate if you ever want to switch server providers.
+
+        - *and* your system config will end up identical to the one you had before!
+        isn't that awesome?
+
+- word of warning though: I wouldn't recommend running NixOS on a home PC.
+
+    - I use :btw: on my home PC for a very simple reason.
+    it's just _really darn simple_ to change anything about my system.
+
+        - need to install a new package? `pacman -S`.
+
+        - need to edit system config?
+        well first of all no you don't, because other than fundamental config you change during installation, we both know Arch works pretty much works out of the box on your PC,
+        but even if you _do_ end up needing to change some config for a workaround, it's generally only because you need a _workaround_ - which may not be needed by the time you reinstall your system.
+
+            - and reinstall your OS pretty rarely.
+
+            - most of your _important_ configuration is stored in `$HOME` y'know, and that's easy to keep between reinstalls - you have a separate `/home` partition after all.
+
+    - :btw: is also Really Darn Fast.
+    I can't say that about NixOS.
+    the package manager is excruciatingly slow to update your system config.
+    the initial install took _really_ long for how barebones of a system I specified in my config.
+
+- let's derive us a system! as I mentioned before, everything in Nix is achieved by means of _derivations_.
+
+    - from a programming perspective, a derivation is simply a function `options -> path`, where `options` is an attribute set specifying how the output `path` should be derived.
+
+        - and that's *it*.
+
+    - suppose you'd like to download a file from the Internet.
+    that's what the `pkgs.fetchurl` function is for.
+
+    ```nix
+    # This expression results in a path to the downloaded file.
+    pkgs.fetchurl {
+        url = "https://liquidex.house";
+        # As long as you fill in the hash, which I don't know...
+        # Nix will tell you what it should be though!
+        hash = "";
+    }
+    ```
+
+- but where does `pkgs` even come from?
