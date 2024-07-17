@@ -111,6 +111,11 @@
         % id = "01HQ1K39AYM2FS3R4Y9175V7XS"
         - all credit goes to Apple for designing this beauty
 
+    % id = "emoji/rarog"
+    - :rarog: - that's that bird from where I work yep
+
+        - it's actually called a raróg, not a rarog, but not having to handle Unicode in your parser is actually kind of nice.
+
 % id = "01HA4HJKQ7FKV8JJ70Q2CY9R86"
 - ### [Noto Color Emoji](https://github.com/googlefonts/noto-emoji/)
 
