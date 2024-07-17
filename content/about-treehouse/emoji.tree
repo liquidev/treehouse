@@ -114,6 +114,7 @@
     % id = "emoji/rarog"
     - :rarog: - that's that bird from where I work yep
 
+        % id = "01J31356QCXVACQKPEVRHD0WMZ"
         - it's actually called a raróg, not a rarog, but not having to handle Unicode in your parser is actually kind of nice.
 
 % id = "01HA4HJKQ7FKV8JJ70Q2CY9R86"
