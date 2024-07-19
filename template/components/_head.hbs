@@ -4,10 +4,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="preload" href="{{ config.site }}/static/font/Recursive_VF_1.085.woff2" as="font" type="font/woff2"
+<link rel="preload" href="{{ asset 'font/Recursive_VF_1.085.woff2' }}" as="font" type="font/woff2"
     crossorigin="anonymous">
-<link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
-<link rel="stylesheet" href="{{ config.site }}/static/css/tree.css">
+<link rel="stylesheet" href="{{ asset 'css/main.css' }}">
+<link rel="stylesheet" href="{{ asset 'css/tree.css' }}">
 
 <script type="importmap">{
     "imports": {
@@ -42,15 +42,15 @@ It just needs to be a string replacement.
 <meta property="og:image:alt" content="{{ page.thumbnail.alt }}">
 {{/if}}
 
-<link rel="icon" sizes="16x16" href="{{ config.site }}/static/favicon/{{ season }}@1x.png">
-<link rel="icon" sizes="32x32" href="{{ config.site }}/static/favicon/{{ season }}@2x.png">
-<link rel="icon" sizes="64x64" href="{{ config.site }}/static/favicon/{{ season }}@4x.png">
-<link rel="icon" sizes="128x128" href="{{ config.site }}/static/favicon/{{ season }}@8x.png">
-<link rel="icon" sizes="256x256" href="{{ config.site }}/static/favicon/{{ season }}@16x.png">
-<link rel="icon" sizes="512x512" href="{{ config.site }}/static/favicon/{{ season }}@32x.png">
-<link rel="apple-touch-icon" sizes="16x16" href="{{ config.site }}/static/favicon/{{ season }}@1x.png">
-<link rel="apple-touch-icon" sizes="32x32" href="{{ config.site }}/static/favicon/{{ season }}@2x.png">
-<link rel="apple-touch-icon" sizes="64x64" href="{{ config.site }}/static/favicon/{{ season }}@4x.png">
-<link rel="apple-touch-icon" sizes="128x128" href="{{ config.site }}/static/favicon/{{ season }}@8x.png">
-<link rel="apple-touch-icon" sizes="256x256" href="{{ config.site }}/static/favicon/{{ season }}@16x.png">
-<link rel="apple-touch-icon" sizes="512x512" href="{{ config.site }}/static/favicon/{{ season }}@32x.png">
+<link rel="icon" sizes="16x16" href="{{ asset (cat (cat 'favicon/' season) '@1x.png') }}">
+<link rel="icon" sizes="32x32" href="{{ asset (cat (cat 'favicon/' season) '@2x.png') }}">
+<link rel="icon" sizes="64x64" href="{{ asset (cat (cat 'favicon/' season) '@4x.png') }}">
+<link rel="icon" sizes="128x128" href="{{ asset (cat (cat 'favicon/' season) '@8x.png') }}">
+<link rel="icon" sizes="256x256" href="{{ asset (cat (cat 'favicon/' season) '@16x.png') }}">
+<link rel="icon" sizes="512x512" href="{{ asset (cat (cat 'favicon/' season) '@32x.png') }}">
+<link rel="apple-touch-icon" sizes="16x16" href="{{ asset (cat (cat 'favicon/' season) '@1x.png') }}">
+<link rel="apple-touch-icon" sizes="32x32" href="{{ asset (cat (cat 'favicon/' season) '@2x.png') }}">
+<link rel="apple-touch-icon" sizes="64x64" href="{{ asset (cat (cat 'favicon/' season) '@4x.png') }}">
+<link rel="apple-touch-icon" sizes="128x128" href="{{ asset (cat (cat 'favicon/' season) '@8x.png') }}">
+<link rel="apple-touch-icon" sizes="256x256" href="{{ asset (cat (cat 'favicon/' season) '@16x.png') }}">
+<link rel="apple-touch-icon" sizes="512x512" href="{{ asset (cat (cat 'favicon/' season) '@32x.png') }}">

@@ -1,3 +1,5 @@
+mod static_urls;
+
 use std::{
     collections::HashMap,
     ffi::OsStr,
@@ -11,9 +13,10 @@ use codespan_reporting::{
     files::Files as _,
 };
 use copy_dir::copy_dir;
-use handlebars::Handlebars;
+use handlebars::{handlebars_helper, Handlebars};
 use log::{debug, error, info};
 use serde::Serialize;
+use static_urls::StaticUrls;
 use walkdir::WalkDir;
 
 use crate::{
@@ -213,6 +216,17 @@ impl Generator {
     ) -> anyhow::Result<()> {
         let mut handlebars = Handlebars::new();
         let mut config_derived_data = ConfigDerivedData::default();
+
+        handlebars_helper!(cat: |a: String, b: String| a + &b);
+
+        handlebars.register_helper("cat", Box::new(cat));
+        handlebars.register_helper(
+            "asset",
+            Box::new(StaticUrls::new(
+                paths.static_dir.to_owned(),
+                format!("{}/static", config.site),
+            )),
+        );
 
         let mut template_file_ids = HashMap::new();
         for entry in WalkDir::new(paths.template_dir) {

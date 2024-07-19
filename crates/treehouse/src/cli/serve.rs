@@ -5,9 +5,9 @@ use std::{net::Ipv4Addr, path::PathBuf, sync::Arc};
 
 use anyhow::Context;
 use axum::{
-    extract::{Path, RawQuery, State},
+    extract::{Path, Query, RawQuery, State},
     http::{
-        header::{CONTENT_TYPE, LOCATION},
+        header::{CACHE_CONTROL, CONTENT_TYPE, LOCATION},
         HeaderValue, StatusCode,
     },
     response::{Html, IntoResponse, Response},
@@ -16,6 +16,7 @@ use axum::{
 };
 use log::{error, info};
 use pulldown_cmark::escape::escape_html;
+use serde::Deserialize;
 use tokio::net::TcpListener;
 
 use crate::{
@@ -111,9 +112,19 @@ async fn four_oh_four(State(state): State<Arc<Server>>) -> Response {
         .into_response()
 }
 
-async fn static_file(Path(path): Path<String>, State(state): State<Arc<Server>>) -> Response {
+#[derive(Deserialize)]
+struct StaticFileQuery {
+    cache: Option<String>,
+}
+
+async fn static_file(
+    Path(path): Path<String>,
+    Query(query): Query<StaticFileQuery>,
+    State(state): State<Arc<Server>>,
+) -> Response {
     if let Ok(file) = tokio::fs::read(state.target_dir.join("static").join(&path)).await {
         let mut response = file.into_response();
+
         if let Some(content_type) = get_content_type(&path) {
             response
                 .headers_mut()
@@ -121,6 +132,14 @@ async fn static_file(Path(path): Path<String>, State(state): State<Arc<Server>>)
         } else {
             response.headers_mut().remove(CONTENT_TYPE);
         }
+
+        if query.cache.is_some() {
+            response.headers_mut().insert(
+                CACHE_CONTROL,
+                HeaderValue::from_static("public, max-age=31536000, immutable"),
+            );
+        }
+
         response
     } else {
         four_oh_four(State(state)).await

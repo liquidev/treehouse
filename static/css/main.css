@@ -98,12 +98,17 @@ body::selection {
 
 @font-face {
     font-family: 'RecVar';
-    src: url('../font/Recursive_VF_1.085.woff2');
+    /* NOTE: I put the hash in here manually instead of adding the complexity of piping CSS through
+       Handlebars because I don't really think it's worth it for this single asset.
+       Other assets are referenced rarely enough that caching probably isn't gonna make too much of
+       an impact.
+       It's unlikely I'll ever update the font anyways, so eh, whatever. */
+    src: url('../font/Recursive_VF_1.085.woff2?cache=b3-445487d5');
 }
 
 @font-face {
     font-family: 'RecVarMono';
-    src: url('../font/Recursive_VF_1.085.woff2');
+    src: url('../font/Recursive_VF_1.085.woff2?cache=b3-445487d5');
     font-variation-settings: "MONO" 1.0;
 }
 

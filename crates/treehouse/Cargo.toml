@@ -9,6 +9,7 @@ treehouse-format = { workspace = true }
 
 anyhow = "1.0.75"
 axum = "0.7.4"
+blake3 = "1.5.3"
 clap = { version = "4.3.22", features = ["derive"] }
 codespan-reporting = "0.11.1"
 copy_dir = "0.1.3"
