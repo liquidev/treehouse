@@ -9,24 +9,24 @@
 <link rel="stylesheet" href="{{ asset 'css/main.css' }}">
 <link rel="stylesheet" href="{{ asset 'css/tree.css' }}">
 
-<script type="importmap">{
-    "imports": {
-        "treehouse/": "{{ config.site }}/static/js/"
-    }
-}</script>
+{{!-- Import maps currently don't support the src="" attribute. Unless we come up with something
+clever to do while browser vendors figure that out, we'll just have to do a cache-busting include_static. --}}
+{{!-- <script type="importmap" src="{{ asset 'generated/import-map.json' }}"></script> --}}
+<script type="importmap">{{{ include_static 'generated/import-map.json' }}}</script>
 
 <script>
     const TREEHOUSE_SITE = `{{ config.site }}`;
     const TREEHOUSE_NEWS_COUNT = {{ len feeds.news.branches }};
 </script>
-<script type="module" src="{{ config.site }}/navmap.js"></script>
-<script type="module" src="{{ config.site }}/static/js/spells.js"></script>
-<script type="module" src="{{ config.site }}/static/js/ulid.js"></script>
-<script type="module" src="{{ config.site }}/static/js/usability.js"></script>
-<script type="module" src="{{ config.site }}/static/js/settings.js"></script>
-<script type="module" src="{{ config.site }}/static/js/tree.js"></script>
-<script type="module" src="{{ config.site }}/static/js/emoji.js"></script>
-<script type="module" src="{{ config.site }}/static/js/news.js"></script>
+<script type="module">
+    import "treehouse/spells.js";
+    import "treehouse/ulid.js";
+    import "treehouse/usability.js";
+    import "treehouse/settings.js";
+    import "treehouse/tree.js";
+    import "treehouse/emoji.js";
+    import "treehouse/news.js";
+</script>
 
 <meta property="og:site_name" content="{{ config.user.title }}">
 <meta property="og:title" content="{{ page.title }}">

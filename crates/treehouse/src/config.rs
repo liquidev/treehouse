@@ -11,6 +11,7 @@ use crate::{
         compiled::{compile_syntax, CompiledSyntax},
         Syntax,
     },
+    import_map::ImportRoot,
     static_urls::StaticUrls,
 };
 
@@ -47,6 +48,9 @@ pub struct Config {
     /// ```
     pub redirects: Redirects,
 
+    /// JavaScript configuration.
+    pub javascript: JavaScript,
+
     /// Overrides for emoji filenames. Useful for setting up aliases.
     ///
     /// On top of this, emojis are autodiscovered by walking the `static/emoji` directory.
@@ -72,6 +76,12 @@ pub struct Redirects {
     /// Page redirects. When a user navigates to a page, if they navigate to `url`, they will
     /// be redirected to `page[url]`.
     pub page: HashMap<String, String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct JavaScript {
+    /// Import roots to generate in the project's import map.
+    pub import_roots: Vec<ImportRoot>,
 }
 
 impl Config {

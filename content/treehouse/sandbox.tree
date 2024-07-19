@@ -1,5 +1,5 @@
 %% title = "the treehouse sandbox"
-scripts = ["components/literate-programming.js"]
+scripts = ["treehouse/components/literate-programming.js"]
 
 % id = "01HPWJB4Y5ST6AEK9VDYNS865P"
 - the sandbox is a framework for playing around with code

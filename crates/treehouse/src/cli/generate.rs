@@ -25,6 +25,8 @@ use crate::{
         navmap::{build_navigation_map, NavigationMap},
         tree::branches_to_html,
     },
+    import_map::ImportMap,
+    include_static::IncludeStatic,
     state::Source,
     static_urls::StaticUrls,
     tree::SemaRoots,
@@ -216,7 +218,8 @@ impl Generator {
         let mut config_derived_data = ConfigDerivedData {
             image_sizes: Default::default(),
             static_urls: StaticUrls::new(
-                paths.static_dir.to_owned(),
+                // NOTE: Allow referring to generated static assets here.
+                paths.target_dir.join("static"),
                 format!("{}/static", config.site),
             ),
         };
@@ -227,9 +230,18 @@ impl Generator {
         handlebars.register_helper(
             "asset",
             Box::new(StaticUrls::new(
-                paths.static_dir.to_owned(),
+                paths.target_dir.join("static"),
                 format!("{}/static", config.site),
             )),
+        );
+        handlebars.register_helper(
+            "include_static",
+            Box::new(IncludeStatic {
+                // NOTE: Again, allow referring to generated static assets.
+                // This is necessary for import maps, for whom the <src> attribute is not
+                // currently supported.
+                base_dir: paths.target_dir.join("static"),
+            }),
         );
 
         let mut template_file_ids = HashMap::new();
@@ -389,16 +401,30 @@ pub fn generate(paths: &Paths<'_>) -> anyhow::Result<(Config, Treehouse)> {
     info!("copying static directory to target directory");
     copy_dir(paths.static_dir, paths.target_dir.join("static"))?;
 
+    info!("creating static/generated directory");
+    std::fs::create_dir_all(paths.target_dir.join("static/generated"))?;
+
     info!("parsing tree");
     let mut generator = Generator::default();
     generator.add_directory_rec(paths.content_dir)?;
     let (mut treehouse, parsed_trees) = generator.parse_trees(&config, paths)?;
 
+    // NOTE: The navigation map is a legacy feature that is lazy-loaded when fragment-based
+    // navigation is used.
+    // I couldn't be bothered with adding it to the import map since fragment-based navigation is
+    // only used on very old links. Adding caching to the navigation map is probably not worth it.
     info!("generating navigation map");
     let navigation_map = build_navigation_map(&treehouse, "index");
     std::fs::write(
         paths.target_dir.join("navmap.js"),
         navigation_map.to_javascript(),
+    )?;
+
+    info!("generating import map");
+    let import_map = ImportMap::generate(config.site.clone(), &config.javascript.import_roots);
+    std::fs::write(
+        paths.target_dir.join("static/generated/import-map.json"),
+        serde_json::to_string_pretty(&import_map).context("could not serialize import map")?,
     )?;
 
     info!("generating standalone pages");

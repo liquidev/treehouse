@@ -5,7 +5,7 @@
 <head>
     <title>treehouse iframe sandbox</title>
 
-    <link rel="stylesheet" href="{{ config.site }}/static/css/main.css">
+    <link rel="stylesheet" href="{{ asset 'css/main.css' }}">
 
     <style>
         body {
@@ -21,12 +21,7 @@
         }
     </style>
 
-    <script type="importmap">{
-        "imports": {
-            "treehouse/": "{{ config.site }}/static/js/",
-            "tairu/": "{{ config.site }}/static/js/components/tairu/"
-        }
-    }</script>
+    <script type="importmap">{{{ include_static 'generated/import-map.json' }}}</script>
 
     <script type="module">
         import { evaluate, domConsole, jsConsole } from "treehouse/components/literate-programming/eval.js";

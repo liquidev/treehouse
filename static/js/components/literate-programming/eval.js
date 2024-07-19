@@ -17,21 +17,6 @@ export const domConsole = {
     }
 };
 
-async function withTemporaryGlobalScope(callback) {
-    let state = {
-        oldValues: {},
-        set(key, value) {
-            this.oldValues[key] = globalThis[key];
-            globalThis[key] = value;
-        }
-    };
-    await callback(state);
-    jsConsole.trace(state.oldValues, "bringing back old state");
-    for (let key in state.oldValues) {
-        globalThis[key] = state.oldValues[key];
-    }
-}
-
 let evaluationComplete = null;
 
 export async function evaluate(commands, { error, newOutput }) {

@@ -1,5 +1,5 @@
 %% title = "testing ground for (chit)chats"
-   scripts = ["components/chat.js"]
+   scripts = ["treehouse/components/chat.js"]
    styles = ["components/chat.css"]
 
 % id = "01HSR695VNDXRGPC3XCHS3A61V"

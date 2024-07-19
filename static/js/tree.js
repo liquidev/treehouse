@@ -1,7 +1,6 @@
 // This is definitely not a three.js ripoff.
 
 import { addSpell } from "treehouse/spells.js";
-import { navigationMap } from "/navmap.js";
 import * as ulid from "treehouse/ulid.js";
 
 /* Branch persistence */
@@ -128,7 +127,8 @@ class LinkedBranch extends Branch {
                 // No need to await for the import because we don't use the resulting module.
                 // Just fire and forger 💀
                 // and let them run in parallel.
-                import(script.src);
+                let url = URL.createObjectURL(new Blob([script.textContent], { type: "text/javascript" }))
+                import(url);
             }
         } catch (error) {
             this.loadingText.innerText = error.toString();
@@ -176,6 +176,8 @@ function navigateToPage(page) {
 
 async function navigateToBranch(fragment) {
     if (fragment.length == 0) return;
+
+    let { navigationMap } = await import("/navmap.js");
 
     let element = document.getElementById(fragment);
     if (element !== null) {

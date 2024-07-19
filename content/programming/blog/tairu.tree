@@ -1,7 +1,7 @@
 %% title = "tairu - an interactive exploration of 2D autotiling techniques"
 scripts = [
-    "components/literate-programming.js",
-    "vendor/codejar.js",
+    "treehouse/components/literate-programming.js",
+    "treehouse/vendor/codejar.js",
 ]
 styles = ["page/tairu.css"]
 

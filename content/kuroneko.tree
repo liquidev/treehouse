@@ -1,5 +1,5 @@
 %% title = "back porch"
-   scripts = ["components/chat.js"]
+   scripts = ["treehouse/components/chat.js"]
    styles = ["components/chat.css"]
 
 % template = true
