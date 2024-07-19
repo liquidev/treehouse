@@ -30,7 +30,7 @@ use pulldown_cmark::escape::{escape_href, escape_html, StrWrite};
 use pulldown_cmark::{Alignment, CodeBlockKind, Event, LinkType, Tag};
 use pulldown_cmark::{CowStr, Event::*};
 
-use crate::config::{Config, ConfigDerivedData, PicSize};
+use crate::config::{Config, ConfigDerivedData, ImageSize};
 use crate::html::highlight::highlight;
 use crate::state::Treehouse;
 
@@ -281,15 +281,13 @@ where
 
                                 if let LiterateCodeKind::Output { placeholder_pic_id } = kind {
                                     if !placeholder_pic_id.is_empty() {
-                                        self.write(
-                                                            "<img class=\"placeholder-image\" loading=\"lazy\" src=\"",
-                                                        )?;
+                                        self.write("<img class=\"placeholder-image\" loading=\"lazy\" src=\"")?;
                                         escape_html(
                                             &mut self.writer,
                                             &self.config.pic_url(placeholder_pic_id),
                                         )?;
                                         self.write("\"")?;
-                                        if let Some(PicSize { width, height }) = self
+                                        if let Some(ImageSize { width, height }) = self
                                             .config_derived_data
                                             .pic_size(self.config, placeholder_pic_id)
                                         {
@@ -552,6 +550,7 @@ where
                                 escape_html(&mut self.writer, &branch.attributes.id)?;
                                 self.writer.write_str("\">")?;
                             }
+
                             self.writer
                                 .write_str("<img data-cast=\"emoji\" title=\":")?;
                             escape_html(&mut self.writer, name)?;
@@ -561,7 +560,18 @@ where
                             escape_html(&mut self.writer, filename)?;
                             self.writer.write_str("\" alt=\"")?;
                             escape_html(&mut self.writer, name)?;
+                            if let Some(image_size) = self
+                                .config_derived_data
+                                .image_size(&format!("static/emoji/{filename}"))
+                            {
+                                write!(
+                                    self.writer,
+                                    "\" width=\"{}\" height=\"{}",
+                                    image_size.width, image_size.height
+                                )?;
+                            }
                             self.writer.write_str("\">")?;
+
                             if branch_id.is_some() {
                                 self.writer.write_str("</a>")?;
                             }

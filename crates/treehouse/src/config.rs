@@ -1,7 +1,8 @@
 use std::{collections::HashMap, ffi::OsStr, fs::File, io::BufReader, path::Path};
 
 use anyhow::Context;
-use log::debug;
+use image::ImageError;
+use log::{debug, error, warn};
 use serde::{Deserialize, Serialize};
 use walkdir::WalkDir;
 
@@ -180,32 +181,43 @@ impl Config {
 /// Data derived from the config.
 #[derive(Debug, Clone, Default)]
 pub struct ConfigDerivedData {
-    pub pic_sizes: HashMap<String, Option<PicSize>>,
+    pub image_sizes: HashMap<String, Option<ImageSize>>,
 }
 
-/// Picture size. This is useful for emitting <img> elements with a specific size to eliminate layout shifting.
+/// Image size. This is useful for emitting <img> elements with a specific size to eliminate
+/// layout shifting.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct PicSize {
+pub struct ImageSize {
     pub width: u32,
     pub height: u32,
 }
 
 impl ConfigDerivedData {
-    fn read_pic_size(config: &Config, pic_id: &str) -> Option<PicSize> {
-        let pic_filename = config.pics.get(pic_id)?;
-        let (width, height) = image::io::Reader::new(BufReader::new(
-            File::open(format!("static/pic/{pic_filename}")).ok()?,
-        ))
-        .into_dimensions()
-        .ok()?;
-        Some(PicSize { width, height })
+    fn read_image_size(filename: &str) -> Option<ImageSize> {
+        let (width, height) = image::io::Reader::new(BufReader::new(File::open(filename).ok()?))
+            .with_guessed_format()
+            .map_err(ImageError::from)
+            .and_then(|i| i.into_dimensions())
+            // NOTE: Not being able to determine the image size is not the end of the world,
+            // so just warn the user if we couldn't do it.
+            // For example, currently SVG is not supported at all, which causes this to fail.
+            .inspect_err(|e| warn!("cannot read image size of {filename}: {e}"))
+            .ok()?;
+        Some(ImageSize { width, height })
     }
 
-    pub fn pic_size(&mut self, config: &Config, pic_id: &str) -> Option<PicSize> {
-        if !self.pic_sizes.contains_key(pic_id) {
-            self.pic_sizes
-                .insert(pic_id.to_owned(), Self::read_pic_size(config, pic_id));
+    pub fn image_size(&mut self, filename: &str) -> Option<ImageSize> {
+        if !self.image_sizes.contains_key(filename) {
+            self.image_sizes
+                .insert(filename.to_owned(), Self::read_image_size(filename));
         }
-        self.pic_sizes.get(pic_id).copied().flatten()
+        self.image_sizes.get(filename).copied().flatten()
+    }
+
+    pub fn pic_size(&mut self, config: &Config, pic_id: &str) -> Option<ImageSize> {
+        config
+            .pics
+            .get(pic_id)
+            .and_then(|pic_filename| self.image_size(&format!("static/pic/{pic_filename}")))
     }
 }
