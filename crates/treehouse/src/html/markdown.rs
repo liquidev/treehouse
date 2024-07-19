@@ -555,9 +555,12 @@ where
                                 .write_str("<img data-cast=\"emoji\" title=\":")?;
                             escape_html(&mut self.writer, name)?;
                             self.writer.write_str(":\" src=\"")?;
-                            escape_html(&mut self.writer, &self.config.site)?;
-                            self.writer.write_str("/static/emoji/")?;
-                            escape_html(&mut self.writer, filename)?;
+                            let url = self
+                                .config_derived_data
+                                .static_urls
+                                .get(&format!("emoji/{filename}"))
+                                .unwrap_or_default();
+                            escape_html(&mut self.writer, &url)?;
                             self.writer.write_str("\" alt=\"")?;
                             escape_html(&mut self.writer, name)?;
                             if let Some(image_size) = self

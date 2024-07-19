@@ -6,9 +6,12 @@ use log::{debug, error, warn};
 use serde::{Deserialize, Serialize};
 use walkdir::WalkDir;
 
-use crate::html::highlight::{
-    compiled::{compile_syntax, CompiledSyntax},
-    Syntax,
+use crate::{
+    html::highlight::{
+        compiled::{compile_syntax, CompiledSyntax},
+        Syntax,
+    },
+    static_urls::StaticUrls,
 };
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -179,9 +182,9 @@ impl Config {
 }
 
 /// Data derived from the config.
-#[derive(Debug, Clone, Default)]
 pub struct ConfigDerivedData {
     pub image_sizes: HashMap<String, Option<ImageSize>>,
+    pub static_urls: StaticUrls,
 }
 
 /// Image size. This is useful for emitting <img> elements with a specific size to eliminate

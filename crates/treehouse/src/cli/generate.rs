@@ -1,5 +1,3 @@
-mod static_urls;
-
 use std::{
     collections::HashMap,
     ffi::OsStr,
@@ -16,7 +14,6 @@ use copy_dir::copy_dir;
 use handlebars::{handlebars_helper, Handlebars};
 use log::{debug, error, info};
 use serde::Serialize;
-use static_urls::StaticUrls;
 use walkdir::WalkDir;
 
 use crate::{
@@ -29,6 +26,7 @@ use crate::{
         tree::branches_to_html,
     },
     state::Source,
+    static_urls::StaticUrls,
     tree::SemaRoots,
 };
 
@@ -215,7 +213,13 @@ impl Generator {
         parsed_trees: Vec<ParsedTree>,
     ) -> anyhow::Result<()> {
         let mut handlebars = Handlebars::new();
-        let mut config_derived_data = ConfigDerivedData::default();
+        let mut config_derived_data = ConfigDerivedData {
+            image_sizes: Default::default(),
+            static_urls: StaticUrls::new(
+                paths.static_dir.to_owned(),
+                format!("{}/static", config.site),
+            ),
+        };
 
         handlebars_helper!(cat: |a: String, b: String| a + &b);
 

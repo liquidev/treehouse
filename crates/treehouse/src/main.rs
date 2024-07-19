@@ -16,6 +16,7 @@ mod fun;
 mod html;
 mod paths;
 mod state;
+mod static_urls;
 mod tree;
 
 async fn fallible_main() -> anyhow::Result<()> {

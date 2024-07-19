@@ -142,6 +142,9 @@ pub fn branch_to_html(
                         "page" => Some((config.page_url(linked).into(), "".into())),
                         "pic" => config.pics.get(linked).map(|filename| {
                             (
+                                // NOTE: We can't generate a URL with a hash here yet, because we
+                                // cannot access ConfigDerivedData here due to it being borrowed
+                                // by the Markdown parser.
                                 format!("{}/static/pic/{}", config.site, &filename).into(),
                                 "".into(),
                             )
