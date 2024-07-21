@@ -47,7 +47,7 @@ description = "a place on the Internet I like to call home"
 
 [pics]
 
-[javascript]
+[build.javascript]
 import_roots = [
     { name = "treehouse", path = "static/js" },
     { name = "tairu", path = "static/js/components/tairu" },

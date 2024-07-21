@@ -1,5 +1,6 @@
-use std::{collections::HashMap, ffi::OsStr, path::PathBuf};
+use std::{ffi::OsStr, path::PathBuf};
 
+use indexmap::IndexMap;
 use log::warn;
 use serde::{Deserialize, Serialize};
 use walkdir::WalkDir;
@@ -8,7 +9,7 @@ use crate::static_urls::StaticUrls;
 
 #[derive(Debug, Clone, Serialize)]
 pub struct ImportMap {
-    pub imports: HashMap<String, String>,
+    pub imports: IndexMap<String, String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -20,7 +21,7 @@ pub struct ImportRoot {
 impl ImportMap {
     pub fn generate(base_url: String, import_roots: &[ImportRoot]) -> Self {
         let mut import_map = ImportMap {
-            imports: HashMap::new(),
+            imports: IndexMap::new(),
         };
 
         for root in import_roots {
@@ -58,6 +59,8 @@ impl ImportMap {
                 }
             }
         }
+
+        import_map.imports.sort_unstable_keys();
 
         import_map
     }

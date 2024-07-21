@@ -4,12 +4,12 @@ use anyhow::Context;
 use treehouse_format::ast::Branch;
 use walkdir::WalkDir;
 
-use crate::state::{FileId, Source, Treehouse};
-
-use super::{
+use crate::{
     parse::{self, parse_toml_with_diagnostics, parse_tree_with_diagnostics},
-    FixAllArgs, FixArgs, Paths,
+    state::{FileId, Source, Treehouse},
 };
+
+use super::{FixAllArgs, FixArgs, Paths};
 
 struct Fix {
     range: Range<usize>,

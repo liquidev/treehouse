@@ -17,7 +17,6 @@ use serde::Serialize;
 use walkdir::WalkDir;
 
 use crate::{
-    cli::parse::parse_tree_with_diagnostics,
     config::{Config, ConfigDerivedData},
     fun::seasons::Season,
     html::{
@@ -27,6 +26,7 @@ use crate::{
     },
     import_map::ImportMap,
     include_static::IncludeStatic,
+    parse::parse_tree_with_diagnostics,
     state::Source,
     static_urls::StaticUrls,
     tree::SemaRoots,
@@ -40,6 +40,8 @@ use super::Paths;
 struct Generator {
     tree_files: Vec<PathBuf>,
 }
+
+struct Build {}
 
 struct ParsedTree {
     tree_path: String,
@@ -421,7 +423,8 @@ pub fn generate(paths: &Paths<'_>) -> anyhow::Result<(Config, Treehouse)> {
     )?;
 
     info!("generating import map");
-    let import_map = ImportMap::generate(config.site.clone(), &config.javascript.import_roots);
+    let import_map =
+        ImportMap::generate(config.site.clone(), &config.build.javascript.import_roots);
     std::fs::write(
         paths.target_dir.join("static/generated/import-map.json"),
         serde_json::to_string_pretty(&import_map).context("could not serialize import map")?,

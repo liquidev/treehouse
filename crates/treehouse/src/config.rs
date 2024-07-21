@@ -2,7 +2,7 @@ use std::{collections::HashMap, ffi::OsStr, fs::File, io::BufReader, path::Path}
 
 use anyhow::Context;
 use image::ImageError;
-use log::{debug, error, warn};
+use log::{debug, warn};
 use serde::{Deserialize, Serialize};
 use walkdir::WalkDir;
 
@@ -48,8 +48,8 @@ pub struct Config {
     /// ```
     pub redirects: Redirects,
 
-    /// JavaScript configuration.
-    pub javascript: JavaScript,
+    /// How the treehouse should be built.
+    pub build: Build,
 
     /// Overrides for emoji filenames. Useful for setting up aliases.
     ///
@@ -76,6 +76,12 @@ pub struct Redirects {
     /// Page redirects. When a user navigates to a page, if they navigate to `url`, they will
     /// be redirected to `page[url]`.
     pub page: HashMap<String, String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Build {
+    /// Configuration for how JavaScript is compiled.
+    pub javascript: JavaScript,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]

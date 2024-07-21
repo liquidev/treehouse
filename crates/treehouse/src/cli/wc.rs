@@ -5,7 +5,7 @@ use treehouse_format::ast::{Branch, Roots};
 use walkdir::WalkDir;
 
 use crate::{
-    cli::parse::parse_tree_with_diagnostics,
+    parse::parse_tree_with_diagnostics,
     state::{Source, Treehouse},
 };
 

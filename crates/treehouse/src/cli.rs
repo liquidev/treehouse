@@ -1,6 +1,4 @@
 pub mod fix;
-pub mod generate;
-mod parse;
 pub mod serve;
 pub mod wc;
 

@@ -3,19 +3,21 @@ use std::path::Path;
 use clap::Parser;
 use cli::{
     fix::{fix_all_cli, fix_file_cli},
-    generate::regenerate_or_report_error,
     serve::serve,
     wc::wc_cli,
     Command, Paths, ProgramArgs,
 };
+use generate::regenerate_or_report_error;
 use log::{error, info, warn};
 
 mod cli;
 mod config;
 mod fun;
+mod generate;
 mod html;
 mod import_map;
 mod include_static;
+mod parse;
 mod paths;
 mod state;
 mod static_urls;

@@ -19,10 +19,11 @@
     {{> components/_noscript.hbs }}
 
     {{!--
-    NOTE: ~ because components/_tree.hbss must not include any extra indentation, because it may
+    NOTE: ~ because components/_tree.hbs must not include any extra indentation, because it may
     contain pre elements which shouldn't be indented.
     --}}
     {{~> components/_tree.hbs }}
+    <th-emoji-tooltips></th-emoji-tooltips>
 
     {{!-- For all pages except the one linked from the footer, include the footer icon. --}}
     {{#if (ne page.tree_path "treehouse")}}
