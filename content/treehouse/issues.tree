@@ -13,41 +13,26 @@
 % id = "issue-list"
 - ## issue list
 
-    % id = "01J093FGZFMK5TM27RT7R2YM6N"
-    - :DOING: :l_perf: cache static assets
+    % id = "01J3A23S4RVHZR3BE7EFQ8ZPPB"
+    - :TODO: :l_perf: caching the import map
 
-        % id = "01J094P8H3C9V6KFHTTS1MW467"
-        - this should improve performance for repeated visits *drastically* since Recursive isn't exactly the smallest font and takes a bunch of time to load
+        % id = "01J3JRJECXHZ1M90VSAQPN2FX1"
+        - browsers make this kinda hard because `<script type="importmap">` currently does not support the `src=""` attribute.
 
-        % id = "01J3A23S4R8F21J6FDREJGJH75"
-        - implementation progress
+            % id = "01J3JRJECXDK25115XSN5FC7XA"
+            - I wonder if it's possible to add an import map into the document dynamically.
+            all my attempts so far have failed.
 
-            % id = "01J3A23S4RNRYJXT46FQBJTA9F"
-            - :DONE: caching the enormous giant ass woff (woof!)
+        % id = "01J3JRJECXCZ3QFH5Z4PPKPCVK"
+        - an alternative to this would be to avoid the import map and instead recompile JS to add query params to `import` statements, but that's a piece of complexity I'd like to avoid.
+        I like the simplicity of import maps.
 
-            % id = "01J3A23S4R9AQXXGB4TH176F66"
-            - :DONE: caching CSS
+    % id = "01J3JRCRA8CGG9VGT2Y2W0G160"
+    + :TODO: :l_feat: branch edit history
 
-            % id = "01J3A23S4RCJDHVHZDCRAXJNDE"
-            - :DONE: caching emotes
-
-            % id = "01J3A23S4RNPZ2AGVB54FCJS9K"
-            - :TODO: caching images
-
-            % id = "01J3A23S4RTP0FBKWWCNN3KCTQ"
-            - :DONE: caching JavaScript
-
-                % id = "01J3A23S4RVHZR3BE7EFQ8ZPPB"
-                - :TODO: caching the import map - browsers make this kinda hard because `<script type="importmap">`
-                currently does not support the `src=""` attribute.
-
-                I wonder if it's possible to add an import map into the document dynamically.
-
-            % id = "01J3A23S4R0NNH1K4V2J8ZJAT2"
-            - :TODO: caching HTML pages
-
-            % id = "01J3A23S4RQRG0SG6T7QZGH7SF"
-            - :TODO: caching the sandbox
+        % id = "01J3JRCRA86XYST7JBVN9HX5VE"
+        - I've been trying to not conceal old (versions of) branches, but it's kind of hard to do while keeping content readable (both from the user side and my side.)
+        so having an unobtrusive system for tracking changes here would be nice.
 
     % id = "01J0VN48BRABQ11Z1CE8EDQXXS"
     + :TODO: :l_feat: add page backreferences
@@ -203,6 +188,30 @@
         % id = "01J094P8H3Z1XD5WZ61KP77A84"
         - not sure how to solve this UX-wise.
 
+    % id = "01J093FGZFMK5TM27RT7R2YM6N"
+    + :DONE: :l_perf: cache static assets
+
+        % id = "01J094P8H3C9V6KFHTTS1MW467"
+        - this should improve performance for repeated visits _drastically_ since Recursive isn't exactly the smallest font and takes a bunch of time to load
+
+        % id = "01J3A23S4R8F21J6FDREJGJH75"
+        - implementation progress
+
+            % id = "01J3A23S4RNRYJXT46FQBJTA9F"
+            - :DONE: caching the enormous giant ass woff (woof!)
+
+            % id = "01J3A23S4R9AQXXGB4TH176F66"
+            - :DONE: caching CSS
+
+            % id = "01J3A23S4RCJDHVHZDCRAXJNDE"
+            - :DONE: caching emotes
+
+            % id = "01J3A23S4RNPZ2AGVB54FCJS9K"
+            - :DONE: caching images
+
+            % id = "01J3A23S4RTP0FBKWWCNN3KCTQ"
+            - :DONE: caching JavaScript
+
     % id = "01J093FGZFPT3EF8XX6ZRPJVR9"
     + :DONE: :l_a11y: respect user's font size instead of forcing 14px
 
@@ -210,7 +219,7 @@
 + curious why this is not GitHub?
 
     % id = "01J093FGZFH0VCZ4T7WHMS9BJ5"
-    - since this is *my* website that is closed to contributions, I'd like the issue tracker to be hosted on a place *I* own.
+    - since this is _my_ website that is closed to contributions, I'd like the issue tracker to be hosted on a place _I_ own.
 
         % id = "01J093FGZFANJ8W6SPF78BS0XN"
         - GitHub is simply not that, thank you very much.
