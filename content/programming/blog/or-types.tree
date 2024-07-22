@@ -1,21 +1,20 @@
 %% title = "OR-types"
-   scripts = ["components/literate-programming.js"]
 
 % id = "01HTWN4XAD7C41X8XKRBFZMHJ8"
 - last night I couldn't fall asleep because I was thinking how sites like [Anilist](https://anilist.co) implement their tag-based search systems.
 
     % id = "01HTWN4XAD4CPDR36P4XNYZAE3"
-    - my mind was racing, and with enough thinking about scores and weights and sums and products… I arrived at the topic of *sum types* and *product types.*
+    - my mind was racing, and with enough thinking about scores and weights and sums and products… I arrived at the topic of _sum types_ and _product types._
 
     % id = "01HTWN4XAD4NK5TRFVPCC4EHJ2"
-    - I was thinking, "*this is actually really interesting - why do we call them sum types and product types?*" -
+    - I was thinking, "_this is actually really interesting - why do we call them sum types and product types?_" -
     I had some intuitive understanding as to where these names come from, but I wanted to write down my thoughts for future me, and future generations.
 
     % id = "01HTWN4XADR3SARMFCF6PB8T7D"
     - so I set down an alarm for today, and went to sleep.
 
 % id = "01HTWN4XADJ9NAWKY8G4BDS9E0"
-- recall that I was faced with the question of "why do we call product types *product types*, and why do we call sum types *sum types*?"
+- recall that I was faced with the question of "why do we call product types _product types_, and why do we call sum types _sum types_?"
 my intuitive understanding was this:
 
     % id = "01HTWN4XADVCMHQCGDM4RM6YBN"
@@ -168,7 +167,7 @@ my intuitive understanding was this:
             - `U` is a subtype of `T | U`, because `T` is not present (`0`) and `U` is (`1`), therefore `has(T) XOR has(U)` is true.
 
         % id = "01HTWN4XAD15CWASNFEQRTP0H7"
-        - *but* unlike our previous hypothetical `T + U`, `T * U` is not a subtype of `T | U`, because if `T` is present (`1`) and `U` is also present (`1`), `has(T) XOR has(U)` will be false -
+        - _but_ unlike our previous hypothetical `T + U`, `T * U` is not a subtype of `T | U`, because if `T` is present (`1`) and `U` is also present (`1`), `has(T) XOR has(U)` will be false -
         which matches more typical sum types.
 
 % id = "01HTWN4XADJC8ZHBHNTSDW8EQP"
@@ -181,7 +180,7 @@ my intuitive understanding was this:
     - this confused me a lot because, from my limited understanding of them, set-theoretic types represents types as sets of possible values - and mathematically any set `S` can be represented by a function `S(x)`, which is `true` if `x` is present in the set
 
     % id = "01HTWN4XADSSASE388BBS79X7J"
-    - but again, it is *not* the same, because the type system I described here is defined based on subtype relations rather than sets of values.
+    - but again, it is _not_ the same, because the type system I described here is defined based on subtype relations rather than sets of values.
 
     % id = "01HTWN4XADQ3F5CYBEN44J10D5"
     - in the world of set-theoretic types, we get sum types for free, because the type `T | U` represents the union of the set of all possible `T` values, and the set of all possible `U` values.
@@ -229,10 +228,10 @@ I'll add a note to this post summarizing what's wrong with my reasoning.
                 - seem familiar? it's exactly the same as the truth table for `AND`ing two numbers!
 
             % id = "01HTWN4XADB7K02JDWMJ5T3KN9"
-            - except because we're working with _numbers_ here, we can take it a step further and multiply *any* two numbers, not just zero and one.
+            - except because we're working with _numbers_ here, we can take it a step further and multiply _any_ two numbers, not just zero and one.
 
             % id = "01HTWN4XAD9ESATEWPNC6Y72S3"
-            - therefore we can search and rank our anime about crimes in space based on a *score* produced by multiplying the tag values.
+            - therefore we can search and rank our anime about crimes in space based on a _score_ produced by multiplying the tag values.
             let's see [what Anilist tells us about crimes in space](https://anilist.co/search/anime?genres=Space&genres=Crime).
 
             I wrote down the data of the first 10 anime it displayed to me on the day I'm writing this, so this data may become out of date with time. ignoring spoiler tags because noone likes those.

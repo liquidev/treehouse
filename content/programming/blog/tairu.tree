@@ -29,14 +29,18 @@ styles = ["page/tairu.css"]
     % id = "01HQ162WWAMCPC5M88QAXHX4BT"
     - so to help us learn, I made a little tile editor so that we can experiment with rendering tiles! have a look:
 
-    <noscript>(…though you will need to enable JavaScript to try it out.
+    {% this could probably be written with some clever generator magic, but I'm too lazy for that %}
+    `<noscript>`{=html}
+    (…though you will need to enable JavaScript to try it out.
     seriously, pinky promise I won't ever track you!
     inspect the source code if you wanna.
     if not, you will have to deal with static pictures.
-    but just keep in mind this was supposed to be an <strong><em>interactive</em></strong> exploration of autotiling techniques.
-    cheers!)</noscript>
+    but just keep in mind this was supposed to be an _*interactive*_ exploration of autotiling techniques.
+    cheers!)
+    `</noscript>`{=html}
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     import { Tilemap } from "tairu/tilemap.js";
     import { TileEditor } from "tairu/editor.js";
 
@@ -54,22 +58,26 @@ styles = ["page/tairu.css"]
     });
     ```
 
-    ```output tairu 01HQ47ZX7520PJNPJ75M793R5G
+    {:program=tairu :placeholder=01HQ47ZX7520PJNPJ75M793R5G}
+    ```output
     ```
 
         % id = "01HQ162WWAC3FN565QE3JAB87D"
-        - `Tilemap` is a class wrapping a flat [`Uint8Array`] with a `width` and a `height`, so that we can index it using (x, y) coordinates.
+        - `Tilemap` is a class wrapping a flat [`Uint8Array`][Uint8Array] with a `width` and a `height`, so that we can index it using (x, y) coordinates.
 
-        ```javascript tairu
+        {:program=tairu}
+        ```javascript
         console.log(tilemapSquare.at(0, 0));
         console.log(tilemapSquare.at(3, 1));
         ```
-        ```output tairu
+
+        {:program=tairu}
+        ```output
         0
         1
         ```
 
-        [`Uint8Array`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+        [Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
 
             % id = "01HQ162WWA090YW5BR1XW68XJN"
             - `at` has a `setAt` counterpart which sets tiles instead of getting them.
@@ -90,34 +98,35 @@ styles = ["page/tairu.css"]
     - let's break this down into smaller steps. drawing a border around the rectangle will involve:
 
         % id = "01HQ162WWATV30HXGBQVWERP2M"
-        - determining *on which tiles* to draw it,
+        - determining _on which tiles_ to draw it,
 
         % id = "01HQ162WWAA0V0SS0D1Y38BDS1"
-        - determining *where in these tiles* to draw it,
+        - determining _where in these tiles_ to draw it,
 
         % id = "01HQ162WWAGBCBDYF4VH26MX1B"
         - and actually drawing it!
 
     % id = "01HQ162WWA2PNGVV075HR3WMER"
-    - so let's zoom in a bit and look at the tiles one by one. in particular, let's focus on *these* two tiles:
+    - so let's zoom in a bit and look at the tiles one by one. in particular, let's focus on _these_ two tiles:
 
     ![the same red rectangle, now with a focus on the northern tile at its center][pic:01HPYWPJB1P0GK53BSJFJFRAGR]
 
     % id = "01HQ162WWAYDS6CSD3T102NA9X"
-    - notice how the two highlighted tiles are *different.* therefore, we can infer we should probably connect together any tiles that are *the same*.
+    - notice how the two highlighted tiles are _different._ therefore, we can infer we should probably connect together any tiles that are _the same_.
 
     % id = "01HQ162WWATDD86D4GY7RMT0BZ"
     - knowing that, we can extract the logic to a function:
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     export function shouldConnect(a, b) {
         return a == b;
     }
     ```
 
     % id = "01HQ162WWA9M6801Q0RNRSF09H"
-    + now, also note that the border around this particular tile is only drawn on its *northern* edge -
-    therefore we can infer that borders should only be drawn on edges for whom `shouldConnect(thisTile, adjacentTile)` is **`false`** (not `true`!).
+    + now, also note that the border around this particular tile is only drawn on its _northern_ edge -
+    therefore we can infer that borders should only be drawn on edges for whom `shouldConnect(thisTile, adjacentTile)` is *`false`* (not `true`!).
     a tile generally has four edges - east, south, west, north - so we need to perform this check for all of them, and draw our border accordingly.
 
         % id = "01HQ162WWAM5YYQCEXH791T0E9"
@@ -135,7 +144,8 @@ styles = ["page/tairu.css"]
     % id = "01HQ162WWA5W8NXSXVZY3BBQ0H"
     - to do that, I'm gonna override the tile editor's `drawTilemap` function - as this is where the actual tilemap rendering happens!
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     import { TileEditor } from "tairu/editor.js";
 
     export class TileEditorWithBorders extends TileEditor {
@@ -160,7 +170,7 @@ styles = ["page/tairu.css"]
                         continue;
                     }
 
-                    // Check which of this tile's neighbors should *not* connect to it.
+                    // Check which of this tile's neighbors should _not_ connect to it.
                     let disjointWithEast = !shouldConnect(tile, this.tilemap.at(x + 1, y));
                     let disjointWithSouth = !shouldConnect(tile, this.tilemap.at(x, y + 1));
                     let disjointWithWest = !shouldConnect(tile, this.tilemap.at(x - 1, y));
@@ -191,14 +201,17 @@ styles = ["page/tairu.css"]
 
     and here's the result:
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     new TileEditorWithBorders({
         tilemap: tilemapSquare,
         tileSize: 40,
         borderWidth: 4,
     });
     ```
-    ```output tairu 01HQ49TJZFMK719KSE16SG3F7B
+    
+    {:program=tairu :placeholder=01HQ49TJZFMK719KSE16SG3F7B}
+    ```output
     ```
 
     % id = "01HQ162WWAAEKW1ECV5G3ZEY47"
@@ -221,58 +234,58 @@ styles = ["page/tairu.css"]
       id = "01HQ162WWAS502000K8QZWVBDW"
     - we can split this tileset up into 16 individual tiles, each one 8 × 8 pixels; people choose various resolutions, I chose a fairly low one to hide my lack of artistic skill.
 
-    <div class="horizontal-tile-strip">
-    <span class="metal x-0 y-0"></span>
-    <span class="metal x-1 y-0"></span>
-    <span class="metal x-2 y-0"></span>
-    <span class="metal x-3 y-0"></span>
-    <span class="metal x-0 y-1"></span>
-    <span class="metal x-1 y-1"></span>
-    <span class="metal x-2 y-1"></span>
-    <span class="metal x-3 y-1"></span>
-    <span class="metal x-0 y-2"></span>
-    <span class="metal x-1 y-2"></span>
-    <span class="metal x-2 y-2"></span>
-    <span class="metal x-3 y-2"></span>
-    <span class="metal x-0 y-3"></span>
-    <span class="metal x-1 y-3"></span>
-    <span class="metal x-2 y-3"></span>
-    <span class="metal x-3 y-3"></span>
-    </div>
+    ::: horizontal-tile-strip
+    []{.metal .x-0 .y-0}
+    []{.metal .x-1 .y-0}
+    []{.metal .x-2 .y-0}
+    []{.metal .x-3 .y-0}
+    []{.metal .x-0 .y-1}
+    []{.metal .x-1 .y-1}
+    []{.metal .x-2 .y-1}
+    []{.metal .x-3 .y-1}
+    []{.metal .x-0 .y-2}
+    []{.metal .x-1 .y-2}
+    []{.metal .x-2 .y-2}
+    []{.metal .x-3 .y-2}
+    []{.metal .x-0 .y-3}
+    []{.metal .x-1 .y-3}
+    []{.metal .x-2 .y-3}
+    []{.metal .x-3 .y-3}
+    :::
 
     % classes.branch = "tileset-cardinal-directions-demo"
       id = "01HQ162WWANBTYH1JJWCTZYYVN"
     - the keen eyed among you have probably noticed that this is very similar to the case we had before with drawing procedural borders -
-    except that instead of determining which borders to draw based on a tile's neighbors, this time we'll determine which *whole tile* to draw based on its neighbors!
+    except that instead of determining which borders to draw based on a tile's neighbors, this time we'll determine which _whole tile_ to draw based on its neighbors!
 
-    <div class="horizontal-tile-strip">
-    <span class="metal x-0 y-0"><span class="east">E</span><span class="south">S</span></span>
-    <span class="metal x-1 y-0"><span class="east">E</span><span class="south">S</span><span class="west">W</span></span>
-    <span class="metal x-2 y-0"><span class="south">S</span><span class="west">W</span></span>
-    <span class="metal x-3 y-0"><span class="south">S</span></span>
-    <span class="metal x-0 y-1"><span class="east">E</span><span class="south">S</span><span class="north">N</span></span>
-    <span class="metal x-1 y-1"><span class="east">E</span><span class="south">S</span><span class="west">W</span><span class="north">N</span></span>
-    <span class="metal x-2 y-1"><span class="south">S</span><span class="west">W</span><span class="north">N</span></span>
-    <span class="metal x-3 y-1"><span class="south">S</span><span class="north">N</span></span>
-    <span class="metal x-0 y-2"><span class="east">E</span><span class="north">N</span></span>
-    <span class="metal x-1 y-2"><span class="east">E</span><span class="west">W</span><span class="north">N</span></span>
-    <span class="metal x-2 y-2"><span class="west">W</span><span class="north">N</span></span>
-    <span class="metal x-3 y-2"><span class="north">N</span></span>
-    <span class="metal x-0 y-3"><span class="east">E</span></span>
-    <span class="metal x-1 y-3"><span class="east">E</span><span class="west">W</span></span>
-    <span class="metal x-2 y-3"><span class="west">W</span></span>
-    <span class="metal x-3 y-3"></span>
-    </div>
+    ::: horizontal-tile-strip
+    [[E]{.east} [S]{.south}]{.metal .x-0 .y-0}
+    [[E]{.east} [S]{.south} [W]{.west}]{.metal .x-1 .y-0}
+    [[S]{.south} [W]{.west}]{.metal .x-2 .y-0}
+    [[S]{.south}]{.metal .x-3 .y-0}
+    [[E]{.east} [S]{.south} [N]{.north}]{.metal .x-0 .y-1}
+    [[E]{.east} [S]{.south} [W]{.west} [N]{.north}]{.metal .x-1 .y-1}
+    [[S]{.south} [W]{.west} [N]{.north}]{.metal .x-2 .y-1}
+    [[S]{.south} [N]{.north}]{.metal .x-3 .y-1}
+    [[E]{.east} [N]{.north}]{.metal .x-0 .y-2}
+    [[E]{.east} [W]{.west} [N]{.north}]{.metal .x-1 .y-2}
+    [[W]{.west} [N]{.north}]{.metal .x-2 .y-2}
+    [[N]{.north}]{.metal .x-3 .y-2}
+    [[E]{.east}]{.metal .x-0 .y-3}
+    [[E]{.east} [W]{.west}]{.metal .x-1 .y-3}
+    [[W]{.west}]{.metal .x-2 .y-3}
+    []{.metal .x-3 .y-3}
+    :::
 
     % id = "01HQ162WWA4Z6KKWFV59BR4WD3"
     - previously we represented which single border to draw with a single boolean.
-    now we will represent which single tile to draw with *four* booleans, because each tile can connect to four different directions.
+    now we will represent which single tile to draw with _four_ booleans, because each tile can connect to four different directions.
 
         % id = "01HQ162WWAQ9GZ6JD8KESW4N53"
-        - four booleans like this can easily be packed into a single integer using some bitwise operations, hence we get ***bitwise autotiling*** - autotiling using bitwise operations!
+        - four booleans like this can easily be packed into a single integer using some bitwise operations, hence we get _*bitwise autotiling*_ - autotiling using bitwise operations!
 
     % id = "01HQ162WWAMBM8RXKQTN3D0XR2"
-    - now the clever part of bitwise autotiling is that we can use this packed integer *as an array index* - therefore selecting which tile to draw can be determined using just a single lookup table! neat, huh?
+    - now the clever part of bitwise autotiling is that we can use this packed integer _as an array index_ - therefore selecting which tile to draw can be determined using just a single lookup table! neat, huh?
 
         % id = "01HQ162WWA0ZGZ97JZZBFS41TF"
         - but because I'm lazy, and CPU time is valuable, instead of using an array I'll just rearrange the tileset texture a bit to be able to slice it in place using this index.
@@ -280,7 +293,8 @@ styles = ["page/tairu.css"]
         % id = "01HQ162WWAQQ99TRBDY5DCSW3Z"
         - say we arrange our bits like this:
 
-        ```javascript tairu
+        {:program=tairu}
+        ```javascript
         export const E = 0b0001;
         export const S = 0b0010;
         export const W = 0b0100;
@@ -291,32 +305,32 @@ styles = ["page/tairu.css"]
           id = "01HQ162WWABANND0WGT933TBMV"
         - that means we'll need to arrange our tiles like so, where the leftmost tile is at index 0 (`0b0000`) and the rightmost tile is at index 15 (`0b1111`):
 
-        <div class="horizontal-tile-strip">
-        <span class="metal x-3 y-3"></span>
-        <span class="metal x-0 y-3"><span class="east">E</span></span>
-        <span class="metal x-3 y-0"><span class="south">S</span></span>
-        <span class="metal x-0 y-0"><span class="east">E</span><span class="south">S</span></span>
-        <span class="metal x-2 y-3"><span class="west">W</span></span>
-        <span class="metal x-1 y-3"><span class="east">E</span><span class="west">W</span></span>
-        <span class="metal x-2 y-0"><span class="south">S</span><span class="west">W</span></span>
-        <span class="metal x-1 y-0"><span class="east">E</span><span class="south">S</span><span class="west">W</span></span>
-        <span class="metal x-3 y-2"><span class="north">N</span></span>
-        <span class="metal x-0 y-2"><span class="east">E</span><span class="north">N</span></span>
-        <span class="metal x-3 y-1"><span class="south">S</span><span class="north">N</span></span>
-        <span class="metal x-0 y-1"><span class="east">E</span><span class="south">S</span><span class="north">N</span></span>
-        <span class="metal x-2 y-2"><span class="west">W</span><span class="north">N</span></span>
-        <span class="metal x-1 y-2"><span class="east">E</span><span class="west">W</span><span class="north">N</span></span>
-        <span class="metal x-2 y-1"><span class="south">S</span><span class="west">W</span><span class="north">N</span></span>
-        <span class="metal x-1 y-1"><span class="east">E</span><span class="south">S</span><span class="west">W</span><span class="north">N</span></span>
-        </div>
+        ::: horizontal-tile-strip
+        []{.metal .x-3 .y-3}
+        [[E]{.east}]{.metal .x-0 .y-3}
+        [[S]{.south}]{.metal .x-3 .y-0}
+        [[E]{.east} [S]{.south}]{.metal .x-0 .y-0}
+        [[W]{.west}]{.metal .x-2 .y-3}
+        [[W]{.west} [E]{.east}]{.metal .x-1 .y-3}
+        [[W]{.west} [S]{.south}]{.metal .x-2 .y-0}
+        [[W]{.west} [E]{.east} [S]{.south}]{.metal .x-1 .y-0}
+        [[N]{.north}]{.metal .x-3 .y-2}
+        [[E]{.east} [N]{.north}]{.metal .x-0 .y-2}
+        [[S]{.south} [N]{.north}]{.metal .x-3 .y-1}
+        [[E]{.east} [S]{.south} [N]{.north}]{.metal .x-0 .y-1}
+        [[W]{.west} [N]{.north}]{.metal .x-2 .y-2}
+        [[E]{.east} [W]{.west} [N]{.north}]{.metal .x-1 .y-2}
+        [[S]{.south} [W]{.west} [N]{.north}]{.metal .x-2 .y-1}
+        [[E]{.east} [S]{.south} [W]{.west} [N]{.north}]{.metal .x-1 .y-1}
+        :::
 
         % id = "01HQ162WWAJPW00XA25N0K6KS7"
-        - packing that into a single tileset, or rather this time, a *tile strip*, we get this image:
+        - packing that into a single tileset, or rather this time, a _tile strip_, we get this image:
 
         ![horizontal tile strip of 16 8x8 pixel metal tiles][pic:01HPMMR6DGKYTPZ9CK0WQWKNX5]
 
     % id = "01HQ162WWAT2ZC7T2P9ATD6WG2"
-    - now it's time to actually implement it as code! I'll start by defining a *tile index* function as a general way of looking up tiles in a tileset.
+    - now it's time to actually implement it as code! I'll start by defining a _tile index_ function as a general way of looking up tiles in a tileset.
 
         % id = "01HQ162WWA0NRHBB6HP2RERNBK"
         - I want to make the tile renderer a bit more general, so being able to attach a different tile lookup function to each tileset sounds like a great feature.
@@ -327,7 +341,8 @@ styles = ["page/tairu.css"]
     % id = "01HQ162WWAYJ4JCG3Z24SJR8S9"
     - …but anyways, here's the basic bitwise magic function:
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     export function tileIndexInBitwiseTileset(tilemap, x, y) {
         let tile = tilemap.at(x, y);
 
@@ -345,7 +360,8 @@ styles = ["page/tairu.css"]
       id = "01HQ162WWAS813ANMBG1PWDZHC"
     - we'll define our tilesets by their texture, tile size, and a tile indexing function. so let's create an object that will hold our tileset data:
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     // You'll probably want to host the assets on your own website rather than
     // hotlinking to others. It helps longevity!
     let tilesetImage = new Image();
@@ -361,7 +377,8 @@ styles = ["page/tairu.css"]
     % id = "01HQ162WWA0SC2GA7Y3KJE0W5F"
     - with all that, we should now be able to write a tile renderer which can handle textures! so let's try it:
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     import { TileEditor } from "tairu/editor.js";
 
     export class TilesetTileEditor extends TileEditor {
@@ -409,20 +426,24 @@ styles = ["page/tairu.css"]
     % id = "01HQ162WWAS2HYF41MZNJ18BXC"
     - drum roll please…
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     new TilesetTileEditor({
         tilemap: tilemapSquare,
         tileSize: 40,
         tilesets: [heavyMetalTileset],
     });
     ```
-    ```output tairu 01HQ49X8Z57FNMN3E79FYF8CMG
+
+    {:program=tairu :placeholder=01HQ49X8Z57FNMN3E79FYF8CMG}
+    ```output 
     ```
 
     % id = "01HQ162WWA03JAGJYCT0DRZP24"
     - it works! buuuut if you play around with it you'll quickly start noticing some problems:
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     import { Tilemap } from "tairu/tilemap.js";
 
     export const tilemapEdgeCase = Tilemap.parse(" x", [
@@ -438,7 +459,9 @@ styles = ["page/tairu.css"]
         tilesets: [heavyMetalTileset],
     });
     ```
-    ```output tairu 01HQ49YDPQXYSAT5N6P241DG3C
+
+    {:program=tairu :placeholder=01HQ49YDPQXYSAT5N6P241DG3C}
+    ```output 
     ```
 
     % id = "01HQ162WWAB0AYSPGB4AEVT03Z"
@@ -448,9 +471,10 @@ styles = ["page/tairu.css"]
 - ### thing is, it was never good in the first place
 
     % id = "01HQ162WWARSVDRNHZE13ZF6W6"
-    - I'll be blunt: we don't have enough tiles to represent *corners*! like in this case:
+    - I'll be blunt: we don't have enough tiles to represent _corners_! like in this case:
 
-    ```javacript tairu
+    {:program=tairu}
+    ```javascript
     import { Tilemap } from "tairu/tilemap.js";
 
     new TilesetTileEditor({
@@ -464,7 +488,9 @@ styles = ["page/tairu.css"]
         tilesets: [heavyMetalTileset],
     });
     ```
-    ```output tairu 01HQ49Z8JWR75D85DGHCB34K8E
+
+    {:program=tairu :placeholder=01HQ49Z8JWR75D85DGHCB34K8E}
+    ```output 
     ```
 
     % id = "01HQ1K39AS4VDW7DVTAGQ03WFM"
@@ -476,50 +502,60 @@ styles = ["page/tairu.css"]
         - it should kind of _"bend"_ to fit in with the tiles to the north and the south, but it doesn't :kamien:
 
     % id = "01HQ1K39ASQQNF7B881SYJWRC7"
-    - so what if we made the tile look like *this* instead:
+    - so what if we made the tile look like _this_ instead:
 
     ![mockup showing that previous L-shape but with a real corner][pic:01HQ17GYEZSZCVRBFHP4HXAJV8]
 
         % id = "01HQ1K39ASMKRMTXFV93FRHZTG"
         - that sure as heck looks a lot nicer! but there's a problem: that tile, let's zoom in on it…
 
-        ![that bent tile, and just *it* alone][pic:01HQ183RANGH4S7VZSG1ZGH0S5]
+        ![that bent tile, and just _it_ alone][pic:01HQ183RANGH4S7VZSG1ZGH0S5]
 
             % classes.branch = "tileset-four-to-eight-demo"
               id = "01HQ1K39ASR81NWMW8Q0MF8QMP"
             - enhance!
-
+           
+            {% NOTE djot: I don't there's a way to achieve this in Djot alone %}
+            ``` =html
             <ul class="directions-square bend">
                 <li class="east">E</li>
                 <li class="south">S</li>
             </ul>
+            ```
 
             % classes.branch = "tileset-four-to-eight-demo"
               id = "01HQ1K39ASC5WTR2A2AJN85JK2"
             - huh. interesting. it connects to the east and the south. so what about this tile -
+
+            ``` =html
             <ul class="directions-square e-s">
                 <li class="east">E</li>
                 <li class="south">S</li>
             </ul>
+            ```
+
                 % id = "01HQ1K39ASXYBH9QJH5Q0C45JZ"
-                - because it *also* connects to the east and the south :thinking:
+                - because it _also_ connects to the east and the south :thinking:
 
                 % id = "01HQ1K39ASW5PWS52NGA2X3M0P"
-                - seems like we'll need something to disambiguate the two cases - and what better thing to disambiguate with than *more bits*!
+                - seems like we'll need something to disambiguate the two cases - and what better thing to disambiguate with than _more bits_!
 
     % classes.branch = "tileset-four-to-eight-demo"
         id = "01HPQCCV4R5N97FJ1GS36HZJZ7"
     - to represent the corners, we'll turn our four cardinal directions…
 
+    ``` =html
     <ul class="directions-square">
         <li class="east">E</li>
         <li class="south">S</li>
         <li class="west">W</li>
         <li class="north">N</li>
     </ul>
+    ```
 
-    into eight *ordinal* directions:
+    into eight _ordinal_ directions:
 
+    ``` =html
     <ul class="directions-square">
         <li class="east">E</li>
         <li class="south-east">SE</li>
@@ -530,13 +566,14 @@ styles = ["page/tairu.css"]
         <li class="north">N</li>
         <li class="north-east"><a href="https://github.com/NoiseStudio/NoiseEngine/" title="NoiseEngine????">NE</a></li>
     </ul>
+    ```
 
     % id = "01HQ1K39ASFN94YDY1RWQYS12K"
     - at this point with the four extra corners we'll need 8 bits to represent our tiles, and that would make…
 
-    ***256 tiles!?***
+    _*256 tiles!?*_
 
-    nobody in their right mind would actually draw 256 separate tiles, right? ***RIGHT???***
+    nobody in their right mind would actually draw 256 separate tiles, right? _*RIGHT???*_
 
         % template = true
           id = "01HQ1K39AS11M1M4GQQ60NXTY6"
@@ -544,7 +581,8 @@ styles = ["page/tairu.css"]
         if we arrange the tiles in a diagnonal cross like this, notice how the tile in the center would have the bits `SE | SW | NW | NE` set, which upon first glance would suggest us needing a different tile -
         but it looks correct!
 
-        ```javascript tairu
+        {:program=tairu}
+        ```javascript
         import { Tilemap } from "tairu/tilemap.js";
 
         new TilesetTileEditor({
@@ -559,29 +597,35 @@ styles = ["page/tairu.css"]
             tilesets: [heavyMetalTileset],
         });
         ```
-        ```output tairu 01HQ4A01MPE6JT5ZZFEN9S635W
+
+        {:program=tairu :placeholder=01HQ4A01MPE6JT5ZZFEN9S635W}
+        ```output 
         ```
 
         % id = "01HQ1K39AS7CRBZ67N1VVHCVME"
-        - therefore there must be *some* bit combinations that are redundant to others. let's find them!
+        - therefore there must be _some_ bit combinations that are redundant to others. let's find them!
 
         % classes.branch = "tileset-four-to-eight-demo"
           id = "01HQ1K39ASZPJ4E23EZ1XJ5J7K"
         - let's pick one corner first, then generalize to all the other ones. I pick southeast!
 
+        ``` =html
         <ul class="directions-square e-s">
             <li class="east">E</li>
             <li class="south-east">SE</li>
             <li class="south">S</li>
         </ul>
+        ```
 
             % id = "01HQ1K39ASQTR054W0VWEAV2FS"
             - in this case, if we remove the tile to the southeast, we get that bent tile from before:
 
+            ``` =html
             <ul class="directions-square bend">
                 <li class="east">E</li>
                 <li class="south">S</li>
             </ul>
+            ```
 
             % id = "01HQ1K39AS6RGE6Z83T8MH1R0M"
             - what we can learn from this is that for `E | S`, `ES` affects the result!
@@ -589,6 +633,7 @@ styles = ["page/tairu.css"]
             % id = "01HQ1K39ASVSAQ6F8ANEZE1WQ4"
             - but if we add any other corner, nothing changes. heck, let's add all of them:
 
+            ``` =html
             <ul class="directions-square e-s">
                 <li class="east">E</li>
                 <li class="south-east">SE</li>
@@ -597,6 +642,7 @@ styles = ["page/tairu.css"]
                 <li class="north-west">NW</li>
                 <li class="north-east">NE</li>
             </ul>
+            ```
 
                 % id = "01HQ1K39AST8RQTVSCDV7FSH62"
                 - this combination is definitely redundant!
@@ -612,7 +658,8 @@ styles = ["page/tairu.css"]
             + we'll start off by redefining our bits to be ordinal directions instead. I still want to keep the [nice orderliness][branch:01HQ162WWAM5YYQCEXH791T0E9] that comes with
             arranging the bits clockwise starting from east, so if we want that we can't just extend the indices with an extra four bits at the top.
 
-            ```javascript tairu
+            {:program=tairu}
+            ```javascript
             export const E = 0b0000_0001;
             export const SE = 0b0000_0010;
             export const S = 0b0000_0100;
@@ -626,7 +673,8 @@ styles = ["page/tairu.css"]
             % id = "01HPSY4Y19HPNXC54VP6TFFHXN"
             - I don't know about you, but I find the usual C-style way of checking whether a bit is set extremely hard to read, so let's take care of that:
 
-            ```javascript tairu
+            {:program=tairu}
+            ```javascript
             export function isSet(integer, bit) {
                 return (integer & bit) == bit;
             }
@@ -636,7 +684,8 @@ styles = ["page/tairu.css"]
             - now we can write a function that will remove the aforementioned redundancies.
             the logic is quite simple - for southeast, we only allow it to be set if both south and east are also set, and so on and so forth.
 
-            ```javascript tairu
+            {:program=tairu}
+            ```javascript
             // t is an existing tile index; variable name is short for brevity
             export function removeRedundancies(t) {
                 if (isSet(t, SE) && (!isSet(t, S) || !isSet(t, E))) {
@@ -658,7 +707,8 @@ styles = ["page/tairu.css"]
             % id = "01HPSY4Y19HWQQ9XBW1DDGW68T"
             - with that, we can find a set of all unique non-redundant combinations:
 
-            ```javascript tairu
+            {:program=tairu}
+            ```javascript
             export function ordinalDirections() {
                 let unique = new Set();
                 for (let i = 0; i <= 0b1111_1111; ++i) {
@@ -669,20 +719,22 @@ styles = ["page/tairu.css"]
             ```
 
                 % id = "01HPSY4Y19KG8DC4SYXR1DJJ5F"
-                - by the way, I find it quite funny how JavaScript's [`Array.prototype.sort`] defaults to ASCII ordering *for all types.*
+                - by the way, I find it quite funny how JavaScript's [`Array.prototype.sort`][sort] defaults to ASCII ordering _for all types._
                 even numbers! ain't that silly?
 
-                [`Array.prototype.sort`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+                [sort]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 
             % id = "01HPSY4Y19V62YKTGK3TTKEB38"
             - and with all the ingredients in the pot, we now _Let It Cook™_:
 
-            ```javascript tairu
+            {:program=tairu}
+            ```javascript
             let dirs = ordinalDirections();
             console.log(dirs.length);
             ```
 
-            ```output tairu
+            {:program=tairu}
+            ```output
             47
             ```
 
@@ -690,7 +742,7 @@ styles = ["page/tairu.css"]
                 - forty seven! that's how many unique tiles we actually need.
 
                 % id = "01HPSY4Y19C303Z595KNVXYYVS"
-                - you may find pixel art tutorials saying you need forty *eight* and not forty *seven*, but that is not quite correct -
+                - you may find pixel art tutorials saying you need forty _eight_ and not forty _seven_, but that is not quite correct -
                 the forty eighth tile is actually just the empty tile! saying it's part of the tileset is quite misleading IMO.
 
                 % id = "01HPSY4Y19TM2K2WN06HHEM3D0"
@@ -707,13 +759,13 @@ styles = ["page/tairu.css"]
     - so we only need to draw 47 tiles, but to actually display them in a game we still need to pack them into an image.
 
         % id = "01HPWJB4Y0QX6YR6TQKZ7T1C2E"
-        - we *could* use a similar approach to the 16 tile version, but that would leave us with lots of wasted space!
+        - we _could_ use a similar approach to the 16 tile version, but that would leave us with lots of wasted space!
 
             % id = "01HPWJB4Y0HKGSDABB56CNFP9H"
             - think that with this redundancy elimination approach most of the tiles will never even be looked up by the renderer, because the bit combinations will be collapsed into a more canonical form before the lookup.
 
         % id = "01HQ1K39ASM53P1E74HKRZ1T24"
-        - so instead of wasting space, we can compress the tiles into a compact strip, and use a lookup table from sparse tile indices to dense tile *positions* within the strip.
+        - so instead of wasting space, we can compress the tiles into a compact strip, and use a lookup table from sparse tile indices to dense tile _positions_ within the strip.
 
     % id = "01HPWJB4Y0F9JGXQDAAVC3ERG1"
     - I don't want to write the lookup table by hand, so let's generate it!
@@ -721,7 +773,8 @@ styles = ["page/tairu.css"]
         % id = "01HPWJB4Y0HTV32T4WMKCKWTVA"
         - we'll start by obtaining our ordinal directions array again:
 
-        ```javascript tairu
+        {:program=tairu}
+        ```javascript
         export let xToConnectionBitSet = ordinalDirections();
         ```
 
@@ -730,7 +783,8 @@ styles = ["page/tairu.css"]
 
         remember that our array has only 256 values, so it should be pretty cheap to represent using a [`Uint8Array`]:
 
-        ```javascript tairu
+        {:program=tairu}
+        ```javascript
         export let connectionBitSetToX = new Uint8Array(256);
         for (let i = 0; i < xToConnectionBitSet.length; ++i) {
             connectionBitSetToX[xToConnectionBitSet[i]] = i;
@@ -742,18 +796,22 @@ styles = ["page/tairu.css"]
         % id = "01HPWJB4Y0CWQB9EZG6C91A0H0"
         - and there we go! we now have a mapping from our bitset to positions within the tile strip. try to play around with the code example to see which bitsets correspond to which position!
 
-        ```javascript tairu
+        {:program=tairu}
+        ```javascript
         console.log(connectionBitSetToX[E | SE | S]);
         ```
-        ```output tairu
+
+        {:program=tairu}
+        ```output
         4
         ```
 
         % id = "01HPWJB4Y09P9Q3NGN59XWX2X9"
-        + for my own (and your) convenience, here's a complete list of *all* the possible combinations in order.
+        + for my own (and your) convenience, here's a complete list of _all_ the possible combinations in order.
 
             % id = "01HPWJB4Y01VJFMHYEC1WZ353W"
-            - ```javascript tairu
+            - {:program=tairu}
+            ```javascript
             function toString(bitset) {
                 if (bitset == 0) return "0";
 
@@ -773,7 +831,9 @@ styles = ["page/tairu.css"]
                 console.log(`${x} => ${toString(xToConnectionBitSet[x])}`);
             }
             ```
-            ```output tairu
+
+            {:program=tairu}
+            ```output
             0 => 0
             1 => E
             2 => S
@@ -836,7 +896,8 @@ styles = ["page/tairu.css"]
     % id = "01HQ1M84GS09M7PMXFYHDPRTMT"
     - since we already prepared the bulk of the framework before, it should be as simple as writing a new `tileIndex` function:
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     export function tileIndexInBitwiseTileset47(tilemap, x, y) {
         let tile = tilemap.at(x, y);
 
@@ -858,7 +919,8 @@ styles = ["page/tairu.css"]
       id = "01HQ1M84GS4C99VQZC4150CMDS"
     - now we can write a new tileset descriptor that uses this indexing function and the larger tile strip:
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     // Once again, use your own link here!
     let tilesetImage = new Image();
     tilesetImage.src = "{% pic 01HPW47SHMSVAH7C0JR9HWXWCM %}";
@@ -873,7 +935,8 @@ styles = ["page/tairu.css"]
     % id = "01HQ1M84GS9CC8VR1BVDC15W50"
     - and Drum Roll 2: Return of the Snare please…
 
-    ```javascript tairu
+    {:program=tairu}
+    ```javascript
     import { Tilemap } from "tairu/tilemap.js";
 
     new TilesetTileEditor({
@@ -888,14 +951,16 @@ styles = ["page/tairu.css"]
         tilesets: [heavyMetalTileset47],
     });
     ```
-    ```output tairu 01HQ4A11RRXEQ850598GFBJN0B
+
+    {:program=tairu :placeholder=01HQ4A11RRXEQ850598GFBJN0B}
+    ```output 
     ```
 
     % id = "01HQ1M84GSCXTPGVPXY840WCQ6"
     - it works perfectly!
 
     % id = "01HQ1M84GSVBG9T94ZN9XTXX58"
-    - but honestly, this is a bit *boring* if we're gonna build a game with procedural worlds.
+    - but honestly, this is a bit _boring_ if we're gonna build a game with procedural worlds.
 
         % id = "01HQ1M84GSH0KTFFZET6GZZ4V2"
         - heck, it's even boring for a level designer to have to lay out all the tiles manually -
@@ -907,7 +972,8 @@ styles = ["page/tairu.css"]
 % id = "01HQ1M84GS0KJ9NA6GPS62RC95"
 - for now, have a big editor to play around with. it's a lot of fun arranging the tiles in various shapes!
 
-```javascript tairu
+{:program=tairu}
+```javascript
 import { Tilemap } from "tairu/tilemap.js";
 
 new TilesetTileEditor({
@@ -916,7 +982,9 @@ new TilesetTileEditor({
     tilesets: [heavyMetalTileset47],
 });
 ```
-```output tairu 01HQ4A45WNAEJGCT2WDMQJHK14
+
+{:program=tairu :placeholder=01HQ4A45WNAEJGCT2WDMQJHK14}
+```output 
 ```
 
 :nap: <!--
@@ -947,7 +1015,7 @@ You have been warned.
                 - after a while I switched to a fork - [Lite XL](https://github.com/lite-xl/lite-xl), which had better font rendering and more features
 
                 % id = "01HPD4XQPWB11TZSX5VAAJ6TCD"
-                - I stopped using it because VS Code was just more feature packed and usable; no need to reinvent the wheel, rust-analyzer *just works.*
+                - I stopped using it because VS Code was just more feature packed and usable; no need to reinvent the wheel, rust-analyzer _just works._
 
                     % id = "01HPD4XQPW3G7BXTBBTD05MB8V"
                     - the LSP plugin for Lite XL had some issues around autocompletions not filling in properly :pensive:
@@ -956,11 +1024,11 @@ You have been warned.
                     while tinkering with your editor is something really cool, in my experience it's only cool up to a point.
 
     % id = "01HPD4XQPWV1BAPA27SNDFR93B"
-    - the cool thing with Tilekit is that it's *more* than just your average bitwise autotiling - of course it *can* do basic autotiling, but it can also do so much more
+    - the cool thing with Tilekit is that it's _more_ than just your average bitwise autotiling - of course it _can_ do basic autotiling, but it can also do so much more
 
         % id = "01HPD4XQPWM1JSAPXVT6NBHKYY"
           classes.branch_children = "branch-quote"
-        - if I had to describe it, it's basically something of a *shader langauge for tilesets.* this makes it really powerful, as you can do little programs like
+        - if I had to describe it, it's basically something of a _shader langauge for tilesets._ this makes it really powerful, as you can do little programs like
 
             % id = "01HPD4XQPWE7ZVR0SS67DHTGHQ"
             - autotile using this base tileset

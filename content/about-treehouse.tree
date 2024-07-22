@@ -48,17 +48,17 @@
             + like really, where does it end?
 
                 % id = "01H89RFHCQCCWWMZCXEXF704Q3"
-                + *where?*
+                + _where?_
 
                     % id = "01H89RFHCQW4NN6PW6V6RFCVH3"
                       content.link = "about-treehouse/the-end-is-never"
-                    + ***WHERE???***
+                    + _*WHERE???*_
 
         % id = "01H89RFHCQPAMNSN81SRVH2TZ5"
         - always evolving and shaping and shifting
 
             % id = "01H89RFHCQEJZQFXKVVQ92816R"
-            - so that I never need to *finish* anything
+            - so that I never need to _finish_ anything
 
             % id = "01H89RFHCQ3Q6W2Q0QKRHRVFVW"
             - I can just sit down, type something out
@@ -85,7 +85,7 @@
     + it is designed to be elegant and clutter-free
 
         % id = "01H89RFHCQ4N6GMFF0Q2N4PCM6"
-        - the treehouse contains no ads to annoy you, no sidebars to interrupt
+        - the treehouse contains no ads to annoy you, no [sidebars][page:design/sidebars] to interrupt
 
         % id = "01H89RFHCQDMWX7WNSMBDWJC9G"
         - it doesn't even have a navigation bar, because it doesn't need one
@@ -121,7 +121,7 @@
                 - but you may not find the experience favorable
 
     % id = "01H89RFHCQ7HTZSP6P2RZR8JHE"
-    + but most important of all, it is *weird*.
+    + but most important of all, it is _weird_.
 
         % id = "01H89RFHCQTRVPZ0AJ0DGJHXKX"
         - weird as me
@@ -207,7 +207,7 @@
             - it also saves your progress as you read. if you refresh the page, you'll notice you end up exactly where you left off!
 
             % id = "01H8V55APDNSXZMZJ2K1KW11KN"
-            - but, there is one very crucial piece of JavaScript that makes this website tick, and your experience **will be degraded** if you disable it. that feature is linking to branches.
+            - but, there is one very crucial piece of JavaScript that makes this website tick, and your experience *will be degraded* if you disable it. that feature is linking to branches.
 
                 % id = "01H8V55APDBG6AH2W3RNMX724X"
                 - by default, if you link to an element by its id and it's contained within a `<details>`, the `<details>` will not expand. :ralsei_dead:
@@ -270,10 +270,13 @@
         - other than that, `.tree` assumes nothing about what format the branch attributes or content are encoded in.
 
             % id = "01H8V55APDCXPW8JPRYZHY9NXV"
-            - I chose TOML and Markdown for their ease of use and flexibility, but the parser couldn't care less.
+            - I chose TOML and [Djot](https://djot.net) for their ease of use and flexibility, but the parser couldn't care less.
 
                 % id = "01H8V55APDWDPSHNZX6QJFM8ZA"
                 - …actually, that's a lie. see that code example above? Markdown code fences \`\`\` are handled specially to let embed `.tree` source code blocks within `.tree` files. that's all.
+
+                % id = "01J3GNWRFBPK8VSRV1J61Q2V8F"
+                - I actually used to use Markdown, but then I saw Djot and progressively warmed up to it until I convinced myself fully that "yes, this is a better markup format."
 
     % id = "01H8V55APDVQB6AD23Y6PZPPB8"
     - every branch in the treehouse has a globally unique ID.
@@ -306,7 +309,10 @@
                         - as well as highlight branches which were added since your last visit
 
                         % id = "01H8V55APDPZK4C8H5TTHTHH7J"
-                        - not that either of these features are implemented as of writing this (2023-08-20)
+                        - not that either of these features are implemented as of writing this
+
+                            % id = "01J3GNWRFBK2W3X8BZHD2AXQXZ"
+                            - actually they're implemented now so yeah
 
                     % id = "01H8V55APDXB9AXTAGAE9TNQRB"
                     - they're much more compact than [uuids](https://en.wikipedia.org/wiki/Uuid)
@@ -370,7 +376,7 @@
                             - not everyone runs Windows or macOS, so just assuming the reader has Comic Sans installed isn't ideal.
 
             % id = "01H8V55APD2BPGQXEK7JARYJ9H"
-            + ~~in particular the variant on my website is 100% casual (`CASL`), and -2.0 slanted (`slnt`).~~
+            + {-in particular the variant on my website is 100% casual (`CASL`), and -2.0 slanted (`slnt`).-}
 
                 % id = "01H8V55APDXZJE3HHH5AQ8ZQHF"
                 + that little bit of slant makes it look just a little more like handwriting.

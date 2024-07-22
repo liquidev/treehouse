@@ -1,11 +1,12 @@
 use std::{borrow::Cow, fmt::Write};
 
+use jotdown::Render;
 use pulldown_cmark::{BrokenLink, LinkType};
 use treehouse_format::pull::BranchKind;
 
 use crate::{
     cli::Paths,
-    config::{Config, ConfigDerivedData},
+    config::{Config, ConfigDerivedData, Markup},
     html::EscapeAttribute,
     state::{FileId, Treehouse},
     tree::{
@@ -14,7 +15,7 @@ use crate::{
     },
 };
 
-use super::{markdown, EscapeHtml};
+use super::{djot, markdown, EscapeHtml};
 
 pub fn branch_to_html(
     s: &mut String,
@@ -99,7 +100,7 @@ pub fn branch_to_html(
         s.push_str("<th-bp></th-bp>");
 
         let raw_block_content = &source.input()[branch.content.clone()];
-        let mut final_markdown = String::with_capacity(raw_block_content.len());
+        let mut final_markup = String::with_capacity(raw_block_content.len());
         for line in raw_block_content.lines() {
             // Bit of a jank way to remove at most branch.indent_level spaces from the front.
             let mut space_count = 0;
@@ -111,8 +112,8 @@ pub fn branch_to_html(
                 }
             }
 
-            final_markdown.push_str(&line[space_count..]);
-            final_markdown.push('\n');
+            final_markup.push_str(&line[space_count..]);
+            final_markup.push('\n');
         }
 
         let broken_link_callback = &mut |broken_link: BrokenLink<'_>| {
@@ -156,25 +157,48 @@ pub fn branch_to_html(
             }
         };
         if branch.attributes.template {
-            final_markdown = mini_template::render(config, treehouse, paths, &final_markdown);
+            final_markup = mini_template::render(config, treehouse, paths, &final_markup);
         }
-        let markdown_parser = pulldown_cmark::Parser::new_with_broken_link_callback(
-            &final_markdown,
-            {
-                use pulldown_cmark::Options;
-                Options::ENABLE_STRIKETHROUGH | Options::ENABLE_TABLES
-            },
-            Some(broken_link_callback),
-        );
         s.push_str("<th-bc>");
-        markdown::push_html(
-            s,
-            treehouse,
-            config,
-            config_derived_data,
-            treehouse.tree_path(file_id).expect(".tree file expected"),
-            markdown_parser,
-        );
+        match config.markup {
+            Markup::Markdown => {
+                let markdown_parser = pulldown_cmark::Parser::new_with_broken_link_callback(
+                    &final_markup,
+                    {
+                        use pulldown_cmark::Options;
+                        Options::ENABLE_STRIKETHROUGH | Options::ENABLE_TABLES
+                    },
+                    Some(broken_link_callback),
+                );
+                markdown::push_html(
+                    s,
+                    treehouse,
+                    config,
+                    config_derived_data,
+                    treehouse.tree_path(file_id).expect(".tree file expected"),
+                    markdown_parser,
+                )
+            }
+            Markup::Djot => {
+                let events: Vec<_> = jotdown::Parser::new(&final_markup)
+                    .into_offset_iter()
+                    .collect();
+                djot::Renderer {
+                    page_id: treehouse
+                        .tree_path(file_id)
+                        .expect(".tree file expected")
+                        .to_owned(),
+
+                    config,
+                    config_derived_data,
+                    treehouse,
+                    file_id,
+                }
+                .render(&events, s);
+            }
+        };
+
+        let branch = treehouse.tree.branch(branch_id);
         if let Content::Link(link) = &branch.attributes.content {
             write!(
                 s,

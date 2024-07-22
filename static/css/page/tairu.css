@@ -1,5 +1,6 @@
 .tileset-cardinal-directions-demo th-bc {
-    & .horizontal-tile-strip {
+    /* TODO djot: remove the first rule */
+    & .horizontal-tile-strip>p {
         display: flex;
         flex-direction: row;
         justify-content: center;

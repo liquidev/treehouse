@@ -14,7 +14,7 @@ legacy of today's systems
         the project
 
     % id = "01HFP3E77CVPJMQ69305QHRXDH"
-    + the design goal is to build a **secure operating system you can trust**
+    + the design goal is to build a *secure operating system you can trust*
 
         % id = "01HFP3E77CFCF260WBQWTBNPP7"
         - gone will be the days where you download an executable from the Internet and have no idea
@@ -25,7 +25,7 @@ legacy of today's systems
         you have to inspect, the better
 
     % id = "01HFP3E77CGBD4ZQ2JN4Z761VE"
-    + **NOTE:** at this point shelter is nothing more than an incomplete design. OS development is
+    + *NOTE:* at this point shelter is nothing more than an incomplete design. OS development is
     something I wanna get into but haven't enough time to research everything as of now, therefore
     I'm jotting down my ideas here
 

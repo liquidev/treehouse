@@ -4,7 +4,7 @@
 - imagine if this page had a distracting bunch of text to the right of regular content. or even worse, advertisements.
 
     % id = "01HR9ZTS6P67VGVY6S460Q49HV"
-    - fortunately I'm not cruel enough to do that (*and* also I'm lazy *and* also I'm at work at the moment so I haven't got time to do something wicked like that.)
+    - fortunately I'm not cruel enough to do that (_and_ also I'm lazy _and_ also I'm at work at the moment so I haven't got time to do something wicked like that.)
 
     % id = "01HR9ZTS6P7AB97D6T177XMNKW"
     - these are sidebars in a nutshell. distracting, annoying, detracting from what you actually have to say.
@@ -26,10 +26,10 @@
             - If my blog piqued your interest, feel free to also check out these articles:
 
                 % id = "01HR9ZTS6P1JJ2103E4QHATH3G"
-                - [*on digital textures*][page:design/digital-textures], where I explore synaesthetic feelings in user interfaces
+                - [_on digital textures_][page:design/digital-textures], where I explore synaesthetic feelings in user interfaces
 
                 % id = "01HR9ZTS6P73HSTZK6CP1RWQWG"
-                - *[...so on and so forth.]*
+                - _[...so on and so forth.]_
 
         % id = "01HR9ZTS6PBFR78Y54HGGKXMF6"
         - note how I haven't even used pictures! I care about what you have to say, not what pretty pictures you managed to snap on your last field trip.
@@ -40,16 +40,16 @@
 
             % id = "01HR9ZTS6PKYGVTFF0F78XVXH2"
             - (I'm not saying this structure is any better than a conventional blog though.
-            it has its own set of challenges you need to take into account while writing, like *when to split*, and *when to nest*.
+            it has its own set of challenges you need to take into account while writing, like _when to split_, and _when to nest_.
             arguably, I still haven't learned how to write the treehouse well, but I think I'm getting better at it; compare [about (version 1)][page:about/v1] to this page and you'll see what I mean.)
 
 % id = "01HR9ZTS6P484GD6Y9QR4TEGWD"
 - I'm glad most individuals' blogs are foregoing sidebars, but unfortunately I still regularly see them on various news sites and older blogs
 
     % id = "01HR9ZTS6PCAWGEJNYXETFVDFT"
-    - if you're designing a modern blog, consider structuring your page *vertically* rather than *horizontally*.
+    - if you're designing a modern blog, consider structuring your page _vertically_ rather than _horizontally_.
     limit distractions you show on the sides of the screen.
-    they *really* are quite annoying when you're just trying to focus on the body.
+    they _really_ are quite annoying when you're just trying to focus on the body.
 
         % id = "01HR9ZTS6PKZVXQE0VFVTNNQ6F"
         - not to mention mobile devices, which do not have the horizontal real estate to fit your sidebars!

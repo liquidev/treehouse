@@ -77,14 +77,14 @@
                 - from my analyses when building [Yarnbox][branch:programming/projects/yarnbox], most chunks of bytecode don't exceed 4096 bytes
 
             % id = "01HA4KNTTKW393XV8CPZSW2J7H"
-            + the engine loads your bytecode *mostly* verbatim, so we could include a recognizable signature at the end of every script
+            + the engine loads your bytecode _mostly_ verbatim, so we could include a recognizable signature at the end of every script
 
                 % id = "01HA4NZ9DADP5E842D1630NH19"
                 - I imagine we could use a short string of bytes that's unlikely to collide with anything yet fast to search for. probably 16 bytes (128 bits) would be enough but we can experiment
                 with less
 
                 % id = "01HA4NZ9DA4HADG7SFDTPKKJ11"
-                - I say it loads your code *mostly* verbatim because it actually parses the bytecode to translate archive object indices to
+                - I say it loads your code _mostly_ verbatim because it actually parses the bytecode to translate archive object indices to
 
             % id = "01HA4NZ9DAW2KEDX62E810PA03"
             - since we can't reallocate memory, we'll have to always preallocate all 65536 bytes - but 64 KiB isn't that much in the first place,

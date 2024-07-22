@@ -44,7 +44,7 @@
         but the designers of Lua had the restraint to just have One.
 
         % id = "01HRG2RJC13YK030EPGMKM9H8H"
-        - tables are extremely powerful in what they can do, because they're more than just a way of structuring data - they also allow for interfacing with the language *syntax* through operator overloading
+        - tables are extremely powerful in what they can do, because they're more than just a way of structuring data - they also allow for interfacing with the language _syntax_ through operator overloading
 
             % id = "01HRG2RJC1PDZFB2WBW7D827KF"
             + in fact object oriented programming in Lua is typically done by overloading the `[]` indexing operator.
@@ -56,18 +56,18 @@
                 local fallback = { b = 2 }
                 local base = { a = 1 }
 
-                -- The __index field can be both a function *and* a table.
+                -- The __index field can be both a function _and_ a table.
                 -- { __index = the_table } is a shorthand for { __index = function (t, k) return the_table[k] end }
                 setmetatable(base, { __index = fallback })
                 assert(base.b == 2)
                 ```
 
     % id = "01HRG2RJC23XH1053A69MQJD4N"
-    - I'll be honest that I don't like the standard library of Lua from a usability standpoint, but maybe it *doesn't need to be bigger*.
+    - I'll be honest that I don't like the standard library of Lua from a usability standpoint, but maybe it _doesn't need to be bigger_.
     it's similar to the principles of [Go](https://go.dev/), where the language encourages using dumb constructs rather than super clever code with lots of abstraction.
 
         % id = "01HRG2RJC2P3832KTQMANBHGE6"
-        - though unlike Go, Lua has the goal of being *small* because it needs to be *embeddable*, especially given it's used in very constrained environments in the real world. (microcontrollers!)
+        - though unlike Go, Lua has the goal of being _small_ because it needs to be _embeddable_, especially given it's used in very constrained environments in the real world. (microcontrollers!)
 
             % id = "01HRG2RJC2S3V38FM6DB0481WK"
             - therefore there are technical, not just ideological reasons to keep the library small.
@@ -76,10 +76,10 @@
         - and I really like that from an embedder's standpoint, it's possible to completely disable certain standard library modules for sandboxing!
 
     % id = "01HRG2RJC2W4MK96FMWRTS8QCJ"
-    - Lua also knows *very* well how much syntax sugar to have to make writing code pleasant, but not to overdose it so much as to give you instant diabetes.
+    - Lua also knows _very_ well how much syntax sugar to have to make writing code pleasant, but not to overdose it so much as to give you instant diabetes.
 
         % id = "01HRG2RJC28DT0TZT47WPABD65"
-        + as an example, there's function call syntax: you can pass it a string or table *literal*, which is just enough to enable some really nice DSLs without making the grammar too complex.
+        + as an example, there's function call syntax: you can pass it a string or table _literal_, which is just enough to enable some really nice DSLs without making the grammar too complex.
 
             % id = "01HRG2RJC2CVKS9CFVQ9HJSBH4"
             - once upon a time I dreamed up a DSL for building GUIs using this sugar.
@@ -97,7 +97,7 @@
             ```
 
                 % id = "01HRG2RJC2T7BF6XS3T7Q8AXW2"
-                - ***JUST LOOK AT HOW CLEAN IT IS!*** with no need to [invent magic syntax](https://www.typescriptlang.org/docs/handbook/jsx.html) or anything!
+                - _*JUST LOOK AT HOW CLEAN IT IS!*_ with no need to [invent magic syntax](https://www.typescriptlang.org/docs/handbook/jsx.html) or anything!
 
                 % id = "01HRG2RJC2D69JYCWQXSF2FQNY"
                 - the only missing thing then would be list comprehensions to be able to transform data into GUI elements, but even that can be ironed over using function literals:
@@ -122,7 +122,7 @@
                 }
                 ```
 
-                interpret this code however you want, but *damn* it looks clean. again with no magic syntax!
+                interpret this code however you want, but _damn_ it looks clean. again with no magic syntax!
 
         % id = "01HRG2RJC2PA5KE0DH0RRFGW9E"
         - there is also the incredibly useful sugar for indexing tables by string literals: instead of `table["x"]` you can write down `table.x`
@@ -136,10 +136,10 @@
                 the parameter is explicit, there is just sugar for passing it into functions and declaring functions with it.
 
 % id = "01HRG2RJC2FF05JWQ6KHS4Y5WF"
-- I really wish Lua had at least *a* form of static typing though, since knowing about errors you make early is _really_ helpful during development.
+- I really wish Lua had at least _a_ form of static typing though, since knowing about errors you make early is _really_ helpful during development.
 
     % id = "01HRG2RJC2JP3HRTVMAQ22HDVE"
-    + it regularly happened to me that a type error I made only occured at *some point* later during runtime; and then you have to track down a reproduction case and make a fix at the source. not fun.
+    + it regularly happened to me that a type error I made only occured at _some point_ later during runtime; and then you have to track down a reproduction case and make a fix at the source. not fun.
 
         % id = "01HRG3MJ0KGZ8T4KHMV6KZXDK4"
         - there's also the ugly case I had with a division by zero in the last rewrite of [Planet Overgamma][def:planet_overgamma/repo], which caused a NaN to propagate through physics and into rendering, causing a crash.

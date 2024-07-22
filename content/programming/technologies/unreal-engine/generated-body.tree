@@ -23,11 +23,13 @@
 
 % id = "01HV1DGFHMDFMWY2FWRHN3NGAX"
 - the thing is - it doesn't. `GENERATED_BODY()` by itself is incredibly stupid:
+
 ```cpp
 #define BODY_MACRO_COMBINE_INNER(A,B,C,D) A##B##C##D
 #define BODY_MACRO_COMBINE(A,B,C,D) BODY_MACRO_COMBINE_INNER(A,B,C,D)
 #define GENERATED_BODY(...) BODY_MACRO_COMBINE(CURRENT_FILE_ID,_,__LINE__,_GENERATED_BODY);
 ```
+
 let's disassemble it piece by piece.
 
     % id = "01HV1DGFHM4BW1FXVX3AMJYR91"
@@ -44,13 +46,17 @@ let's disassemble it piece by piece.
             % id = "01HV1DGFHM6XQ68XJPART8TND3"
             - the actual form it seems to take is `FID_{Path}` with `{Path}` being the file path relative to the project root directory, with slashes and dots replaced with underscores.
             for:
+
             ```
                 Engine/Source/Runtime/Engine/Classes/Engine/Blueprint.h
             ```
+
             the file ID is:
+
             ```
             FID_Engine_Source_Runtime_Engine_Classes_Engine_Blueprint_h
             ```
+
             I haven't inspected the UnrealBuildTool/UnrealHeaderTool sources though, so there may be more to it.
 
         % id = "01HV1DGFHMVS11W47KWXJC7TY4"

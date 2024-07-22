@@ -5,4 +5,6 @@
 % template = true
   cast = "chat js"
   id = "01HSS5TMDD4WSZSXW17ANQN7VK"
-- {% include_static chat/kuroneko.json %}
+- ``` =html
+{% include_static chat/kuroneko.json %}
+```

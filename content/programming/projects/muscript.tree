@@ -78,7 +78,7 @@
     + parallelization with an event loop
 
         % id = "01HA0GPJ8B48K60BWQ2XZZ0PB5"
-        + the thing with a pass-based architecture is that with enough locking, it *may* be easy to parallelize.
+        + the thing with a pass-based architecture is that with enough locking, it _may_ be easy to parallelize.
 
             % id = "01HA0GPJ8B5QB6DF8YVTYC2HJY"
             + I can imagine parallelization existing on many levels here.
@@ -131,7 +131,7 @@
                 - because we're using a set, the computation is never duplicated; remember that if an answer has already been memoized, it does not spawn a task and instead returns the answer immediately
 
                     % id = "01HA0GPJ8B0V2VJMAV1YCQ19Q8"
-                    - though this may be hard to do with Rust because, as far as I know, there is no way to suspend a function conditionally? **(needs research.)**
+                    - though this may be hard to do with Rust because, as far as I know, there is no way to suspend a function conditionally? *(needs research.)*
 
             % id = "01HA0GPJ8BBREEJCJRWPJJNR3N"
             - once there are no more tasks in the queue, we're done compiling

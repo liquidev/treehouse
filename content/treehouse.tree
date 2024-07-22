@@ -8,14 +8,14 @@
 
     % id = "treehouse/changelog"
       content.link = "treehouse/changelog"
-    + what's going on inside the house?
+    + #### :folder: what's going on inside the house?
 
     % id = "treehouse/issues"
       content.link = "treehouse/issues"
-    + issues
+    + #### :folder: issues
 
     % id = "treehouse/credits"
-    + credits
+    + #### :page: credits
 
         % id = "01HPSX8W0WQF2BXQ9RMME20628"
         - **liquidex's treehouse** is brought to you by…
@@ -33,7 +33,7 @@
             + [my girlfriend][def:person/vixenka], who's been supporting me in making this website more friendly towards stubborn people
 
                 % id = "01HPSX8W0WMX4YXY9WMAM40QKH"
-                - she says every part of this sentence apart from "*my girlfriend*" is untrue. I think I know better, so deal with it!
+                - she says every part of this sentence apart from "_my girlfriend_" is untrue. I think I know better, so deal with it!
 
         % id = "01HPW0KZ90S1SV6ZPSDYM42DG8"
         - special thanks to...

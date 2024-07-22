@@ -5,6 +5,7 @@
 
     % id = "01HY5R1ZV9G92SVA0XP7CG1X6K"
     - as in this case:
+
     ```c
     void example(int *x) {
         int y = *x;  // (1)
@@ -19,10 +20,10 @@
         - doesn't `*x` mean "read the value pointed to by `x`?"
 
 % id = "01HY5R1ZV9WJM9DMW5QGK04DCR"
-- TL;DR: the deal with this example is that `*x` *does not mean* "read from the location pointed to by `x`", but _just_ "the location pointed to by `x`".
+- TL;DR: the deal with this example is that `*x` _does not mean_ "read from the location pointed to by `x`", but _just_ "the location pointed to by `x`".
 
     % id = "01HY5R1ZV9JN9GZ8BECJ0KV1FC"
-    - **`*x` is not a _value_, it's a _memory location_, or _place_ in Rust parlance**
+    - *`*x` is not a _value_, it's a _memory location_, or _place_ in Rust parlance*
 
         % id = "01HY5R1ZV9QVH3W5BRS16V6EPG"
         - same thing with `x`
@@ -154,6 +155,7 @@ for starters, it is impossible to write the type down in C code, so we're always
 
             % id = "01HY5R1ZV9VZFHRKY4QWBDTFJ7"
             - example:
+
             ```c.types
             void example(void) {
                 struct S { int x; } s;
@@ -168,6 +170,7 @@ for starters, it is impossible to write the type down in C code, so we're always
         the function signature is therefore `T* -> ptrdiff_t -> place(T)`.
 
         example:
+
         ```c.types
         void example(int* array) {
             int* p = &((array /*: int* */)[123] /*: place(int) */);
@@ -184,7 +187,7 @@ for starters, it is impossible to write the type down in C code, so we're always
 
                     % id = "01HY5R1ZV9MQWK5VQZQG8JJ03J"
                     - I do wonder though why it doesn't produce a warning.
-                    I'm no standards lawyer, but I *believe* this may have something to do with implicit type conversions - the `0` gets promoted to a
+                    I'm no standards lawyer, but I _believe_ this may have something to do with implicit type conversions - the `0` gets promoted to a
                     pointer as part of the desugared addition.
                     I really need to read up about C's type promotion rules.
 
@@ -193,8 +196,8 @@ for starters, it is impossible to write the type down in C code, so we're always
 there are no places in C.
 
     % id = "01HY5R1ZV9PAD1XRS29YV64GV2"
-    - the C standard actually calls this concept "lvalues", which comes from the fact that they are **values** which are valid
-    **l**eft-hand sides of assignment.
+    - the C standard actually calls this concept "lvalues", which comes from the fact that they are *values* which are valid
+    *l*eft-hand sides of assignment.
 
         % id = "01HY5R1ZV9BNZM45RK2AW8BF5N"
         + however, I don't like that name since it's quite esoteric - if you tell a beginner "`x` is not an lvalue," they will look at you confused.
@@ -223,7 +226,8 @@ there are no places in C.
         in layman's terms, C++ makes it impossible to rebind references to something else.
         you can't make this variable point to `y`:
 
-        <!-- NOTE: using `c` syntax here instead of `cpp` because I don't have a working C++ syntax at the moment! -->
+        {% NOTE: using `c` syntax here instead of `cpp` because I don't have a working C++ syntax at the moment! %}
+
         ```c
         int x = 0;
         int y = 1;
@@ -253,10 +257,11 @@ there are no places in C.
         - I actually kind of wish references were more like they are in Rust - basically just pointers but non-null and guaranteed to be aligne
 
 % id = "01HY5R1ZV9QWHZRJ5V53CVYG5V"
-- anyways, as a final ~~boss~~ bonus of this blog post, I'd like to introduce you to the `x->y` operator (the C one)
+- anyways, as a final {-boss-} bonus of this blog post, I'd like to introduce you to the `x->y` operator (the C one)
 
     % id = "01HY5R1ZV9AYFWV96FC07WX68G"
     - if you've been programmming C or C++ for a while, you'll know that it's pretty dangerous to just go pointer-[walkin'](https://www.youtube.com/watch?v=d_dLIy2gQGU) with the `->` operator
+
     ```c
     int* third(struct list* first) {
         return &list->next->next->value;
@@ -278,6 +283,7 @@ there are no places in C.
 
     % id = "01HY5R1ZV9X8M5T64BD0MZ2WN2"
     - let's start by dismantling the entire pointer access chain into separate expressions:
+
     ```c
     int* third(struct list* first) {
         struct list* second = first->next;
@@ -288,6 +294,7 @@ there are no places in C.
 
     % id = "01HY5R1ZV9PGQMS2A6H5XTWYZX"
     - now let's desugar the `->` operator:
+
     ```c
     int* third(struct list* first) {
         struct list* second = (*first).next;
@@ -298,6 +305,7 @@ there are no places in C.
 
     % id = "01HY5R1ZV92CZAV13P4KFABTR1"
     - and add some type annotations:
+
     ```c.types
     int* third(struct list* first) {
         struct list* second = (*first).next /*: place(struct list*) */;

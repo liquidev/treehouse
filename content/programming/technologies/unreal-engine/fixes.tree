@@ -21,6 +21,7 @@
 
     % id = "01HP1FESY38JWXNSJKPZNHP33Q"
     + the interface you have to implement is:
+
     ```cpp
     struct IFixer
     {
@@ -64,6 +65,7 @@
 
     % id = "01HP1FESY30HDA6JNR323GXD3D"
     - minimal example:
+
     ```cpp
     auto Message = FTokenizedMessage::Create(
         EMessageVerbosity::Error,

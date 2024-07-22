@@ -22,6 +22,10 @@ pub struct Config {
     /// preferred way of setting this in production, so as not to clobber treehouse.toml.)
     pub site: String,
 
+    /// Which markup to use when generating trees.
+    /// TODO djot: Remove this once we transition to Djot fully.
+    pub markup: Markup,
+
     /// User-defined keys.
     pub user: HashMap<String, String>,
 
@@ -88,6 +92,12 @@ pub struct Build {
 pub struct JavaScript {
     /// Import roots to generate in the project's import map.
     pub import_roots: Vec<ImportRoot>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub enum Markup {
+    Markdown,
+    Djot,
 }
 
 impl Config {

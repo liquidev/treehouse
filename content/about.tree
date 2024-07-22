@@ -1,33 +1,33 @@
 %% title = "who that! (about me)"
 
 % id = "01J09B2BZXJ989S2SGWBNZ397C"
-+ hello! I am **liquidex**.
++ hello! I am *liquidex*.
 
     % id = "01J09B2BZX54T2GSP8H3D62S6J"
-    + also known as **liquidex**
+    + also known as *liquidex*
 
         % id = "01J09B2BZXQ31FV1M3PMM6Q0GX"
         - this is [the identity function](https://en.wikipedia.org/wiki/Identity_function) applied to my nickname
 
     % id = "01J09B2BZX0R0AX5QHND6EBRFE"
-    - also known as **liquidev** on [various programming platforms][def:social/github]
+    - also known as *liquidev* on [various programming platforms][def:social/github]
 
     % id = "01J09B2BZXT6AAJNPEQ044KCDR"
-    - also known as **lqdev**, before I realized that name was taken.
+    - also known as *lqdev*, before I realized that name was taken.
     you may notice this older name in some places.
 
     % id = "01J09B2BZXBS2K6MRQYXFH43PW"
-    - also known as **daknus** [on SoundCloud][def:social/soundcloud].
+    - also known as *daknus* [on SoundCloud][def:social/soundcloud].
     I use this as my music making alias.
 
     % id = "01J09B2BZXAD196RA16JTY3K3T"
-    + also known as **limiter**?
+    + also known as *limiter*?
 
         % id = "01J09B2BZXNRYX758J5S00EZRG"
-        - or **limitre**, which is British for limiter.
+        - or *limitre*, which is British for limiter.
 
 % id = "01J09B2BZX25TN31D0F18YQPB2"
-+ I'm a *he/him*-type cat person doing various stuff with computers
++ I'm a _he/him_-type cat person doing various stuff with computers
 
     % id = "01J09B2BZXWB695M9XYF7CZ2ZF"
     - > you said cat person, does that mean you don't like dogs?
@@ -36,13 +36,13 @@
         - I prefer cats myself. though foxes are canids and I consider them pretty cute :smile:
 
     % id = "01J09E55G0MZ0WFQ3WC98YDDGT"
-    - > unless by *cat person* you mean…
+    - > unless by _cat person_ you mean…
 
         % id = "01J09E55G0YWYMAP62Q7AM18BE"
         + what? :clueless:
 
             % id = "01J09E55G09K80E6YE1T4E3KJJ"
-            - > y'know… like a *furry*?
+            - > y'know… like a _furry_?
 
                 % id = "01J09E55G0F5TVAK2MT80H598M"
                 + :clueless:
@@ -64,7 +64,7 @@
     + I do various developer productivity-related stuff at CD PROJEKT RED, mostly focusing on the DX of delivering breathtaking games using the Unreal Engine.
 
         % id = "01J09B2BZX00X6A8Z6H4R16BDS"
-        - technically I don't really love *playing* big and serious games, but making one is a whole other challenge - a challenge of *scale*.
+        - technically I don't really love _playing_ big and serious games, but making one is a whole other challenge - a challenge of _scale_.
         which is what really gets me going!
 
 % id = "01J09B2BZXQKWYHC51D7QCJ6PF"
@@ -77,13 +77,13 @@
     + [audio][def:dawd3/repo],
 
         % id = "01J09B2BZXY51P9D4BM8AADGYW"
-        - my favorite part of that is blowing out my own eardrums with my math skill, which is rather *underdeveloped* so to speak,
+        - my favorite part of that is blowing out my own eardrums with my math skill, which is rather _underdeveloped_ so to speak,
 
     % id = "01J09B2BZX2P7XDH81BJ079PCP"
     + [websites](/),
 
         % id = "01J09B2BZXN6GWK2JPC7YGT0E1"
-        + after all the treehouse is *my* website, with *my* own backend, static generator, *my* own design, [an only partially stolen color scheme](https://github.com/ayu-theme/ayu-colors), and most important, lots of fun stuff hidden underneath the surface.
+        + after all the treehouse is _my_ website, with _my_ own backend, static generator, _my_ own design, [an only partially stolen color scheme](https://github.com/ayu-theme/ayu-colors), and most important, lots of fun stuff hidden underneath the surface.
 
             % id = "01J09B2BZXZAEPD36XG495WYFH"
             + like have you wondered just how deep the rabbit hole goes?
@@ -91,13 +91,13 @@
             who knows what you may find?
 
                 % id = "01J09B2BZX0M925RBXR023XM6X"
-                - <!-- what I mean is if you haven't seen anyone else here, you haven't looked hard enough. -->
+                - `<!-- what I mean is if you haven't seen anyone else here, you haven't looked hard enough. -->`{=html}
 
     % id = "01J09B2BZXX2R1TH10GGZC25KG"
     + you name it. as long as it poses a cool and fun challenge, I'll be on it :verified:
 
         % id = "01J09B2BZX5WED9XE2RAADFW8M"
-        - there's probably only one thing I *don't* like and it's backend web development. where did all the simplicity go?
+        - there's probably only one thing I _don't_ like and it's backend web development. where did all the simplicity go?
 
             % id = "01J09B2BZXQQMPDYQJ052131GT"
             - obviously treehouse is a very simple website with a very simple backend, but. seriously.
@@ -123,13 +123,13 @@
 
     % id = "01J09B2BZX39FGP634BM5HJ0FD"
     + did I mention [music][page:music]?
-    I also ~~aspire to~~ [make ][def:social/soundcloud][music][page:music][ sometimes][def:social/soundcloud].
+    I also {-aspire to-} [make ][def:social/soundcloud][music][page:music][ sometimes][def:social/soundcloud].
 
         % id = "01J09B2BZXGG5HYVYDNPVFRKY1"
-        - I say aspire because I'd really like to be better at it, but *time*, man…
+        - I say aspire because I'd really like to be better at it, but _time_, man…
 
     % id = "01J09B2BZXY6AN3242DYECK74Z"
-    + from time to time I also try to draw things, but *time*, it's killing me, man…
+    + from time to time I also try to draw things, but _time_, it's killing me, man…
 
         % id = "01J09B2BZXN3263NEHCKQ931TS"
         - I'm sure one day you'll see the results of my practice, (unless you've already seen them :ralsei_wave:,) but for now I keep them largely to myself.

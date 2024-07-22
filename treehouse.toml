@@ -5,6 +5,9 @@
 # This variable can also be set using the TREEHOUSE_SITE environment variable.
 site = ""
 
+# TODO djot: Remove once transition is over.
+markup = "Djot"
+
 [user]
 title = "liquidex's treehouse"
 author = "liquidex"

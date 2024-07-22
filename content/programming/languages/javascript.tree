@@ -5,7 +5,7 @@ scripts = [
 ]
 
 % id = "01J291S06DS12DCFTNKJ27BNSQ"
-- *ooh I'm sure this one is gonna be really controversial but here I go*
+- _ooh I'm sure this one is gonna be really controversial but here I go_
 
 % id = "01J291S06DRH9SP8K1QE03JVK8"
 - time and time again I've heard from people just how horrible JavaScript is, but I beg to differ.
@@ -31,15 +31,19 @@ you already have it on your computer.
 
     % id = "01J2931RRHFPEH3D5MWEKGXGAE"
     - don't believe me? let me show you:
-    ```javascript i-am-showing-you-right-now
+
+    {:program=i-am-showing-you-right-now}
+    ```javascript
     console.log("see?") // and if you have JavaScript enabled, you can edit this!
     ```
-    ```output i-am-showing-you-right-now
+
+    {:program=i-am-showing-you-right-now}
+    ```output
     see?
     ```
 
     % id = "01J2931RRHDZ979VTF2SN3J9CB"
-    - and this goes for pretty much every modern personal computing device on the planet nowadays - *you can already run JavaScript on it.*
+    - and this goes for pretty much every modern personal computing device on the planet nowadays - _you can already run JavaScript on it._
 
         % id = "01J2931RRHEMZY9M5W3EG666YK"
         - sure it may not be the cleanest language in terms of design, but JavaScript running anywhere and everywhere is its superpower.
@@ -48,7 +52,7 @@ you already have it on your computer.
     - JavaScript being available on everyone's computers makes it a super-accessible programming language to learn: all you have to do is open your web browser and go to the console in its Developer Tools.
 
         % id = "01J2931RRH51K35C80Z2NHSVRW"
-        - moreso, if you are building a website and would like to embed a language interpreter (like me,) *you already have JavaScript for that.*
+        - moreso, if you are building a website and would like to embed a language interpreter (like me,) _you already have JavaScript for that._
 
             % id = "01J2931RRH65HHY6BQ7N0P9MX9"
             - yes, you could in theory embed [Lua][page:programming/languages/lua], but for most cases JavaScript is Already There and there is nothing wrong with it.

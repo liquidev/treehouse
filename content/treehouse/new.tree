@@ -29,7 +29,7 @@ I told him there's no reason to do that in modern C++, because `std::unique_ptr`
 [read][page:programming/languages/cxx/shared-unique-ptr-deleter]
 
 % id = "01J0KRPMV7SS48B64BFCJZK7VQ"
-- it's updatin' time! I took some time to clean up old pages and update my *about me*.\
+- it's updatin' time! I took some time to clean up old pages and update my _about me_.\
 over time I've been learning how to write content on the treehouse effectively, and the new about me reflects that.
 
 ### about me (version 2)
@@ -51,7 +51,7 @@ after all, aren't we just dealing with a bunch of code running on the computer? 
 
 ### systems are just a bunch of code
 
-[can *you* can read other people's code?][page:programming/blog/systems] [bonus: dismantling Unreal Engine's GENERATED_BODY][page:programming/technologies/unreal-engine/generated-body]
+[can _you_ can read other people's code?][page:programming/blog/systems] [bonus: dismantling Unreal Engine's GENERATED_BODY][page:programming/technologies/unreal-engine/generated-body]
 
 % id = "01HTWNETT2S5NSBF3QR4HYA7HN"
 - last night I couldn't sleep because of type theory. in the process of trying to write down my thoughts, I ended up discovering a class of types which, to my knowledge, no language implements.
@@ -68,7 +68,7 @@ after all, aren't we just dealing with a bunch of code running on the computer? 
 [read why I like it so much][page:programming/languages/lua]
 
 % id = "01HR9ZTS8RS4VJNJYSNRQYSKHZ"
-- sidebars! also known as, *"enjoying the main content? how about I distract you from it so that you can't focus!"*\
+- sidebars! also known as, _"enjoying the main content? how about I distract you from it so that you can't focus!"_\
 seriously though. I don't like them.
 
 ### design: sidebars
@@ -78,8 +78,8 @@ seriously though. I don't like them.
 % id = "01HQ8KV8T8GRCVFDJ3EP6QE163"
 - I started a branch on user interface and user experience design, because I was working with mintty at work and had some thoughts about it.
 
-"why does mintty always feel so *out of place* compared to `cmd.exe`?"
+"why does mintty always feel so _out of place_ compared to `cmd.exe`?"
 
 ### liquidex's treehouse: design
 
-[read: *on digital textures*][page:design/digital-textures] [go to branch][page:design]
+[read: _on digital textures_][page:design/digital-textures] [go to branch][page:design]

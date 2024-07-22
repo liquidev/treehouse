@@ -5,6 +5,7 @@
 
     % id = "01J0VN48B2Z5BFFEZCEYG63662"
     - obviously the simplest way would be to just use the C library.
+
     ```cpp
     int main(void)
     {
@@ -35,7 +36,7 @@
     - this approach has the nice advantage of being really simple, but it doesn't work well if you build your codebase on RAII.
 
         % id = "01J0VN48B2CT2DVHEB1HGK8KB7"
-        - and as much as I disagree with using it *everywhere* and injecting object-oriented design into everything, RAII is actually really useful for OS resources such as an `SDL_Window*`.
+        - and as much as I disagree with using it _everywhere_ and injecting object-oriented design into everything, RAII is actually really useful for OS resources such as an `SDL_Window*`.
 
 % id = "01J0VN48B2SX6GX0B3AKDVHGFX"
 - to make use of RAII you might be tempted to wrap your `SDL_Window*` in a class with a destructor…
@@ -81,6 +82,7 @@ struct window
 
     % id = "01J0VN48B2E1X2G415P1TNG4CJ"
     - copying windows doesn't really make sense, so we can delete the copy constructor and copy assignment operator…
+
     ```cpp
     struct window
     {
@@ -99,6 +101,7 @@ struct window
 
     % id = "01J0VN48B2AAD3SKFWNDMYV4FV"
     - so we'll also want an explicit move constructor and a move assignment operator:
+
     ```cpp
     struct window
     {
@@ -129,6 +132,7 @@ struct window
 
     % id = "01J0VN48B2TFMXQRPPKJXEEX2E"
     - with all of this combined, our final `window` class looks like this:
+
     ```cpp
     struct window
     {
@@ -205,10 +209,12 @@ struct window
 
                     % id = "01J0VN48B2WZ9PAX0W5W2ZMPPN"
                     - albeit I'll admit that writing
+
                     ```cpp
                     int width;
                     SDL_GetWindowSize(&window, &width, nullptr);
                     ```
+
                     just to obtain the window width does _not_ spark joy.
 
                         % id = "01J0VN48B2DCN9PPHHC818NPMD"
@@ -246,6 +252,7 @@ this is what _smart pointers_ are for after all - our good friends `std::shared_
     % id = "01J0VN48B2NBTZ62YDNKMDN1CC"
     - to set a custom deleter for an `std::shared_ptr`, we provide it as the 2nd argument of the constructor.
     so to automatically free our `SDL_Window` pointer, we would do this:
+
     ```cpp
     int main(void)
     {
@@ -272,6 +279,7 @@ this is what _smart pointers_ are for after all - our good friends `std::shared_
         }
     }
     ```
+
     and that's all there is to it!
 
         % id = "01J0VN48B2WHNDKVBSDJRTYG4T"

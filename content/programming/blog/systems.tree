@@ -35,9 +35,9 @@ or even where to go to customize it to my liking?
             code to see what happened.
 
                 % id = "01HV1DGFGNY3FGEKY70D6RMV22"
-                - and then I could edit the source code and submit the patch *right where I'm standing* rather than having to go through complicated and lengthy processes of cloning repositories,
+                - and then I could edit the source code and submit the patch _right where I'm standing_ rather than having to go through complicated and lengthy processes of cloning repositories,
                 bootstrapping, reproducing, and such.
-                *imagine fixing compiler bugs on real codebases rather than having to come up with isolated, reproducible examples first.*
+                _imagine fixing compiler bugs on real codebases rather than having to come up with isolated, reproducible examples first._
 
             % id = "01HV1DGFGNXJJX0BMMM3KQ42M0"
             - I know how hard this is to achieve in practice, which is precisely why I don't use Gentoo.
@@ -87,13 +87,13 @@ or even where to go to customize it to my liking?
                     - have fun typing in that full path `/home/daknus/Repositories/cool-library`
 
                     % id = "01HV1DGFGN5X57Z807GMS3F07Q"
-                    + *and* don't forget to revert the changes to `Cargo.toml` once you're done.
+                    + _and_ don't forget to revert the changes to `Cargo.toml` once you're done.
                     unlike editing a vendored dependency, which will appear under a very visible path in Git, it's pretty easy to forget to check your `Cargo.toml` diff before staging/committing changes.
                     I mean, I edit my `Cargo.toml` all the time, adding in libaries and stuff.
                     so why would I look at every single change?
 
                         % id = "01HV1DGFGN0DAMASGQD64XXTRK"
-                        - *and* before you go at me and say "bah you should be reviewing all changes that end up in your codebase"
+                        - _and_ before you go at me and say "bah you should be reviewing all changes that end up in your codebase"
 
                         sigh.
 
@@ -123,17 +123,17 @@ or even where to go to customize it to my liking?
     it's all just code-generating syntax sugar!
 
         % id = "01HV1DGFGNVRX5C3TST00V58DK"
-        - **everything is code! *there is no magic*!**
+        - *everything is code! _there is no magic_!*
 
             % id = "01HV1DGFGN569R7MEE9FBXRF7H"
             - there are no walls blocking you from looking at the code. the grandiose noun phrases are misleading!
 
                 % id = "01HV1DGFGNE1CTAX01DE61GWC5"
-                - UnrealBuildTool is just a bunch of C# files. and the *Gameplay Ability System™* is likewise just a bunch of C++ sources.
+                - UnrealBuildTool is just a bunch of C# files. and the _Gameplay Ability System™_ is likewise just a bunch of C++ sources.
                 why can't we come up with more inviting names?
 
                     % id = "01HV1DGFGN129VY5FHHF4GC4Z5"
-                    - grandiose noun phrases sound so hostile. *but it's all just code.*
+                    - grandiose noun phrases sound so hostile. _but it's all just code._
 
 % id = "01HV1DGFGN96CPWYMJ14EWJJR2"
 - most of the time not knowing your software is largely fine - not everyone has the time to deeply inspect a piece of software, deciphering functions, consulting manuals, asking the authors (when possible.)

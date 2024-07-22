@@ -1,19 +1,23 @@
 % id = "programming/projects/stitchkit"
   content.link = "programming/projects/stitchkit"
 + ### Stitchkit
+
 A Hat in Time mod stitching toolkit
 
 % id = "programming/projects/muscript"
   content.link = "programming/projects/muscript"
 + ### MuScript
+
 UnrealScript compiler, part of stitchkit
 
 % id = "programming/projects/yarnbox"
   content.link = "programming/projects/yarnbox"
 + ### Yarnbox
+
 A Hat in Time bytecode injection mod loader
 
 % id = "programming/projects/shelter"
   content.link = "programming/projects/shelter"
 + ### shelter
+
 ideas for an operating system; not actually implemented

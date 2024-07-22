@@ -603,6 +603,11 @@ th-emoji-tooltip p {
     line-height: 1;
 }
 
+.th-emoji-unknown {
+    text-decoration: 1px underline var(--error-color);
+    cursor: help;
+}
+
 /* Funny joke */
 
 @keyframes hello-there {

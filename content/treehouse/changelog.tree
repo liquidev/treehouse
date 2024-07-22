@@ -62,7 +62,8 @@
 - **revision 7:** the main page is now a lot more colorful :rainbow:
 
     % id = "01HRF1YCJ6S5YBSFC13QPWKF3X"
-    - <style>
+    - ``` =html
+    <style>
     span.treehouse\/changelog\:liquidex-brand-color {
         display: inline-block;
         width: 0.8em;
@@ -77,8 +78,10 @@
         &.blue { background-color: var(--liquidex-brand-blue); }
     }
     </style>
-    each major content category now has an icon and a *liquidex brand color™*
-    <span class="treehouse/changelog:liquidex-brand-color red"></span><span class="treehouse/changelog:liquidex-brand-color yellow"></span><span class="treehouse/changelog:liquidex-brand-color green"></span><span class="treehouse/changelog:liquidex-brand-color blue"></span>
+    ```
+    
+    each major content category now has an icon and a _liquidex brand color™_
+    []{class="treehouse/changelog:liquidex-brand-color red"}[]{class="treehouse/changelog:liquidex-brand-color yellow"}[]{class="treehouse/changelog:liquidex-brand-color green"}[]{class="treehouse/changelog:liquidex-brand-color blue"}
     assigned to it
 
         % id = "01HRF1YCJ602RS1C4E7W7DVHZB"
@@ -98,14 +101,14 @@
             % id = "01HR300JYTPHPKD0VCDGWT01HE"
             - even as I'm writing this, I'm trembling over how half my website is probably gonna break after this refactor, due to me having it written in pure JavaScript rather than TypeScript, but eh, fuck it.
 
-            *reality is not always what you want it to be.*
+            _reality is not always what you want it to be._
 
             % id = "01HR30AHZMS63DA3W3293HZ6WN"
             - just know that I'm writing this not because I think the standards are good, but because one vendor not following them just results in extra work on our part - the developers' part -
             doing more work than is actually really necessary to accomplish a certain task.
 
             % id = "01HR30AHZME866NBYNXZ15CR09"
-            - using the browser's built-in capabilities is *good.*
+            - using the browser's built-in capabilities is _good._
             you're just making me (and hundreds of thousands of other developers) write a shitty, slow version of what the browser could do by default, had it been following Web standards.
 
     % id = "01HR30XM8432QV9NHA26FJQX18"
@@ -124,7 +127,7 @@
     - this page will show you all the updates that have been happening since your last visit
 
     % id = "01HQ94FDZKXFRMCH5NXXAB146E"
-    + it will also lightly nag you whenever there are new posts with a <span class="badge red">1</span> badge
+    + it will also lightly nag you whenever there are new posts with a [1]{.badge .red} badge
 
         % id = "01HQ94FDZK5TJDM3CMNKQKES6Z"
         - if that's too annoying for you, it's easy to disable - scroll down on the [news page][page:treehouse/new] and there's a (collapsed by default) settings section for the page
@@ -178,7 +181,7 @@
     + fixed "hey expand me" chevrons sometimes shifting layout when a branch is expanded
 
         % id = "01HP20D2R4W85SKCJX2R10RHHC"
-        - yeah, *these* ones - like the one that just disappeared when you clicked on the branch above
+        - yeah, _these_ ones - like the one that just disappeared when you clicked on the branch above
 
     % id = "01HP20RMB3RX6HSBHKM6FVDS44"
     + [`/b` endpoint](/b) is now used for shorter links. it also generates OpenGraph metadata so that Your Favorite Messaging Platform can display the linked branch's content

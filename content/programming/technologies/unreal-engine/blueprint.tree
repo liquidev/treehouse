@@ -7,7 +7,7 @@
     - I don't have UE installed on my home computer yet, so you'll have to take my word for a lot of these things
 
     % id = "01H8Y0CKD1VENHWERX7CTGCE6M"
-    - anyways back to your regularly scheduled bullet points, *\*ahem\**
+    - anyways back to your regularly scheduled bullet points, _\*ahem\*_
 
 % id = "01H8Y0CKD1QHMTGFCK2RC3NPDV"
 + Blueprint, _my arch nemesis!_
@@ -171,7 +171,7 @@ flow and introduces control flow into the mix
                 + which is a portmanteau of Blueprint and spaghetti.
 
                     % id = "01H8Y427B0PJN75GA33S9CZJYH"
-                    - I can't believe I remembered the spelling of that word. *portmanteau*.
+                    - I can't believe I remembered the spelling of that word. _portmanteau_.
 
             % id = "01H8YT7R15B3Z3T486DB53TR51"
             - there are plugins on the marketplace that solve this, but I refuse to believe Epic Games doesn't have this problem themselves
@@ -199,7 +199,7 @@ flow and introduces control flow into the mix
         - the biggest offender here being that hard references are the default
 
             % id = "01H8Y427B17K7219TPH8VRFZ96"
-            - thus you can add a Mesh Component to your Blueprint and it'll load *the entire mesh with all the textures and skeleton and everything* when you wanna tweak a variable or some logic in the event graph
+            - thus you can add a Mesh Component to your Blueprint and it'll load _the entire mesh with all the textures and skeleton and everything_ when you wanna tweak a variable or some logic in the event graph
 
                 % id = "01H8Y427B1QNZHJ5Z8W0QNFYPE"
                 - and not asynchronously in the background, you will have to _wait_ for it to finish loading. which is pretty annoying
