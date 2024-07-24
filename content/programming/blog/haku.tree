@@ -2,7 +2,7 @@
 scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-programming.js"]
 
 % id = "01J3K8A0D1774SFDPKDK5G9GPV"
-- I've had this idea on my mind as of late, of a little lazily-evaluated pure functional programming language that would run in your browser.
+- I've had this idea on my mind as of late, of a little pure functional programming language that would run in your browser.
 
     % id = "01J3K8A0D1WTM2KHERFZG2FWBJ"
     + the primary use case would be writing fun audiovisual sketches you can inspect and edit live, because after all everything is declarative.
@@ -957,6 +957,238 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
             % id = "01J3K8A0D12VCHW6AJX0ZGPQBY"
             - code style-wise it's also not my prettiest Nim code ever - it kind of abuses `template`s for referring to the current character with a single word, but that doesn't convey the fact that it's an effectful operation very well.
 
+- ### interpretation
+
+    - with a parser now ready, it would be nice if we could execute some actual code!
+
+    - we'll again start off by setting a goal.
+    I want to be able to evaluate arbitrary arithmetic expressions, like this one:
+
+    ```haku
+    (+ (* 2 1) 1 (/ 6 2) (- 10 3))
+    ```
+
+    - the simplest way to get some code up and running would be to write a _tree-walk interpreter_.
+
+    {:program=haku}
+    ```javascript
+    export const treewalk = {};
+    ```
+
+    this kind of interpreter is actually really simple!
+    it just involves walking through your syntax tree, executing each node one by one.
+
+    - we'll again start off by defining a function that initializes our interpreter's state.
+
+    right now there isn't really anything to initialize, but recall that we don't have our tokens parsed into any meaningful data yet, so we'll have to have access the source string to do that.
+
+    {:program=haku}
+    ```javascript
+    treewalk.init = (input) => {
+        return { input };
+    };
+    ```
+
+    - the core of our interpretation will be a function that descends down the node tree and _evaluates_ each node, giving us a result.
+
+    {:program=haku}
+    ```javascript
+    treewalk.eval = (state, node) => {
+        switch (node.kind) {
+            default:
+                throw new Error(`unhandled node kind: ${node.kind}`);
+        }
+    };
+    ```
+
+    for now we'll leave it empty.
+    
+    - in the meantime, let's prepare a couple convenient little wrappers to run our code:
+
+    {:program=haku}
+    ```javascript
+    export function run(input, node) {
+        let state = treewalk.init(input);
+        return treewalk.eval(state, node);
+    }
+
+    export function printEvalResult(input) {
+        try {
+            let tokens = lex(input);
+            let ast = parse(tokens);
+            let result = run(input, ast);
+            console.log(result);
+        } catch (error) {
+            console.log(error.toString());
+        }
+    }
+    ```
+
+    - now we can try running some code!
+    let's see what happens.
+
+    {:program=haku}
+    ```javascript
+    printEvalResult("65");
+    ```
+
+    {:program=haku}
+    ```output
+    Error: unhandled node kind: integer
+    ```
+
+    ...of course.
+
+    - so let's patch those integers in!
+
+    this is where we'll need that source string of ours - we don't actually have a JavaScript `number` representation of the integers, so we'll need to parse them into place.
+
+    {:program=haku}
+    ```javascript
+    treewalk.eval = (state, node) => {
+        switch (node.kind) {
+            case "integer":
+                let sourceString = state.input.substring(node.start, node.end);
+                return parseInt(sourceString);
+
+            default:
+                throw new Error(`unhandled node kind: ${node.kind}`);
+        }
+    };
+    ```
+
+    - now when we run the program above...
+
+    {:program=haku}
+    ```javascript
+    printEvalResult("65");
+    ```
+
+    {:program=haku}
+    ```output
+    65
+    ```
+
+    we get sixty five!
+
+    - but that's of course a bit boring - it would be nice if we could like, y'know, _perform some arithmetic_.
+
+    - traditionally, in Lisp-like languages, a list expression always represents a function application, with the head of the list being the function to call, and the tail of the function being the arguments to apply to the function.
+
+    let's implement that logic then!
+
+    {:program=haku}
+    ```javascript
+    export const builtins = {};
+    
+    treewalk.eval = (state, node) => {
+        switch (node.kind) {
+            case "integer":
+                let sourceString = state.input.substring(node.start, node.end);
+                return parseInt(sourceString);
+
+            case "list": // <--
+                let functionToCall = node.children[0];
+                let builtin = builtins[state.input.substring(functionToCall.start, functionToCall.end)];
+                return builtin(state, node);
+
+            default:
+                throw new Error(`unhandled node kind: ${node.kind}`);
+        }
+    };
+    ```
+
+        - we'm putting all of our built-in magic functions into a separate object `builtins`, so that they're easy to patch partially later.
+        you've seen my tricks already with hot-patching functions in objects, so this shouldn't be too surprising.
+
+        + you'll note I'm kind of cheating here - because we have no mechanism to represent variables just yet, I'm using the node's text as the key to our `builtins` table.
+
+            - heck, I'm not even validating that this is an identifier - so you can technically do something like this, too:
+
+            ```haku
+            ((what the fuck) lol)
+            ```
+
+            which will call the builtin named `(what the fuck)`.
+
+    - we could try this out now, except we don't actually have any builtins! so I'll add a few in, so that we can _finally_ perform our glorious arithmetic:
+
+    {:program=haku}
+    ```javascript
+    function arithmeticBuiltin(op) {
+        return (state, node) => {
+            let result = treewalk.eval(state, node.children[1]);
+            for (let i = 2; i < node.children.length; ++i) {
+                result = op(result, treewalk.eval(state, node.children[i]));
+            }
+            return result;
+        };
+    }
+
+    builtins["+"] = arithmeticBuiltin((a, b) => a + b);
+    builtins["-"] = arithmeticBuiltin((a, b) => a - b);
+    builtins["*"] = arithmeticBuiltin((a, b) => a * b);
+    builtins["/"] = arithmeticBuiltin((a, b) => a / b);
+    ```
+
+        - one thing of note is how `arithmeticBuiltin` accepts two or more arguments.
+        you're free to pass in more than that, which is common among Lisps.
+
+    - now let's try running our full arithmetic expression! drum roll please...
+
+    {:program=haku}
+    ```javascript
+    printEvalResult("(+ (* 2 1) 1 (/ 6 2) (- 10 3))");
+    ```
+
+    {:program=haku}
+    ```output
+    13
+    ```
+
+    - #### a brief intermission
+
+        - I will now pause here to say, I'm kind of tired of writing this `printEvalResult` ceremony over and over again.
+        so I took a bit of time to enhance the treehouse's capabilities, and it's now capable of running languages other than JavaScript!
+
+        - all we have to do is swap out the evaluation [kernel][]{title="like in Jupyter! Jupyter kernels are basically just support for different programming languages" style="cursor: help; text-decoration: 1px dotted underline;"}...
+
+        [kernel]: https://docs.jupyter.org/en/latest/projects/kernels.html
+
+        {:program=haku}
+        ```javascript
+        import { getKernel } from "treehouse/components/literate-programming/eval.js";
+
+        let kernel = getKernel();
+
+        export const defaultKernelInit = kernel.init;
+        kernel.init = () => {
+            return defaultKernelInit();
+        };
+
+        export const defaultKernelEvalModule = kernel.evalModule;
+        kernel.evalModule = async (state, source, language, params) => {
+            if (language == "haku") {
+                printEvalResult(source);
+                return true;
+            } else {
+                return await defaultKernelEvalModule(state, source, language, params);
+            }
+        };
+        ```
+
+        - and now we can write haku in code blocks!
+
+        {:program=haku}
+        ```haku
+        (+ (* 2 1) 1 (/ 6 2) (- 10 3))
+        ```
+
+        {:program=haku}
+        ```output
+        13
+        ```
+
 % stage = "Draft"
   id = "01J3K8A0D1D0NTT3JYYFMRYVSC"
 - ### tests
@@ -978,5 +1210,29 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     ```
 
     {:program=test-parser}
+    ```output
+    ( 0..1 '('
+    identifier 1..8 'example'
+    identifier 9..21 's-expression'
+    ) 21..22 ')'
+    end of file 22..22 ''
+    (example s-expression)
+    ```
+
+    - treewalk
+
+    {:program=test-treewalk}
+    ```javascript
+    import { lex, parse, exprToString } from "haku/sexp.js";
+    import { run } from "haku/treewalk.js";
+
+    let input = "(+ (* 2 1) 1 (/ 6 2) (- 10 3))";
+    let tokens = lex(input);
+
+    let ast = parse(tokens);
+    console.log(run(input, ast));
+    ```
+
+    {:program=test-treewalk}
     ```output
     ```

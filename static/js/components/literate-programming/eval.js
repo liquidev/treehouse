@@ -14,8 +14,31 @@ export const domConsole = {
             },
             outputIndex,
         });
-    }
+    },
 };
+
+let kernel = {
+    init() {
+        return {};
+    },
+
+    async evalModule(_state, source, language, _params) {
+        if (language == "javascript") {
+            let blobUrl = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
+            let module = await import(blobUrl);
+            for (let exportedKey in module) {
+                globalThis[exportedKey] = module[exportedKey];
+            }
+            return true;
+        } else {
+            return false;
+        }
+    },
+};
+
+export function getKernel() {
+    return kernel;
+}
 
 let evaluationComplete = null;
 
@@ -27,17 +50,20 @@ export async function evaluate(commands, { error, newOutput }) {
     let signalEvaluationComplete;
     evaluationComplete = new Promise((resolve, _reject) => {
         signalEvaluationComplete = resolve;
-    })
+    });
+
+    let kernelState = kernel.init();
 
     outputIndex = 0;
     try {
         for (let command of commands) {
             if (command.kind == "module") {
-                let blobUrl = URL.createObjectURL(new Blob([command.source], { type: "text/javascript" }));
-                let module = await import(blobUrl);
-                for (let exportedKey in module) {
-                    globalThis[exportedKey] = module[exportedKey];
-                }
+                await kernel.evalModule(
+                    kernelState,
+                    command.source,
+                    command.language,
+                    command.kernelParameters,
+                );
             } else if (command.kind == "output") {
                 if (newOutput != null) {
                     newOutput(outputIndex);
@@ -63,4 +89,3 @@ export async function evaluate(commands, { error, newOutput }) {
     }
     signalEvaluationComplete();
 }
-

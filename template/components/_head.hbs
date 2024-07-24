@@ -17,6 +17,14 @@ clever to do while browser vendors figure that out, we'll just have to do a cach
 <script>
     const TREEHOUSE_SITE = `{{ config.site }}`;
     const TREEHOUSE_NEWS_COUNT = {{ len feeds.news.branches }};
+
+    {{!-- Yeah, this should probably be solved in a better way somehow.
+    For now this is used to allow literate-programming.js to refer to syntax files with the ?cache attribute,
+    so that they don't need to be redownloaded every single time. --}}
+    const TREEHOUSE_SYNTAX_URLS = {
+        javascript: `{{{ asset 'syntax/javascript.json' }}}`,
+        haku: `{{{ asset 'syntax/haku.json' }}}`,
+    };
 </script>
 <script type="module">
     import "treehouse/spells.js";

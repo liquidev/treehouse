@@ -42,8 +42,16 @@ function tokenize(text, syntax) {
                     for (let i = 1; i < match.indices.length; ++i) {
                         let [start, end] = match.indices[i];
                         if (match.indices[i] != null) {
-                            pushToken(tokens, pattern.is.default, text.substring(lastMatchEnd, start));
-                            pushToken(tokens, pattern.is.captures[i], text.substring(start, end));
+                            pushToken(
+                                tokens,
+                                pattern.is.default,
+                                text.substring(lastMatchEnd, start),
+                            );
+                            pushToken(
+                                tokens,
+                                pattern.is.captures[i - 1],
+                                text.substring(start, end),
+                            );
                         }
                     }
                 } else {

@@ -26,7 +26,12 @@ function getLiterateProgramWorkerCommands(name, count) {
     for (let i = 0; i < count; ++i) {
         let frame = literateProgram.frames[i];
         if (frame.mode == "input") {
-            commands.push({ kind: "module", source: frame.textContent });
+            commands.push({
+                kind: "module",
+                source: frame.textContent,
+                language: frame.language,
+                kernelParameters: frame.kernelAttributes,
+            });
         } else if (frame.mode == "output") {
             commands.push({ kind: "output" });
         }
@@ -35,27 +40,42 @@ function getLiterateProgramWorkerCommands(name, count) {
     return commands;
 }
 
-const javascriptJson = await (await fetch(`${TREEHOUSE_SITE}/static/syntax/javascript.json`)).text();
+let compiledSyntaxes = new Map();
+
+async function getCompiledSyntax(language) {
+    if (compiledSyntaxes.has(language)) {
+        return compiledSyntaxes.get(language);
+    } else {
+        let json = await (await fetch(TREEHOUSE_SYNTAX_URLS[language])).text();
+        let compiled = compileSyntax(JSON.parse(json));
+        compiledSyntaxes.set(language, compiled);
+        return compiled;
+    }
+}
 
 class InputMode {
-    static JAVASCRIPT = compileSyntax(JSON.parse(javascriptJson));
-
     constructor(frame) {
         this.frame = frame;
 
-        InputMode.highlight(frame);
-        this.codeJar = CodeJar(frame, InputMode.highlight);
+        getCompiledSyntax(this.frame.language).then((syntax) => {
+            this.syntax = syntax;
+            this.highlight();
+        });
+
+        this.codeJar = CodeJar(frame, (frame) => this.highlight(frame));
         this.codeJar.onUpdate(() => {
             for (let handler of frame.program.onChanged) {
                 handler(frame.programName);
             }
-        })
+        });
 
-        frame.addEventListener("click", event => event.preventDefault());
+        frame.addEventListener("click", (event) => event.preventDefault());
     }
 
-    static highlight(frame) {
-        highlight(frame, InputMode.JAVASCRIPT, (token, span) => {
+    async highlight() {
+        if (this.syntax == null) return;
+
+        highlight(this.frame, this.syntax, (token, span) => {
             if (token.kind == "keyword1" && token.string == "export") {
                 // This is something a bit non-obvious about the treehouse's literate programs
                 // so let's document it.
@@ -68,7 +88,7 @@ class InputMode {
 
 function messageOutputArrayToString(output) {
     return output
-        .map(x => {
+        .map((x) => {
             if (typeof x === "object") return JSON.stringify(x);
             else return x + "";
         })
@@ -97,7 +117,7 @@ class OutputMode {
 
         this.iframe.contentWindow.treehouseSandboxInternals = { outputIndex: this.outputIndex };
 
-        this.iframe.contentWindow.addEventListener("message", event => {
+        this.iframe.contentWindow.addEventListener("message", (event) => {
             let message = event.data;
             if (message.kind == "ready") {
                 this.evaluate();
@@ -121,14 +141,17 @@ class OutputMode {
             this.frame.placeholderImage.classList.add("loading");
         }
 
-        this.frame.program.onChanged.push(_ => this.evaluate());
+        this.frame.program.onChanged.push((_) => this.evaluate());
     }
 
     evaluate() {
         this.requestConsoleClear();
         this.iframe.contentWindow.postMessage({
             action: "eval",
-            input: getLiterateProgramWorkerCommands(this.frame.programName, this.frame.frameIndex + 1),
+            input: getLiterateProgramWorkerCommands(
+                this.frame.programName,
+                this.frame.frameIndex + 1,
+            ),
         });
     }
 
@@ -161,7 +184,7 @@ class OutputMode {
 
         // One day this will be more fancy. Today is not that day.
         line.textContent = output.message
-            .map(x => {
+            .map((x) => {
                 if (typeof x === "object") return JSON.stringify(x);
                 else return x + "";
             })
@@ -198,12 +221,20 @@ class OutputMode {
 
 class LiterateProgram extends HTMLElement {
     connectedCallback() {
+        this.language = this.getAttribute("data-language");
         this.programName = this.getAttribute("data-program");
         this.frameIndex = this.program.frames.length;
         this.program.frames.push(this);
 
         this.placeholderImage = this.getElementsByClassName("placeholder-image")[0];
         this.placeholderConsole = this.getElementsByClassName("placeholder-console")[0];
+
+        this.kernelAttributes = {};
+        for (let name of this.getAttributeNames()) {
+            if (name.startsWith("k-")) {
+                this.kernelAttributes[name] = this.getAttribute(name);
+            }
+        }
 
         this.mode = this.getAttribute("data-mode");
         if (this.mode == "input") {

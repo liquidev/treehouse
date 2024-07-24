@@ -337,6 +337,10 @@ impl<'a> Writer<'a> {
                                 write_attr(program_name, out);
                                 out.push('"');
 
+                                out.push_str(r#" data-language=""#);
+                                write_attr(language, out);
+                                out.push('"');
+
                                 if *language == "output" {
                                     out.push_str(r#" data-mode="output""#);
                                 } else {
