@@ -1,0 +1,982 @@
+%% title = "haku - writing a little programming language for fun"
+scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-programming.js"]
+
+% id = "01J3K8A0D1774SFDPKDK5G9GPV"
+- I've had this idea on my mind as of late, of a little lazily-evaluated pure functional programming language that would run in your browser.
+
+    % id = "01J3K8A0D1WTM2KHERFZG2FWBJ"
+    + the primary use case would be writing fun audiovisual sketches you can inspect and edit live, because after all everything is declarative.
+    this was motivated by my discovery of [glisp][], which was recently on the front page of [Lobsters][glisp lobsters].
+
+    [glisp]: https://glisp.app
+    [glisp lobsters]: https://lobste.rs/s/amanh7/glisp_graphical_lisp
+
+        % id = "01J3K8A0D16PAM5AV11E8JF3AF"
+        - [I even commented about it!](https://lobste.rs/s/amanh7/glisp_graphical_lisp#c_oqa6ap)
+
+% id = "01J3K8A0D1N4EGRKPFTP0FNZSW"
+- so let's get going!
+
+% id = "01J3K8A0D1ZXQ9NJ8CVGBQ7FZB"
+- ### parsing
+
+    % id = "01J3K8A0D11KMK6MWCRT5KQV09"
+    - I don't know about you, but I like writing parsers.
+    however, since I'm trying to keep this language absolutely _tiny_, I think S-expressions might be the best fit for this purpose.
+
+        % id = "01J3K8A0D1PT058QRSXS142Y5T"
+        - honestly I don't even like S-expressions that much.
+        I find them extremely hard to read, but I dunno - maybe my mind will change after having written a language using them.
+        we can always swap the syntax out for something else later.
+
+    % id = "01J3K8A0D1198QXV2GFWF7JCV0"
+    - let me show you an example of how I'd like haku to look.
+    I find that is the best way of breaking down syntax into smaller parts.
+
+    ```haku
+    ; Recursive fibonacci
+    (def fib
+        (fn (n)
+            (if (< n 2)
+                n
+                (+ (fib (- n 1)) (fib (- n 2))))))
+
+    (print (fib 10))
+    ```
+
+        % id = "01J3K8A0D1KNHJ10WCVX8C88WP"
+        - we have a handful of lexical elements: parentheses, identifiers, and numbers.
+
+        there are also comments and whitespace, of course.
+        those will get skipped over by the lexer, because we're not really building a production-grade language to need them.
+
+        % id = "01J3K8A0D14Z8W5K6KDEJQ6DZJ"
+        - syntactically, we only really have two types of productions.
+        there are literals, and there are lists.
+
+            % id = "01J3K8A0D1N8SP9J8EMBNEVG9C"
+            - when I say _literals_, I'm referring to both identifiers and integers.
+            we will of course differentiate between them in the syntax, because they mean different things.
+
+    % id = "01J3K8A0D14A94S2RNFV97DX18"
+    - we will start by writing the lexical analysis part of our parser, to join single characters up to slightly more managable pieces.
+
+    {:program=haku}
+    ```javascript
+    export const lexer = {};
+    ```
+
+    % id = "01J3K8A0D1YZMHNSRZMSBNQVD4"
+    - the entire idea of a lexer is that you read the input string left to right, top to bottom, and piece together larger _tokens_ out of that.
+
+        % id = "01J3K8A0D1C9YBXWK257GFMR68"
+        - for instance, for the input string
+
+        ```haku
+        (example s-expression)
+        ```
+
+        we will produce the tokens
+
+        | type | start | end | text |
+        | --- | --: | --: | --- |
+        | ( | 0 | 1 | `(` |
+        | identifier | 1 | 8 | `example` |
+        | identifier | 9 | 21 | `s-expression` |
+        | ) | 21 | 22 | `)` |
+        | end of file | 22 | 22 | |
+    
+    % id = "01J3K8A0D1GGQ292D4MQBCGHWC"
+    - to lex the input into tokens, we'll need to know the input string (of course), and where we currently are in the string.
+
+    {:program=haku}
+    ```javascript
+    lexer.init = (input) => {
+        return {
+            input,
+            position: 0,
+        };
+    };
+    ```
+
+    % id = "01J3K8A0D139JN9J5TTA2WAP4R"
+    - we'll also define a few helper functions to make reading text a little easier, without having to perform any bounds checks whenever we read tokens.
+
+    {:program=haku}
+    ```javascript
+    export const eof = "end of file";
+
+    lexer.current = (state) => {
+        return state.position < state.input.length
+            ? state.input.charAt(state.position)
+            : eof;
+    };
+
+    lexer.advance = (state) => ++state.position;
+    ```
+
+    % id = "01J3K8A0D1GPMDD8S063K6ETM3"
+    - our lexer will run in a loop, producing tokens until it hits the end of input or an error.
+
+    {:program=haku}
+    ```javascript
+    export function lex(input) {
+        let tokens = [];
+
+        let state = lexer.init(input);
+        while (true) {
+            let start = state.position;
+            let kind = lexer.nextToken(state);
+            let end = state.position;
+            tokens.push({ kind, start, end });
+            if (kind == eof || kind == "error") break;
+        }
+
+        return tokens;
+    }
+    ```
+
+        % id = "01J3K8A0D10GZMN36TDZWYH632"
+        - remember that error handling is important!
+        we mustn't forget that the user can produce invalid input - such as this string:
+
+        ```haku
+        {example}
+        ```
+
+        haku does not have curly braces in its syntax, so that's clearly an error!
+        reporting this to the user will be a much better experience than, perhaps... getting stuck in an infinite loop. :oh:
+
+    % id = "01J3K8A0D117B6AQ8YKMCX4KAK"
+    - now for the most important part - that `lexer.nextToken` we used will be responsible for reading back a token from the input, and returning what kind of token it has read.
+
+    for now, let's make it detect parentheses.
+    we of course also need to handle end of input - whenever our lexer runs out of characters to consume, as well as when it encounters any characters we don't expect.
+
+    {:program=haku}
+    ```javascript
+    lexer.nextToken = (state) => {
+        let c = lexer.current(state);
+
+        if (c == "(" || c == ")") {
+            lexer.advance(state);
+            return c;
+        }
+        if (c == eof) return eof;
+
+        lexer.advance(state);
+        return "error";
+    };
+    ```
+
+    % id = "01J3K8A0D1C5C5P32WQFW1PD0R"
+    - with all that frameworking in place, let's test if our lexer works!
+
+    {:program=haku}
+    ```javascript
+    export function printTokens(input) {
+        let tokens = lex(input);
+        for (let { kind, start, end } of tokens) {
+            if (kind == "error") {
+                let errorString = input.substring(start, end);
+                console.log(`unexpected characters at ${start}..${end}: '${errorString}'`);
+            } else {
+                console.log(`${kind} @ ${start}..${end}`);
+            }
+        }
+    }
+    
+    printTokens(`()((()))`);
+    ```
+
+    {:program=haku}
+    ```output
+    ( @ 0..1
+    ) @ 1..2
+    ( @ 2..3
+    ( @ 3..4
+    ( @ 4..5
+    ) @ 5..6
+    ) @ 6..7
+    ) @ 7..8
+    end of file @ 8..8
+    ```
+
+    ...seems pretty perfect!
+
+    % id = "01J3K8A0D1AV280QZ0Y10CPN62"
+    - except, of course, we're not handling whitespace or comments.
+
+    {:program=haku}
+    ```javascript
+    printTokens(`( )`);
+    ```
+
+    {:program=haku}
+    ```output
+    ( @ 0..1
+    unexpected characters at 1..2: ' '
+    ```
+
+    % id = "01J3K8A0D1RHK349974Y23DG56"
+    - so let's write another function that will lex those.
+
+    {:program=haku}
+    ```javascript
+    lexer.skipWhitespaceAndComments = (state) => {
+        while (true) {
+            let c = lexer.current(state);
+            if (c == " " || c == "\t" || c == "\n" || c == "\r") {
+                lexer.advance(state);
+                continue;
+            }
+            if (c == ";") {
+                while (
+                    lexer.current(state) != "\n" &&
+                    lexer.current(state) != eof
+                ) {
+                    lexer.advance(state);
+                }
+                lexer.advance(state); // skip over newline, too
+                continue;
+            }
+
+            break;
+        }
+    };
+    ```
+
+    % id = "01J3K8A0D10F11DPN5TN0Y7AAX"
+    - except instead of looking at whitespace and comments in the main token reading function, we'll do that _outside_ of it, to avoid getting whitespace caught up in the actual tokens' `start`..`end` spans.
+
+    {:program=haku}
+    ```javascript
+    export function lex(input) {
+        let tokens = [];
+
+        let state = lexer.init(input);
+        while (true) {
+            lexer.skipWhitespaceAndComments(state); // <--
+            let start = state.position;
+            let kind = lexer.nextToken(state);
+            let end = state.position;
+            tokens.push({ kind, start, end });
+            if (kind == eof || kind == "error") break;
+        }
+
+        return tokens;
+    }
+    ```
+
+    % id = "01J3K8A0D1AQWFJHSC9XCCKNKF"
+    - now if we look at the output...
+
+    {:program=haku}
+    ```javascript
+    printTokens(`( )`);
+    ```
+
+    {:program=haku}
+    ```output
+    ( @ 0..1
+    ) @ 2..3
+    end of file @ 3..3
+    ```
+
+    the whitespace is ignored just fine!
+
+        % id = "01J3K8A0D1S7MCHYYVYMPWEHEF"
+        - and comments of course follow:
+
+        {:program=haku}
+        ```javascript
+        printTokens(`
+            ( ; comment comment!
+            )
+        `);
+        ```
+
+        {:program=haku}
+        ```output
+        ( @ 5..6
+        ) @ 30..31
+        end of file @ 32..32
+        ```
+
+    % id = "01J3K8A0D16NF69K3MNNYH1VJ1"
+    - it'd be really nice if we could use identifiers though...
+
+    {:program=haku}
+    ```javascript
+    printTokens(`(hello world)`);
+    ```
+
+    {:program=haku}
+    ```output
+    ( @ 0..1
+    unexpected characters at 1..2: 'h'
+    ```
+
+    so I guess that's the next thing on our TODO list!
+
+    % id = "01J3K8A0D1SF46M2E7DEP6V44N"
+    - we'll introduce a function that will tell us if a given character is a valid character in an identifier.
+
+    since S-expressions are so minimal, it is typical to allow all sorts of characters in identifiers -
+    in our case, we'll allow alphanumerics, as well as a bunch of symbols that seem useful.
+    and funky!
+
+    {:program=haku}
+    ```javascript
+    export const isIdentifier = (c) =>
+        /^[a-zA-Z0-9+~!@$%^&*=<>+?/.,:\\|-]$/.test(c);
+    ```
+
+        % id = "01J3K8A0D10TTSM7TV0C05PVNJ"
+        - this could probably be a whole lot faster if I had used a simple `c >= 'a' && c <= 'z'` chain, but I'm lazy, so a regex it is.
+
+        % id = "01J3K8A0D16VA5D4JGT26YZ4KP"
+        - when I said funky, I wasn't joking - have you ever seen `,` in an identifier?
+
+            % id = "01J3K8A0D11GYDHXVZJXVWAGHN"
+            - I'm allowing it since it isn't really gonna hurt anything.
+            I _did_ disallow `#` though, because that's commonly used for various extensions.
+            who knows what I might be able to cram under that symbol!
+
+    % id = "01J3K8A0D17S0FTBXHP36VVP8C"
+    - with a character set established, we can now stuff identifiers into our lexer.
+    I'll start by introducing a function that'll chew as many characters that meet a given condition as it can:
+
+    {:program=haku}
+    ```javascript
+    lexer.advanceWhile = (state, fn) => {
+        while (fn(lexer.current(state))) {
+            lexer.advance(state);
+        }
+    };
+    ```
+
+    % id = "01J3K8A0D1YV77A2TR64R74HRD"
+    - now we can add identifiers to `nextToken`:
+
+    {:program=haku}
+    ```javascript
+    lexer.nextToken = (state) => {
+        let c = lexer.current(state);
+
+        if (isIdentifier(c)) {
+            lexer.advanceWhile(state, isIdentifier);
+            return "identifier";
+        }
+        if (c == "(" || c == ")") {
+            lexer.advance(state);
+            return c;
+        }
+        if (c == eof) return eof;
+
+        lexer.advance(state);
+        return "error";
+    };    
+    ```
+
+    % id = "01J3K8A0D1DKA8YCBCJVZXXGR4"
+    - let's try lexing that `(hello world)` string now.
+
+    {:program=haku}
+    ```javascript
+    printTokens(`(hello world)`);
+    ```
+
+    {:program=haku}
+    ```output
+    ( @ 0..1
+    identifier @ 1..6
+    identifier @ 7..12
+    ) @ 12..13
+    end of file @ 13..13
+    ```
+
+    nice!
+
+    % id = "01J3K8A0D15G77YG2A0CN8P0M6"
+    - in the original example, there were also a couple of numbers:
+
+    ```haku
+    (+ (fib (- n 1)) (fib (- n 2)))
+    ```
+
+    so let's also add support for some basic integers; we'll add decimals later if we ever need them.
+
+    % id = "01J3K8A0D18MA59WFYW7PCPQ30"
+    - defining integers is going to be a similar errand to identifiers, so I'll spare you the details and just dump all the code at you:
+
+    {:program=haku}
+    ```javascript
+    export const isDigit = (c) => c >= "0" && c <= "9";
+
+    lexer.nextToken = (state) => {
+        let c = lexer.current(state);
+
+        if (isDigit(c)) {
+            lexer.advanceWhile(state, isDigit);
+            return "integer";
+        }
+        if (isIdentifier(c)) {
+            lexer.advanceWhile(state, isIdentifier);
+            return "identifier";
+        }
+        if (c == "(" || c == ")") {
+            lexer.advance(state);
+            return c;
+        }
+        if (c == eof) return eof;
+
+        lexer.advance(state);
+        return "error";
+    };
+    ```
+
+        % id = "01J3K8A0D1SZ4YSR1KD2HYAWPV"
+        - note how we check `isDigit` _before_ `isIdentifier` -
+        this is really important, because otherwise identifiers would take precedence over integers!
+
+    % id = "01J3K8A0D1B5J858DJ6BKNJRKT"
+    - now let's see the results of all that hard work.
+
+    {:program=haku}
+    ```javascript
+    printTokens(`(fib (- n 1))`);
+    ```
+
+    {:program=haku}
+    ```output
+    ( @ 0..1
+    identifier @ 1..4
+    ( @ 5..6
+    identifier @ 6..7
+    identifier @ 8..9
+    integer @ 10..11
+    ) @ 11..12
+    ) @ 12..13
+    end of file @ 13..13
+    ```
+
+    looks good!
+
+    % id = "01J3K8A0D148R9B0HVMH79A3CK"
+    - #### an amen break
+
+        % id = "01J3K8A0D1WX6EH5H61BVR1X31"
+        - to let your head rest a bit after reading all of this, here are some fun numbers:
+
+            % id = "01J3K8A0D11D479PJKY22AQFTC"
+            - there are a total of
+
+            {:program=haku}
+            ```javascript
+            console.log(Object.keys(lexer).length);
+            ```
+
+            {:program=haku}
+            ```output
+            6
+            ```
+
+            functions in the `lexer` namespace.
+
+            not a whole lot, huh?
+
+            % id = "01J3K8A0D19XK0MRH4Z461G2J0"
+            - I was personally quite surprised how tiny an S-expression lexer can be.
+            they were right about S-expressions being a good alternative for when you don't want to write syntax!
+
+            the entire thing fits in *86 lines of code.*
+
+        % id = "01J3K8A0D1CG89X84KM2DN14ZT"
+        + :bulb: for the curious: *here's why I implement lexers like this!*
+
+            % id = "01J3K8A0D1FYBKJ6X2W17QAK3Z"
+            - many tutorials will have you implementing lexers such that data is _parsed_ into the language's data types.
+            for instance, integer tokens would be parsed into JavaScript `number`s.
+
+            I don't like this approach for a couple reasons.
+
+                % id = "01J3K8A0D1P258JKRVG11M7B64"
+                - pre-parsing data like this pollutes your lexer code with wrangling tokens into useful data types.
+                I prefer it if the lexer is only responsible for _reading back strings_.
+
+                implemented my way, it can concern itself only with chewing through the source string; no need to extract substrings out of the input or anything.
+
+                % id = "01J3K8A0D14VZTKBPJTG3BGD0M"
+                - there's also a performance boost from implementing it this way: _lazy_ parsing, as I like to call it, allows us to defer most of the parsing work until it's actually needed.
+                if the token never ends up being needed (e.g. due to a syntax error,) we don't end up doing extra work eagerly!
+
+                    % id = "01J3K8A0D1GYZ9Y9MK6K24JME7"
+                    - if that doesn't convince you, consider that now all your tokens are the exact same data structure, and you can pack them neatly into a flat array.
+
+                    if you're using a programming language with flat arrays, that is.
+                    such as Rust or C.
+
+                    I'm implementing this in JavaScript of course, but it's still neat not having to deal with mass `if`osis when extracting data from tokens - you're always guaranteed a token will have a `kind`, `start`, and `end`.
+
+        % id = "01J3K8A0D1NTPSD77WM84KVMRX"
+        - now. back to your regularly scheduled programming!
+
+    % id = "01J3K8A0D1X6A68K6TGX00FCTE"
+    - it's time for us to implement a parser for our S-expressions.
+
+    {:program=haku}
+    ```javascript
+    export const parser = {};
+    ```
+
+    % id = "01J3K8A0D1ZMJJHDMW24D1GESE"
+    - the goal is to go from this flat list of tokens:
+
+    | type | start | end | text |
+    | --- | --: | --: | --- |
+    | ( | 0 | 1 | `(` |
+    | identifier | 1 | 8 | `example` |
+    | identifier | 9 | 21 | `s-expression` |
+    | ) | 21 | 22 | `)` |
+    | end of file | 22 | 22 | |
+
+    to a nice recursive tree that represents our S-expressions:
+
+    ```haku.ast
+    list
+        identifier example
+        identifier s-expression
+    ```
+
+    % id = "01J3K8A0D1SSWPAKSNG8TA4N1H"
+    - there are many parsing strategies we could go with, but in my experience you can't go simpler than good ol' [recursive descent][].
+
+    [recursive descent]: https://en.wikipedia.org/wiki/Recursive_descent_parser
+
+        % id = "01J3K8A0D1NHD7QGQ1NZTDQRWX"
+        - the idea of recursive descent is that you have a stream of tokens that you read from left to right, and you have a set of functions that parse your non-terminals.
+
+        essentially, each function corresponds to a single type of node in your syntax tree.
+
+            % id = "01J3K8A0D1F01CKXP10M7WD6VV"
+            - does the "stream of tokens that you read from left to right" ring a bell?
+            if it does, that's because lexing operates on a _very_ similar process - it's just non-recursive!
+
+    % id = "01J3K8A0D111A22X9WW8NP3T3X"
+    - knowing that similarity, we'll start off with a similar set of helper functions to our lexer.
+
+    {:program=haku}
+    ```javascript
+    parser.init = (tokens) => {
+        return {
+            tokens,
+            position: 0,
+        };
+    };
+
+    parser.current = (state) => state.tokens[state.position];
+    parser.advance = (state) => {
+        if (state.position < state.tokens.length - 1) {
+            ++state.position;
+        }
+    };
+    ```
+
+    note however that instead of letting `current` read out of bounds, we instead clamp `advance` to the very last token - which is guaranteed to be `end of file`.
+
+    % id = "01J3K8A0D1XF9PEBQ6D4F1P3BA"
+    - the S-expression grammar can compose in the following ways:
+
+        % id = "01J3K8A0D1CWFBC9JTM6PFZRR8"
+        - an S-expression is a literal integer, identifier, or a list.
+
+        % id = "01J3K8A0D1BM9QGDHWCX7PANPR"
+        - literal integers `65` and identifiers `owo` stand alone on their own.
+        they do not nest anything else inside of them.
+
+        % id = "01J3K8A0D19BXABXNV75N93A18"
+        - lists `(a b c)` are sequences of S-expressions enclosed in parentheses.
+        inside, they can contain literal integers and identifiers, or even other lists recursively.
+
+    % id = "01J3K8A0D1G43KZDVH7EW0ZAKQ"
+    - this yields the following [EBNF][] grammar:
+
+    ```ebnf
+    Expr = "integer" | "identifier" | List;
+    List = "(" , { Expr } , ")";
+    ```
+
+    [EBNF]: https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form
+
+    % id = "01J3K8A0D1FPZE52S1RVWCR66Y"
+    - we'll start by implementing the `Expr = "integer" | "identifier"` rule.
+    parsing integers and identifiers is as simple as reading their single token, and returning a node for it:
+
+    {:program=haku}
+    ```javascript
+    parser.parseExpr = (state) => {
+        let token = parser.current(state);
+        switch (token.kind) {
+            case "integer":
+            case "identifier":
+                parser.advance(state);
+                return { ...token };
+
+            default:
+                parser.advance(state);
+                return {
+                    kind: "error",
+                    error: "unexpected token",
+                    start: token.start,
+                    end: token.end,
+                };
+        }
+    };
+    ```
+
+        % id = "01J3K8A0D1ENMQV0ZSP8C5ZX5A"
+        - of course again, we mustn't forget about errors!
+        it's totally possible for our lexer to produce a token we don't understand - such as an `error`, or an `end of file`.
+        or really any token we choose to introduce in the future, but choose to not be valid as an `Expr` starter.
+
+    % id = "01J3K8A0D1QRSPTYPH2JQ77HW9"
+    + we'll wrap initialization and `parseExpr` in another function, which will accept a list of tokens and return a syntax tree, hiding the complexity of managing the parser state underneath.
+
+    {:program=haku}
+    ```javascript
+    parser.parseRoot = (state) => parser.parseExpr(state);
+
+    export function parse(input) {
+        let state = parser.init(input);
+        let expr = parser.parseRoot(state);
+
+        if (parser.current(state).kind != eof) {
+            let strayToken = parser.current(state);
+            return {
+                kind: "error",
+                error: `found stray '${strayToken.kind}' token after expression`,
+                start: strayToken.start,
+                end: strayToken.end,
+            };
+        }
+
+        return expr;
+    }
+    ```
+
+    this function also checks that there aren't any tokens after we're done parsing the root `Expr` production.
+    it wouldn't be very nice UX if we let the user input tokens that didn't do anything!
+
+        % id = "01J3K8A0D1KE4JRKEXWPAQJFDV"
+        - I'm adding that `parseRoot` alias in so that it's easy to swap the root production to something else than `Expr`.
+
+    % id = "01J3K8A0D1GP31XPC0VVZTJPMV"
+    - now we can try to parse a tree out of a little expression...
+
+    {:program=haku}
+    ```javascript
+    export function printTree(input) {
+        let tokens = lex(input);
+        let tree = parse(tokens);
+        console.log(JSON.stringify(tree, null, "    "));
+    }
+    ```
+
+    ...and print it into the console:
+
+    {:program=haku}
+    ```javascript
+    printTree("-w-")
+    ```
+
+    {:program=haku}
+    ```output
+    {
+        "kind": "identifier",
+        "start": 0,
+        "end": 3
+    }
+    ```
+
+    nice!
+
+    % id = "01J3K8A0D14YEA038BD8KAAECC"
+    - now it's time to parse some lists.
+    for that, we'll introduce another function, which will be called by `parseExpr` with an existing `(` token.
+
+    its task will be to read as many expressions as it can, until it hits a closing parenthesis `)`, and then construct a node out of that.
+
+    {:program=haku}
+    ```javascript
+    parser.parseList = (state, leftParen) => {
+        parser.advance(state);
+
+        let children = [];
+        while (parser.current(state).kind != ")") {
+            if (parser.current(state).kind == eof) {
+                return {
+                    kind: "error",
+                    error: "missing closing parenthesis ')'",
+                    start: leftParen.start,
+                    end: leftParen.end,
+                };
+            }
+            children.push(parser.parseExpr(state));
+        }
+
+        let rightParen = parser.current(state);
+        parser.advance(state);
+
+        return {
+            kind: "list",
+            children,
+            start: leftParen.start,
+            end: rightParen.end,
+        };
+    };
+    ```
+
+    % id = "01J3K8A0D1YZ93B7X3A14X1W0N"
+    - and the last thing left to do is to hook it up to our `parseExpr`, in response to a `(` token:
+
+    {:program=haku}
+    ```javascript
+    parser.parseExpr = (state) => {
+        let token = parser.current(state);
+        switch (token.kind) {
+            case "integer":
+            case "identifier":
+                parser.advance(state);
+                return { ...token };
+
+            case "(":
+                return parser.parseList(state, token); // <--
+
+            default:
+                parser.advance(state);
+                return {
+                    kind: "error",
+                    error: "unexpected token",
+                    start: token.start,
+                    end: token.end,
+                };
+        }
+    };
+    ```
+
+    % id = "01J3K8A0D1RHWQAA9FMDC654S9"
+    - now let's try parsing an S-expression!
+
+    {:program=haku}
+    ```javascript
+    printTree("(hello! ^^ (nested nest))");
+    ```
+
+    {:program=haku}
+    ```output
+    {
+        "kind": "list",
+        "children": [
+            {
+                "kind": "identifier",
+                "start": 1,
+                "end": 7
+            },
+            {
+                "kind": "identifier",
+                "start": 8,
+                "end": 10
+            },
+            {
+                "kind": "list",
+                "children": [
+                    {
+                        "kind": "identifier",
+                        "start": 12,
+                        "end": 18
+                    },
+                    {
+                        "kind": "identifier",
+                        "start": 19,
+                        "end": 23
+                    }
+                ],
+                "start": 11,
+                "end": 24
+            }
+        ],
+        "start": 0,
+        "end": 25
+    }
+    ```
+
+    % id = "01J3K8A0D1AJP9WHVKBBKKC3B7"
+    - I don't know about you, but I personally find the JSON output quite distracting and long.
+    I can't imagine how long it'll be on even larger expressions!
+
+    to counteract that, let's write an S-expression pretty printer:
+
+    {:program=haku}
+    ```javascript
+    export function exprToString(expr, input) {
+        let inputSubstring = input.substring(expr.start, expr.end);
+        switch (expr.kind) {
+            case "integer":
+            case "identifier":
+                return inputSubstring;
+
+            case "list":
+                return `(${expr.children.map((expr) => exprToString(expr, input)).join(" ")})`;
+
+            case "error":
+                return `<error ${expr.start}..${expr.end} '${inputSubstring}': ${expr.error}>`;
+        }
+    }
+    ```
+
+        % id = "01J3K8A0D1CB6B8BEY65ADJZSV"
+        - obviously this loses some information compared to the JSON - we no longer report start and end indices, but that is easy enough to add if you need it.
+        I don't need it, so I'll conveniently skip it for now.
+
+    % id = "01J3K8A0D1G1BPN5W4GT26EJX4"
+    - let's see if our pretty printer works!
+
+    {:program=haku}
+    ```javascript
+    export function printTree(input) {
+        let tokens = lex(input);
+        let tree = parse(tokens);
+        console.log(exprToString(tree, input));
+    }
+
+    printTree("(hello! -w- (nestedy nest))");
+    ```
+
+    {:program=haku}
+    ```output
+    (hello! -w- (nestedy nest))
+    ```
+
+    that's... the same string.
+    
+    % id = "01J3K8A0D1XP4FQB2HZR9GV5CJ"
+    - let's try something more complicated, with comments and such.
+
+    {:program=haku}
+    ```javascript
+    export function printTree(input) {
+        let tokens = lex(input);
+        let tree = parse(tokens);
+        console.log(exprToString(tree, input));
+    }
+
+    printTree(`
+        (def add-two
+            ; Add two to a number.
+            (fn (n) (+ n 2)))
+    `);
+    ```
+
+    {:program=haku}
+    ```output
+    (def add-two (fn (n) (+ n 2)))
+    ```
+
+    looks like it works!
+
+        % id = "01J3K8A0D10DRSP49WF8YH5WSH"
+        - of course this is hardly the _prettiest_ printer in the world.
+        
+            % id = "01J3K8A0D1VCJ7TV6CN7M07N5J"
+            - for one, it does not even preserve your comments.
+            
+            % id = "01J3K8A0D1K3M9223YM96PS68B"
+            - it does not add indentation either, it just blindly dumps a minimal S-expression into the console.
+
+            % id = "01J3K8A0D1P2EF0C657J1REV9Z"
+            - but it proves that our parser _works_ - we're able to parse an arbitrary S-expression into a syntax tree, and then traverse that syntax tree again, performing various recursive algorithms on it.
+            isn't that cool?
+
+    % id = "01J3K8A0D1PB6MSPBS1K6K6KR3"
+    - and that's all there'll be to parsing, at least for now!
+
+        % id = "01J3K8A0D11M0NJCBKKPAMVJ2J"
+        - maybe in the future I'll come up with something more complex, with a more human-friendly syntax.
+        who knows!
+        right now it's experimentation time, so these things don't really matter.
+
+    % id = "01J3K8A0D1HB566XYSET099Q26"
+    - #### amen break, part two
+
+        % id = "01J3K8A0D1KX5EWV5NW29PF525"
+        - the S-expression parser consists of a whopping
+
+        {:program=haku}
+        ```javascript
+        console.log(Object.keys(parser).length);
+        ```
+
+        {:program=haku}
+        ```output
+        6
+        ```
+
+        functions.
+        just like the lexer!
+
+        % id = "01J3K8A0D1RZE0F75S2C7PPTAZ"
+        - the parser is *99 lines of code*. quite tiny, if you ask me!
+
+            % id = "01J3K8A0D1K91SY17T780S7MPK"
+            - together with the lexer, the entire S-expression parser is *185 lines of JavaScript.*
+            that's a pretty small amount, especially given that it's extremely simple code!
+
+            % id = "01J3K8A0D1PJNDGKJH8DXN4G3G"
+            - I wouldn't call this parser production-ready, though.
+            a production-ready parser would have some way of _preserving comments_ inside the syntax tree, such that you can pretty-print it losslessly.
+
+            if you're bored, you can try to add that in!
+
+        % id = "01J3K8A0D1PJQJFAG2YADEKVNB"
+        + here's a fun piece of trivia: I'm wrote a [Nim S-expression parser for Rosetta Code][nim s-expr] way back in [July 2019][nim s-expr diff].
+
+        [nim s-expr]: https://rosettacode.org/wiki/S-expressions#Nim
+        [nim s-expr diff]: https://rosettacode.org/wiki/S-expressions?diff=prev&oldid=202824
+
+            % id = "01J3K8A0D1BWG3TFFXDD6BCPP2"
+            - you can see it's quite different from how I wrote this parser - in particular, because I didn't need to focus so much on the parser being hot-patchable and reusable, it came out quite a lot more compact, despite having fully static types!
+
+            % id = "01J3K8A0D1F4R8KPHETV9N08YP"
+            - it's definitely not how I would write a parser nowadays.
+            it's pretty similar, but the syntax tree structures are quite different - it doesn't use the [lazy parsing][branch:01J3K8A0D1FYBKJ6X2W17QAK3Z] trick I talked about before.
+            
+                % id = "01J3K8A0D178J6W49AFCE9HEQ6"
+                - I mean, it's only a trick I learned last year!
+
+            % id = "01J3K8A0D12VCHW6AJX0ZGPQBY"
+            - code style-wise it's also not my prettiest Nim code ever - it kind of abuses `template`s for referring to the current character with a single word, but that doesn't convey the fact that it's an effectful operation very well.
+
+% stage = "Draft"
+  id = "01J3K8A0D1D0NTT3JYYFMRYVSC"
+- ### tests
+
+    % id = "01J3K8A0D1DQZCZSX4H82QQBHR"
+    - parser
+
+    {:program=test-parser}
+    ```javascript
+    import { lex, parse, exprToString } from "haku/sexp.js";
+
+    let input = "(example s-expression)";
+    let tokens = lex(input);
+
+    tokens.forEach(token => console.log(`${token.kind} ${token.start}..${token.end} '${input.substring(token.start, token.end)}'`));
+
+    let ast = parse(tokens);
+    console.log(exprToString(ast, input));
+    ```
+
+    {:program=test-parser}
+    ```output
+    ```

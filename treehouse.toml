@@ -54,4 +54,5 @@ description = "a place on the Internet I like to call home"
 import_roots = [
     { name = "treehouse", path = "static/js" },
     { name = "tairu", path = "static/js/components/tairu" },
+    { name = "haku", path = "static/js/components/haku" },
 ]

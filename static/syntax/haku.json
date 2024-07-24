@@ -1,0 +1,26 @@
+{
+    "patterns": [
+        { "regex": ";.*", "is": "comment" },
+        { "regex": "[0-9]+", "is": "literal" },
+        {
+            "regex": "\\((fn)\\s*\\(.*?\\)",
+            "is": {
+                "default": "default",
+                "captures": ["keyword1"]
+            }
+        },
+        {
+            "regex": "\\(([a-zA-Z0-9+~!@$%^&*=<>+?/.,:\\\\|-]+)",
+            "is": {
+                "default": "default",
+                "captures": ["function"]
+            }
+        },
+        { "regex": "[a-zA-Z0-9+~!@$%^&*=<>+?/.,:\\\\|-]+", "is": "identifier" }
+    ],
+    "keywords": {
+        "def": { "into": "keyword1" },
+        "if": { "into": "keyword1" }
+    }
+}
+
