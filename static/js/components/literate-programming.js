@@ -1,6 +1,13 @@
 import { CodeJar } from "treehouse/vendor/codejar.js";
 import { compileSyntax, highlight } from "treehouse/components/literate-programming/highlight.js";
 
+const loggingEnabled = false;
+function log(...message) {
+    if (loggingEnabled) {
+        console.log("[lp]", ...message);
+    }
+}
+
 let literatePrograms = new Map();
 
 function getLiterateProgram(name) {
@@ -64,8 +71,9 @@ class InputMode {
 
         this.codeJar = CodeJar(frame, (frame) => this.highlight(frame));
         this.codeJar.onUpdate(() => {
+            log(`${this.frame.programName} input frame ${this.frame.frameIndex} update`);
             for (let handler of frame.program.onChanged) {
-                handler(frame.programName);
+                handler(frame.programName, frame.frameIndex);
             }
         });
 
@@ -115,9 +123,18 @@ class OutputMode {
         this.iframe.src = `${TREEHOUSE_SITE}/sandbox`;
         this.frame.appendChild(this.iframe);
 
+        this.currentEvaluation = new Promise((resolve) => resolve());
+        this.completeCurrentEvaluation = () => {};
+        this.evaluationEnqueued = false;
+
         this.iframe.contentWindow.treehouseSandboxInternals = { outputIndex: this.outputIndex };
 
         this.iframe.contentWindow.addEventListener("message", (event) => {
+            log(
+                `${this.frame.programName} output frame ${this.frame.frameIndex} (output index ${this.outputIndex}) recv`,
+                event.data,
+            );
+
             let message = event.data;
             if (message.kind == "ready") {
                 this.evaluate();
@@ -125,26 +142,47 @@ class OutputMode {
                 this.resize();
             } else if (message.kind == "output" && message.outputIndex == this.outputIndex) {
                 if (message.output.kind == "error") {
+                    this.completeCurrentEvaluation();
                     this.error.textContent = messageOutputArrayToString(message.output.message);
                     this.iframe.classList.add("hidden");
                 } else {
                     this.addOutput(message.output);
                 }
             } else if (message.kind == "evalComplete") {
+                this.completeCurrentEvaluation();
                 this.error.textContent = "";
                 this.flushConsoleClear();
             }
         });
 
         if (this.frame.placeholderImage != null) {
-            this.frame.placeholderImage.classList.add("js");
-            this.frame.placeholderImage.classList.add("loading");
+            this.frame.placeholderImage.classList.add("js", "loading");
         }
 
-        this.frame.program.onChanged.push((_) => this.evaluate());
+        this.frame.program.onChanged.push((_, inputFrameIndex) => {
+            if (inputFrameIndex < this.frame.frameIndex) {
+                this.evaluateWhenPossible();
+            }
+        });
+    }
+
+    evaluateWhenPossible() {
+        if (!this.evaluationEnqueued) {
+            this.evaluationEnqueued = true;
+            this.currentEvaluation.then(() => {
+                this.evaluate();
+                this.evaluationEnqueued = false;
+            });
+        }
     }
 
     evaluate() {
+        log(`${this.frame.programName} output frame ${this.frame.frameIndex} evaluate`);
+
+        this.currentEvaluation = new Promise((resolve) => {
+            this.completeCurrentEvaluation = resolve;
+        });
+
         this.requestConsoleClear();
         this.iframe.contentWindow.postMessage({
             action: "eval",
