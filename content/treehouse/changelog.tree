@@ -1,5 +1,81 @@
 %% title = "what's going on inside the house? (a changelog)"
 
+% id = "01J3NX4F6Z0JWN0E4B3DJMTAFH"
+- **revision 10:** I am speed
+
+    % id = "01J3NX4F6Z0WB2RN4GHTVFNRGB"
+    + the treehouse now caches most static assets, so that they don't have to be redownloaded.
+    especially that very large font, which I should probably optimize now that I think about it!
+
+        % id = "01J3NX4F6ZMB691JYM61RHP4ZN"
+        - there are some minor exceptions to this, which include:
+        
+            % id = "01J3NX4F6Z59655NYTS3QTA9EQ"
+            + pages themselves. we cannot cache those at all. well, maybe in release mode, for like 10 seconds, which defeats the point.
+
+                % id = "01J3NX4F6Z5J3PYZPBESR30CD8"
+                - we can only cache those assets which are guaranteed not to change given their URL.
+
+                caching on the treehouse is performed by means of a `?cache` query parameter which contains a truncated BLAKE3 sum of the cached file's contents.
+                that way we can tell the browser to redownload the asset by changing out the hash.
+
+                this is impossible to do for pages, because they may change at any point in time.
+
+                % id = "01J3NX4F6ZBQVY66EZB5TY8R7Q"
+                - I tend to update the treehouse very often - including post-deploy, if I fuck something up - so if I enable caching for e.g. an hour, and people visit the broken version, they're then stuck with a broken version for an hour.
+                seriously, timed caching is not a good solution for incremental website updates.
+
+                    % id = "01J3NX4F6ZXB360N1XXGN58964"
+                    - except for `/sandbox` maybe, because that tends to be fetched in short bursts... I'll think about it.
+            
+            % id = "01J3NX4F6ZJE0JT8XY49DH52RX"
+            - linked branches. it's hard and not worth it for the few extra kilobytes saved - for snappiness it would be much better to prefetch branch content when the user hovers over a branch. 
+
+                % id = "01J3NX4F6ZVA8PCQNMGMW2DDFB"
+                - not sure what to do about mobile devices, because they don't have a hover state.
+
+    % id = "01J3NX4F6ZASD2FCKKNKWZCJWB"
+    - more images now have proper `width="" height=""` attributes, which should help eliminate layout shift when loading pages.
+
+    % id = "01J3NX4F6Z5MZQ57ZTWHZZJZ7G"
+    + the treehouse is now powered by Djot, not Markdown! took me an evening or two to rewrite everything to the new markup, but I think it'll be worth it.
+    I can already see some pretty big clarity wins.
+
+        % id = "01J3NX4F6Z0KWMDDMBCYGB836M"
+        - my favorite feature so far is that you can add custom attributes to anything.
+        like this, for example:
+
+        ``````djot
+        {:program=haku}
+        ```haku
+        (- 100 35)
+        ```
+        ``````
+
+            % id = "01J3NX4F6ZGK01W6060BXTWJMJ"
+            - and have you noticed that there's a code block inside this code block? you can't do that in Markdown!
+
+            `````````djot
+            ``````djot
+            {:program=haku}
+            ```haku
+            (- 100 35)
+            ```
+            ``````
+            `````````
+
+    % id = "01J3NX4F6ZS93FTJ71YK2CASN7"
+    - literate programming blocks are now correctly rendered with JavaScript disabled, thanks to me rewriting the HTML renderer in the Djot transition.
+
+    % id = "01J3NX4F6ZDFZJX77DCZZJ8KKK"
+    + I also took the liberty to add some highlighting to missing emojis.
+    meaning they now stick out like a sore thumb :sore_thumb: to nag me about adding them in (or pulling them in from other branches. hello :verified: :TODO: :DONE: how have you been)
+
+        % id = "01J3NX4F6ZY6M6RAA2DVP7TAJ4"
+        - yeah yeah we all know how [ad blindness][] works, this is totally not gonna push me to do this isn't it
+
+        [ad blindness]: https://en.wikipedia.org/wiki/Banner_blindness
+
 % id = "01J09K0B6JGYBJVVZ07QFXB0FM"
 - **revision 9:** summer cleaning
 

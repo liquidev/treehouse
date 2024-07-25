@@ -76,7 +76,7 @@
             reparsing JS and HTML every single time cannot be fast
 
     % id = "01J093FGZFGBDJ5QPHSZW9NVB5"
-    + :TODO: :l_content: [page:programming/projects] needs the rest of my projects
+    + :TODO: :l_content: [page:programming/projects][] needs the rest of my projects
 
         % id = "01J0VN48BR5XZSHC0D6Q3DRG8P"
         - I haven't had the motivation (or a reason) to talk about my projects there yet so yeah.
@@ -91,7 +91,7 @@
         - arguably the current `_tree.hbs` template is not that large, but it's not exactly small either
 
     % id = "01J093FGZFMA8RWXA3QTMFX4A0"
-    + :TODO: :l_content: [page:programming/blog/lvalues] C compiler that desugars lvalue operations
+    + :TODO: :l_content: [page:programming/blog/lvalues][] C compiler that desugars lvalue operations
 
         % id = "01J093FGZFDYYGHEQJ63AQ7HKX"
         - it would be nice if we had a way of letting the user explore the idea in more detail
@@ -131,7 +131,7 @@
     + :TODO: :l_feat: implement [Webmentions](https://indieweb.org/Webmention)
 
     % id = "01J093FGZFJZ191RSZFVSND6QE"
-    + :TODO: :l_content: [page:programming/blog/tairu] has a [leftover TODO][branch:01HPD4XQPW8HE7681P7H686X4N]
+    + :TODO: :l_content: [page:programming/blog/tairu][] has a [leftover TODO][branch:01HPD4XQPW8HE7681P7H686X4N]
 
     % id = "01J093FGZF5PEM6EWCDEKSX8S0"
     + :TODO: :l_feat: :l_sandbox: do not load iframes that are out of viewport
@@ -152,10 +152,10 @@
         - add a `https://dev.liquidex.house` that will let me push changes for friends to see without breaking shit on the main branch
 
     % id = "01J093FGZF4400EAJYJGT2FFJJ"
-    + :TODO: :l_sandbox: sandbox: <kbd>Delete</kbd> key does not work
+    + :TODO: :l_sandbox: sandbox: `<kbd>Delete</kbd>`{=html} key does not work
 
         % id = "01J094P8H34NSZDWC067ENAX3T"
-        - I managed to get the <kbd>Backspace</kbd> key to work fine in Firefox, but <kbd>Delete</kbd> still needs some work.
+        - I managed to get the `<kbd>Backspace</kbd>`{=html} key to work fine in Firefox, but `<kbd>Delete</kbd>`{=html} still needs some work.
 
     % id = "01J093FGZF2K8Y2S8JY61GBWHR"
     + :TODO: :l_feat: :l_a11y: keyboard navigation
@@ -164,20 +164,20 @@
         - it should be possible to navigate the tree using your keyboard:
 
             % id = "01J094P8H3HJCADRWQNGBWMR36"
-            - <kbd>↑</kbd> <kbd>↓</kbd> - choose branch
+            - `<kbd>↑</kbd>`{=html} `<kbd>↓</kbd>`{=html} - choose branch
 
             % id = "01J094P8H3B44DBXCY0N6AFG9D"
-            - <kbd>←</kbd> - collapse
+            - `<kbd>←</kbd>`{=html} - collapse
 
             % id = "01J094P8H30JBKYJPT01M0C68T"
-            - <kbd>→</kbd> - expand
+            - `<kbd>→</kbd>`{=html} - expand
 
         % id = "01J094P8H3MTV093F4Z0AMSJQ9"
-        - these shortcuts overwrite browser functionality so it should probably only be enabled if the user starts pushing <kbd>Tab</kbd> to focus elements.
+        - these shortcuts overwrite browser functionality so it should probably only be enabled if the user starts pushing `<kbd>Tab</kbd>`{=html} to focus elements.
 
             % id = "01J094P8H368794MNW65W074A0"
             - this will probably also require us to add proper `tabindex`es to elements, which isn't currently done;
-            the <kbd>Tab</kbd> navigation experience is a hodgepodge, focusing on various elements that don't exactly make much sense.
+            the `<kbd>Tab</kbd>`{=html} navigation experience is a hodgepodge, focusing on various elements that don't exactly make much sense.
 
     % id = "01J093FGZFJB7BB1YNJX32MXCG"
     + :TODO: :l_feat: allow the user to "zoom into" a branch
