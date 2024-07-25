@@ -957,10 +957,13 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
             % id = "01J3K8A0D12VCHW6AJX0ZGPQBY"
             - code style-wise it's also not my prettiest Nim code ever - it kind of abuses `template`s for referring to the current character with a single word, but that doesn't convey the fact that it's an effectful operation very well.
 
+% id = "01J3NVV2RX2KCN1P0K287D4CRF"
 - ### interpretation
 
+    % id = "01J3NVV2RXBFKXCR3NRMMW0X4M"
     - with a parser now ready, it would be nice if we could execute some actual code!
 
+    % id = "01J3NVV2RX79WXQCYRBZTHE09N"
     - we'll again start off by setting a goal.
     I want to be able to evaluate arbitrary arithmetic expressions, like this one:
 
@@ -968,6 +971,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     (+ (* 2 1) 1 (/ 6 2) (- 10 3))
     ```
 
+    % id = "01J3NVV2RXKR1AQ7JDR23FQC8R"
     - the simplest way to get some code up and running would be to write a _tree-walk interpreter_.
 
     {:program=haku}
@@ -978,6 +982,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     this kind of interpreter is actually really simple!
     it just involves walking through your syntax tree, executing each node one by one.
 
+    % id = "01J3NVV2RXED7Y4XSK0JVTHJ5P"
     - we'll again start off by defining a function that initializes our interpreter's state.
 
     right now there isn't really anything to initialize, but recall that we don't have our tokens parsed into any meaningful data yet, so we'll have to have access the source string to do that.
@@ -989,6 +994,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     };
     ```
 
+    % id = "01J3NVV2RXSGW5PRZY7PG7CGZY"
     - the core of our interpretation will be a function that descends down the node tree and _evaluates_ each node, giving us a result.
 
     {:program=haku}
@@ -1003,6 +1009,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
 
     for now we'll leave it empty.
     
+    % id = "01J3NVV2RX2T5K473GGY3K5VBX"
     - in the meantime, let's prepare a couple convenient little wrappers to run our code:
 
     {:program=haku}
@@ -1024,6 +1031,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     }
     ```
 
+    % id = "01J3NVV2RXV5JW9HA3S4S0A8YQ"
     - now we can try running some code!
     let's see what happens.
 
@@ -1039,6 +1047,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
 
     ...of course.
 
+    % id = "01J3NVV2RXAHMZRY06B17M6B8E"
     - so let's patch those integers in!
 
     this is where we'll need that source string of ours - we don't actually have a JavaScript `number` representation of the integers, so we'll need to parse them into place.
@@ -1057,6 +1066,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     };
     ```
 
+    % id = "01J3NVV2RXW2Y9DT15P0KHRX6R"
     - now when we run the program above...
 
     {:program=haku}
@@ -1071,8 +1081,10 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
 
     we get sixty five!
 
+    % id = "01J3NVV2RXJ91M0V541JB5WQZB"
     - but that's of course a bit boring - it would be nice if we could like, y'know, _perform some arithmetic_.
 
+    % id = "01J3NVV2RX2N540RF6T3S6XWE3"
     - traditionally, in Lisp-like languages, a list expression always represents a function application, with the head of the list being the function to call, and the tail of the function being the arguments to apply to the function.
 
     let's implement that logic then!
@@ -1098,11 +1110,14 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     };
     ```
 
+        % id = "01J3NVV2RXE0JH63D6XN1GPTN9"
         - we'm putting all of our built-in magic functions into a separate object `builtins`, so that they're easy to patch partially later.
         you've seen my tricks already with hot-patching functions in objects, so this shouldn't be too surprising.
 
+        % id = "01J3NVV2RXCHN7HAAVS5MREN7Z"
         + you'll note I'm kind of cheating here - because we have no mechanism to represent variables just yet, I'm using the node's text as the key to our `builtins` table.
 
+            % id = "01J3NVV2RX00ZZ6W7V4DYJ92YP"
             - heck, I'm not even validating that this is an identifier - so you can technically do something like this, too:
 
             ```haku
@@ -1111,6 +1126,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
 
             which will call the builtin named `(what the fuck)`.
 
+    % id = "01J3NVV2RXMW943792EYSQHY4R"
     - we could try this out now, except we don't actually have any builtins! so I'll add a few in, so that we can _finally_ perform our glorious arithmetic:
 
     {:program=haku}
@@ -1131,9 +1147,11 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     builtins["/"] = arithmeticBuiltin((a, b) => a / b);
     ```
 
+        % id = "01J3NVV2RXKPEP5RY27EG3HJ94"
         - one thing of note is how `arithmeticBuiltin` accepts two or more arguments.
         you're free to pass in more than that, which is common among Lisps.
 
+    % id = "01J3NVV2RXGPN2SXRYYFVJQ8KX"
     - now let's try running our full arithmetic expression! drum roll please...
 
     {:program=haku}
@@ -1146,11 +1164,14 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     13
     ```
 
+    % id = "01J3NVV2RX3Y31RKGEF106ZB25"
     - #### a brief intermission
 
+        % id = "01J3NVV2RXCZKVWSFG6Y2T0XQS"
         - I will now pause here to say, I'm kind of tired of writing this `printEvalResult` ceremony over and over again.
         so I took a bit of time to enhance the treehouse's capabilities, and it's now capable of running languages other than JavaScript!
 
+        % id = "01J3NVV2RXTZ8J0AW1WW5WSGQM"
         - all we have to do is swap out the evaluation [kernel][]{title="like in Jupyter! Jupyter kernels are basically just support for different programming languages" style="cursor: help; text-decoration: 1px dotted underline;"}...
 
         [kernel]: https://docs.jupyter.org/en/latest/projects/kernels.html
@@ -1177,6 +1198,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
         };
         ```
 
+        % id = "01J3NVV2RXXG67E9A8RPJFRV51"
         - and now we can write haku in code blocks!
 
         {:program=haku}
@@ -1219,6 +1241,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     (example s-expression)
     ```
 
+    % id = "01J3NVV2RX1N1XETTTT177H9RM"
     - treewalk
 
     {:program=test-treewalk}
