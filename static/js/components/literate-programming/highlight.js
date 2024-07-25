@@ -53,7 +53,13 @@ function tokenize(text, syntax) {
                                 text.substring(start, end),
                             );
                         }
+                        lastMatchEnd = end;
                     }
+                    pushToken(
+                        tokens,
+                        pattern.is.default,
+                        text.substring(lastMatchEnd, match.indices[0][1]),
+                    );
                 } else {
                     pushToken(tokens, pattern.is, match[0]);
                 }

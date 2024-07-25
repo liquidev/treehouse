@@ -1211,6 +1211,337 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
         13
         ```
 
+    % id = "01J3REN79KVAPHJGXYYG1MJQ7K"
+    - anyways, it's time to turn haku into a real programming language!
+
+        % id = "01J3REN79KQ0RXG4FBPCBBKPQT"
+        - programming languages as we use them in the real world are [_Turing-complete_](https://en.wikipedia.org/wiki/Turing_completeness) - roughly speaking, a language is Turing-complete if it can simulate a Turing machine.
+
+            % id = "01J3REN79KEN5TZ8101GNTSKWV"
+            - this is not an accurate definition at all - for that, I strongly suggest reading the appropriate Wikipedia articles.
+
+            % id = "01J3REN79K76X933BKT9NH3H4H"
+            - the TL;DR is that conditional loops are all you really need for Turing-completeness.
+
+        % id = "01J3REN79KD5XJ7CJ7E0GF7RMW"
+        - there exist two main models for modeling Turing-complete abstract machines: Turing machines, and lambda calculus.
+
+            % id = "01J3REN79KEKF91X5HR85N7WH4"
+            - Turing machines are the core of imperative programming languages - a Turing machine basically just models a state machine.
+            similar to what you may find in a modern processor.
+
+            % id = "01J3REN79KH9MBRGGTG5VV084V"
+            - lambda calculus on the other hand is a declarative system, a skinned down version of math if you will.
+            an expression in lambda calculus computes a result, and that's it.
+            no states, no side effects.
+            just like functional programming.
+
+                % id = "01J3REN79K7TQ2K9ZCV3FW7ZSJ"
+                - which is why we'll use it for haku!
+
+        % id = "01J3REN79KZYEQWCTM8A8QA5VE"
+        - at the core of lambda calculus is the _lambda_ - yes, that one from your favorite programming language!
+        there are a few operations we can do on lambdas.
+
+            % id = "01J3REN79KJKQ865P2205770AD"
+            - first of all, a lambda is a function which takes one argument, and produces one result - both of which can be other lambdas.
+
+            in haku, we will write down lambdas like so:
+
+            ```haku
+            (fn (a) r)
+            ```
+
+            where `a` is the name of the argument, and `r` is the resulting expression.
+
+                % id = "01J3REN79KCV615KP159KCD057"
+                - in fact, haku will extend this idea by permitting multiple arguments.
+
+                ```haku
+                (fn (a b c) r)
+                ```
+
+            % id = "01J3REN79KZCMGRW652JCMS25X"
+            - a lambda can be _applied_, which basically corresponds to a function call in your favorite programming language.
+
+            we write application down like so:
+
+            ```haku
+            (f x)
+            ```
+
+            where `f` is any expression producing a lambda, and `x` is the argument to pass to that lambda.
+
+            % id = "01J3REN79K9QEW18H7KJ9FTQ3A"
+            - what's also important is that nested lambdas capture their outer lambdas' arguments!
+            so the result of this:
+
+            ```haku
+            (((fn (x) (fn (y) (+ x y))) 1) 2)
+            ```
+
+            is 3.
+
+        % id = "01J3REN79KFMM7TKTBDVY8YF8Y"
+        - this is by no means a formal explanation, just my intuition as to how it works.
+        formal definitions don't really matter for us anyways, since we're just curious little cats playing around with computer :cowboy:
+
+    % id = "01J3REN79KAFD4CVT56671TQFT"
+    - we'll start out with a way to define variables.
+    variables generally have _scope_ - look at the following JavaScript, for example:
+
+    {:program=scope-example}
+    ```javascript
+    let x = 0;
+    console.log(x);
+    {
+        let x = 1;
+        console.log(x);
+    }
+    console.log(x);
+    ```
+
+    {:program=scope-example}
+    ```output
+    0
+    1
+    0
+    ```
+
+    % id = "01J3REN79KXGFPQR5YZSKFVDRM"
+    - the same thing happens in haku (though we don't have a runtime for this yet, so you'll have to take my word for it.)
+
+    ```haku
+    ((fn (x)
+        ((fn (x)
+            x)
+         2))
+     1)
+    ```
+
+    this is perfectly fine, and the result should be 2 - not 1!
+
+    try evaluating this in your head, and you'll see what I mean.
+    it's better than me telling you all about it.
+
+    % id = "01J3REN79KQGCGPXVANVFYTXF7"
+    - so to represent scope, we'll introduce a new variable to our interpreter's state.
+
+    {:program=haku}
+    ```javascript
+    treewalk.init = (input) => {
+        return { input, scopes: [new Map(Object.entries(builtins))] };
+    };
+    ```
+
+    `scopes` will be a stack of [`Map`][Map]s, each representing a single scope.
+
+    our builtins will now live at the bottom of all scopes, as an ever-present scope living in the background.
+
+    [Map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+
+    % id = "01J3REN79KS7612NEDY8NCAQS5"
+    - variable lookup will be performed by walking the scope stack _from top to bottom_, until we find a variable that matches.
+
+    {:program=haku}
+    ```javascript
+    treewalk.lookupVariable = (state, name) => {
+        for (let i = state.scopes.length; i-- > 0; ) {
+            let scope = state.scopes[i];
+            if (scope.has(name)) {
+                return scope.get(name);
+            }
+        }
+        throw new Error(`variable ${name} is undefined`);
+    };
+    ```
+
+    we're stricter than JavaScript here and will error out on any variables that are not defined.
+
+    % id = "01J3REN79KZC6SWHJBGG8FK17S"
+    - now we can go ahead and add variable lookups to our `eval` function!
+    we'll also go ahead and replace our bodged-in builtin support with proper evaluation of the first list element.
+
+    in most cases, such as `(+ 1 2)`, this will result in a variable lookup.
+
+    {:program=haku}
+    ```javascript
+    treewalk.eval = (state, node) => {
+        switch (node.kind) {
+            case "integer":
+                let sourceString = state.input.substring(node.start, node.end);
+                return parseInt(sourceString);
+
+            case "identifier":
+                return treewalk.lookupVariable(state, state.input.substring(node.start, node.end));
+
+            case "list":
+                let functionToCall = treewalk.eval(state, node.children[0]);
+                return functionToCall(state, node);
+
+            default:
+                throw new Error(`unhandled node kind: ${node.kind}`);
+        }
+    };
+    ```
+
+    % id = "01J3REN79K8HQX3XGSMJ039KPJ"
+    - if we didn't screw anything up, we should still be getting 13 here:
+
+    {:program=haku}
+    ```haku
+    (+ (* 2 1) 1 (/ 6 2) (- 10 3))
+    ```
+
+    {:program=haku}
+    ```output
+    13
+    ```
+
+    looks like all's working correctly!
+
+    % id = "01J3REN79KM4ZS66S5915E40E6"
+    - time to build our `fn` builtin.
+
+    we'll split the work into two functions: the actual builtin, which will parse the node's structure into some useful variables...
+
+    {:program=haku}
+    ```javascript
+    builtins.fn = (state, node) => {
+        if (node.children.length != 3)
+            throw new Error("an `fn` must have an argument list and a result expression");
+
+        let params = node.children[1];
+        if (node.children[1].kind != "list")
+            throw new Error("expected parameter list as second argument to `fn`");
+
+        let paramNames = [];
+        for (let param of params.children) {
+            if (param.kind != "identifier") {
+                throw new Error("`fn` parameters must be identifiers");
+            }
+            paramNames.push(state.input.substring(param.start, param.end));
+        }
+
+        let expr = node.children[2];
+
+        return makeFunction(state, paramNames, expr);
+    };
+    ```
+
+    % id = "01J3REN79K43RXJ974CBCY5EFP"
+    - and `makeFunction`, which will take that data, and assemble it into a function that follows our `(state, node) => result` calling convention.
+
+    {:program=haku}
+    ```javascript
+    export function makeFunction(state, paramNames, bodyExpr) {
+        return (state, node) => {
+            if (node.children.length != paramNames.length + 1)
+                throw new Error(
+                    `incorrect number of arguments: expected ${paramNames.length}, but got ${node.children.length - 1}`,
+                );
+
+            let scope = new Map();
+            for (let i = 0; i < paramNames.length; ++i) {
+                scope.set(paramNames[i], treewalk.eval(state, node.children[i + 1]));
+            }
+
+            state.scopes.push(scope);
+            let result = treewalk.eval(state, bodyExpr);
+            state.scopes.pop();
+
+            return result;
+        };
+    }
+    ```
+
+    % id = "01J3REN79KEPTVDDWMFZR16PWC"
+    - now let's try using that new `fn` builtin!
+
+    {:program=haku}
+    ```haku
+    ((fn (a b)
+        (+ a b))
+     1 2)
+    ```
+
+    {:program=haku}
+    ```output
+    3
+    ```
+
+    nice!
+
+    % id = "01J3REN79KWD313K6R91B33PBH"
+    - but, remember that lambdas are supposed to capture their outer variables! I wonder if that works.
+
+    {:program=haku}
+    ```haku
+    ((fn (f)
+        ((f 1) 2))
+     (fn (x)
+        (fn (y)
+            (+ x y))))
+    ```
+
+    {:program=haku}
+    ```output
+    Error: variable x is undefined
+    ```
+
+    ...I was being sarcastic here of course, of course it doesn't work. :ralsei_dead:
+
+    % id = "01J3REN79K62M94MSMRKVDAYGM"
+    - so to add support for that, we'll clone the entire scope stack into the closure, and then restore it when necessary.
+
+    {:program=haku}
+    ```javascript
+    export function makeFunction(state, paramNames, bodyExpr) {
+        let capturedScopes = [];
+        // Start from 1 to skip builtins, which are always present anyways.
+        for (let i = 1; i < state.scopes.length; ++i) {
+            // We don't really mutate the scopes after pushing them onto the stack, so keeping
+            // references to them is okay.
+            capturedScopes.push(state.scopes[i]);
+        }
+
+        return (state, node) => {
+            if (node.children.length != paramNames.length + 1)
+                throw new Error(
+                    `incorrect number of arguments: expected ${paramNames.length}, but got ${node.children.length - 1}`,
+                );
+
+            let scope = new Map();
+            for (let i = 0; i < paramNames.length; ++i) {
+                scope.set(paramNames[i], treewalk.eval(state, node.children[i + 1]));
+            }
+
+            state.scopes.push(...capturedScopes); // <--
+            state.scopes.push(scope);
+            let result = treewalk.eval(state, bodyExpr);
+            state.scopes.pop();
+
+            return result;
+        };
+    }
+    ```
+
+    with that, our program now works correctly:
+
+    {:program=haku}
+    ```haku
+    ((fn (f)
+        ((f 1) 2))
+     (fn (x)
+        (fn (y)
+            (+ x y))))
+    ```
+
+    {:program=haku}
+    ```output
+    3
+    ```
+
 % stage = "Draft"
   id = "01J3K8A0D1D0NTT3JYYFMRYVSC"
 - ### tests
@@ -1249,7 +1580,13 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     import { lex, parse, exprToString } from "haku/sexp.js";
     import { run } from "haku/treewalk.js";
 
-    let input = "(+ (* 2 1) 1 (/ 6 2) (- 10 3))";
+    let input = `
+        ((fn (f)
+            ((f 1) 2))
+         (fn (x)
+            (fn (y)
+                (+ x y))))
+    `;
     let tokens = lex(input);
 
     let ast = parse(tokens);
@@ -1259,3 +1596,13 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     {:program=test-treewalk}
     ```output
     ```
+
+% stage = "Draft"
+  id = "01J3REN79K08JWA7FKQ94YTB5Y"
++ ### design notes to self
+
+    % id = "01J3REN79KT9MEFYAZ39WT49V3"
+    - if I ever get to the point where haku compiles and runs itself, the interpreter shall be called `haha`
+
+    % id = "01J3REN79KDGD50J9VBGVMV6AB"
+    - if I ever get to the point where haku compiles itself to wasm, the compiler should be called `wah`

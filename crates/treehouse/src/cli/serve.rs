@@ -174,6 +174,12 @@ async fn sandbox(State(state): State<Arc<Server>>) -> Response {
             .extensions_mut()
             .insert(live_reload::DisableLiveReload);
     }
+    // Debounce requests a bit. There's a tendency to have very many sandboxes on a page, and
+    // loading this page as many times as there are sandboxes doesn't seem like the best way to do
+    // things.
+    response
+        .headers_mut()
+        .insert(CACHE_CONTROL, HeaderValue::from_static("max-age=10"));
     response
 }
 

@@ -79,7 +79,9 @@ export async function evaluate(commands, { error, newOutput }) {
             kind: "output",
             output: {
                 kind: "error",
-                message: [err.toString()],
+                message: [
+                    err.stack.length > 0 ? err.toString() + "\n\n" + err.stack : err.toString(),
+                ],
             },
             outputIndex,
         });
