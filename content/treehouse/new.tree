@@ -4,7 +4,7 @@
    feed = "news"
 
 % id = "01HQ6G30PTVT5H0Z04VVRHEZQF"
-- <span class="badge blue">featured</span> ever wondered how Terraria renders its worlds? or how editors like Tiled manage to make painting tiles so easy?
+- [featured]{.badge .blue} ever wondered how Terraria renders its worlds? or how editors like Tiled manage to make painting tiles so easy?
 
 ### tairu - an interactive exploration of 2D autotiling techniques
 
@@ -24,7 +24,7 @@ I told him there's no reason to do that in modern C++, because `std::unique_ptr`
 
 ### freeing C memory automatically using `std::unique_ptr` and `std::shared_ptr`
 
-<sub>on another note, I did read a blog post about this once somewhere, but couldn't be bothered to find it. so there you go! I made a post about this too.</sub>
+~on another note, I did read a blog post about this once somewhere, but couldn't be bothered to find it. so there you go! I made a post about this too.~
 
 [read][page:programming/languages/cxx/shared-unique-ptr-deleter]
 
