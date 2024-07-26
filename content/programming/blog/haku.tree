@@ -1133,6 +1133,9 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     ```javascript
     function arithmeticBuiltin(op) {
         return (state, node) => {
+            if (node.children.length < 3)
+                throw new Error("arithmetic operations require at least two arguments");
+
             let result = treewalk.eval(state, node.children[1]);
             for (let i = 2; i < node.children.length; ++i) {
                 result = op(result, treewalk.eval(state, node.children[i]));
@@ -1178,22 +1181,16 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
 
         {:program=haku}
         ```javascript
-        import { getKernel } from "treehouse/components/literate-programming/eval.js";
+        import { getKernel, defaultEvalModule } from "treehouse/components/literate-programming/eval.js";
 
-        let kernel = getKernel();
+        export const kernel = getKernel();
 
-        export const defaultKernelInit = kernel.init;
-        kernel.init = () => {
-            return defaultKernelInit();
-        };
-
-        export const defaultKernelEvalModule = kernel.evalModule;
         kernel.evalModule = async (state, source, language, params) => {
             if (language == "haku") {
                 printEvalResult(source);
                 return true;
             } else {
-                return await defaultKernelEvalModule(state, source, language, params);
+                return await defaultEvalModule(state, source, language, params);
             }
         };
         ```
@@ -1542,6 +1539,705 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
     3
     ```
 
+    % id = "01J42RD8Y4VYAQB97XY057R26G"
+    - being able to define arbitrary functions gives us some pretty neat powers!
+    to test this out, let's write a little program that will calculate Fibonacci numbers.
+
+        % id = "01J42RD8Y4FJXH7HGG2AT3SDJC"
+        - there are a couple ways to write a number to calculate numbers in the Fibonacci sequence.
+
+        % id = "01J42RD8Y4SWPXCT67J8XKX87Z"
+        - the most basic is the recursive way, which is really quite simple to do:
+
+        {:program=fib-recursive}
+        ```javascript
+        function fib(n) {
+            if (n < 2) {
+                return n;
+            } else {
+                return fib(n - 1) + fib(n - 2);
+            }
+        }
+
+        console.log(fib(10));
+        ```
+
+        {:program=fib-recursive}
+        ```output
+        55
+        ```
+
+        the downside is that it's really inefficient! we end up wasting a lot of time doing repeat calculations.
+        try going through it yourself and see just how many calculations are repeated!
+
+        % id = "01J42RD8Y4V3G6RCB2ZABSTE5R"
+        - the one that's more efficient is the iterative version:
+
+        {:program=fib-iterative}
+        ```javascript
+        function fib(n) {
+            let a = 0;
+            let b = 1;
+            let t = null;
+            for (let i = 0; i < n; ++i) {
+                t = a;
+                a = b;
+                b += t;
+            }
+            return a;
+        }
+
+        console.log(fib(10));
+        ```
+
+        {:program=fib-iterative}
+        ```output
+        55
+        ```
+
+    % id = "01J42RD8Y4T30Z1BP0MZXHG4C8"
+    - in either, you will notice we need to support comparisons to know when to stop iterating!
+    so let's add those into our builtins:
+
+    {:program=haku}
+    ```javascript
+    function comparisonBuiltin(op) {
+        return (state, node) => {
+            if (node.children.length != 3)
+                throw new Error("comparison operators require exactly two arguments");
+
+            let a = treewalk.eval(state, node.children[1]);
+            let b = treewalk.eval(state, node.children[2]);
+            return op(a, b) ? 1 : 0;
+        };
+    }
+
+    builtins["="] = comparisonBuiltin((a, b) => a === b);
+    builtins["<"] = comparisonBuiltin((a, b) => a < b);
+    ```
+
+    it's easy enough to `!=`, `<=`, `>`, and `>=` from these, so we won't bother adding those in for now.
+
+        % id = "01J42RD8Y4H02HKWVD650T9BYG"
+        - if you're curious how to derive `!=` and `<=`, consider that we're returning zeros and ones, so we can do an AND operation by multiplying them.
+
+        % id = "01J42RD8Y4WZSKMT0BYXBM91GE"
+        - `>` can be derived by reversing the arguments of `<`.
+
+    % id = "01J42RD8Y4EWZ0V4KC7HX2KJAZ"
+    - of course, we'll also need an `if` to be able to branch on the result of our comparison operators.
+
+    {:program=haku}
+    ```javascript
+    builtins["if"] = (state, node) => {
+        if (node.children.length != 4)
+            throw new Error("an `if` must have a condition, true expression, and false expression");
+
+        let condition = treewalk.eval(state, node.children[1]);
+        if (condition !== 0) {
+            return treewalk.eval(state, node.children[2]);
+        } else {
+            return treewalk.eval(state, node.children[3]);
+        }
+    };
+    ```
+
+    % id = "01J42RD8Y4XBB8WE9QR36WFAQH"
+    - now we can write ourselves a recursive Fibonacci!
+
+    {:program=haku}
+    ```haku
+    ((fn (fib)
+        (fib fib 10))
+     ; fib
+     (fn (fib n)
+        (if (< n 2)
+            n
+            (+ (fib fib (- n 1)) (fib fib (- n 2))))))
+    ```
+
+    note that in order to achieve recursion, we need to pass `fib` into itself - this is because the `fib` variable we're binding into the first function is not visible in the second function.
+
+    but if we run it now:
+
+    {:program=haku}
+    ```output
+    55
+    ```
+
+    we can see it works just as fine as the JavaScript version!
+
+% id = "01J42RD8Y4BS3EBAQXNR410ZH5"
+- ### [rememeber to remember](https://www.youtube.com/watch?v=0ucW1eN8h9Y){.secret}
+
+    % id = "01J42RD8Y47WMW5DSVFVCADF60"
+    - now, you might be wondering why I'm cutting our Fibonacci adventures short.
+    after all, we're only just getting started?
+
+        % id = "01J42RD8Y46NJ03J6ZMT2EDBDB"
+        - thing is, I _really_ want to build something bigger.
+        and one expression per code block's not gonna cut it.
+
+        % id = "01J42RD8Y4SJS75FTA9SQ28RE2"
+        - I'd like to start building a little library of utilities for writing haku code, but I have no way of saving these utilities for later!
+
+    % id = "01J42RD8Y4GA0Q5Q2Z446DRD5Y"
+    - therefore, it's time for... a persistent environment!
+
+    % id = "01J42RD8Y4DCWSG17XJFSJF1SR"
+    - once again, let me sketch out what I'd like it to look like.
+    to declare a persistent value, you use `def`:
+
+    ```haku
+    (def fib
+        (fn (n)
+            (if (< n 2)
+                n
+                (+ (fib (- n 1)) (fib (- n 2))))))
+    ```
+
+    if this looks familar, that's because it probably is - [I used the exact same example at the start of the post][branch:01J3K8A0D1198QXV2GFWF7JCV0]!
+
+    % id = "01J42RD8Y46GDWJA41A76B57VF"
+    - once you `def`ine a persistent value, you can refer to it as usual.
+    persistent values will sit in a scope _above_ builtins, so you will be able to shadow those if you want to (but please don't.)
+
+    ```haku
+    (def fn if) ; Whoops! Guess your soul belongs to me now
+    ```
+
+    % id = "01J42RD8Y4ZF0XQH1RT020099B"
+    - of course, values will persist across code blocks, so I'd be able to refer to `fib` here as well:
+
+    ```haku
+    (fib 12)
+    ```
+
+    % id = "01J42RD8Y4EDKYXXZZ5SGFQCCS"
+    - and lastly, it'll be possible to put multiple expressions in a code block.
+    we'll only treat the last one as the result.
+
+    ```haku
+    (def x 1)
+    (def y 2)
+    (def z (+ x y))
+    ```
+
+    % id = "01J42RD8Y4FJ1S12WG27DVWFD7"
+    - so let's start by implementing the easiest part - the `def` builtin.
+    we'll need to augment our interpreter state once again, this time with the persistent environment:
+
+    {:program=haku}
+    ```javascript
+    treewalk.init = (env, input) => {
+        return {
+            input,
+            scopes: [new Map(Object.entries(builtins)), env],
+            env,
+        };
+    };
+    ```
+
+    % id = "01J42RD8Y4BWY2B56NMSNR27EP"
+    - of course now we will also need to teach our whole runtime about the environment, right down to the kernel...
+
+    {:program=haku}
+    ```javascript
+    import { defaultEvalModule } from "treehouse/components/literate-programming/eval.js";
+
+    export function run(env, input, node) {
+        let state = treewalk.init(env, input);
+        return treewalk.eval(state, node);
+    }
+
+    export function printEvalResult(env, input) {
+        try {
+            let tokens = lex(input);
+            let ast = parse(tokens);
+            let result = run(env, input, ast);
+
+            // NOTE: `def` will not return any value, so we'll skip printing it out.
+            if (result !== undefined) {
+                console.log(result);
+            }
+        } catch (error) {
+            console.log(error.toString());
+        }
+    }
+
+    kernel.evalModule = async (state, source, language, params) => {
+        if (language == "haku") {
+            state.haku ??= { env: new Map() };
+            printEvalResult(state.haku.env, source);
+            return true;
+        } else {
+            return await defaultEvalModule(state, source, language, params);
+        }
+    };
+    ```
+
+    % id = "01J42RD8Y4BREBB4KQ2WR0TH8Q"
+    - now for `def` - it'll take the value on the right and insert it into `env`, so that it can be seen in the future.
+
+    {:program=haku}
+    ```javascript
+    builtins.def = (state, node) => {
+        if (node.children.length != 3)
+            throw new Error(
+                "a `def` expects the name of the variable to assign, and the value to assign to the variable",
+            );
+
+        if (node.children[1].kind != "identifier")
+            throw new Error("variable name must be an identifier");
+
+        let name = node.children[1];
+        let value = treewalk.eval(state, node.children[2]);
+        state.env.set(state.input.substring(name.start, name.end), value);
+    };
+    ```
+
+    % id = "01J42RD8Y4FZNB2FV99YH00EHZ"
+    - now let's test it out!
+
+    {:program=haku}
+    ```haku
+    (def x 1)
+    ```
+
+    {:program=haku}
+    ```haku
+    (+ x 1)
+    ```
+
+    {:program=haku}
+    ```output
+    2
+    ```
+
+    seems to be working!
+
+    % id = "01J42RD8Y4HST3XK86HBVFA2XT"
+    - now for the second part: we still want to permit multiple declarations per block of code, but currently our syntax doesn't handle that:
+
+    {:program=haku}
+    ```haku
+    (def x 1)
+    (def y 2)
+    ```
+
+    {:program=haku}
+    ```output
+    Error: unhandled node kind: error
+    ```
+
+    ~and by the way, I know this is a terrible error message. we'll return to that later.~
+
+    % id = "01J42RD8Y4JA8AZ7WT8E0WMXNA"
+    - this is a pretty simple augmentation to the base syntax.
+    instead of reading a single expression, we will read a _toplevel_ - as many expressions as possible until we hit `end of file`.
+
+    {:program=haku}
+    ```javascript
+    parser.parseToplevel = (state) => {
+        let children = [];
+        while (parser.current(state).kind != eof) {
+            children.push(parser.parseExpr(state));
+        }
+        return {
+            kind: "toplevel",
+            children,
+            // Don't bother with start..end for now.
+        };
+    };
+
+    parser.parseRoot = (state) => parser.parseToplevel(state);
+    ```
+
+        % id = "01J42RD8Y40SQVBHRBRWHWM9WD"
+        - I'm stealing the name _toplevel_ from OCaml.
+        the name _file_ didn't quite seem right, since a haku program is not really made out of files, but is rather a long sequence of code blocks.
+
+    % id = "01J42RD8Y4BYF2S4YSB4QB7YAQ"
+    - with a `toplevel` node ready, we can now handle it in our interpreter:
+
+    {:program=haku}
+    ```javascript
+    treewalk.eval = (state, node) => {    
+        switch (node.kind) {
+            case "integer":
+                let sourceString = state.input.substring(node.start, node.end);
+                return parseInt(sourceString);
+
+            case "identifier":
+                return treewalk.lookupVariable(state, state.input.substring(node.start, node.end));
+
+            case "list": {
+                let functionToCall = treewalk.eval(state, node.children[0]);
+                let result = functionToCall(state, node);
+                return result;
+            }
+
+            case "toplevel":
+                let result = undefined;
+                for (let i = 0; i < node.children.length; ++i) {
+                    result = treewalk.eval(state, node.children[i]);
+                    if (result !== undefined && i != node.children.length - 1)
+                        throw new Error(`expression ${i + 1} had a result despite not being the last`);
+                }
+                return result;
+
+            default:
+                throw new Error(`unhandled node kind: ${node.kind}`);
+        }
+    };
+    ```
+
+        % id = "01J42RD8Y49ZB65BE7C6WQRDZT"
+        - since `eval` (and likewise, a treehouse code block) is only allowed to have one result, we disallow any results other than the first one.
+
+    % id = "01J42RD8Y4A18TXC73V2020ZWH"
+    - and with that...
+
+    {:program=haku}
+    ```haku
+    (def x 1)
+    (def y 2)
+    (+ x y)
+    ```
+
+    {:program=haku}
+    ```output
+    3
+    ```
+
+    we can now declare multiple, persistent values per code block!
+
+% id = "01J42RD8Y4QDRRGT2JRPYKR7GE"
+- ### but it's never that easy is it
+
+    % id = "01J42RD8Y4XTD4N5S2KWQQC6DX"
+    - so let's declare a little function to add some numbers together...
+
+    {:program=haku}
+    ```haku
+    (def add-two
+        (fn (x) (+ x 2)))
+    ```
+
+    {:program=haku}
+    ```haku
+    (add-two 1)
+    ```
+
+    {:program=haku}
+    ```output
+    Error: variable  is undefined
+    ```
+
+    'scuse me??
+
+    % id = "01J42RD8Y473B94NGG17REKXH0"
+    - not gonna lie, this one took me a while to figure out!
+    but recall the structure of our AST nodes.
+    it looks something like this:
+
+    ```json
+    {
+        "kind": "identifier",
+        "start": 30,
+        "end": 32
+    }
+    ```
+
+        % id = "01J42RD8Y44MHWB6HTDKKBYPA2"
+        - now remember what we do in order to look up variables.
+
+        ```javascript
+        return treewalk.lookupVariable(state, state.input.substring(node.start, node.end));
+        ```
+
+        what do you imagine happens when the `state.input` source string is different?
+
+            % id = "01J42RD8Y4FQZW5PBTZYQCAHG4"
+            - _and_, the source string _does_ end up being different, because we end up parsing each block from scratch - we never concatenate them into something bigger!
+
+    % id = "01J42RD8Y4KJCNNKNS74AQ7BEH"
+    - so we'll have to fix this up by remembering the source string alongside each node somehow.
+    I see two paths:
+
+        % id = "01J42RD8Y4PVBEYMHN43ZNWW6Z"
+        - pre-slice the source string into each node
+
+        % id = "01J42RD8Y48GK9QWMCRGM71KDM"
+        - store a reference to the entire source string in each node
+
+    % id = "01J42RD8Y4BBB813M8GZ5MZTPP"
+    + I'm no JavaScript optimization expert, but the 2nd option seems like it would avoid a bit of overhead...
+    but I really _do_ like the fact our AST can be neatly printed into readable JSON, so to preserve that property, we'll go with the 1st option.
+
+        % id = "01J42RD8Y48Y1S1R92ZPXGH9Q5"
+        - speed isn't really our main concern with this first iteration of the interpreter - I prefer inspectability and easy prototyping.
+
+    % id = "01J42RD8Y4Y0E5HATN35JKJ05G"
+    - we'll write a function that walks over our AST, and inserts source strings into it.
+
+    {:program=haku}
+    ```javascript
+    export function insertSources(node, input) {
+        if (node.start != null) {
+            node.source = input.substring(node.start, node.end);
+        }
+
+        if (node.children != null) {
+            for (let child of node.children) {
+                insertSources(child, input);
+            }
+        }
+    }
+    ```
+
+        % id = "01J42RD8Y4HMG0E6KZFTDRAZ4R"
+        - now I _am_ aware this is changing [object shapes][] quite a lot, which is suboptimal.
+        but I would _really_ like to keep the interpreter simple, so bear with me.
+
+        [object shapes]: https://mathiasbynens.be/notes/shapes-ics
+
+    % id = "01J42RD8Y4RXF274JDZRWAXZ6D"
+    - now we can patch the relevant parts of the interpreter to read from the `node.source` field, instead of `substring`ing the source string passed to the interpreter. this is pretty mechanical so I'll just dump all the relevant code here:
+
+    {:program=haku}
+    ```javascript
+    treewalk.eval = (state, node) => {
+        switch (node.kind) {
+            case "integer":
+                return parseInt(node.source); // <--
+
+            case "identifier":
+                return treewalk.lookupVariable(state, node.source); // <--
+
+            case "list":
+                let functionToCall = treewalk.eval(state, node.children[0]);
+                return functionToCall(state, node);
+
+            case "toplevel":
+                let result = undefined;
+                for (let i = 0; i < node.children.length; ++i) {
+                    result = treewalk.eval(state, node.children[i]);
+                    if (result !== undefined && i != node.children.length - 1)
+                        throw new Error(`expression ${i + 1} had a result despite not being the last`);
+                }
+                return result;
+
+            default:
+                throw new Error(`unhandled node kind: ${node.kind}`);
+        }
+    };
+    
+    builtins.fn = (state, node) => {
+        if (node.children.length != 3)
+            throw new Error("an `fn` must have an argument list and a result expression");
+
+        let params = node.children[1];
+        if (node.children[1].kind != "list")
+            throw new Error("expected parameter list as second argument to `fn`");
+
+        let paramNames = [];
+        for (let param of params.children) {
+            if (param.kind != "identifier") {
+                throw new Error("`fn` parameters must be identifiers");
+            }
+            paramNames.push(param.source); // <--
+        }
+
+        let expr = node.children[2];
+
+        return makeFunction(state, paramNames, expr);
+    };
+
+    builtins.def = (state, node) => {
+        if (node.children.length != 3)
+            throw new Error(
+                "a `def` expects the name of the variable to assign, and the value to assign to the variable",
+            );
+
+        if (node.children[1].kind != "identifier")
+            throw new Error("variable name must be an identifier");
+
+        let name = node.children[1];
+        let value = treewalk.eval(state, node.children[2]);
+        state.env.set(name.source, value); // <--
+    };
+    ```
+
+    % id = "01J42RD8Y4YWW1DR71RE5A1RC3"
+    - and of course, to top it all off, we still need to insert source information into the nodes before evaluating our tree:
+
+    {:program=haku}
+    ```javascript
+    import { defaultEvalModule } from "treehouse/components/literate-programming/eval.js";
+
+    export function printEvalResult(env, input) {
+        try {
+            let tokens = lex(input);
+            let ast = parse(tokens);
+            insertSources(ast, input); // <--
+            let result = run(env, input, ast);
+
+            // NOTE: `def` will not return any value, so we'll skip printing it out.
+            if (result !== undefined) {
+                console.log(result);
+            }
+        } catch (error) {
+            console.log(error.stack ? error.toString() + "\n\n" + error.stack : error.toString());
+        }
+    }
+
+    kernel.evalModule = async (state, source, language, params) => {
+        if (language == "haku") {
+            state.haku ??= { env: new Map() };
+            printEvalResult(state.haku.env, source);
+            return true;
+        } else {
+            return await defaultEvalModule(state, source, language, params);
+        }
+    };
+    ```
+
+    % id = "01J42RD8Y4QJS26B0EFSSZES3P"
+    - let's see if `add-two` works now.
+    we have an outdated version of it in our `env` map, so let's declare it again, using two input blocks like we did before:
+
+    {:program=haku}
+    ```haku
+    (def add-two
+        (fn (x) (+ x 2)))
+    ```
+
+    {:program=haku}
+    ```haku
+    (add-two 2)
+    ```
+
+    {:program=haku}
+    ```output
+    4
+    ```
+
+    cool!
+
+% id = "01J42RD8Y4NKFM2KS4J5EQ7J2M"
+- ### data structures
+
+    % id = "01J42RD8Y46XQ0A8SAYCXD5HMZ"
+    - for a language to really be useful, it needs to have data structures.
+    fortunately we already have them at our disposal - enter *linked lists!*
+
+    % id = "01J42RD8Y48GHZ145RM9Z6CAQW"
+    - the coolest part about lists is that we don't even need to do anything on the JavaScript side to implement them - we can use our good old friend Lambda calculus, along with a really cool tool called [Church encoding][], which allows us to encode lists using nothing but functions!
+
+    [Church encoding]: https://en.wikipedia.org/wiki/Church_encoding
+
+        % id = "01J42RD8Y424WKHG4C16ZXW3WC"
+        - haku also has some tricks up its sleeve which allows us to break free from the minimalistic confines of Lambda calculus, which means we don't have to implement _everything_.
+        without further ado though, let's get started!
+
+    % id = "01J42RD8Y49SN1TDA7ST663958"
+    - first, we'll implement a way to construct a linked list node - aka `cons`.
+
+    {:program=haku}
+    ```haku
+    (def clist/cons
+        (fn (h t)
+            (fn (get)
+                (get h t))))
+    ```
+
+        % id = "01J42RD8Y4YFBQPV75DNDG7S2F"
+        - the way our lists will work is that each list node is an ordinary function.
+        we'll be able to pass a "getter" function to the list function to obtain the list's head and tail.
+
+        % id = "01J42RD8Y4JK7R4K43A102DQXW"
+        - I'm prefixing all of our Church-encoded list operations with `clist/` to differentiate them from potential future list representations we'd want to implement.
+
+    % id = "01J42RD8Y4J7WPR0WTKMFSZWXJ"
+    - now for extracting our head and tail.
+
+    {:program=haku}
+    ```haku
+    (def clist/head
+        (fn (list)
+            (list (fn (h t) h))))
+
+    (def clist/tail
+        (fn (list)
+            (list (fn (h t) t))))
+    ```
+
+    these happen by passing that getter function to our list and using it to extract its head or tail _only._
+
+    % id = "01J42RD8Y4KNKKBVZNF4PCNPWB"
+    - the last missing part is a marker for signifying the end of the list.
+
+    thing is, we don't really have to implement this, because we already have the literal `0`! so knowing whether we're at the end of the list is as simple as `(= (clist/tail node) 0)`.
+
+    % id = "01J42RD8Y49H5NWQY1TJNRBWCT"
+    - and that's our list representation!
+    let's give it a shot.
+
+    we'll define a list containing a bunch of the first five Fibonacci numbers:
+
+    {:program=haku}
+    ```haku
+    (def clist-with-fib-5
+        (clist/cons 1 (clist/cons 1 (clist/cons 2 (clist/cons 3 (clist/cons 5 0))))))
+    ```
+
+    % id = "01J42RD8Y4X61HPNY7E5RZDC03"
+    - and a function to _reduce_ a list to a single element.
+    this function has various names in various languages, but the idea is that it allows us to walk over a list, modifying a value along the way, until we get a single, final value.
+
+    {:program=haku}
+    ```haku
+    (def clist/reduce
+        (fn (init op list)
+            (if (= (clist/tail list) 0)
+                (op init (clist/head list))
+                (clist/reduce (op init (clist/head list)) op (clist/tail list)))))
+    ```
+
+    once again, the recursive logic is kind of tricky; if you draw it out, you should be able to understand it much easier!
+
+    % id = "01J42RD8Y4HS91N3CG3BBYRD5D"
+    - let's see if we can sum our Fibonacci numbers together:
+
+    {:program=haku}
+    ```haku
+    (clist/reduce 0 + clist-with-fib-5)
+    ```
+
+    {:program=haku}
+    ```output
+    12
+    ```
+
+    nice!
+
+    % id = "01J42RD8Y4YVAV8M82229NT7E7"
+    - #### can I just say something real quick
+
+        % id = "01J42RD8Y49CBEG05CT288WJTN"
+        - I'm swiftly starting to dislike my parenthesized syntax choices here.
+        they would be fine in an editor capable of highlighting mismatched parentheses, but [Helix][] refuses to highlight _any_ parentheses in [`.tree`][branch:01H8V55APDWN8TV31K4SXBTTWB] files until I add a `tree-sitter` grammar to it.
+
+        [Helix]: https://helix-editor.com
+
+            % id = "01J42RD8Y4CKBD54RD089X1YKT"
+            - the example above took me way too long to get working than I want to admit.
+            honestly it's a failure of tooling on my side, (should've embedded source spans into all these errors so that they can be reported more cleanly!) but I _really_ don't want to spend too much time on what's basically just a prototype.
+
+        % id = "01J42RD8Y4ED5TTP392VYGGWXS"
+        - I'll carry on with them for a bit longer though, I really don't wanna write a complicated parser right now.
+
 % stage = "Draft"
   id = "01J3K8A0D1D0NTT3JYYFMRYVSC"
 - ### tests
@@ -1577,20 +2273,17 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
 
     {:program=test-treewalk}
     ```javascript
-    import { lex, parse, exprToString } from "haku/sexp.js";
+    import { lex, parse, exprToString, insertSources } from "haku/sexp.js";
     import { run } from "haku/treewalk.js";
 
     let input = `
-        ((fn (f)
-            ((f 1) 2))
-         (fn (x)
-            (fn (y)
-                (+ x y))))
+        (def x 1)
     `;
     let tokens = lex(input);
 
     let ast = parse(tokens);
-    console.log(run(input, ast));
+    insertSources(ast, input);
+    console.log(run(new Map(), input, ast));
     ```
 
     {:program=test-treewalk}

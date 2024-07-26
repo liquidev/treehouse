@@ -10,9 +10,7 @@ lexer.init = (input) => {
 export const eof = "end of file";
 
 lexer.current = (state) => {
-    return state.position < state.input.length
-        ? state.input.charAt(state.position)
-        : eof;
+    return state.position < state.input.length ? state.input.charAt(state.position) : eof;
 };
 
 lexer.advance = (state) => ++state.position;
@@ -31,10 +29,7 @@ lexer.skipWhitespaceAndComments = (state) => {
             continue;
         }
         if (c == ";") {
-            while (
-                lexer.current(state) != "\n" &&
-                lexer.current(state) != eof
-            ) {
+            while (lexer.current(state) != "\n" && lexer.current(state) != eof) {
                 lexer.advance(state);
             }
             lexer.advance(state); // skip over newline, too
@@ -46,8 +41,7 @@ lexer.skipWhitespaceAndComments = (state) => {
 };
 
 export const isDigit = (c) => c >= "0" && c <= "9";
-export const isIdentifier = (c) =>
-    /^[a-zA-Z0-9+~!@$%^&*=<>+?/.,:\\|-]$/.test(c);
+export const isIdentifier = (c) => /^[a-zA-Z0-9+~!@$%^&*=<>+?/.,:\\|-]$/.test(c);
 
 lexer.nextToken = (state) => {
     let c = lexer.current(state);
@@ -151,7 +145,19 @@ parser.parseList = (state, leftParen) => {
     };
 };
 
-parser.parseRoot = parser.parseExpr;
+parser.parseToplevel = (state) => {
+    let children = [];
+    while (parser.current(state).kind != eof) {
+        children.push(parser.parseExpr(state));
+    }
+    return {
+        kind: "toplevel",
+        children,
+        // Don't bother with start..end for now.
+    };
+};
+
+parser.parseRoot = (state) => parser.parseToplevel(state);
 
 export function parse(input) {
     let state = parser.init(input);
@@ -182,5 +188,17 @@ export function exprToString(expr, input) {
 
         case "error":
             return `<error ${expr.start}..${expr.end} '${inputSubstring}': ${expr.error}>`;
+    }
+}
+
+export function insertSources(node, input) {
+    if (node.start != null) {
+        node.source = input.substring(node.start, node.end);
+    }
+
+    if (node.children != null) {
+        for (let child of node.children) {
+            insertSources(child, input);
+        }
     }
 }

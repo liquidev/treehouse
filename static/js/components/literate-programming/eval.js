@@ -2,6 +2,13 @@ let outputIndex = 0;
 
 export const jsConsole = console;
 
+const loggingEnabled = false;
+function log(...message) {
+    if (loggingEnabled) {
+        jsConsole.log("[eval]", ...message);
+    }
+}
+
 // Overwrite globalThis.console with domConsole to redirect output to the DOM console.
 // To always output to the JavaScript console regardless, use jsConsole.
 export const domConsole = {
@@ -17,23 +24,21 @@ export const domConsole = {
     },
 };
 
-let kernel = {
-    init() {
-        return {};
-    },
-
-    async evalModule(_state, source, language, _params) {
-        if (language == "javascript") {
-            let blobUrl = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
-            let module = await import(blobUrl);
-            for (let exportedKey in module) {
-                globalThis[exportedKey] = module[exportedKey];
-            }
-            return true;
-        } else {
-            return false;
+export async function defaultEvalModule(_state, source, language, _params) {
+    if (language == "javascript") {
+        let blobUrl = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
+        let module = await import(blobUrl);
+        for (let exportedKey in module) {
+            globalThis[exportedKey] = module[exportedKey];
         }
-    },
+        return _state;
+    } else {
+        return null;
+    }
+}
+
+let kernel = {
+    evalModule: defaultEvalModule,
 };
 
 export function getKernel() {
@@ -52,11 +57,11 @@ export async function evaluate(commands, { error, newOutput }) {
         signalEvaluationComplete = resolve;
     });
 
-    let kernelState = kernel.init();
-
     outputIndex = 0;
     try {
+        let kernelState = {};
         for (let command of commands) {
+            log(`frame ${treehouseSandboxInternals.outputIndex} module`, command);
             if (command.kind == "module") {
                 await kernel.evalModule(
                     kernelState,
@@ -71,10 +76,12 @@ export async function evaluate(commands, { error, newOutput }) {
                 ++outputIndex;
             }
         }
+        log(`frame ${treehouseSandboxInternals.outputIndex} evalComplete`);
         postMessage({
             kind: "evalComplete",
         });
     } catch (err) {
+        log(`frame ${treehouseSandboxInternals.outputIndex} error`, err);
         postMessage({
             kind: "output",
             output: {
