@@ -1,6 +1,7 @@
 {
     "patterns": [
         { "regex": ";.*", "is": "comment" },
+        { "regex": "\"[^\"]*\"", "is": "string" },
         { "regex": "[0-9]+", "is": "literal" },
         {
             "regex": "\\((fn)\\s*\\(.*?\\)",

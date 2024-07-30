@@ -3,12 +3,14 @@
    styles = ["new.css"]
    feed = "news"
 
-% id = "01HQ6G30PTVT5H0Z04VVRHEZQF"
-- [featured]{.badge .blue} ever wondered how Terraria renders its worlds? or how editors like Tiled manage to make painting tiles so easy?
+- [featured]{.badge .blue} I was bored over a weekend, so I decided to write the tiniest programming language I could imagine.
+it came out looking pretty Lispy, and I'm glad about that!
+I learned a ton about Lisps in the process of researching it.
+even though it didn't end up having macros...
 
-### tairu - an interactive exploration of 2D autotiling techniques
+### haku - writing a little programming language for fun
 
-[read][page:programming/blog/tairu]
+[read][page:programming/blog/haku]
 
 % id = "01J293BFEBT15W0Z3XF1HEFGZT"
 - sometimes people call me crazy for saying that bashing JavaScript is senseless and that it's not as bad of a language as people make it out to be.
@@ -83,3 +85,10 @@ seriously though. I don't like them.
 ### liquidex's treehouse: design
 
 [read: _on digital textures_][page:design/digital-textures] [go to branch][page:design]
+
+% id = "01HQ6G30PTVT5H0Z04VVRHEZQF"
+- ever wondered how Terraria renders its worlds? or how editors like Tiled manage to make painting tiles so easy?
+
+### tairu - an interactive exploration of 2D autotiling techniques
+
+[read][page:programming/blog/tairu]

@@ -7,9 +7,9 @@
 % id = "01HPD4XQQ5GPQ20C6BPA8G670F"
 - ### :folder: blog
 
-    % content.link = "programming/blog/tairu"
-      id = "01HPD4XQQ5WM0APCAX014HM43V"
-    + :page: [featured]{.badge .blue} tairu - an interactive exploration of 2D autotiling techniques
+    % content.link = "programming/blog/haku"
+      id = "01J4J4PAXRWZDP9PAZNGCQ9S3D"
+    + [featured]{.badge .blue} :page: haku - writing a little programming language for fun
 
     % content.link = "programming/blog/lvalues"
       id = "01HY5R1ZW0M0Y5KQ1E8F0Q73ZT"
@@ -22,6 +22,10 @@
     % content.link = "programming/blog/or-types"
       id = "01HTWN4XB2YMF3615BE8V6Y76A"
     + :page: OR-types
+
+    % content.link = "programming/blog/tairu"
+      id = "01HPD4XQQ5WM0APCAX014HM43V"
+    + :page: tairu - an interactive exploration of 2D autotiling techniques
 
 % id = "programming/projects"
   content.link = "programming/projects"

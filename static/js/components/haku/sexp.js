@@ -40,12 +40,29 @@ lexer.skipWhitespaceAndComments = (state) => {
     }
 };
 
+lexer.string = (state) => {
+    lexer.advance(state); // skip over initial quotation mark
+
+    while (lexer.current(state) != '"') {
+        if (lexer.current(state) == eof) {
+            return "error";
+        }
+        lexer.advance(state);
+    }
+    lexer.advance(state); // skip over closing quotation mark
+
+    return "string";
+};
+
 export const isDigit = (c) => c >= "0" && c <= "9";
 export const isIdentifier = (c) => /^[a-zA-Z0-9+~!@$%^&*=<>+?/.,:\\|-]$/.test(c);
 
 lexer.nextToken = (state) => {
     let c = lexer.current(state);
 
+    if (c == '"') {
+        return lexer.string(state);
+    }
     if (isDigit(c)) {
         lexer.advanceWhile(state, isDigit);
         return "integer";

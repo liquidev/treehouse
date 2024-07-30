@@ -2088,7 +2088,7 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
                 console.log(result);
             }
         } catch (error) {
-            console.log(error.stack ? error.toString() + "\n\n" + error.stack : error.toString());
+            console.log(error.toString());
         }
     }
 
@@ -2237,6 +2237,355 @@ scripts = ["treehouse/vendor/codejar.js", "treehouse/components/literate-program
 
         % id = "01J42RD8Y4ED5TTP392VYGGWXS"
         - I'll carry on with them for a bit longer though, I really don't wanna write a complicated parser right now.
+
+% id = "01J4J4ERA0M54GAJQ02K43ZWKJ"
+- ### string manipulation
+
+    % id = "01J4J4ERA06GESAKGFQ7S44K9W"
+    - being able to calculate numbers is good, but remember how we can only output one number - that kinda sucks!
+
+    % id = "01J4J4ERA09RQ9YJ0WQKRER0AP"
+    - therefore I'd like to be able to work on _strings_ in haku.
+    that way we'll be able to implement more interesting programs, including my personal favorite - the Mandelbrot set!
+
+    % id = "01J4J4ERA09QCEF4CAKBH0GPTK"
+    - to start things off, we'll implement a basic syntax for strings.
+    technically speaking we don't really _need_ string syntax, but it's gonna make our code examples a lot nicer if we have it!
+
+    % id = "01J4J4ERA0FKDMMRAY6QH6TJJN"
+    - I find the modern orthodox string syntax just fine: `"text between quotation marks."`
+
+        % id = "01J4J4ERA0H13X1GD0HX0YPCM2"
+        - we'll only support _double_ quotation marks to keep the syntax lean.
+
+        % id = "01J4J4ERA05GR37V8RW0K2PJVN"
+        - there'll be no escape sequences for the time being - they inflate the surface area of the lexer quite a lot, and aren't needed when you can store a bunch of magic strings in variables:
+
+        ```haku
+        (cat                          ; `cat` will be our string concatenation function
+            "Hello, world!" \n        ; notice how \n is just a regular variable!
+            "This is another line.")
+        ```
+
+        % id = "01J4J4ERA0VKJEBRT4N6YQ1VQ0"
+        - stealing the idea from Zig, I'm making strings single-line _only_.
+        if you want a multiline string, look at the example above.
+
+    % id = "01J4J4ERA0FTYBQ36KDCG0D7Z2"
+    - let's add that to the lexer then!
+
+    {:program=haku}
+    ```javascript
+    lexer.string = (state) => {
+        lexer.advance(state); // skip over initial quotation mark
+
+        while (lexer.current(state) != '"') {
+            if (lexer.current(state) == eof) {
+                return "error";
+            }
+            lexer.advance(state);
+        }
+        lexer.advance(state); // skip over closing quotation mark
+
+        return "string";
+    };
+
+    lexer.nextToken = (state) => {
+        let c = lexer.current(state);
+
+        if (c == '"') {
+            return lexer.string(state); // <--
+        }
+        if (isDigit(c)) {
+            lexer.advanceWhile(state, isDigit);
+            return "integer";
+        }
+        if (isIdentifier(c)) {
+            lexer.advanceWhile(state, isIdentifier);
+            return "identifier";
+        }
+        if (c == "(" || c == ")") {
+            lexer.advance(state);
+            return c;
+        }
+        if (c == eof) return eof;
+
+        lexer.advance(state);
+        return "error";
+    };
+    ```
+
+    % id = "01J4J4ERA0AP38ZS3HCSXAMKBZ"
+    - and to the parser...
+
+    {:program=haku}
+    ```javascript
+    parser.parseExpr = (state) => {
+        let token = parser.current(state);
+        switch (token.kind) {
+            case "integer":
+            case "identifier":
+            case "string":      // <--
+                parser.advance(state);
+                return { ...token };
+
+            case "(":
+                return parser.parseList(state, token);
+
+            default:
+                parser.advance(state);
+                return {
+                    kind: "error",
+                    error: "unexpected token",
+                    start: token.start,
+                    end: token.end,
+                };
+        }
+    };
+    ```
+
+    % id = "01J4J4ERA0KJWD4ZCKH2J5JSRN"
+    - now if we use a string, we should get an error from the interpreter about an unknown node kind:
+
+    {:program=haku}
+    ```haku
+    "hello!"
+    ```
+
+    {:program=haku}
+    ```output
+    Error: unhandled node kind: string
+    ```
+
+    % id = "01J4J4ERA060262W39D1Q6W1KE"
+    - so to top this all off, we'll make the interpreter produce a string value for string literals, like it produces numbers for integer literals:
+
+    {:program=haku}
+    ```javascript
+    treewalk.eval = (state, node) => {
+        switch (node.kind) {
+            case "integer":
+                return parseInt(node.source);
+
+            case "string": // <--
+                // NOTE: We chop the quotes off of the string literal here.
+                return node.source.substring(1, node.source.length - 1);
+
+            case "identifier":
+                return treewalk.lookupVariable(state, node.source);
+
+            case "list":
+                let functionToCall = treewalk.eval(state, node.children[0]);
+                return functionToCall(state, node);
+
+            case "toplevel":
+                let result = undefined;
+                for (let i = 0; i < node.children.length; ++i) {
+                    result = treewalk.eval(state, node.children[i]);
+                    if (result !== undefined && i != node.children.length - 1)
+                        throw new Error(`expression ${i + 1} had a result despite not being the last`);
+                }
+                return result;
+
+            default:
+                throw new Error(`unhandled node kind: ${node.kind}`);
+        }
+    };
+    ```
+
+    {:program=haku}
+    ```haku
+    "hello!"
+    ```
+
+    {:program=haku}
+    ```output
+    hello!
+    ```
+
+    % id = "01J4J4ERA0YNVW33GQ7EWYSJHX"
+    - with strings added to the language, we'll need some basic operations to put together and break apart strings.
+
+        % id = "01J4J4ERA0Z20JEXFPYKTSP0SK"
+        - I don't want to write a whole load of wrapper code every single time we want to declare a simple JavaScript function that's available from haku, so let's build a helper for that first:
+
+        {:program=haku}
+        ```javascript
+        export function wrapJavaScriptFunctionVarargs(func) {
+            return (state, node) => {
+                let args = Array(node.children.length - 1);
+                for (let i = 1; i < node.children.length; ++i) {
+                    args[i - 1] = treewalk.eval(state, node.children[i]);
+                }
+                return func(...args);
+            };
+        }
+
+        export function wrapJavaScriptFunction(func) {
+            let inner = wrapJavaScriptFunctionVarargs(func);
+            return (state, node) => {
+                if (node.children.length != func.length + 1)
+                    throw new Error(
+                        `\`${func.name}\` expects ${func.length} arguments, but ${node.children.length - 1} were given`,
+                    );
+                return inner(state, node);
+            };
+        }
+        ```
+
+        % id = "01J4J4ERA0AKYMCN24F46H4AYF"
+        - with that, we'll start off with `cat`, our concatenation function.
+        mainly because I really like the name. `=^..^=`
+
+        {:program=haku}
+        ```javascript
+        builtins.cat = wrapJavaScriptFunctionVarargs((...strings) => strings.join(""));
+        ```
+
+        {:program=haku}
+        ```haku
+        (cat "hello, " "world!")
+        ```
+
+        {:program=haku}
+        ```output
+        hello, world!
+        ```
+
+        % id = "01J4J4ERA0JTNMGFJCPP1VBJMT"
+        - then there's also `sub`, for indexing.
+        one thing that always seemed kind of arbitrary is that `substring` in JavaScript and other languages defaults its argument to the string's length; I personally think if the second argument is not provided, you almost always want to just get the character at that index.
+
+        {:program=haku}
+        ```javascript
+        builtins.sub = wrapJavaScriptFunctionVarargs((str, start, end) => {
+            if (typeof str != "string") throw new Error("`sub` expects a string as the first argument");
+            if (typeof start != "number") throw new Error("`sub` expects a number as the second argument");
+            end ??= start + 1;
+            return str.substring(start, end);
+        });
+        ```
+
+        {:program=haku}
+        ```haku
+        (sub "hello, world!" 0)
+        ```
+
+        {:program=haku}
+        ```output
+        h
+        ```
+
+        {:program=haku}
+        ```haku
+        (sub "hello, world!" 0 5)
+        ```
+
+        {:program=haku}
+        ```output
+        hello
+        ```
+
+        % id = "01J4J4ERA0MEK62M974XP8390F"
+        - then of course to be able to look at a suffix of the string, we'll need its `len`.
+
+        {:program=haku}
+        ```javascript
+        builtins.len = wrapJavaScriptFunction((string) => string.length);
+        ```
+
+        {:program=haku}
+        ```haku
+        (len "hello, world!")
+        ```
+
+        {:program=haku}
+        ```output
+        13
+        ```
+
+        % id = "01J4J4ERA0EE0J4DFTBMJXXCQ0"
+        - then we'll also have a pair of functions that will convert between Unicode code points and strings.
+
+        {:program=haku}
+        ```javascript
+        builtins.chr = wrapJavaScriptFunction((n) => String.fromCodePoint(n));
+        builtins.ord = wrapJavaScriptFunction((s) => s.codePointAt(0));
+        ```
+
+        {:program=haku}
+        ```haku
+        (chr 33)
+        ```
+
+        {:program=haku}
+        ```output
+        !
+        ```
+
+        {:program=haku}
+        ```haku
+        (ord "!")
+        ```
+
+        {:program=haku}
+        ```output
+        33
+        ```
+
+        % id = "01J4J4ERA0P3WZNN2TE1XDQKG3"
+        - and last but not least, a pair of functions to convert between numbers and strings.
+
+        {:program=haku}
+        ```javascript
+        builtins["to-string"] = wrapJavaScriptFunction((n) => n.toString());
+        builtins["to-number"] = wrapJavaScriptFunction((s) => parseInt(s));
+        ```
+
+        {:program=haku}
+        ```haku
+        (cat "today's magic number is: " (to-string 65))
+        ```
+
+        {:program=haku}
+        ```output
+        today's magic number is: 65
+        ```
+
+        {:program=haku}
+        ```haku
+        (+ (to-number "60") 5)
+        ```
+
+        {:program=haku}
+        ```output
+        65
+        ```
+
+        we won't care about the fallibility of `to-number` for now; we're hand-waving away all the error handling anyways.
+
+% id = "01J4J4ERA03H04VT286CPEE5PK"
+- ### conclusion for now
+
+    % id = "01J4J4ERA0NXEP21DCXDHGD8TG"
+    - at this point I've experimented and thought about it enough that I now know just the perfect application for such a language, so I'll be wrapping up here.
+    maybe I'll revisit haku some other time, but for now... it's time to call it done.
+
+        % id = "01J4J4PAX4Q820S0YEAXDHRATJ"
+        - I'll be continuing to develop haku in another project, simply as "haku."
+        this version will be called "haku 0," the progenitor of the final language.
+
+    % id = "01J4J4PAX4JS3Q8K0503ZT0B42"
+    - {:program=haku}
+    ```haku
+    ; Here's a blank canvas for you to play around with!
+    (cat "hello" (chr 44) " world!")
+    ```
+
+    {:program=haku}
+    ```output
+    hello, world!
+    ```
 
 % stage = "Draft"
   id = "01J3K8A0D1D0NTT3JYYFMRYVSC"

@@ -25,6 +25,10 @@ treewalk.eval = (state, node) => {
         case "integer":
             return parseInt(node.source);
 
+        case "string":
+            // NOTE: We chop the quotes off of the string literal here.
+            return node.source.substring(1, node.source.length - 1);
+
         case "identifier":
             return treewalk.lookupVariable(state, node.source);
 
@@ -158,3 +162,43 @@ builtins.def = (state, node) => {
     let value = treewalk.eval(state, node.children[2]);
     state.env.set(name.source, value);
 };
+
+export function wrapJavaScriptFunctionVarargs(func) {
+    return (state, node) => {
+        let args = Array(node.children.length - 1);
+        for (let i = 1; i < node.children.length; ++i) {
+            args[i - 1] = treewalk.eval(state, node.children[i]);
+        }
+        return func(...args);
+    };
+}
+
+export function wrapJavaScriptFunction(func) {
+    let inner = wrapJavaScriptFunctionVarargs(func);
+    return (state, node) => {
+        if (node.children.length != func.length + 1)
+            throw new Error(
+                `\`${func.name}\` expects ${func.length} arguments, but ${node.children.length - 1} were given`,
+            );
+        return inner(state, node);
+    };
+}
+
+builtins.cat = wrapJavaScriptFunctionVarargs((...strings) => {
+    return strings.join("");
+});
+
+builtins.sub = wrapJavaScriptFunctionVarargs((str, start, end) => {
+    if (typeof str != "string") throw new Error("`sub` expects a string as the first argument");
+    if (typeof start != "number") throw new Error("`sub` expects a number as the second argument");
+    end ??= start + 1;
+    return str.substring(start, end);
+});
+
+builtins.len = wrapJavaScriptFunction((string) => string.length);
+
+builtins.chr = wrapJavaScriptFunction((n) => String.fromCodePoint(n));
+builtins.ord = wrapJavaScriptFunction((s) => s.codePointAt(0));
+
+builtins["to-string"] = wrapJavaScriptFunction((n) => n.toString());
+builtins["to-number"] = wrapJavaScriptFunction((s) => parseInt(s));
