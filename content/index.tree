@@ -14,7 +14,7 @@ feel free to go back at any time by clicking here.
     - welcome! make yourself at home :ralsei_wave:
 
     % id = "01H8VWEHX501SNYQTE61WX7YJC"
-    - [_"owo, what's this?"_][page:kuroneko]{.secret}
+    - :folder: [_"owo, what's this?"_][page:kuroneko]{.secret}
 
         % id = "about"
           content.link = "about"
@@ -26,7 +26,7 @@ feel free to go back at any time by clicking here.
 
     % id = "01H8V556P1GRAA3717VH3QJFMV"
       classes.branch_children = "index:hobby-corners"
-    - hobby corners
+    - :folder: hobby corners
 
         % id = "programming"
           content.link = "programming"
@@ -85,7 +85,11 @@ feel free to go back at any time by clicking here.
         ```
 
     % id = "01HFYZKREWE2AM61ZRW3R501H6"
-    - various thoughts
+    - :folder: /var
+
+        % id = "short-thoughts"
+          content.link = "short-thoughts"
+        + ## [sh](https://www.youtube.com/watch?v=rFL2VOdb944){.secret}ort thoughts
 
         % id = "philosophy"
           content.link = "philosophy"

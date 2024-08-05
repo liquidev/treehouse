@@ -1,0 +1,19 @@
+%% title = "short thoughts"
+
+% id = "01J4J6400Q4MWF2QPGX3P9Q2WQ"
+- if there's one thing I learned from Go...
+
+```rust
+let mut list = WalkList::new(args);
+
+let condition = list.expect_arg(c, src, "missing `if` condition");
+let if_true = list.expect_arg(c, src, "missing `if` true branch");
+let if_false = list.expect_arg(c, src, "missing `if` false branch");
+list.expect_nil(c, src, "extra arguments after `if` false branch");
+
+if !list.ok {
+    return Ok(());
+}
+```
+
+...it's that `?` is not the only option.
