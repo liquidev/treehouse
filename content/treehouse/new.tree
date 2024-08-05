@@ -3,6 +3,7 @@
    styles = ["new.css"]
    feed = "news"
 
+% id = "01J4J5N6WZQ03VTB3TZ51J7QZK"
 - [featured]{.badge .blue} I was bored over a weekend, so I decided to write the tiniest programming language I could imagine.
 it came out looking pretty Lispy, and I'm glad about that!
 I learned a ton about Lisps in the process of researching it.
