@@ -13,6 +13,13 @@ even though it didn't end up having macros...
 
 [read][page:programming/blog/haku]
 
+- I decided to write up some ideas on what sort of cool data analysis I could do on my [ListenBrainz data set][def:social/listenbrainz].
+I haven't done any of it yet, but I thought it'd be cool to share my ideas anyways!
+
+### the ListenBrainz data set
+
+[read][page:music/brainz]
+
 % id = "01J293BFEBT15W0Z3XF1HEFGZT"
 - sometimes people call me crazy for saying that bashing JavaScript is senseless and that it's not as bad of a language as people make it out to be.
 so I decided to collect my thoughts into a nice little page I can link easily.

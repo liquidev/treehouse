@@ -1,0 +1,64 @@
+%% title = "the ListenBrainz data set"
+
+- I've been using [ListenBrainz](https://listenbrainz.org) as my primary way of keeping track of my listens for a couple years now---I
+don't recall exactly when I created my account, as I've imported my listens from Spotify, but my music players have been pushing data to ListenBrainz for a while now either way.
+
+    - I made an account because I was dissatisfied with being tied to a single service for all my music.
+    especially since I've been listening to more and more music outside of streaming services, which means my listening data wouldn't show up in Spotify.
+
+    - I chose ListenBrainz over a proprietary service, because I like the idea of building a huge data set of what people are listening to.
+    and adding my own two drops of water to that data set feels really cool.
+    not only can my data be used for greater scientific purposes, but I can also use _my own data_ for _my own scientific purposes_.
+
+    - obviously there's the question of _data ownership_; and technically speaking, I don't _own_ my data on ListenBrainz.
+    but honestly I don't mind that so much, since it's an open source service, that lets me export my data whenever I want to.
+
+    - you can find my account [here][def:social/listenbrainz].
+
+- below are some things I've done with my data, as well as ideas about what I could do with it in the future.
+when I have the time, patience, and motivation, of course.
+
+- :TODO: the importing of my listens from Spotify
+
+    - I've never published the code, but I wrote a little script that took my exported Spotify data (thanks, GDPR!) and imported it into ListenBrainz.
+    not without faults though. it'd be nice to write up more about it.
+
+- :TODO: nerdsniped by Spotify Wrapped
+
+    - [it's this](https://github.com/liquidev/nerdsniped-by-spotify-wrapped); it'd be nice to write up some more about it.
+
+- :TODO: a story told by a thousand tracks
+
+    - I'd like to use my data set to take my top 1000 most listened tracks, and sort them in chronological order---tracks
+    I listened to earliest come first---to generate a sort of _life's soundtrack._
+
+        + I already have such a _curated_ playlist like this on Spotify, but I'm curious how such a playlist would look, were it generated from objective listen data.
+
+            - sans some inaccuracies of course, since Bogdan Raczynski's [boku mo wakaran](https://bogdanraczynski.bandcamp.com/album/boku-mo-wakaran) got imported all as one track.
+            this is because the individual tracks are untitled, and ListenBrainz failed to differentiate them, despite my Spotify data saying "Untitled 1," "Untitled 2," and so on, with track indices.
+            so I'd have to skip it, which is a real shame, since it's a pretty cool album.
+
+- :TODO: diminishing listens, or longer attention span?
+
+    - in 2018, I listened to 25652 tracks.
+    in 2019, I listened to 34904 tracks.
+    in 2020, I listened to 29248 tracks.
+    in 2021 it was 24451, in 2022 it was 22437, and in 2023 it was 22002.
+
+    - we're already past half of 2024, and I'd only listened to 10536 tracks so far as of typing this.
+    if I keep up the same pace throughout the other half of the year, and if I'm doing my math correctly, that'd mean at the end of the year I will have listened to around 15000 tracks.
+    that's quite a bit less than 2023, isn't it?
+
+    - I wonder why the numbers are getting lower and lower each year.
+    is it because I listen to less music overall, or is it because I listen to longer music?
+    I strongly presume it's the former, as a lot of things have changed for me in 2024---I
+    moved out to live with my girlfriend, and that means spending more time on housework and other mundane things.
+
+        - until recently I didn't have a pair of good wireless headphones to listen to music while cooking, cleaning, or doing the laundry, so that reduced my listen count quite a bit.
+
+        - funny how in July there was a large spike of 1747 listens, where other months seem to be oscillating around 1000 listens on average.
+        I don't know what that was about.
+
+        - I do wonder where the 2000 listens per month from last year went though.
+
+    - either way, I'd like to derive a data set that's counted by _minutes listened_ to iron over this, similar to what I did with Spotify Wrapped in 2022.
