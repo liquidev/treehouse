@@ -29,6 +29,7 @@ description = "a place on the Internet I like to call home"
 "rokugo/repo" = "https://github.com/rokugo-lang/rokugo"
 "mica/repo" = "https://github.com/mica-lang/mica"
 "planet_overgamma/repo" = "https://github.com/liquidev/planet-overgamma"
+"rkgk/repo" = "https://github.com/liquidev/rkgk"
 
 # Blog posts I like to reference
 "article/function_coloring" = "https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/"

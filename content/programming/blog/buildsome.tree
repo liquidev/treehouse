@@ -1,0 +1,692 @@
+%% title = "not quite buildless"
+
+% id = "01J7BYKQGYPF50050K67N2MP1G"
+- ...buildsome?
+
+% id = "01J7BYKQGYBH7DGS459RAHMTN5"
+- I've seen a few articles about going _buildless_ with programming Web applications.
+
+    % id = "01J7BYKQGYCB5WWQ8MZE1FPZE4"
+    - there's of course the classic [Vanilla JS](http://vanilla-js.com/)
+
+    % id = "01J7BYKQGYT8YW993V21WP9CVY"
+    - a couple weeks ago I saw someone's idea for [_Vanilla Prime_](https://github.com/morris/vanilla-prime), which is an opinion on how to make Vanilla JS somewhat optimal and more pleasant
+
+    % id = "01J7BYKQGY9WAXZYSQAQWGGXSE"
+    - and yesterday I saw [_Going Buildless_](https://mxb.dev/blog/buildless/), a blog post which evaluates how far you can go without _any_ builds.
+
+% id = "01J7BYKQGYTM78Y1170ERMPE5F"
+- as a big fan of simplicity, I really like that there's a corner of the Web which values simplicity over 100% convenience.
+
+    % id = "01J7BYKQGYFZ5RTRYXKMR0V815"
+    - a lot of focus in modern day Web development seems to be on delivering apps ASAP but implemented inefficiently, and then trying to iron over that with complex tooling such as minifiers.
+
+        % id = "01J7BYKQGYK1YKB0XTWAN4F9FA"
+        - I think there's a genuine use case for that---if so many people are using it, that means there's a demand for it.
+        but I honestly don't like the complexity.
+        I deal with [enough of it](https://www.unrealengine.com/) at work, and I wouldn't wanna have to understand a complex build toolchain for my little homegrown website.
+
+    % id = "01J7BYKQGYW5DS0PP13QA2WXDV"
+    - I mean, if the browser does it for you... then it's probably smart to [conserve that energy](https://anilist.co/anime/12189/Hyouka/), and do something more interesting!
+
+        % id = "01J7BYKQGY7BA7M2WM92H4Q7W6"
+        - be it your energy, or _the literal power that flows through your wall to fuel your computer running that complicated website build._
+
+% id = "01J7BYKQGYK2RC8YEFS3GEGBAT"
+- so I built my own static website generator!
+
+    % id = "01J7BYKQGYVW9NGN7HMWNNHF9Q"
+    + but I promise this blog post is not _just_ about that---I've written about it [before][branch:01H89RFHCQAXJ0ST31TP1A104V], and I don't really see value in me writing _yet another_ blog post in the vein of "here's an overview of my statically generated blog's tech stack okay bye,"
+
+        % id = "01J7BYKQGYW5CJPBVH5N00352Q"
+        + which isn't to say _you_ shouldn't write a blog post about your tech stack!
+        I think there's a lot of value in writing about how you made your blog.
+        it's another thing to _write_ about, and if you want to learn writing... you should write a lot!
+
+            % id = "01J7C1ASXR72HYP2P3R5YGP230"
+            - write write write a write a write.
+
+% id = "01J7BYKQGYC6M88FFBKM7NSK7W"
+- so here are some stories about my handiwork: a website built [with my very own two paws](https://www.youtube.com/watch?v=KVqwvU49JLg){.secret}.
+enjoy!
+
+% id = "01J7BYKQGYPSWQ9KB4V6361PD1"
+- ### [I Ate My Themplate Engine](https://www.youtube.com/watch?v=lZktMGvW-rk){.secret}, and why not quite buildless
+
+    % id = "01J7BYKQGY7QEAN677Q9AT4T0V"
+    - I'll put _probably_ the most interesting bit right at the start.
+    the treehouse is _not quite_ buildless.
+    
+        % id = "01J7BYKQGYRV6TKEACZ0DXNDG4"
+        - one might even call it... buildsome?
+        I mean, it's not quite buildful, and definitely not buildless...?
+
+    % id = "01J7BYKQGYE3AVESR1MBSA11JT"
+    - initially the treehouse started off as a completely statically generated website---to reduce the work needed to be done by the Web server, I decided to make it do as little as it possibly had to.
+    so static generation it ended up being.
+
+    % id = "01J7BYKQGY7TPY5D31GDVY86ZJ"
+    - static generation is super cool, because all you have to end up writing is a single function that deletes the existing output directory, creates a new one, and fills it in with a bunch of files.
+
+        % id = "01J7BYKQGYCE9YBTGAR88CPZ1Y"
+        - in case of the treehouse, the sources for the statically generated files are [`.tree` files][branch:01H8V55APDWN8TV31K4SXBTTWB], a bunch of [Handlebars][] templates, and a bunch of assorted static files, including JavaScript.
+
+        [Handlebars]: https://handlebarsjs.com/
+
+    % id = "01J7BYKQGYB2BHKE1CZGDXEA52"
+    - but honestly... I don't really like that choice of templating engine, or rather templating engine implementation!
+    the Rust implementation in particular has been kind of a pain in the butt, because it tries _very_ hard to be multithreading friendly.
+    that of course means some annoying `Send + Sync` bounds...
+
+        % id = "01J7BYKQGYA7FFV3ZT0RTC8R6Y"
+        - Handlebars allows you to write _helpers_, which are custom functions for processing text.
+        I use them a bit in the treehouse---for example, I have `include_static`, which pastes in a file from my `static` directory into the template.
+
+        % id = "01J7BYKQGY303Y8NA3VMWW5D5D"
+        - however, if a helper has to reference some outside data, or wants to cache its results because it's expensive to run...
+        you're pretty much out of luck, because the `Handlebars` registry does not encode any lifetime bounds on the helpers.
+
+            % id = "01J7BYKQGYT5JR68BZQ1FQX9HY"
+            - in a single-threaded setting this would mean you'd need to wrap your shared state in an `Rc`...
+            but in a single-threaded setting, only one thread can ever access the Handlebars instance, so you may as well let the helper mutate itself, or reference outside data! (as in `&`, not `Rc`)!
+
+        % id = "01J7BYKQGY4VRPQ0YB2SPQ3468"
+        - my personal opinion is that it would be neater if there was an initial setup step, which _freezes_ some parts of the registry---these parts become immutable after you set them up, and then you can send them out to threads---for example, behind an `Arc`.
+        afterwards, you construct the _render-time_ part, which requires mutable access---and therefore every thread that needs to render templates gets its own instance of that.
+
+            % id = "01J7BYKQGYKFM99J8HSF9GYP3H"
+            - using this architecture, you can forgo any locking at all, which is really cool for ergonomics, and great for performance!
+
+        % id = "01J7BYKQGYZPFFQYFTKE229141"
+        - I've looked at some other popular templating engines for Rust, and none of them really seem to solve this problem very neatly...
+
+            % id = "01J7BYKQGYBZRG3BSX9RP22YE2"
+            - so much so that I ended up writing my own little templating engine for the `.tree` format, which is stupid, but yeah.
+            I need to access my generator's shared state somehow (why? I don't remember :oh:), and I'm not gonna `Clone` _all that_, or put that beind a `Mutex`.
+
+            % id = "01J7BYKQGYZBM45J0HE07FCW9R"
+            - I'd love to write a more proper templating engine that implements that dream architecture of mine, but it's not a priority.
+            Handlebars works well enough where it does, and I don't really feel like spending my precious engineering hours on something that doesn't have much of a benefit.
+
+                % id = "01J7BYKQGYNNWVA8S560HANZVP"
+                - other than being really heckin' fun of course.
+                which is why I may do it someday anyways.
+
+    % id = "01J7BYKQGYGZ0S2AMHSKRBZKB1"
+    - at some point I wanted to add [OpenGraph](https://ogp.me/) metadata, so that branches you link to via permalinks [such as this one][branch:01J7BYKQGYGZ0S2AMHSKRBZKB1] would get nice embeds in Discord and other chat apps, including the branch's text---which prompted me to drop the [`try_files`](https://nginx.org/en/docs/http/ngx_http_core_module.html#try_files) and [`proxy_pass`](https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass) to an axum server instead.
+    but it was fun and simple while it lasted!
+
+% id = "01J7BYKQGYJF77C68FPHTSCR0W"
+- ### not incremental by design
+
+    % id = "01J7BYKQGYB6E2HFB38ZW92X0W"
+    - did you know: you don't need incremental builds, if your non-incremental builds are really fast!
+
+        % id = "01J7BYKQGY1MCKWKCJKVDHMJ13"
+        - on my Linux box at home, the treehouse manages to build itself in around 250ms.
+        on my work PC running Windows, it takes about 800ms, which is still very acceptable.
+
+            % id = "01J7BYKQGYDJ839P5MG0HNVG93"
+            - ...and that's a debug build!!
+
+            % id = "01J7BYKQGYVV2WRHT1J2HEJG0H"
+            - the bottleneck on Windows is probably due to IOps being much slower there.
+            I believe it's deleting and copying around files that takes so long, because there's a barely noticable but present delay on that task in the log output.
+
+    % id = "01J7BYKQGYBADRFGGY65G83BB7"
+    - this is the idea I built the treehouse generator in mind with---computers are pretty heckin' fast.
+    for the 56 unique `.tree`-derived pages the treehouse generates, most of the time is not actually spent parsing and generating text files, but rather...
+    reading metadata for image files, so that I can generate proper `width="" height=""` attributes on `<img>` elements.
+
+        % id = "01J7BYKQGY5QGYYR4NJYWW1CQ9"
+        - I don't have any profiling infrastructure set up just yet, but I suspect it's something with the [`image` crate](https://lib.rs/crates/image) doing more work than it needs to in order to obtain size metadata.
+
+        % id = "01J7BYKQGYSZ6FKG9E5GAFB13H"
+        - shame on me, but I don't have image size probing implemented for SVG just yet.
+        which I use for some emoji, such as :smile: :sparkles:
+
+    % id = "01J7BYKQGY0PR13G71PK163976"
+    - if I _wanted_ to implement incremental builds, I feel like the dependency tracking would get pretty hellish pretty quickly.
+    
+        % id = "01J7BYKQGY75XN1HBVZ110D16P"
+        - say a `.tree` file uses the `include_static` template directive to include some file into itself.
+        now in addition to compiling the `.tree` file when it changes, I'd also need to recompile the `.tree` file when that `include`d`_static` file changes too---and that sort of dependency tracking is ripe for bugs as the codebase grows more complex!
+
+            % id = "01J7BYKQGYSYJD97AQ3ZJB7B8J"
+            - not with a well-built abstraction of course, but do I really want to invest my time into that abstraction, if my debug builds take a quarter of a second?
+
+    % id = "01J7BYKQGY75NF07X03VSK3XX1"
+    - I'll probably keep using this non-incremental build system, at least until my build times get unbearably long---I'd say 2 or 3 seconds would be testing my patience already.
+    I really don't like using slow software.
+
+% id = "01J7BYKQGYMEQXWFVXETNZGJRB"
+- ### Vanilla JS
+
+    % id = "01J7BYKQGYESGP0ZKSYVNTEKCF"
+    - TypeScript is cool, but it's yet another build step.
+    and with `tsc` it's a pretty slow one at that!
+
+        % id = "01J7BYKQGYWNPK11XFN30DFZ74"
+        - _and_ it's a dependency---one you have to install outside of `rustc` and `cargo`, which isn't great...
+
+            % id = "01J7BYKQGYAGD2V31HP66SHZ91"
+            - _and_ if you want to use something else like [`swc`](https://swc.rs/), you're out of luck unless you use npm. yuck.
+
+        % id = "01J7BYKQGY7EBD6MF2T3A07GCF"
+        - I'm sure there'll be a lot of people thinking "it's not _that_ slow," but consider me a fanatic who _despises_ long build times.
+        adding an additional 100ms of Node.js warmup to that would be like comitting a cardinal sin!
+
+    % id = "01J7BYKQGY8MCJA4DZ3904Q6ZT"
+    + so I decided to go with Vanilla JS for the treehouse.
+
+        % id = "01J7BYKQGYZNWKA398QHHNC0M6"
+        - in fact, not just for the treehouse.
+        [the app I'm building currently][def:rkgk/repo] is also completely Vanilla JS, for the exact same reasons.
+
+    % id = "01J7BYKQGYZ0WC3YS5NMKCT3V7"
+    - it actually hasn't been that bad!
+    aside from type errors being a little harder to debug, and IDE support not being as great---I honestly do miss the latter...---you can program in Vanilla JS just fine.
+
+        % id = "01J7BYKQGY8X9SWKYFJ62GSBBG"
+        + so I don't really get hystericising over not having TypeScript.
+        I've had worse experiences writing code.
+        the best part about plain vanilla JavaScript is that the iteration times are really quick, and you have stack traces, and a pretty darn good graphical debugger to help you out in trying times.
+
+            % id = "01J7BYKQGYY3B66TJDHYTQ1V2R"
+            - not a _replay_ debugger mind you... but it's still a pretty good debugger!
+            way snappier than most tools for debugging C++ on Windows. (I gotta try out RAD Debugger one day >--<)
+
+    % id = "01J7BYKQGYZB7DM185YM80633H"
+    - my experience writing rakugaki only confirms that TypeScript isn't really needed---it's a pretty sizable Web app, and aside from me wishing JavaScript had more strict error handling---which TypeScript _does not_ solve by the way, it's _really not that bad_.
+
+    % id = "01J7BYKQGYRT9125BTEJPEWBWB"
+    - [I've written about my feelings towards JavaScript before though][page:programming/languages/javascript], so I won't repeat myself too much here.
+
+% id = "01J7BYKQGYSD6SEA5CEF64YB28"
+- ### not minified
+
+    % id = "01J7BYKQGYZTR6JE316HXB6F4J"
+    - did you know: your browser has a handy DevTools panel. ain't that neat?
+
+        % id = "01J7BYKQGY3HHC5FFCTJ4XHJHB"
+        - too bad it's useless if you minify your code!
+
+    % id = "01J7BYKQGYD8VFKHGR8FP05MPS"
+    - remember: a lot of people can learn from reading someone else's source code, including you!
+    so try not minifying your source code.
+
+        % id = "01J7BYKQGYA94T9AR4FDSP3Y6Y"
+        - let compression do most of the heavy lifting, and liberate yourself with an improved debugging experience, as well as letting people see how the cool parts of your website are implemented.
+
+            % id = "01J7BYKQGYG1993HRJMDDBJ0W8"
+            - even if they're really janky!
+
+% id = "01J7BYKQGYTBEQFJ1AK0SRP0ZG"
+- ### release mode? what's that?
+
+    % id = "01J7BYKQGY1EFG6HSNJEJXKCWB"
+    - tying into the previous point, the treehouse builds mostly the same code, both in debug mode and release mode.
+
+        % id = "01J7BYKQGYAVY2JGSYR90M0FQZ"
+        - the reason is that I don't want to waste time testing my website separately on release mode, so having it behave differently in subtle ways means more bugs!
+
+    % id = "01J7BYKQGY6KJ6ZZX4EREEAB79"
+    - there are only two parts of the treehouse that behaves differently between debug and release mode. 
+
+        % id = "01J7BYKQGYB4G0J7TZQCF4X7W6"
+        - generation speed, and...
+
+% id = "01J7BYKQGYFM6668GH8W7RH1A1"
+- ### live reloading
+
+    % id = "01J7BYKQGYS3KAXCAXW066M32K"
+    - in debug mode, I have the treehouse reload itself on change automatically.
+
+        % id = "01J7BYKQGYMVS2PYT5YNAEG8FR"
+        - I can't count the number of precious developer seconds this has saved me---not having to refocus my window to the browser is really nice!
+
+        % id = "01J7BYKQGY6AX2C8CR0BSDFR2E"
+        - I actually learned the Web ecosystem has such cool mechanisms for app development back when I was trying out React.js for a little project of mine.
+        I didn't end up building anything in the end because the project idea _just didn't end up vibing with me_, but it provided me with lots of useful knowledge.
+        especially related to how frickin' cool React is in terms of developer experience.
+
+    % id = "01J7BYKQGY16FEAPZ11DD6JYTM"
+    - here's the script I use for [rkgk][def:rkgk/repo], hosted under `static/live-reload.js`:
+
+    ```javascript
+    // NOTE: The server never fulfills this request, it stalls forever.
+    // Once the connection is closed, we try to connect with the server until we establish a successful
+    // connection. Then we reload the page.
+    await fetch("/auto-reload/stall").catch(async () => {
+        while (true) {
+            try {
+                let response = await fetch("/auto-reload/back-up");
+                if (response.status == 200) {
+                    window.location.reload();
+                    break;
+                }
+            } catch (e) {
+                await new Promise((resolve) => setTimeout(resolve, 100));
+            }
+        }
+    });
+    ```
+
+    % id = "01J7BYKQGYF8Y1E013XTNT5Q32"
+    - I then import it into any HTML page which I want to reload on change.
+
+    ```html
+    <script type="module">
+        import "rkgk/live-reload.js";
+    </script>
+    ```
+
+    % id = "01J7BYKQGYMWFP0YQK92MB1133"
+    - on the Rust side, these `/stall` and `/back-up` endpoints are implemented like so:
+
+    ```rust
+    use std::time::Duration;
+
+    use axum::{routing::get, Router};
+    use tokio::time::sleep;
+
+    pub fn router<S>() -> Router<S> {
+        let router = Router::new().route("/back-up", get(back_up));
+
+        #[cfg(debug_assertions)]
+        let router = router.route("/stall", get(stall));
+
+        router.with_state(())
+    }
+
+    #[cfg(debug_assertions)]
+    async fn stall() -> String {
+        loop {
+            // Sleep for a day, I guess. Just to uphold the connection forever without really using any
+            // significant resources.
+            sleep(Duration::from_secs(60 * 60 * 24)).await;
+        }
+    }
+
+    async fn back_up() -> String {
+        "".into()
+    }    
+    ```
+
+        % id = "01J7BYKQGYDY8E84BEM5V7MMGB"
+        - the `/stall` route is only enabled in debug builds, because in release mode, rkgk uses a smarter exponential backoff system with some random noise added to the reload timeout, to prevent the server from DDoSing itself if it dies.
+
+            % id = "01J7C16RSZMAJ5TKZ1H2MMTCXK"
+            - or right after deploying, which also causes all existing WebSocket connections to close.
+
+    % id = "01J7BYKQGYKYMZA4HZEXV117G8"
+    - in the treehouse, I use [`tower-livereload`](https://lib.rs/crates/tower-livereload), but I wouldn't recommend it.
+
+        % id = "01J7BYKQGYC579CYCJH0WJN8MT"
+        - as you can see above, there's not a lot of client-side JavaScript, and it's not hard to write the HTTP routes either!
+
+        % id = "01J7BYKQGYVS4CZGVC4ZHGJ7KF"
+        - also, `tower-livereload` also has a couple disadvantages compared to the solution I've shown here.
+        
+            % id = "01J7BYKQGY3P95RM10ZZGRP2Y3"
+            - it's slow, because it only polls the server's `/back-up` endpoint every second, which increases reload latency.
+            I've bumped that up to polling every 100ms in my script, because I don't like slow.
+
+            % id = "01J7BYKQGY8GVZQS6EP9D8WMNA"
+            - it [cats](https://en.wikipedia.org/wiki/Concatenation) the JavaScript payload directly to your server's `Content-Type: text/html` responses, which produces invalid HTML.
+            as far as I can tell, all major browsers seem to parse it correctly, but it's a pretty ugly hack nevertheless.
+
+            % id = "01J7BYKQGY8AX7298QPHR208BZ"
+            - it's 500 lines of [dependency](https://www.youtube.com/watch?v=PAAkCSZUG1c&t=568s) for something you can do with 12 lines of JavaScript, 3 lines of HTML, and 28 lines of Rust!
+
+    % id = "01J7BYKQGY1VBDW7TDVV47XK2T"
+    - to trigger the reloads, I use [`cargo-watch`](https://lib.rs/crates/cargo-watch), mostly because it's really convenient.
+
+    ```
+    cargo watch -x run
+    ```
+
+    and you're done!
+    your site will now reload when you [`:w`](https://vim.rtorr.com/).
+
+% id = "01J7BYKQGYX9B0RYN4KWSMEJV6"
+- ### Web Component shenanigans
+
+    % id = "01J7BYKQGYNDQSZ7NW4MJBH6WQ"
+    - as the treehouse uses Vanilla JS, I needed some solution for building reusable components that wasn't React.
+    luckily for me, I already knew about [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)---in particular, [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).
+
+        % id = "01J7BYKQGYK91F1Z45YJGGNX8Q"
+        - if you're using them for your own website, I'd recommend skipping shadow DOM, because it's not really useful in case you have control over all styles.
+        it's good to know what it does in case you ever need it, but it shouldn't be your go-to tool for building components.
+
+    % id = "01J7BYKQGYKBNJYZB1ASBJRGD3"
+    - _custom elements_ are just that---custom HTML elements that you can include in your page.
+    according to [the MDN docs](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements), these have two flavours:
+
+        % id = "01J7BYKQGYWEXYDGRFT0P8RMH6"
+        - _autonomous custom elements_, which always extend `HTMLElement` in JavaScript.
+        these can be used to implement standalone components composed out of smaller pieces.
+        these are used like any HTML element---`<your-element></your-element>`.
+
+        % id = "01J7BYKQGYM9HD00VY2BVEZPZ0"
+        - _customized built-in elements_, which extend _any_ built-in element.
+        these are applied using the `is=""` attribute on a base built-in element, like `<li is="your-element"></li>`. 
+
+            % id = "01J7BYKQGY90D6C0KF9CFSMF1A"
+            - unfortunately customized built-in elements are practically useless, because Safari doesn't implement them, [and doesn't even plan to do so](https://github.com/WICG/webcomponents/issues/509#issuecomment-222860736)...
+
+            but that doesn't diminish the usefulness of autonomous custom elements either way!
+
+    % id = "01J7BYKQGYND1AMZ6PG3M67BN2"
+    - to implement a custom element, I usually use this pattern:
+
+    ```javascript
+    class YourElement extends HTMLElement {
+        // You can use the constructor of a custom element to require some
+        // parameters from other JS code.
+        // Note that adding *required* parameters here makes your element
+        // practically unusable from HTML, because there's no way to pass them in!
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            // Read attributes and add children here.
+        }
+    }
+
+    // Choose a different prefix; `owo` is just an example to get you going.
+    // You *must* choose a prefix, because custom elements require at least one dash `-` in their names.
+    customElements.define("owo-your-element", YourElement);
+    ```
+
+    and off we go!
+    
+    % id = "01J7BYKQGY6YE329DB9PMY8KNW"
+    - I've found a couple useful idioms for working with custom elements.
+
+        % id = "01J7BYKQGYDG6XYVK8ZFAM4KBJ"
+        - styling: custom elements start off with `display: inline;`, which is probably not what you want.
+        therefore, you'll usually want to replace that with `display: block;`.
+
+        ```css
+        owo-custom-element {
+            display: block;
+        }
+        ```
+
+        % id = "01J7BYKQGY65233M8NCPBM0N63"
+        - DOM construction: a useful idiom is passing `createElement` to `appendChild`.
+        this allows you to append a new element to the component (or really anything, it's a useful idiom overall).
+
+        I usually follow it up with adding a CSS class for easy styling, naming the CSS class after the object field name on the JavaScript side.
+
+        ```javascript
+        this.textArea = this.appendChild(document.createElement("textarea"));
+        this.textArea.classList.add("text-area");
+        ```
+
+        it's kind of verbose, but if you don't like it, you're free to wrap that up in a helper function---I personally don't mind, since it's simple code that I usually follow this up with more initialization logic.
+
+        % id = "01J7BYKQGYT5RPTQVZ0S9G18AM"
+        - patching everything together: I usually use plain DOM `Event`s for event handlers that don't need to return any data back to the component.
+        I prefix their names with `.` to not confuse them with built-in DOM events such as `mousedown`.
+
+        it's pretty convenient to construct events with `Object.assign`, too.
+
+        ```javascript
+        this.dispatchEvent(
+            Object.assign(
+                new Event(".codeChanged"),
+                { newCode },
+            ),
+        );
+        ```
+
+        you can wrap the event construction in a function too if you mind the verbosity much, but again---I personally don't.
+
+% id = "01J7BYKQGYYPXJVESTMGAA0TB8"
+- ### cache bust a little, cache bust some more
+
+    % id = "01J7BYKQGYBRSHQT8HJ3KNY9NA"
+    - _cache busting_ is a super cool technique for ensuring the browser does not download assets that haven't changed.
+    essentially, for each asset you serve to the user, you compute a hash that's then included in all URLs referencing the asset from your website.
+
+        % id = "01J7BYKQGYR6A6N3P1EG4383RN"
+        - for example, as of writing this, treehouse's CSS stylesheets are linked into the main page more or less like so:
+
+        ```html
+        <link rel="stylesheet" href="/static/css/main.css?cache=b3-f12e225c">
+        <link rel="stylesheet" href="/static/css/tree.css?cache=b3-62885cff">
+        ```
+
+        % id = "01J7BYKQGY3070025QXPDCF4N6"
+        - my server sees the `cache` query parameter, and adds in a little HTTP header, that basically tells the client "don't redownload this, that'd be stupid. this asset isn't going to change like, ever."
+
+        ```http
+        Cache-Control: public, max-age=31536000, immutable
+        ```
+
+        % id = "01J7BYKQGYYBY9RDFJG8BP61QP"
+        - and that's it! the actual value of the `?cache` parameter is never interpreted by anyone, anyhow.
+        it's only there so that whenever something _does_ change, we change the URL, and the browser thinks that "hey, that's a different asset! gotta download it." 
+
+        that way, the browser only ever downloads files that changed since your last visit.
+
+    % id = "01J7BYKQGYZ6MS7CKVDFQDVMQ8"
+    - initially I implemented cache busting for most static assets, because that's pretty easy to do: add a helper to your templating engine that can derive these `?cache`-augmented URLs by computing a hash of the linked file.
+
+        % id = "01J7BYKQGY4VC1JRT671YJ1509"
+        - in my case I use [BLAKE3](https://en.wikipedia.org/wiki/BLAKE3)---as indicated by the `b3-` prefix---but the choice of hash function shouldn't matter that much; I just chose a fast crypto hash for lower likelihood of collisions.
+        which would of course cause assets _not_ to get redownloaded, if that ever happened.
+
+            % id = "01J7BYKQGYE3AKGWS8RTZKAJPE"
+            - which is kind of bad, but eh.
+            happens rarely enough we don't need to care about it.
+
+            % id = "01J7C16RSZKDBC3427V4BAV7VB"
+            - (and yes, I know that I'm increasing the likelihood of collisions by truncating the hash.
+            as I said: it doesn't matter, I don't care.)
+
+    % id = "01J7BYKQGY5ASNC96MCHF1TRB8"
+    - the far bigger challenge was making this work for JavaScript files.
+
+        % id = "01J7BYKQGYHDT3AZ78WA5WYGJC"
+        - HTML we generate, so that's easy---add a template helper, and replace all occurrences of `/static` URLs with that helper.
+
+        % id = "01J7BYKQGYRWTWQZX0B86QMSH6"
+        - CSS doesn't refer to too many assets---there's fonts and a couple images in [that one blog post's stylesheet][page:programming/blog/tairu], which will probably never change, so we can hardcode those.
+
+        % id = "01J7BYKQGYTDQEEH58DDGCVG8M"
+        - but JavaScript. man.
+        where do I even begin.
+
+    % id = "01J7BYKQGYSPVQK1AM2XKV39QC"
+    - treehouse is built on ES modules.
+    as I mentioned before, I don't bundle or minify anything, because HTTP/2 makes using plain ES modules quite efficient, as long as you import them all from your main HTML file.
+    the problem is that if you're referring to modules like this...
+
+    ```javascript
+    import "treehouse/vendor/codejar.js";
+    ```
+
+    how the heck are you going to add that `?cache` parameter in there?
+
+    % id = "01J7BYKQGYMCBHPH645GMQCKWJ"
+    - as you can see in the previous example, the treehouse had already used [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap) by that point.
+    for those of you who don't know, these are handy little bits of JSON that tell the browser's JavaScript runtime where to source your modules from.
+
+    % id = "01J7C16RSZS6GK1JPHFEV2MZXH"
+    - before implementing cache busting, I'd use a simple import map hardcoded right into my Handlebars template:
+
+    ```html
+    <script type="importmap">{
+        "imports": {
+            "treehouse/": "{{ config.site }}/static/js/"
+        }
+    }</script>
+    ```
+
+    % id = "01J7BYKQGYJDRF3FXHE23ADK21"
+    - so the challenge was to turn _that_ puny import map into something that lists all the individual modules, with a `?cache` parameter!
+    and initially I thought, "well this sure is gonna be simple, just walk through all my `.js` files, compute those hashful URLs,"
+
+        % id = "01J7C16RSZ7NHE5N3KV57NGWT0"
+        - okay cool we're getting somewhere,
+    
+    % id = "01J7C16RSZQPMABF0SBDH1RHA7"
+    - "and then we could even cache that import map with a `?cache` parameter too---"
+
+    % id = "01J7BYKQGYBB81J2XGXPG4WQS5"
+    - and then [reality struck](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap#syntax):
+
+    > The `src`, [...and other] attributes must not be specified.
+
+    Fuck.
+
+    % id = "01J7BYKQGYSB23S0G2G2M09YNK"
+    - so, "sure," I say.
+    "I'll have to include the whole import map verbatim in each `.html` file.
+    no big deal, we don't cache `.html`s anyways..."
+
+        % id = "01J7BYKQGYPXKQFGYHQRG17TFF"
+        + it's kind of sad, because it'd allow me to cache linked branches (such as [this one][branch:about])---I'd love it if I could get rid of the `Loading...` text entirely if you've ever loaded a branch, but while that _is_ feasible, it's probably going to benefit snappiness less than I'd like, due to import maps influencing the hash of each `.html` file.
+        and therefore each time I add a `.js` file, all cached HTML files would get busted...
+
+        oh well.
+
+            % id = "01J7C16RSZ1KRZ63HXGN3G3HF3"
+            - on the other hand, I do understand why browser vendors wouldn't want to implement it---it's a performance pitfall.
+            it adds in an additional dependency towards evaluating `<script>`s, which would block parsing on any inline JavaScript that's `type="module"`.
+
+    % id = "01J7BYKQGYWKRYZ7A5V8PGBZNM"
+    - and with an import map implemented, I go look at my glorious generated sources, and see... that my import map keys change every build :ralsei_dead:
+
+        % id = "01J7BYKQGYRKG8MDAKD8T2DZHF"
+        - this is a really stupid thing, but Rust (and other languages) randomise the ordering of hash maps to prevent [hash DoS attacks](https://en.wikipedia.org/wiki/Collision_attack#Hash_flooding), which means you can't use them to generate deterministic data. such as a file that shouldn't change across rebuilds!
+
+    % id = "01J7BYKQGY83JVHZNAK14CWTK9"
+    + so I swapped the [`std::collections::HashMap`](https://doc.rust-lang.org/std/collections/struct.HashMap.html) with a [`indexmap::IndexMap`](https://docs.rs/indexmap/latest/indexmap/map/struct.IndexMap.html), sorted it after generation, and everything's working smoothly :sunglasses:
+
+        % id = "01J7C16RSZCK3RMZNEWK6EQQVW"
+        - in theory, I could've used a `Vec<(String, String)>`, but `serde` won't serialize that as a map by default (for good reasons. it's not a map after all, it's a sequence!) and I was too lazy to implement that serialization logic myself.
+
+    % id = "01J7BYKQGYJ7QJ7T6NFFFE11ZY"
+    - ...and all that's possible without ever parsing any JavaScript!
+
+% id = "01J7BYKQGY42DB1C4YQ1Q0WRR8"
+- ### Djot down some notes
+
+    % id = "01J7BYKQGYH4C6SYF1WCE3EPGK"
+    - I'd initially chosen Markdown as my website's markup language, simply because I was already familiar with it, and because I've seen the Rust ecosystem had a [nice parser for it that seemed pretty customizable](https://lib.rs/crates/pulldown-cmark).
+
+    % id = "01J7BYKQGYMMCAKQX9S8JCTJW6"
+    - as time went on though, I discovered another light markup language: [_Djot_](https://djot.net/), made by the same person who made Markdown, with _lots_ of lessons learned from his previous attempt.
+    
+        % id = "01J7BYKQGYQQP0YSWA1TEHRB9S"
+        - I initially didn't wanna go through with it, because "_sigh_ am I really gonna have to rewrite my entire content to use Djot?"
+    
+        % id = "01J7BYKQGYSKJNTB7BGKTED4S0"
+        + but then I did it anyways, because life's too short to have to deal with poorly designed markup languages :hat_smug:
+
+            % id = "01J7C16RSZV1A8J3TA1JZJV5J4"
+            - and also because I'm are have stupid, but let's not talk about that. :shhh:
+
+    % id = "01J7BYKQGYHNH61BN1FGQRRQHV"
+    - the one thing that sold me on Djot was how easy it is to create custom HTML elements.
+    for instance, it has syntax for a div:
+
+    ```djot
+    ::: class-goes-here
+
+    I'm in a div!
+
+    :::
+    ```
+
+    or a span:
+
+    ```djot
+    [I'm in a span!]{.whatever}
+    ```
+
+    which is really cool if you're doing [a lot of bespoke markup in your blog posts](https://ciechanow.ski/).
+
+    % id = "01J7BYKQGY9DDCDWW6D59EW3BG"
+    - ultimately, the switch mostly came down to converting `*abc*` into `_abc_`, `**abc**` into `*abc*`, and `~~abc~~` into `{~abc~}`, as well as fencing any inline HTML off [with some `=html`](https://github.com/jgm/djot/blob/56ca538cedc94bc636763bce954847407fe40eb7/doc/quickstart-for-markdown-users.md#raw-html), as well as fixing up some links---because Djot forces you to use two pairs of `[]`, like `[here's a link that's defined elsewhere][]`, instead of just one like Markdown.
+
+        % id = "01J7BYKQGY4BE6Z8EHNPDHD1XS"
+        + you get the gist---pretty mechanical actions, that probably _could_ have been automated away, but I decided it wasn't worth it for what little content I had here.
+
+            % id = "01J7C16RSZQVXV5RCKJ3A3Q8GG"
+            - says that with 50000 words on his website already, and counting...
+
+    % id = "01J7BYKQGY08SDWD0J7K6MMPMV"
+    - and in the end, it's interesting the switch made parsing slightly faster, and the HTML generation code slightly cleaner!
+
+        % id = "01J7BYKQGY02WPNH9RGS29TE27"
+        + I believe I can attribute the parsing speedups to Djot's more computer-friendly syntax, but I haven't measured.
+        just my guess.
+        maybe it's my HTML generator doing less useless error handling work, too.
+
+            % id = "01J7C16RSZAECM1G9CD57WX1M6"
+            - I am pushing into a string, that literally cannot fail! (other than with an OOM, but that's a panic)
+        
+        % id = "01J7BYKQGYJMRC7DY7SNMAQ538"
+        - the HTML generation code got cleaner, because the crate I'm using---[`jotdown`](https://lib.rs/crates/jotdown)---does not use a callback for filling in broken links.
+        a pattern that's best known under the moniker "yeah, don't do that" in the Rust world.
+
+            % id = "01J7BYKQGYEYE7VAYYQBJF18ZX"
+            + I found the easiest way of going about writing your HTML generator is copying the built-in one in your light markup parsing library of choice, and adjusting it to your needs.
+            so yeah.
+            mine's mostly stolen code.
+
+                % id = "01J7BYKQGYGZTN14SHQA3B3ZH6"
+                - aside, but there's one frustrating thing about the Rust ecosystem: why does everything have to be a trait?
+                I don't think I've declared a trait _once_ in my recent projects---both in the treehouse and rkgk, yet I constantly see examples of unnecessary traits [such as this one](https://docs.rs/jotdown/latest/jotdown/trait.Render.html) in the wild.
+
+                    % id = "01J7BYKQGYY60YHG7VAFX6WRR4"
+                    - and _of course_ `Render::push` has to take _anything_ that implements `Write`, because handling I/O errors is _oh_ so nice and efficient to do, especially when you have to do it every 5 characters you emit!
+
+                        % id = "01J7BYKQGYJEY2VMEF6VP2WAHZ"
+                        - why can't it take in a `&mut String` instead?
+
+                    % id = "01J7BYKQGY75E13YC9D7J786HZ"
+                    - or... why does this trait have to exist in first place? _how often_ will you want to swap out renderer implementations, really?
+
+                        % id = "01J7BYKQGYDFTJPK4K2JANTMCR"
+                        - and when you swap out renderer implementations, isn't the API gonna be quite different, because both renderers require different data to derive your HTML from?
+                        shouldn't that warrant you calling a different function with a different set of arguments?
+
+                % id = "01J7BYKQGYA5TG1HS92T4P8NN7"
+                - _please_ don't take this as me bashing `jotdown` or its author; I think it's an otherwise well-designed and generally great library for parsing Djot, and a single odd API decision shouldn't detract you from just how awesome it is.
+
+% id = "01J7BYKQGYQVS2SWW06SB970BT"
+- ### a `rustc` stability benchmark
+
+    % id = "01J7BYKQGYSNDM9RYYB4GP88EZ"
+    - this is a weird one, but: sometimes `rustc` will choke up on evaluating obligations for the implementation of `Unpin` for [`SemaBranch`](https://github.com/liquidev/treehouse/blob/4bbbd65bd0a30852f06646276ae6f187cc7304fb/crates/treehouse/src/tree.rs#L143), and just... die.
+
+    % id = "01J7BYKQGYV3H2WX6VVSR9EFEF"
+    - what's funny is that it dies dropping a `rustc-ice-YYYY-MM-DDTHH_MM_SS-NNNNN.txt` file into your current working directory, and combined with `cargo-watch` this has the super funny effect of generating tens of those files in the treehouse repo.
+    
+        % id = "01J7C16RT0H84KPGJMBK1QT84E"
+        - I have forgotten to remove these before checking in at least once before.
+        I don't think I ever ended up pushing that commit though, so I can't show you... [but you can see the ICE I have stored in my local Git history here](/static/text/rustc-ice-2024-07-20T21_00_23-69819.txt).
+
+        % id = "01J7C16RT0R80J7KN516B06Q05"
+        - an annoying side effect is that to fix this, I have to `^C` out of `cargo-watch`, run `cargo clean`, run `cargo-watch` again, and wait until the whole project compiles.
+        
+            % id = "01J7C16RT0XX4PZYRXAAV2M7P9"
+            - at least it's a debug build...
+
+    % id = "01J7BYKQGYAHS3T5GDRR4KC8QB"
+    - I unfortunately don't have a consistent repro on this, though `rustc` _has_ told me this is a known issue.
+    it's weird it only happens with the treehouse.
+    like the[re's a ghost inha][page:kuroneko]{.secret}biting it...
+
+% id = "01J7BYKQGY9XC7C20SA2BWDAE8"
+- and that's all the stories I have for now!
+feel free to come back here any time.
+I may or may not update this post with more of them in the future.

@@ -11,6 +11,10 @@
       id = "01J4J4PAXRWZDP9PAZNGCQ9S3D"
     + [featured]{.badge .blue} :page: haku - writing a little programming language for fun
 
+    % content.link = "programming/blog/buildsome"
+      id = "01J7BYKQHZKYQ969T3PH3V8HF1"
+    + :page: not quite buildless
+
     % content.link = "programming/blog/lvalues"
       id = "01HY5R1ZW0M0Y5KQ1E8F0Q73ZT"
     + :page: places, or what is up with `*x` not always meaning the same thing

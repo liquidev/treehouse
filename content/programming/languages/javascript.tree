@@ -1,7 +1,7 @@
 %% title = "JavaScript is not as bad as people make it out to be"
 scripts = [
-    "components/literate-programming.js",
-    "vendor/codejar.js",
+    "treehouse/components/literate-programming.js",
+    "treehouse/vendor/codejar.js",
 ]
 
 % id = "01J291S06DS12DCFTNKJ27BNSQ"

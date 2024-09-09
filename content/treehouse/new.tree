@@ -13,6 +13,19 @@ even though it didn't end up having macros...
 
 [read][page:programming/blog/haku]
 
+% id = "01J7C1KBZ58BR21AVFA1PMWV68"
+- I like lean websites. did you know that?
+
+I also really like lean websites that are simple in construction and deployment. did you know the treehouse is a website like that?
+
+so I've decided to write up a few anecdotes and other cool stories about the treehouse's inner workings.
+
+also, it's (way past) its one year anniversary! hooray!
+
+### not quite buildless
+
+[read][page:programming/blog/buildsome]
+
 % id = "01J73BSWA15KHTQ21T0S14NZW0"
 - I decided to write up some ideas on what sort of cool data analysis I could do on my [ListenBrainz data set][def:social/listenbrainz].
 I haven't done any of it yet, but I thought it'd be cool to share my ideas anyways!
