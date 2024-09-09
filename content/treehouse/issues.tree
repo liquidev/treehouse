@@ -13,6 +13,18 @@
 % id = "issue-list"
 - ## issue list
 
+    % id = "01J093FGZF8M0Q02YX3VFSZ06X"
+    + :TODO: :l_feat: RSS/Atom feed
+
+        % id = "01J094P8H3VZKESVHKVJRVXTG1"
+        - there's no real way to subscribe to updates from the treehouse yet. (talking about [page:treehouse/new] here)
+
+        % id = "01J094P8H3Q59F5CAE8CK6DWYY"
+        - arguably this might be a bit hard, since it seems like feed readers are meant to let you read the whole post inline - which uh, treehouse, uhhhh
+
+            % id = "01J094P8H37P5F1MP14758ZNQH"
+            - its structure makes this kind of hard
+
     % id = "01J3A23S4RVHZR3BE7EFQ8ZPPB"
     - :TODO: :l_perf: caching the import map
 
@@ -108,18 +120,6 @@
         % id = "01J094P8H3R910T6R10S62QA40"
         - maybe using IndexDB to save branch content and fetch it quickly would help too.
         but I don't like that as much as just using what the browser offers.
-
-    % id = "01J093FGZF8M0Q02YX3VFSZ06X"
-    + :TODO: :l_feat: RSS/Atom feed
-
-        % id = "01J094P8H3VZKESVHKVJRVXTG1"
-        - there's no real way to subscribe to updates from the treehouse yet. (talking about [page:treehouse/new] here)
-
-        % id = "01J094P8H3Q59F5CAE8CK6DWYY"
-        - arguably this might be a bit hard, since it seems like feed readers are meant to let you read the whole post inline - which uh, treehouse, uhhhh
-
-            % id = "01J094P8H37P5F1MP14758ZNQH"
-            - its structure makes this kind of hard
 
     % id = "01J093FGZF3M6HR6E0X3P44D0M"
     + :TODO: :l_a11y: respect `@media (prefers-reduced-motion: reduce)`
