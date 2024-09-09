@@ -221,6 +221,12 @@ enjoy!
             % id = "01J7BYKQGYG1993HRJMDDBJ0W8"
             - even if they're really janky!
 
+        % id = "01J7EMBKN42WH0BKXKDQ020F8M"
+        - you can also provide source maps to transfer optimal minified sources by default, and let your browser's DevTools display your original sources to the user upon their request.
+        
+            % id = "01J7EMJYX91P3RE3PEBM2M3MR1"
+            - the important part is that having _some_ form of readable sources _right on your page_ is really nice!
+
 % id = "01J7BYKQGYTBEQFJ1AK0SRP0ZG"
 - ### release mode? what's that?
 
